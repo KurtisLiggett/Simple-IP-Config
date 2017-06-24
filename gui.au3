@@ -42,7 +42,7 @@ Func _GDIPlus_GraphicsGetDPIRatio($iDPIDef = 96)
 	Local $aresults[2] = [$iDPIDef / $iDPI, $iDPI / $iDPIDef]
 	_GDIPlus_GraphicsDispose($hGfx)
 	_GDIPlus_Shutdown()
-	ConsoleWrite("DPI Ratio: " & $aresults[1]&@CRLF)
+;~ 	ConsoleWrite("DPI Ratio: " & $aresults[1]&@CRLF)
 	Return $aresults[1]
 EndFunc   ;==>_GDIPlus_GraphicsGetDPIRatio
 
@@ -97,8 +97,7 @@ Func _makeGUI()
 
 	;$hgui = GUICreate( $winName & " " & $winVersion, $guiWidth*$dscale, $guiHeight*$dscale, @DesktopWidth/2-$guiWidth*$dscale/2, @DesktopHeight/2-$guiHeight*$dscale/2, BITOR($GUI_SS_DEFAULT_GUI,$WS_CLIPCHILDREN, $WS_SIZEBOX), $WS_EX_COMPOSITED )
 	$hgui = GUICreate( $winName & " " & $winVersion, $guiWidth*$dscale, $guiHeight*$dscale, $xpos, $ypos, BITOR($GUI_SS_DEFAULT_GUI,$WS_CLIPCHILDREN), $WS_EX_COMPOSITED )
-	GUISetBkColor( 0x232323)
-	GUISetBkColor( 0x414141)
+	GUISetBkColor( 0xFFFFFF)
 
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 	_GDIPlus_Startup()
