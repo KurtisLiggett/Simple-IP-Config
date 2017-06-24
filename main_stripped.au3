@@ -247,11 +247,6 @@ Local $aResult = DllCall("user32.dll", "handle", "GetDC", "hwnd", $hWnd)
 If @error Then Return SetError(@error, @extended, 0)
 Return $aResult[0]
 EndFunc
-Func _WinAPI_GetDeviceCaps($hDC, $iIndex)
-Local $aResult = DllCall("gdi32.dll", "int", "GetDeviceCaps", "handle", $hDC, "int", $iIndex)
-If @error Then Return SetError(@error, @extended, 0)
-Return $aResult[0]
-EndFunc
 Func _WinAPI_GetDlgCtrlID($hWnd)
 Local $aResult = DllCall("user32.dll", "int", "GetDlgCtrlID", "hwnd", $hWnd)
 If @error Then Return SetError(@error, @extended, 0)
@@ -1827,7 +1822,6 @@ Global Const $IPN_FIELDCHANGED =($IPN_FIRST - 0)
 Global $__g_hIPLastWnd
 Global Const $__IPADDRESSCONSTANT_ClassName = "SysIPAddress32"
 Global Const $__IPADDRESSCONSTANT_DEFAULT_GUI_FONT = 17
-Global Const $__IPADDRESSCONSTANT_LOGPIXELSX = 88
 Global Const $__IPADDRESSCONSTANT_PROOF_QUALITY = 2
 Func _GUICtrlIpAddress_Create($hWnd, $iX, $iY, $iWidth = 125, $iHeight = 25, $iStyles = 0x00000000, $iExstyles = 0x00000000)
 If Not IsHWnd($hWnd) Then Return SetError(1, 0, 0)
@@ -1881,21 +1875,6 @@ EndIf
 EndFunc
 Func _GUICtrlIpAddress_SetEx($hWnd, $tIP)
 _SendMessage($hWnd, $IPM_SETADDRESS, 0,  _WinAPI_MakeLong(BitOR(DllStructGetData($tIP, "Field4"), 0x100 * DllStructGetData($tIP, "Field3")), BitOR(DllStructGetData($tIP, "Field2"), 0x100 * DllStructGetData($tIP, "Field1"))))
-EndFunc
-Func _GUICtrlIpAddress_SetFont($hWnd, $sFaceName = "Arial", $iFontSize = 12, $iFontWeight = 400, $bFontItalic = False)
-Local $hDC = _WinAPI_GetDC(0)
-Local $iHeight = Round(($iFontSize * _WinAPI_GetDeviceCaps($hDC, $__IPADDRESSCONSTANT_LOGPIXELSX)) / 72, 0)
-_WinAPI_ReleaseDC(0, $hDC)
-Local $tFont = DllStructCreate($tagLOGFONT)
-DllStructSetData($tFont, "Height", $iHeight)
-DllStructSetData($tFont, "Weight", $iFontWeight)
-DllStructSetData($tFont, "Italic", $bFontItalic)
-DllStructSetData($tFont, "Underline", False)
-DllStructSetData($tFont, "Strikeout", False)
-DllStructSetData($tFont, "Quality", $__IPADDRESSCONSTANT_PROOF_QUALITY)
-DllStructSetData($tFont, "FaceName", $sFaceName)
-Local $hFont = _WinAPI_CreateFontIndirect($tFont)
-_WinAPI_SetFont($hWnd, $hFont)
 EndFunc
 Func _GUICtrlMenu_GetItemText($hMenu, $iItem, $bByPos = True)
 Local $iByPos = 0
@@ -2062,11 +2041,11 @@ Global Const $WIN_STATE_VISIBLE = 2
 Global Const $WIN_STATE_ACTIVE = 8
 Global Const $WIN_STATE_MINIMIZED = 16
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.8"
-Global $winDate = "05/15/2017"
+Global $winVersion = "2.8.1 b1"
+Global $winDate = "06/24/2017"
 Global $hgui
 Global $guiWidth = 550
-Global $guiHeight = 533
+Global $guiHeight = 550
 Global $footerHeight = 16
 Global $tbarHeight = 49
 Global $dscale = 1
@@ -2089,6 +2068,7 @@ Global $prevWinPos, $winPosTimer, $writePos
 Global $MyGlobalFontName = "Arial"
 Global $MyGlobalFontSize = 9.5
 Global $MyGlobalFontBKColor = $GUI_BKCOLOR_TRANSPARENT
+Global $MyGlobalFontHeight = 0
 Global $combo_adapters, $combo_dummy, $selected_adapter, $lDescription, $lMac
 Global $list_profiles, $input_filter, $filter_dummy, $dummyUp, $dummyDown
 Global $lv_oldName, $lv_newName, $lv_editIndex, $lv_doneEditing, $lv_newItem, $lv_startEditing, $lv_editing, $lv_aboutEditing
@@ -2136,7 +2116,7 @@ $propertyFormat[7] = "RegisterDns"
 $propertyFormat[8] = "AdapterName"
 Global $sChangeLog[2]
 $sChangeLog[0] = "Changelog - " & $winVersion
-$sChangeLog[1] = @CRLF & "v"&$winVersion & @CRLF & "MAJOR CHANGES:" & @CRLF & "   Now using IP Helper API (Iphlpapi.dll) instead of WMI" & @CRLF & "   Speed improvements -> 2x faster!" & @CRLF & @CRLF & "MINOR CHANGES:" & @CRLF & "   Automatically fill in 255.255.255.0 for subnet" & @CRLF & "   Save last window position on exit" & @CRLF & "   Tray message when an trying to start a new instance" & @CRLF & "   Smaller exe file size" & @CRLF & "   Popup window positioning follows main window" & @CRLF & "   Allow more space for current properties" & @CRLF & "   Smoother startup process" & @CRLF & "   Get current information from disconnected adapters" & @CRLF & @CRLF & "BUG FIXES:" & @CRLF & "   IP address entry text scaling" & @CRLF & "   Fixed 'start in system tray' setting" & @CRLF & "   Fixed starting without toolbar icons" & @CRLF & "   Display disabled adapters" & @CRLF & "   Get current properties from disabled adapters" & @CRLF & "   Disabled adapters behavior" & @CRLF & "   Fixed hanging on setting profiles" & @CRLF & "   Fixed renaming/creating profiles issues" & @CRLF & "   Fixed additional DPI scaling issues" & @CRLF & @CRLF & "v2.7" & @CRLF & "MAJOR CHANGES:" & @CRLF & "   Code switched back to AutoIt" & @CRLF & "   Proper DPI scaling" & @CRLF & @CRLF & "NEW FEATURES:" & @CRLF & "   Enable DNS address registration" & @CRLF & "   Hide unused adapters" & "(View->Hide adapters)" & @CRLF & "   Display computer name and domain address" & @CRLF & @CRLF & "OTHER CHANGES:" & @CRLF & "   Single click to restore from system tray" & @CRLF & "   Improved status bar" & @CRLF & "   Allow only 1 instance to run" & @CRLF & @CRLF & "BUG FIXES:" & @CRLF & "   Proper scaling with larger/smaller screen fonts" & @CRLF & "   Fixed tooltip in system tray" & @CRLF & @CRLF & "v2.6" & @CRLF & "NEW FEATURES:" & @CRLF & "   Filter Profiles!" & @CRLF & "   'Start in System Tray' setting" & @CRLF & "   Release / renew DHCP tool" & @CRLF & "   'Saveas' button is now 'New' button" & @CRLF & @CRLF & "OTHER CHANGES:" & @CRLF & "   Enhanced 'Rename' interface" & @CRLF & "   New layout to show more profiles" & @CRLF & "   Other GUI enhancements" & @CRLF & @CRLF & "BUG FIXES:" & @CRLF & "   Detect no IP address / subnet input" & @CRLF & "   Fix DNS error occurring on some systems" & @CRLF & "   Better detection of duplicate profile names" & @CRLF
+$sChangeLog[1] = @CRLF & "v"&$winVersion & @CRLF & "BUG FIXES:" & @CRLF & "   IP address entry text scaling" & @CRLF & "v2.8" & @CRLF & "MAJOR CHANGES:" & @CRLF & "   Now using IP Helper API (Iphlpapi.dll) instead of WMI" & @CRLF & "   Speed improvements -> 2x faster!" & @CRLF & @CRLF & "MINOR CHANGES:" & @CRLF & "   Automatically fill in 255.255.255.0 for subnet" & @CRLF & "   Save last window position on exit" & @CRLF & "   Tray message when an trying to start a new instance" & @CRLF & "   Smaller exe file size" & @CRLF & "   Popup window positioning follows main window" & @CRLF & "   Allow more space for current properties" & @CRLF & "   Smoother startup process" & @CRLF & "   Get current information from disconnected adapters" & @CRLF & @CRLF & "BUG FIXES:" & @CRLF & "   IP address entry text scaling" & @CRLF & "   Fixed 'start in system tray' setting" & @CRLF & "   Fixed starting without toolbar icons" & @CRLF & "   Display disabled adapters" & @CRLF & "   Get current properties from disabled adapters" & @CRLF & "   Disabled adapters behavior" & @CRLF & "   Fixed hanging on setting profiles" & @CRLF & "   Fixed renaming/creating profiles issues" & @CRLF & "   Fixed additional DPI scaling issues" & @CRLF & @CRLF & "v2.7" & @CRLF & "MAJOR CHANGES:" & @CRLF & "   Code switched back to AutoIt" & @CRLF & "   Proper DPI scaling" & @CRLF & @CRLF & "NEW FEATURES:" & @CRLF & "   Enable DNS address registration" & @CRLF & "   Hide unused adapters" & "(View->Hide adapters)" & @CRLF & "   Display computer name and domain address" & @CRLF & @CRLF & "OTHER CHANGES:" & @CRLF & "   Single click to restore from system tray" & @CRLF & "   Improved status bar" & @CRLF & "   Allow only 1 instance to run" & @CRLF & @CRLF & "BUG FIXES:" & @CRLF & "   Proper scaling with larger/smaller screen fonts" & @CRLF & "   Fixed tooltip in system tray" & @CRLF & @CRLF & "v2.6" & @CRLF & "NEW FEATURES:" & @CRLF & "   Filter Profiles!" & @CRLF & "   'Start in System Tray' setting" & @CRLF & "   Release / renew DHCP tool" & @CRLF & "   'Saveas' button is now 'New' button" & @CRLF & @CRLF & "OTHER CHANGES:" & @CRLF & "   Enhanced 'Rename' interface" & @CRLF & "   New layout to show more profiles" & @CRLF & "   Other GUI enhancements" & @CRLF & @CRLF & "BUG FIXES:" & @CRLF & "   Detect no IP address / subnet input" & @CRLF & "   Fix DNS error occurring on some systems" & @CRLF & "   Better detection of duplicate profile names" & @CRLF
 Global $pngAccept = '0x89504E470D0A1A0A0000000D4948445200000018000000180803000000D7A9CDCA000000AE504C544500000043961018850F398E10157C0E16800E1A8B1192C750CDE5AF9BCC60A8D27396C95793C851D3E7B8C8E2A7C6E1A4C3E09EB9DB8FAED67D9FCE66529F11D0E6B5B3D885A5D16E62B12245830E45870D4A960B448C07C4E1A1BFDD99B5D989AAD378A2D06BA2CF6A9ECE6399CB5B91C74F65B4255FAD1F5CA91B58A417478A0F4D980E498F0CD6E9BEBCDC95B0D78094C8535BA31D5AA81A519C114C900E4D9B0C4793073A79053D82044391025A5D84990000000774524E5300132519382D1E044BF1A8000000B64944415428CFC58D571682301444634DE8100248176982D8FBFE37667228EA816FBD7F73279307FE0321C37E9D1CDC21BFE02014BD269C8ACE6731645CEBB12A93F67DC4744AE62C143E42CAB1F6BC005308CF63169E1A322443660773CC0922841BEA19375FDA4A4871416E46B410A96FA864C9404A9085FC8A16DE0C74780A92D55D88799D132E53F081A3AA81662E2D3DA946E08B87A69998FE54B6FEBDD9633A2827A087CD5BBAC37CBF89ED1118E44EFD6F79019F910D1E3FF30E0C0000000049454E44AE426082'
 Global $pngAdd = '0x89504E470D0A1A0A0000000D4948445200000018000000180803000000D7A9CDCA00000084504C54450000006AA053679E50639B4D5E984A5A95465591426EA25671A458C0DF99B8DC8CBCDD93C4E1A0CAE6A79DBD85DCECC9A4D369BFDE98A0C975D9EAC3D6E9BED3E8B9D0E6B3CCE5ADBADB92ABD088B4DA85B0D87EACD678A8D5729DC8729FD1629DD05E6EA256508E3EAED18DB1D584A8CD83A4CB7EA1CB79B2D394A8D17DB7D59EB5D49B7E99191D0000000874524E5300FEFEFEFEFEFEFDCBEAF8AC000000B74944415428CF6DD2D90E8230104051BAD216518B1BB8A0ECA0FFFF7F4E2B84C4E9799AE4BE4C9B89166A16FD8B53AF4281243BF0262850EBC287A2C0F4018C0C05AE8F60E428087B028D4041E66750C875FF8A50C685ACCD054CB5149C5112AB48A589D5DAE6A64DC1A47FF3D6854D800F3AC08724C00713E043566643DF15CD152CB30BF1BCAEBD81625EB752EB03F51D74127F897E805EA0C0ED1E0C1C0596BB903114A8798292A240DA1728090AF1D643C780CEE70B1BB1129F28293BAB0000000049454E44AE426082'
 Global $pngBigicon = '0x89504E470D0A1A0A0000000D49484452000000400000004008030000009DB781EC0000014D504C5445000000000000020100000000000000000000000000000000000000000000000000000000000000000000020202000000000000000000000000040300000000000000000000CBA21FF5E86ED4FEFE010100FFFFD60C0B030B0C0C1B190B1311061214131E1804EFE26ABAB05324200C919179C69E1E373418CFF7F7CABF5AAFA54EA6841833332B4D4821181A172D2B13DBCF61A59D4A575749272A26C29B1DAE8B1A8D7014868671C2B7566D6730BD971C7D6412BCE2E293B0B07D9595A7A78C9C9C836073736D6D5C6666566161529E96468C843E3F3F35756F341E201D403D1C947616765E116E5710624E0E50400BB4D7D7E4E4C0DDDDBAD3D3B1B6B699556565D4C95F958D42837C3A293131635D2CB5901B9E7E173D3008C5ECECF5F5CE8BA6A6849F9F7086867C7C684957573E4A4A4D4D4056522659470D48390B342907ABCCCCEDEDC79EBDBDE8DB68B3D3263F0000001774524E5300F1FAA75C2FE23F0A1FB04E9C1385D8C763D177BF936D9F6065B1000003F44944415458C3B596F76FDA4014C76D0306CA2603F37C5EEC0D8184991DC24820BB69769B66A7E3FFFFB11E2C35E5C048FD484887F0F7C3BDF7742713181CE645FB3C4D020045CF2F181D842E4C4E3785DE5F3BC59BE4CA4AB2D839942883'
@@ -3838,6 +3818,21 @@ EndIf
 EndIf
 $movetosubnet = 0
 EndFunc
+Func _GUICtrlIpAddress_SetFontByHeight($hWnd, $sFaceName = "Arial", $iFontSize = 12, $iFontWeight = 400, $bFontItalic = False)
+Local $hDC = _WinAPI_GetDC(0)
+Local $iHeight = $iFontSize
+_WinAPI_ReleaseDC(0, $hDC)
+Local $tFont = DllStructCreate($tagLOGFONT)
+DllStructSetData($tFont, "Height", $iHeight)
+DllStructSetData($tFont, "Weight", $iFontWeight)
+DllStructSetData($tFont, "Italic", $bFontItalic)
+DllStructSetData($tFont, "Underline", False)
+DllStructSetData($tFont, "Strikeout", False)
+DllStructSetData($tFont, "Quality", $__IPADDRESSCONSTANT_PROOF_QUALITY)
+DllStructSetData($tFont, "FaceName", $sFaceName)
+Local $hFont = _WinAPI_CreateFontIndirect($tFont)
+_WinAPI_SetFont($hWnd, $hFont)
+EndFunc
 Func _onExit()
 _GDIPlus_Shutdown()
 If NOT BITAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
@@ -4209,7 +4204,6 @@ Local $iDPI = $aResult[2]
 Local $aresults[2] = [$iDPIDef / $iDPI, $iDPI / $iDPIDef]
 _GDIPlus_GraphicsDispose($hGfx)
 _GDIPlus_Shutdown()
-ConsoleWrite("DPI Ratio: " & $aresults[1]&@CRLF)
 Return $aresults[1]
 EndFunc
 Func _makeGUI()
@@ -4238,10 +4232,11 @@ Else
 $ypos = @DesktopHeight/2-$guiHeight*$dscale/2
 EndIf
 $hgui = GUICreate( $winName & " " & $winVersion, $guiWidth*$dscale, $guiHeight*$dscale, $xpos, $ypos, BITOR($GUI_SS_DEFAULT_GUI,$WS_CLIPCHILDREN), $WS_EX_COMPOSITED )
-GUISetBkColor( 0x232323)
-GUISetBkColor( 0x414141)
+GUISetBkColor( 0xFFFFFF)
 GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 _GDIPlus_Startup()
+$strSize = _StringSize("{", $MyGlobalFontSize, 400, 0 , $MyGlobalFontName)
+$MyGlobalFontHeight = $strSize[1]
 _makeMenu()
 _makeToolbar()
 _makeStatusbar()
@@ -4254,10 +4249,10 @@ Local $wRight = $guiWidth*$dscale - $wLeft - 2*$guiSpacer
 _makeComboSelect("Select Adapter", $xLeft, $tbarHeight*$dscale + $guiSpacer+$y, $wLeft, 88*$dscale)
 $hLeft = $tbarHeight*$dscale + $guiSpacer + 88*$dscale+$y
 _makeProfileSelect("Profiles", $xLeft, $tbarHeight*$dscale + $guiSpacer + 87*$dscale+$y, $wLeft, $guiHeight*$dscale-$hLeft-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
-_makeIpProps("Profile IP Properties", $xRight, $tbarHeight*$dscale + $guiSpacer+$y, $wRight, 140*$dscale)
-_makeDnsProps("", $xRight, $tbarHeight*$dscale + $guiSpacer + 139*$dscale+$y, $wRight, 124*$dscale)
-$hRight = $tbarHeight*$dscale + $guiSpacer + 140*$dscale + 124*$dscale
-_makeCurrentProps("Current Adapter Properties", $xRight, $tbarHeight*$dscale + $guiSpacer + 140*$dscale + 123*$dscale, $wRight, $guiHeight*$dscale-$hRight-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
+_makeIpProps("Profile IP Properties", $xRight, $tbarHeight*$dscale + $guiSpacer+$y, $wRight, 148*$dscale)
+_makeDnsProps("", $xRight, $tbarHeight*$dscale + $guiSpacer + 147*$dscale+$y, $wRight, 130*$dscale)
+$hRight = $tbarHeight*$dscale + $guiSpacer + 148*$dscale + 130*$dscale
+_makeCurrentProps("Current Adapter Properties", $xRight, $tbarHeight*$dscale + $guiSpacer + 148*$dscale + 129*$dscale, $wRight, $guiHeight*$dscale-$hRight-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
 _makeFooter()
 GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExit")
 GUISetOnEvent( $GUI_EVENT_MINIMIZE, "_minimize")
@@ -4482,12 +4477,12 @@ GUICtrlSetOnEvent(-1, "_onRadio")
 GUICtrlSetState(-1, $GUI_CHECKED)
 $label_DnsPri = GUICtrlCreateLabel( "Preferred DNS Server:", $x+8*$dscale, $y+$headingHeight+51*$dscale)
 GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-$ip_DnsPri = _GUICtrlIpAddress_Create( $hGUI, $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+48*$dscale, 125*$dscale, 20*$dscale )
-_GUICtrlIpAddress_SetFont( $ip_DnsPri, $MyGlobalFontName, $MyGlobalFontSize+1)
-$label_DnsAlt = GUICtrlCreateLabel( "Alternate DNS Server:", $x+8*$dscale, $y+$headingHeight+75*$dscale)
+$ip_DnsPri = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+48*$dscale, 135*$dscale, 22*$dscale )
+_GUICtrlIpAddress_SetFontByHeight( $ip_DnsPri, $MyGlobalFontName, $MyGlobalFontHeight)
+$label_DnsAlt = GUICtrlCreateLabel( "Alternate DNS Server:", $x+8*$dscale, $y+$headingHeight+77*$dscale)
 GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-$ip_DnsAlt = _GUICtrlIpAddress_Create( $hGUI, $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+72*$dscale, 125*$dscale, 20*$dscale )
-_GUICtrlIpAddress_SetFont( $ip_DnsAlt, $MyGlobalFontName, $MyGlobalFontSize+1)
+$ip_DnsAlt = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+74*$dscale, 135*$dscale, 22*$dscale )
+_GUICtrlIpAddress_SetFontByHeight( $ip_DnsAlt, $MyGlobalFontName, $MyGlobalFontHeight)
 $ck_dnsReg = GUICtrlCreateCheckbox("Register Addresses", $x+8*$dscale, $y+$h-19*$dscale, -1, 15*$dscale)
 GUICtrlSetBkColor(-1,0xFFFFFF)
 GUICtrlSetFont(-1, 8.5)
@@ -4505,16 +4500,16 @@ GUICtrlSetOnEvent(-1, "_onRadio")
 GUICtrlSetState(-1, $GUI_CHECKED)
 $label_ip = GUICtrlCreateLabel( "IP Address:", $x+8*$dscale, $y+$headingHeight+51*$dscale)
 GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-$ip_Ip = _GUICtrlIpAddress_Create( $hGUI, $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+48*$dscale, 125*$dscale, 20*$dscale )
-_GUICtrlIpAddress_SetFont( $ip_Ip, $MyGlobalFontName, $MyGlobalFontSize+1)
-$label_subnet = GUICtrlCreateLabel( "Subnet Mask:", $x+8*$dscale, $y+$headingHeight+75*$dscale)
+$ip_Ip = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+48*$dscale, 135*$dscale, 22*$dscale )
+_GUICtrlIpAddress_SetFontByHeight( $ip_Ip, $MyGlobalFontName, $MyGlobalFontHeight)
+$label_subnet = GUICtrlCreateLabel( "Subnet Mask:", $x+8*$dscale, $y+$headingHeight+77*$dscale)
 GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-$ip_Subnet = _GUICtrlIpAddress_Create( $hGUI, $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+72*$dscale, 125*$dscale, 20*$dscale )
-_GUICtrlIpAddress_SetFont( $ip_Subnet, $MyGlobalFontName, $MyGlobalFontSize+1)
-$label_gateway = GUICtrlCreateLabel( "Gateway:", $x+8*$dscale, $y+$headingHeight+99*$dscale)
+$ip_Subnet = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+74*$dscale, 135*$dscale, 22*$dscale )
+_GUICtrlIpAddress_SetFontByHeight( $ip_Subnet, $MyGlobalFontName, $MyGlobalFontHeight)
+$label_gateway = GUICtrlCreateLabel( "Gateway:", $x+8*$dscale, $y+$headingHeight+103*$dscale)
 GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-$ip_Gateway = _GUICtrlIpAddress_Create( $hGUI, $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+96*$dscale, 125*$dscale, 20*$dscale )
-_GUICtrlIpAddress_SetFont( $ip_Gateway, $MyGlobalFontName, $MyGlobalFontSize+1)
+$ip_Gateway = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+100*$dscale, 135*$dscale, 22*$dscale )
+_GUICtrlIpAddress_SetFontByHeight( $ip_Gateway, $MyGlobalFontName, $MyGlobalFontHeight)
 _makeBox($x, $y, $w, $h)
 EndFunc
 Func _makeProfileSelect($label, $x, $y, $w, $h)

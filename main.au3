@@ -19,7 +19,7 @@
 ;
 ; Name:    		 Simple IP Config
 ;
-; Date:			 05/15/2017
+; Date:			 06/24/2017
 ;
 ; Description:   Simple IP Config is a program for Windows to easily change
 ;				 various network settings in a format similar to the
@@ -85,8 +85,8 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.8.exe
-#AutoIt3Wrapper_Res_Fileversion=2.8.0.0
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.8.1 b1.exe
+#AutoIt3Wrapper_Res_Fileversion=2.8.1.1
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
 Global $timerstart, $timervalue

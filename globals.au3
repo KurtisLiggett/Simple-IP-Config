@@ -29,8 +29,8 @@ Global Const $WIN_STATE_MAXIMIZED = 32 ; Window is maximized
 
 ; GLOBAL DECLARATIONS
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.8"
-Global $winDate = "05/15/2017"
+Global $winVersion = "2.8.1 b1"
+Global $winDate = "06/24/2017"
 Global $hgui
 Global $guiWidth = 550
 Global $guiHeight = 550
@@ -127,6 +127,9 @@ Global $sChangeLog[2]
 $sChangeLog[0] = "Changelog - " & $winVersion
 $sChangeLog[1] = @CRLF & _
 	"v"&$winVersion & @CRLF & _
+	"BUG FIXES:" & @CRLF & _
+	"   IP address entry text scaling" & @CRLF & _
+	"v2.8" & @CRLF & _
 	"MAJOR CHANGES:" & @CRLF & _
 	"   Now using IP Helper API (Iphlpapi.dll) instead of WMI" & @CRLF & _
 	"   Speed improvements -> 2x faster!" & @CRLF & _
