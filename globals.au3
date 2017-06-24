@@ -33,7 +33,7 @@ Global $winVersion = "2.8"
 Global $winDate = "05/15/2017"
 Global $hgui
 Global $guiWidth = 550
-Global $guiHeight = 533
+Global $guiHeight = 550
 Global $footerHeight = 16
 Global $tbarHeight = 49
 Global $dscale = 1
@@ -64,6 +64,7 @@ Global $MyGlobalFontSize = 9.5
 Global $MYGlobalFontSizeLarge = 11
 Global $MyGlobalFontColor = 0x000000
 Global $MyGlobalFontBKColor = $GUI_BKCOLOR_TRANSPARENT
+Global $MyGlobalFontHeight = 0
 
 
 ; CONTROLS
