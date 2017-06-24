@@ -103,6 +103,9 @@ Func _makeGUI()
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 	_GDIPlus_Startup()
 
+	$strSize = _StringSize("{", $MyGlobalFontSize,  400, 0 , $MyGlobalFontName)
+	$MyGlobalFontHeight = $strSize[1]
+
 	_makeMenu()
 	_makeToolbar()
 	_makeStatusbar()
@@ -117,10 +120,10 @@ Func _makeGUI()
 	_makeProfileSelect("Profiles", $xLeft, $tbarHeight*$dscale + $guiSpacer + 87*$dscale+$y, $wLeft, $guiHeight*$dscale-$hLeft-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
 
 
-	_makeIpProps("Profile IP Properties", $xRight, $tbarHeight*$dscale + $guiSpacer+$y, $wRight, 140*$dscale)
-	_makeDnsProps("", $xRight, $tbarHeight*$dscale + $guiSpacer + 139*$dscale+$y, $wRight, 124*$dscale)
-	$hRight = $tbarHeight*$dscale + $guiSpacer + 140*$dscale + 124*$dscale
-	_makeCurrentProps("Current Adapter Properties", $xRight, $tbarHeight*$dscale + $guiSpacer + 140*$dscale + 123*$dscale, $wRight, $guiHeight*$dscale-$hRight-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
+	_makeIpProps("Profile IP Properties", $xRight, $tbarHeight*$dscale + $guiSpacer+$y, $wRight, 148*$dscale)
+	_makeDnsProps("", $xRight, $tbarHeight*$dscale + $guiSpacer + 147*$dscale+$y, $wRight, 130*$dscale)
+	$hRight = $tbarHeight*$dscale + $guiSpacer + 148*$dscale + 130*$dscale
+	_makeCurrentProps("Current Adapter Properties", $xRight, $tbarHeight*$dscale + $guiSpacer + 148*$dscale + 129*$dscale, $wRight, $guiHeight*$dscale-$hRight-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
 	_makeFooter()
 
 ;~ 	$but = GUICtrlCreateButton("get", 10, 50, 100,25)
@@ -410,13 +413,13 @@ Func _makeDnsProps($label, $x, $y, $w, $h)
 
 	$label_DnsPri = GUICtrlCreateLabel( "Preferred DNS Server:", $x+8*$dscale, $y+$headingHeight+51*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	$ip_DnsPri = _GUICtrlIpAddress_Create( $hGUI, $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+48*$dscale, 125*$dscale, 20*$dscale )
-	_GUICtrlIpAddress_SetFont( $ip_DnsPri, $MyGlobalFontName, $MyGlobalFontSize+1)
+	$ip_DnsPri = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+48*$dscale, 135*$dscale, 22*$dscale )
+	_GUICtrlIpAddress_SetFontByHeight( $ip_DnsPri, $MyGlobalFontName, $MyGlobalFontHeight)
 
-	$label_DnsAlt = GUICtrlCreateLabel( "Alternate DNS Server:", $x+8*$dscale, $y+$headingHeight+75*$dscale)
+	$label_DnsAlt = GUICtrlCreateLabel( "Alternate DNS Server:", $x+8*$dscale, $y+$headingHeight+77*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	$ip_DnsAlt = _GUICtrlIpAddress_Create( $hGUI, $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+72*$dscale, 125*$dscale, 20*$dscale )
-	_GUICtrlIpAddress_SetFont( $ip_DnsAlt, $MyGlobalFontName, $MyGlobalFontSize+1)
+	$ip_DnsAlt = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+74*$dscale, 135*$dscale, 22*$dscale )
+	_GUICtrlIpAddress_SetFontByHeight( $ip_DnsAlt, $MyGlobalFontName, $MyGlobalFontHeight)
 
 	$ck_dnsReg = GUICtrlCreateCheckbox("Register Addresses", $x+8*$dscale, $y+$h-19*$dscale, -1, 15*$dscale)
 	GUICtrlSetBkColor(-1,0xFFFFFF)
@@ -438,21 +441,21 @@ Func _makeIpProps($label, $x, $y, $w, $h)
 
 	$label_ip = GUICtrlCreateLabel( "IP Address:", $x+8*$dscale, $y+$headingHeight+51*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	$ip_Ip = _GUICtrlIpAddress_Create( $hGUI, $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+48*$dscale, 125*$dscale, 20*$dscale )
-	_GUICtrlIpAddress_SetFont( $ip_Ip, $MyGlobalFontName, $MyGlobalFontSize+1)
+	$ip_Ip = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+48*$dscale, 135*$dscale, 22*$dscale )
+	_GUICtrlIpAddress_SetFontByHeight( $ip_Ip, $MyGlobalFontName, $MyGlobalFontHeight)
 
 ;~ 	$dummyTab = GUICtrlCreateDummy()
 ;~ 	GUICtrlSetOnEvent(-1, "_onTab")
 
-	$label_subnet = GUICtrlCreateLabel( "Subnet Mask:", $x+8*$dscale, $y+$headingHeight+75*$dscale)
+	$label_subnet = GUICtrlCreateLabel( "Subnet Mask:", $x+8*$dscale, $y+$headingHeight+77*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	$ip_Subnet = _GUICtrlIpAddress_Create( $hGUI, $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+72*$dscale, 125*$dscale, 20*$dscale )
-	_GUICtrlIpAddress_SetFont( $ip_Subnet, $MyGlobalFontName, $MyGlobalFontSize+1)
+	$ip_Subnet = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+74*$dscale, 135*$dscale, 22*$dscale )
+	_GUICtrlIpAddress_SetFontByHeight( $ip_Subnet, $MyGlobalFontName, $MyGlobalFontHeight)
 
-	$label_gateway = GUICtrlCreateLabel( "Gateway:", $x+8*$dscale, $y+$headingHeight+99*$dscale)
+	$label_gateway = GUICtrlCreateLabel( "Gateway:", $x+8*$dscale, $y+$headingHeight+103*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	$ip_Gateway = _GUICtrlIpAddress_Create( $hGUI, $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+96*$dscale, 125*$dscale, 20*$dscale	)
-	_GUICtrlIpAddress_SetFont( $ip_Gateway, $MyGlobalFontName, $MyGlobalFontSize+1)
+	$ip_Gateway = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+100*$dscale, 135*$dscale, 22*$dscale	)
+	_GUICtrlIpAddress_SetFontByHeight( $ip_Gateway, $MyGlobalFontName, $MyGlobalFontHeight)
 
 	_makeBox($x, $y, $w, $h)
 EndFunc

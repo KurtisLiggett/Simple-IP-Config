@@ -1165,3 +1165,26 @@ Func _MoveToSubnet()
 	EndIf
 	$movetosubnet = 0
 EndFunc
+
+; #FUNCTION# ====================================================================================================================
+; Author ........: Gary Frost (gafrost)
+; Modified By....: Kurtis Liggett
+; ===============================================================================================================================
+Func _GUICtrlIpAddress_SetFontByHeight($hWnd, $sFaceName = "Arial", $iFontSize = 12, $iFontWeight = 400, $bFontItalic = False)
+	Local $hDC = _WinAPI_GetDC(0)
+	;Local $iHeight = Round(($iFontSize * _WinAPI_GetDeviceCaps($hDC, $__IPADDRESSCONSTANT_LOGPIXELSX)) / 72, 0)
+	Local $iHeight = $iFontSize
+	_WinAPI_ReleaseDC(0, $hDC)
+
+	Local $tFont = DllStructCreate($tagLOGFONT)
+	DllStructSetData($tFont, "Height", $iHeight)
+	DllStructSetData($tFont, "Weight", $iFontWeight)
+	DllStructSetData($tFont, "Italic", $bFontItalic)
+	DllStructSetData($tFont, "Underline", False) ; font underline
+	DllStructSetData($tFont, "Strikeout", False) ; font strikethru
+	DllStructSetData($tFont, "Quality", $__IPADDRESSCONSTANT_PROOF_QUALITY)
+	DllStructSetData($tFont, "FaceName", $sFaceName)
+
+	Local $hFont = _WinAPI_CreateFontIndirect($tFont)
+	_WinAPI_SetFont($hWnd, $hFont)
+EndFunc   ;==>_GUICtrlIpAddress_SetFont
