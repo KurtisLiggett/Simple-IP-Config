@@ -1,4 +1,4 @@
-# ![alt text](https://raw.githubusercontent.com/snappysnappydog/simple-ip-config/master/logo.png) Simple-IP-Config
+# ![Simple IP Config](https://avatars2.githubusercontent.com/u/29669372?v=3&s=96) Simple-IP-Config
 View and change your local IP addresses.
 
 Installing
