@@ -20,6 +20,10 @@ Installing
 
 You can download other versions from the [releases page][releases].
 
+Help & Support
+---
+* Go to the [Issues Page][issues] to view / report new issues and for general support discussion.
+
 License
 ---
 [GNU GPL v3.0](https://github.com/snappysnappydog/Simple-IP-Config/blob/master/LICENSE)
