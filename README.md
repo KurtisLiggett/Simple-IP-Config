@@ -22,7 +22,9 @@ You can download other versions from the [releases page][releases].
 
 Help & Support
 ---
-* Go to the [Issues Page][issues] to view / report new issues and for general support discussion.
+* To view currently open bugs, [click here][bugs]
+* To view new feature requests, [click here][new-features]
+* To report a bug or request a new feature, go to the [Issues Page][issues] and create a _New Issue_.
 
 License
 ---
@@ -33,3 +35,6 @@ License
 [latest]: https://github.com/snappysnappydog/Simple-IP-Config/releases/latest "Latest Download"
 [releases]: https://github.com/snappysnappydog/Simple-IP-Config/releases "All Releases"
 [beta]: https://github.com/snappysnappydog/Simple-IP-Config/releases/tag/2.8.1-b1 "Download Beta"
+[issues]: https://github.com/snappysnappydog/Simple-IP-Config/issues "Issues"
+[bugs]: https://github.com/snappysnappydog/Simple-IP-Config/labels/bug "Bugs"
+[new-features]: https://github.com/snappysnappydog/Simple-IP-Config/labels/new%20feature "New features"
