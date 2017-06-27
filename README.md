@@ -28,13 +28,13 @@ Help & Support
 
 License
 ---
-[GNU GPL v3.0](https://github.com/snappysnappydog/Simple-IP-Config/blob/master/LICENSE)
+[GNU GPL v3.0](https://github.com/KurtisLiggett/Simple-IP-Config/blob/master/LICENSE)
 
 
-[logo]: https://raw.github.com/snappysnappydog/simple-ip-config/master/logo.png "Simple IP Config"
-[latest]: https://github.com/snappysnappydog/Simple-IP-Config/releases/latest "Latest Download"
-[releases]: https://github.com/snappysnappydog/Simple-IP-Config/releases "All Releases"
-[beta]: https://github.com/snappysnappydog/Simple-IP-Config/releases/tag/2.8.1-b1 "Download Beta"
-[issues]: https://github.com/snappysnappydog/Simple-IP-Config/issues "Issues"
-[bugs]: https://github.com/snappysnappydog/Simple-IP-Config/labels/bug "Bugs"
-[new-features]: https://github.com/snappysnappydog/Simple-IP-Config/labels/new%20feature "New features"
+[logo]: https://raw.github.com/KurtisLiggett/simple-ip-config/master/logo.png "Simple IP Config"
+[latest]: https://github.com/KurtisLiggett/Simple-IP-Config/releases/latest "Latest Download"
+[releases]: https://github.com/KurtisLiggett/Simple-IP-Config/releases "All Releases"
+[beta]: https://github.com/KurtisLiggett/Simple-IP-Config/releases/tag/2.8.1-b1 "Download Beta"
+[issues]: https://github.com/KurtisLiggett/Simple-IP-Config/issues "Issues"
+[bugs]: https://github.com/KurtisLiggett/Simple-IP-Config/labels/bug "Bugs"
+[new-features]: https://github.com/KurtisLiggett/Simple-IP-Config/labels/new%20feature "New features"
