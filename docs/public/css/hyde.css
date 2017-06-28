@@ -51,25 +51,11 @@ a.button{
     text-decoration: none;
     color: #fff;
     background: #3b9b6d;
-    padding: 8px 10px;
-    border-radius: 3px;
-    display: block;
-    width: 120px;
-    margin: 100px auto 0 auto;
+    padding:0.4em 0.8em;
+    border-radius: 2em;
     text-align: center;
     z-index: 100;
     transition: opacity .8s ease;
-}
-
-a.button.bottom{
-    width: 100px;
-    background: #b7d4ee;
-    opacity: 0;
-    margin-top: 0px;
-}
-
-a.button.bottom{
-    border-radius: 0 0 3px 3px;
 }
 
 

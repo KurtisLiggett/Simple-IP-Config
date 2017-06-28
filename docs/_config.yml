@@ -4,7 +4,7 @@ gems:
 # Setup
 title:            Simple IP Config
 tagline:          'IP addresses'
-description:      'View and change your local IP addresses.'
+description:      'view and change your local IP addresses'
 url:              https://kurtisliggett.github.io
 baseurl:         ""
 
