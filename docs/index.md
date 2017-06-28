@@ -35,8 +35,8 @@ You can download other versions from the [releases page][releases].
 ### Open Source
 ---
 Simple IP Config is open source. Join the community or help improve the program!
-{:.button-large}
 [Fork on GitHub](https://github.com/KurtisLiggett/Simple-IP-Config)
+{:.button-large}
 
 ### License
 ---
