@@ -5,8 +5,8 @@ gems:
 title:            Simple IP Config
 tagline:          'IP addresses'
 description:      'View and change your local IP addresses.'
-url:              https://kurtisliggett.github.io/
-baseurl:          Simple-IP-Config
+url:              https://kurtisliggett.github.io
+baseurl:          https://kurtisliggett.github.io/Simple-IP-Config
 
 author:
   name:           'Kurtis Liggett'
@@ -16,6 +16,7 @@ paginate:         5
 
 # Custom vars
 version:          2.8
+
 
 github:
   repo:           https://github.com/KurtisLiggett/Simple-IP-Config
