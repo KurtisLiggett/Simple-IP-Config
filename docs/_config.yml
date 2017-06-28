@@ -1,7 +1,7 @@
 # Setup
 title:            Simple IP Config
 tagline:          'IP addresses'
-description:      'description'
+description:      'View and change your local IP addresses.'
 url:              https://kurtisliggett.github.io/Simple-IP-Config
 baseurl:          https://kurtisliggett.github.io/Simple-IP-Config/
 

@@ -3,7 +3,7 @@ layout: page
 title: About
 ---
 
-Simple IP Config is a small, portable ip changer utility to change common Windows network settings quickly and easily without having to click through the endle
+Simple IP Config is a small, portable ip changer utility to change common Windows network settings quickly and easily without having to click through the endless system windows.
 
 ### Features
 ---
@@ -19,6 +19,7 @@ Simple IP Config is a small, portable ip changer utility to change common Window
 
 ### Installing
 ---
+{{ version }}
 1. Download the latest [Simple IP Config v2.8][latest]. Or try the latest beta release [v2.8.1 b1][beta].
 2. Run the .exe file from any location on your computer or USB drive.
 
