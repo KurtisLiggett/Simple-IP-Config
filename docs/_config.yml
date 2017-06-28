@@ -6,7 +6,7 @@ title:            Simple IP Config
 tagline:          'IP addresses'
 description:      'View and change your local IP addresses.'
 url:              https://kurtisliggett.github.io/Simple-IP-Config
-baseurl:          https://kurtisliggett.github.io/Simple-IP-Config/
+baseurl:          ""
 
 author:
   name:           'Kurtis Liggett'
