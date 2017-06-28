@@ -45,6 +45,7 @@ html {
   }
 }
 
+.button-large {padding:0.4em 0.8em;font-size:1.2em;font-weight:500;color:white;border:none;border-radius:.2em;background:#3b9b6d;text-shadow:none}
 
 /*
  * Sidebar

@@ -32,6 +32,12 @@ You can download other versions from the [releases page][releases].
 * To view new feature requests, [click here][new-features]
 * To report a bug or request a new feature, go to the [Issues Page][issues] and create a _New Issue_.
 
+### Open Source
+---
+Simple IP Config is open source. Join the community or help improve the program!
+{:.button-large}
+[Fork on GitHub](https://github.com/KurtisLiggett/Simple-IP-Config)
+
 ### License
 ---
 [GNU GPL v3.0](https://github.com/KurtisLiggett/Simple-IP-Config/blob/master/LICENSE)
