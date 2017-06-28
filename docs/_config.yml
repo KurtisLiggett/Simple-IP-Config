@@ -1,3 +1,6 @@
+gems:
+  - jekyll-seo-tag
+
 # Setup
 title:            Simple IP Config
 tagline:          'IP addresses'
