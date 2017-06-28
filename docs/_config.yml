@@ -3,7 +3,7 @@ title:            Simple IP Config
 tagline:          'IP addresses'
 description:      'description'
 url:              https://kurtisliggett.github.io/Simple-IP-Config
-baseurl:          /
+baseurl:          https://kurtisliggett.github.io/Simple-IP-Config/
 
 author:
   name:           'Mark Otto'
