@@ -19,7 +19,8 @@ Simple IP Config is a small, portable ip changer utility to change common Window
 
 ### Installing
 ---
-1. Download the latest [Simple IP Config v{{ site.version }}][latest]. Or try the latest beta release [v2.8.1 b1][beta].
+{{ site.version }}
+1. Download the latest [Simple IP Config v2.8][latest]. Or try the latest beta release [v2.8.1 b1][beta].
 2. Run the .exe file from any location on your computer or USB drive.
 
 You can download other versions from the [releases page][releases].
@@ -36,7 +37,6 @@ You can download other versions from the [releases page][releases].
 
 
 [logo]: https://raw.github.com/KurtisLiggett/simple-ip-config/master/logo.png "Simple IP Config"
-[latest]: https://github.com/KurtisLiggett/Simple-IP-Config/releases/download/{{ site.version }}/Simple.IP.Config.{{ site.version }}.exe "Download v{{ site.version }}"
 [releases]: https://github.com/KurtisLiggett/Simple-IP-Config/releases "All Releases"
 [beta]: https://github.com/KurtisLiggett/Simple-IP-Config/releases/tag/2.8.1-b1 "Download Beta"
 [issues]: https://github.com/KurtisLiggett/Simple-IP-Config/issues "Issues"
