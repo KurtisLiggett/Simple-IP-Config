@@ -19,7 +19,7 @@ Simple IP Config is a small, portable ip changer utility to change common Window
 
 ### Installing
 ---
-{{ version }}
+{{ site.version }}
 1. Download the latest [Simple IP Config v2.8][latest]. Or try the latest beta release [v2.8.1 b1][beta].
 2. Run the .exe file from any location on your computer or USB drive.
 
