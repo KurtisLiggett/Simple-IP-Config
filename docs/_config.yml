@@ -17,6 +17,7 @@ paginate:         5
 # Custom vars
 version:          2.8
 project:        Simple-IP-Config
+repository:     'KurtisLiggett/Simple-IP-Config'
 
 
 github:
