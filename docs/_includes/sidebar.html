@@ -2,7 +2,7 @@
   <div class="container sidebar-sticky">
     <div class="sidebar-about">
       <h1>
-        <a href="{{ site.baseurl }}"></img src="https://avatars2.githubusercontent.com/u/29669372?v=3&u=6ad3a21193bee5da51f54fc3361ec665dbbd47f2&s=128">
+        <a href="{{ site.url }}"></img src="https://avatars2.githubusercontent.com/u/29669372?v=3&u=6ad3a21193bee5da51f54fc3361ec665dbbd47f2&s=128">
           {{ site.title }}
         </a>
       </h1>
@@ -10,8 +10,8 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}" href="{{ site.baseurl }}">home</a>
-      <a class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}" href="{{ site.baseurl }}/download">download</a>
+      <a class="sidebar-nav-item{% if page.url == site.url %} active{% endif %}" href="{{ site.url }}">home</a>
+      <a class="sidebar-nav-item{% if page.url == site.url %} active{% endif %}" href="{{ site.url }}/download">download</a>
 
       <a class="sidebar-nav-item" href="{{ site.github.repo }}">GitHub project</a>
       <span class="sidebar-nav-item">Currently v{{ site.version }}</span>
