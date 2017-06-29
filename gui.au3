@@ -322,10 +322,10 @@ Func _makeMenu()
 	$helpitem = GUICtrlCreateMenuItem("Online Documentation" & @TAB & "F1", $helpmenu)
 	GUICtrlSetOnEvent(-1, "_onHelp")
 	GUICtrlCreateMenuItem("", $helpmenu)
-	$debugmenuitem = GUICtrlCreateMenuItem("Debug Information", $debugmenu)
-	GUICtrlSetOnEvent(-1, "_onDebugItem")
 	$changelogitem = GUICtrlCreateMenuItem("Show Change Log", $helpmenu)
 	GUICtrlSetOnEvent(-1, "_onChangelog")
+	$debugmenuitem = GUICtrlCreateMenuItem("Debug Information", $helpmenu)
+	GUICtrlSetOnEvent(-1, "_onDebugItem")
 	$infoitem = GUICtrlCreateMenuItem("About Simple IP Config", $helpmenu)
 	GUICtrlSetOnEvent(-1, "_onAbout")
 
@@ -837,6 +837,49 @@ Func _changeLog()
 
 	GUISetState(@SW_DISABLE, $hGUI)
 	GUISetState(@SW_SHOW, $changeLogChild)
+
+	Send("^{HOME}")
+EndFunc
+
+; debug WINDOW
+Func _debugWindow()
+	$w = 305*$dScale
+	$h = 410*$dScale
+
+	$currentWinPos = WinGetPos($winName & " " & $winVersion)
+	$x = $currentWinPos[0] + $guiWidth*$dscale/2 - $w/2
+	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
+
+	$debugChild = GUICreate( "Debug Information", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
+	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitDebug")
+	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
+
+	GUICtrlCreateLabel("", 0, 0, $w, $h-32*$dscale)
+	GUICtrlSetState(-1, $GUI_DISABLE)
+	GUICtrlSetBkColor(-1, 0xFFFFFF)
+
+	GUICtrlCreateLabel("", 0, $h-32*$dscale, $w, 1)
+	GUICtrlSetBkColor(-1, 0x000000)
+
+	$debuginfo = ""
+	$debuginfo &= "OS Version:" & @TAB & @OSVersion & @CRLF
+	$debuginfo &= "OS Service Pack:" & @TAB & @OSServicePack & @CRLF
+	$debuginfo &= "OS Build:" & @TAB & @TAB & @OSBuild & @CRLF
+	$debuginfo &= "OS Lang Code:" & @TAB & @OSLang & @CRLF
+	$debuginfo &= "OS Architecture:" & @TAB & @OSArch & @CRLF
+	$debuginfo &= "CPU Architecture:" & @TAB & @CPUArch & @CRLF
+	$debuginfo &= "Resolution:" & @TAB & _WinAPI_GetSystemMetrics($SM_CXSCREEN) & "x" & _WinAPI_GetSystemMetrics($SM_CYSCREEN) & @CRLF
+	$debuginfo &= "DPI:" & @TAB & @TAB & $iDPI & @CRLF
+
+	$edit = GUICtrlCreateEdit($debuginfo, 5, 5, $w-10, $h-37*$dscale-5, BitOR($ES_READONLY, $WS_VSCROLL, $ES_AUTOVSCROLL), $WS_EX_TRANSPARENT)
+	GUICtrlSetBkColor ($edit, 0xFFFFFF)
+	GUICtrlSetFont(-1, 8.5)
+
+	$bt_Ok = GUICtrlCreateButton( "OK", $w-55*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
+	GUICtrlSetOnEvent( -1, "_onExitDebug")
+
+	GUISetState(@SW_DISABLE, $hGUI)
+	GUISetState(@SW_SHOW, $debugChild)
 
 	Send("^{HOME}")
 EndFunc

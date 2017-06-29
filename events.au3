@@ -53,6 +53,10 @@ Func _onExitChangelog()
 	_ExitChild($changeLogChild)
 EndFunc
 
+Func _onExitDebug()
+	_ExitChild($debugChild)
+EndFunc
+
 Func _onExitBlacklist()
 	_ExitChild($blacklistChild)
 EndFunc
@@ -242,7 +246,7 @@ Func _onHelp()
 EndFunc
 
 Func _onDebugItem()
-
+	_debugWindow()
 EndFunc
 
 Func _onChangelog()
