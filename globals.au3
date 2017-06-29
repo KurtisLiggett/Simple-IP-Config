@@ -129,6 +129,7 @@ $sChangeLog[1] = @CRLF & _
 	"v"&$winVersion & @CRLF & _
 	"BUG FIXES:" & @CRLF & _
 	"   IP address entry text scaling" & @CRLF & _
+        @CRLF & _
 	"v2.8" & @CRLF & _
 	"MAJOR CHANGES:" & @CRLF & _
 	"   Now using IP Helper API (Iphlpapi.dll) instead of WMI" & @CRLF & _
