@@ -29,8 +29,8 @@ Global Const $WIN_STATE_MAXIMIZED = 32 ; Window is maximized
 
 ; GLOBAL DECLARATIONS
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.8.1 b1"
-Global $winDate = "06/24/2017"
+Global $winVersion = "2.8.1"
+Global $winDate = "06/29/2017"
 Global $hgui
 Global $guiWidth = 550
 Global $guiHeight = 550
