@@ -17,7 +17,7 @@ Features
 
 Installing
 ---
-1. Download the latest [Simple IP Config v2.8][latest]. Or try the latest beta release [v2.8.1 b1][beta].
+1. Download the latest [Simple IP Config v2.8.1][latest].
 2. Run the .exe file from any location on your computer or USB drive.
 
 You can download other versions from the [releases page][releases].
