@@ -241,6 +241,10 @@ Func _onHelp()
 
 EndFunc
 
+Func _onDebugItem()
+
+EndFunc
+
 Func _onChangelog()
 	_changeLog()
 EndFunc

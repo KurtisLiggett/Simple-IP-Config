@@ -43,7 +43,7 @@ Global $statusbarHeight = 20
 Global $statustext, $statuserror, $sStatusMessage
 Global $menuHeight, $captionHeight
 Global $MinToTray, $RestoreItem
-Global $toolsmenu, $disableitem, $refreshitem, $renameitem, $deleteitem, $clearitem, $saveitem, $newitem, $pullitem, $send2trayitem, $helpitem
+Global $toolsmenu, $disableitem, $refreshitem, $renameitem, $deleteitem, $clearitem, $saveitem, $newitem, $pullitem, $send2trayitem, $helpitem, $debugmenuitem
 Global $tray_tip
 Global $settingsChild, $ck_mintoTray, $ck_startinTray, $ck_saveAdapter
 Global $aAccelKeys[12][2], $movetosubnet
