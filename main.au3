@@ -106,6 +106,7 @@ Func _main()
 
 	; get current DPI scale factor
 	$dScale = _GDIPlus_GraphicsGetDPIRatio()
+	$iDPI = $dScale * 96
 	;$dScale = _getDpiScale()
 
 	_loadProfiles()
