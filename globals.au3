@@ -128,8 +128,13 @@ Global $sChangeLog[2]
 $sChangeLog[0] = "Changelog - " & $winVersion
 $sChangeLog[1] = @CRLF & _
 	"v"&$winVersion & @CRLF & _
+	"MINOR CHANGES:" & @CRLF & _
+	"   Added Debug item to Help menu to help troubleshoot issues." & @CRLF & _
+	@CRLF & _
+	"v2.8" & @CRLF & _
 	"BUG FIXES:" & @CRLF & _
 	"   IP address entry text scaling" & @CRLF & _
+	@CRLF & _
 	"v2.8" & @CRLF & _
 	"MAJOR CHANGES:" & @CRLF & _
 	"   Now using IP Helper API (Iphlpapi.dll) instead of WMI" & @CRLF & _
