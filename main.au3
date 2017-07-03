@@ -36,8 +36,6 @@
 
 Global $iMsg = _WinAPI_RegisterWindowMessage('newinstance_message')
 If _Singleton("Simple IP Config", 1) = 0 Then
-	;WinSetState($winName & " " & $winVersion, "", @SW_SHOW )
-    ;WinSetState($winName & " " & $winVersion, "", @SW_RESTORE)
 	_WinAPI_PostMessage(0xffff, $iMsg, 0x101, 0)
     Exit
 EndIf
@@ -173,8 +171,7 @@ EndFunc ; main()
 
 
 Func _NewInstance($hWnd, $iMsg, $iwParam, $ilParam)
-	MsgBox(0,"",$iwParam)
-	if $iwParam == 101 Then
+	if $iwParam == "0x00000101" Then
 		TrayTip("", "Simple IP Config is already running", 1)
 	EndIf
 EndFunc
