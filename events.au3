@@ -15,6 +15,15 @@
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
 
+
+;==============================================================================
+; Filename:		events.au3
+; Description:	- functions called in response to events (button clicks, etc...)
+;				- 'onFunctionName' naming convention
+;				- also includes WM_COMMAND and WM_NOTIFY
+;==============================================================================
+
+
 Func _onExit()
 	_GDIPlus_Shutdown()
 

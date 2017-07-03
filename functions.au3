@@ -15,6 +15,12 @@
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
 
+
+;==============================================================================
+; Filename:		functions.au3
+; Description:	- most functions related to doing something in the program
+;==============================================================================
+
 Func _ExitChild($childwin)
 	$guiState = WinGetState( $hgui )
 	GUISetState(@SW_ENABLE, $hGUI)
@@ -970,6 +976,8 @@ EndFunc
 
 
 Func _SendToTray()
+	Static $tray_tip
+
 	GUISetState(@SW_MINIMIZE, $hGUI)
 	GUISetState(@SW_HIDE, $hGUI)
 	TrayItemSetText ( $RestoreItem, "Restore" )
@@ -1138,7 +1146,7 @@ Func _DomainComputerBelongs($strComputer = "localhost")
 		return $Domain
 	EndIf
 
-    ;$objWMIService = ObjGet("winmgmts:\\" & $strComputer & "\root\CIMV2")
+	Local $objWMI = ObjGet("winmgmts:{impersonationLevel = impersonate}!\\" & "." & "\root\cimv2")
     If Not IsObj($objWMI) Then Return SetError(1, 0, '')
     $colItems = $objWMI.ExecQuery("SELECT * FROM Win32_ComputerSystem", "WQL", _
                                             $wbemFlagReturnImmediately + $wbemFlagForwardOnly)

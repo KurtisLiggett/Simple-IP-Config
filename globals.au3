@@ -15,17 +15,22 @@
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
 
+;==============================================================================
+; Filename:		globals.au3
+; Description:	- declare global variables used throughout the program
+;==============================================================================
+
 Global $screenshot=0
 
-;Global Const $STM_SETIMAGE = 0x0172
-;Global Const $STM_GETIMAGE = 0x0173
-; GetWinState Constants
+; Global constants, for code readability
 Global Const $WIN_STATE_EXISTS = 1 ; Window exists
 Global Const $WIN_STATE_VISIBLE = 2 ; Window is visible
 Global Const $WIN_STATE_ENABLED = 4 ; Window is enabled
 Global Const $WIN_STATE_ACTIVE = 8 ; Window is active
 Global Const $WIN_STATE_MINIMIZED = 16 ; Window is minimized
 Global Const $WIN_STATE_MAXIMIZED = 32 ; Window is maximized
+Global Const $wbemFlagReturnImmediately = 0x10
+Global Const $wbemFlagForwardOnly = 0x20
 
 ; GLOBAL DECLARATIONS
 Global $winName = "Simple IP Config"
@@ -45,7 +50,6 @@ Global $statustext, $statuserror, $sStatusMessage
 Global $menuHeight, $captionHeight
 Global $MinToTray, $RestoreItem
 Global $toolsmenu, $disableitem, $refreshitem, $renameitem, $deleteitem, $clearitem, $saveitem, $newitem, $pullitem, $send2trayitem, $helpitem, $debugmenuitem
-Global $tray_tip
 Global $settingsChild, $ck_mintoTray, $ck_startinTray, $ck_saveAdapter
 Global $aAccelKeys[12][2], $movetosubnet
 Global $wgraphic, $showWarning
@@ -89,11 +93,6 @@ Global $ToolbarIDs, $Toolbar2IDs
 Global Enum $tb_apply = 1000, $tb_refresh, $tb_add, $tb_save, $tb_delete, $tb_clear
 Global Enum $tb_settings = 2000, $tb_tray
 
-
-; WMI
-Global $objWMI
-Global Const $wbemFlagReturnImmediately = 0x10
-Global Const $wbemFlagForwardOnly = 0x20
 
 ; Adapters
 Global $adapters[1][4] = [[0,0,0]]	; [0]-name, [1]-mac, [2]-description, [3]-GUID

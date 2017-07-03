@@ -15,11 +15,18 @@
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
 
+
+;==============================================================================
+; Filename:		main.au3
+; Description:	- call functions to read profiles, get adapters list, create the gui
+;				- while loop to keep program running
+;				- check for instance already running
+;==============================================================================
+
+
 ;==============================================================================
 ;
 ; Name:    		 Simple IP Config
-;
-; Date:			 06/29/2017
 ;
 ; Description:   Simple IP Config is a program for Windows to easily change
 ;				 various network settings in a format similar to the
@@ -31,11 +38,16 @@
 ;
 ;==============================================================================
 
+
 #requireadmin
 #NoTrayIcon	;prevent double icon for singleton check
 
+;create a new window message
 Global $iMsg = _WinAPI_RegisterWindowMessage('newinstance_message')
+
+;check to see if another instance is already running
 If _Singleton("Simple IP Config", 1) = 0 Then
+	;alert existing program instances of the new instance, then exit
 	_WinAPI_PostMessage(0xffff, $iMsg, 0x101, 0)
     Exit
 EndIf
@@ -56,7 +68,6 @@ EndIf
 #Include <GUIEdit.au3>
 #include <GuiComboBox.au3>
 #include <Array.au3>
-;~ #include <AutoItConstants.au3>
 
 #include "globals.au3"
 #include "hexIcons.au3"
@@ -72,12 +83,10 @@ Opt("GUIOnEventMode",1)
 Opt("TrayAutoPause",0)
 Opt("TrayOnEventMode",1)
 Opt("TrayMenuMode",3)
-;Opt("MustDeclareVars", 1)
 Opt("MouseCoordMode", 2)
 Opt("GUIResizeMode", $GUI_DOCKALL)
 Opt("WinSearchChildren",1)
 TraySetClick(16)
-
 
 ; autoit wrapper options
 #AutoIt3Wrapper_Res_HiDpi=y
@@ -93,30 +102,26 @@ Global $timerstart, $timervalue
 _main()
 
 Func _main()
-	;$objWMI = ObjGet("winmgmts:\\localhost\root\CIMV2")
-	$objWMI = ObjGet("winmgmts:{impersonationLevel = impersonate}!\\" & "." & "\root\cimv2")
-;~ 	If Not IsObj($objWMI) Then
-;~ 		MsgBox(16,"WMI ERROR", "This program requires the Windows Management Instrumentation (WMI) to run properly. Check to make sure it is enabled.")
-;~ 	EndIf
-
 	; popuplate current adapter names and mac addresses
 	;_loadAdapters()
 
 	; get current DPI scale factor
 	$dScale = _GDIPlus_GraphicsGetDPIRatio()
 	$iDPI = $dScale * 96
-	;$dScale = _getDpiScale()
 
+	;get profiles list
 	_loadProfiles()
+
+	;make the GUI
 	_makeGUI()
-	; build the GUI
+
+	;get list of adapters and current IP info
 	_loadAdapters()
 
+	;watch for new program instances
 	GUIRegisterMsg($iMsg, '_NewInstance')
 
-
-;~ 	_setStatus("Updating adapter list...")
-
+	;Add adapters the the combobox
 	If NOT IsArray( $adapters ) Then
 		MsgBox( 16, "Error", "There was a problem retrieving the adapters." )
 	Else
@@ -137,13 +142,14 @@ Func _main()
 
 	_refresh(1)
 	ControlListView( $hgui, "", $list_profiles, "Select", 0 )
-;~ 	if $profilelist[0][0]>=1 Then
-;~ 		_setProperties()
-;~ 	EndIf
+
+	;see if we should display the changelog
 	_checkChangelog()
 
+	;get the domain
 	GUICtrlSetData($domain, _DomainComputerBelongs())
 
+	;wait for user interaction (events)
 	While 1
 		If Not $pIdle Then _asyncProcess()
 
@@ -155,7 +161,6 @@ Func _main()
 		If $lv_doneEditing Then
 			_onLvDoneEdit()
 		EndIf
-
 
 		If $lv_startEditing and Not $lv_editing Then
 			_onRename()
@@ -169,7 +174,8 @@ Func _main()
 	WEnd
 EndFunc ; main()
 
-
+; This function is called when a new program instance posts the message we were watching for.
+; Display a tray tooltip alerting the user that the program is already running.
 Func _NewInstance($hWnd, $iMsg, $iwParam, $ilParam)
 	if $iwParam == "0x00000101" Then
 		TrayTip("", "Simple IP Config is already running", 1)

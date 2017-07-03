@@ -15,6 +15,14 @@
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
 
+
+;==============================================================================
+; Filename:		network.au3
+; Description:	- functions that interact with network interfaces
+;				- get/set IP, renew/release, get adapter names
+;==============================================================================
+
+
 Func _loadAdapters()
 
 	Local $aIPAllAddrTable = _Network_IPAllAddressTable(0, 0, 1)	; get info about all adapters
@@ -35,49 +43,6 @@ Func _loadAdapters()
 	Next
 	$adapters = $ladapters
 
-EndFunc
-
-Func _loadAdapters_old2()
-
-	Local $aIPAllAddrTable = _Network_IPAllAddressTable(0, 0, 1)	; get info about all adapters
-    Local $nInterfaces = @extended
-
-	Local $tadapters = _GetAdapters()	; get list of adapter names from 'network connections'
-	Local $ladapters[1][3] = [[0,0,0]]
-	for $i=0 to $nInterfaces-1	; keep only names of type ethernet or wifi that also exist in network connections
-		$index = _ArraySearch( $tadapters, $aIPAllAddrTable[$i][7], 0 )
-		If ($index <> -1) Then
-			if $aIPAllAddrTable[$i][1] = 6 or $aIPAllAddrTable[$i][1] = 71 Then
-				$ladapters[0][0] = $ladapters[0][0]+1
-				_ArrayAdd($ladapters, $aIPAllAddrTable[$i][7] & "|" & $aIPAllAddrTable[$i][4] & "|" & $aIPAllAddrTable[$i][6])
-			EndIf
-		EndIf
-	Next
-	$adapters = $ladapters
-
-EndFunc
-
-
-Func _loadAdapters_old()
-;~ 	MsgBox(0,"","hold")
-	$timerstart = TimerInit()
-	Local $colItems = $objWMI.ExecQuery("SELECT MACAddress, NetConnectionID, Description FROM Win32_NetworkAdapter WHERE NetConnectionID != Null", "WQL")
-	Local $i=0
-	Local $ladapters[1][3] = [[0,0,0]]
-	$timervalue = TimerDiff($timerstart)
-	for $objItem in $colItems
-		$netID = $objItem.NetConnectionID
-;~ 		IF $netID <> Null Then
-			$i = $i+1
-			$ladapters[0][0] = $i
-			_ArrayAdd($ladapters, $netID & "|" & $objItem.MACAddress & "|" & $objItem.Description)
-;~ 		EndIf
-	Next
-	$timervalue = TimerDiff($timerstart)
-	;MsgBox(0,"","Query: " & $timervalue/1000 & @CRLF & "Loop: " & TimerDiff($timerstart)/1000 & @CRLF & "Count: " & $colItems.count)
-
-	$adapters = $ladapters
-	;_ArrayDisplay($adapters)
 EndFunc
 
 Func _releaseDhcp()
@@ -261,63 +226,6 @@ Func _doRegGetGUID($adaptername)
 	return ""
 
 EndFunc
-
-Func _getIPs_old($adaptername)
-	Local $props[7]
-	Local $colItems, $Adapter_caption, $thismac
-	Local $ip, $subnet, $gateway, $dnspri, $dnsalt, $dnsServer, $dhcpServer, $dhcpEnabled
-	$Adapter_caption = $adaptername
-	$thismac = $adapters[_ArraySearch($adapters, $Adapter_caption)][1]
-	$colItems = $objWMI.ExecQuery("SELECT IPAddress, IPSubnet, DefaultIPGateway, DNSServerSearchOrder, DHCPEnabled, DHCPServer FROM Win32_NetworkAdapterConfiguration WHERE MACAddress =""" & $thismac & """", "WQL", $wbemFlagReturnImmediately + $wbemFlagForwardOnly)
-	For $objItem In $colItems
-		$ip = $objItem.IPAddress(0)
-		$subnet = $objItem.IPSubnet(0)
-		$gateway = $objItem.DefaultIPGateway(0)
-
-		$dnsbound = UBound($objItem.DNSServerSearchOrder())
-		$dnsServer = $objItem.DNSServerSearchOrder(0)
-		If $dnsbound = 0 Then
-			$dnspri = ""
-			$dnsalt = ""
-		ElseIf $dnsbound = 1 Then
-			$dnspri = $objItem.DNSServerSearchOrder(0)
-			$dnsalt = ""
-		Else ; $dnsbound = 2
-			$dnspri = $objItem.DNSServerSearchOrder(0)
-			$dnsalt = $objItem.DNSServerSearchOrder(1)
-		EndIf
-
-		$dhcpEnabled = $objItem.DHCPEnabled
-		If $dhcpEnabled <> 0 Then
-			$dhcpServer = $objItem.DHCPServer
-		Else
-			$dhcpServer = "Static"
-		EndIf
-
-		;MsgBox(0,"",$ip & @CRLF & $subnet & @CRLF & $gateway & @CRLF & $dnspri & @CRLF & $dnsalt & @CRLF & $dhcpServer)
-		$props[0] = $ip
-		$props[1] = $subnet
-		$props[2] = $gateway
-		$props[3] = $dnspri
-		$props[4] = $dnsalt
-		$props[5] = $dhcpServer
-		ExitLoop
-	Next
-
-	$props[6] = _AdapterMod($Adapter_caption, 2)
-	Return $props
-EndFunc
-
-Func _WMIArrayToString($aArray, $sDelimeter = "|")
-    If IsArray($aArray) = 0 Then
-        Return SetError(1, 0, "")
-    EndIf
-    Local $iUbound = UBound($aArray) - 1, $sString
-    For $A = 0 To $iUbound
-        $sString &= $aArray[$A] & $sDelimeter
-    Next
-    Return StringTrimRight($sString, StringLen($sDelimeter))
-EndFunc   ;==>_WMIArrayToString
 
 
 ;===================================================================================================
