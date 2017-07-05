@@ -453,9 +453,6 @@ Func _makeIpProps($label, $x, $y, $w, $h)
 	$ip_Ip = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+48*$dscale, 135*$dscale, 22*$dscale )
 	_GUICtrlIpAddress_SetFontByHeight( $ip_Ip, $MyGlobalFontName, $MyGlobalFontHeight)
 
-;~ 	$dummyTab = GUICtrlCreateDummy()
-;~ 	GUICtrlSetOnEvent(-1, "_onTab")
-
 	$label_subnet = GUICtrlCreateLabel( "Subnet Mask:", $x+8*$dscale, $y+$headingHeight+77*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	$ip_Subnet = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+74*$dscale, 135*$dscale, 22*$dscale )
@@ -893,7 +890,7 @@ Func _debugWindow()
 EndFunc
 
 
-; Changelog WINDOW
+; Settings WINDOW
 Func _Settings()
 	$w = 200*$dScale
 	$h = 150*$dScale

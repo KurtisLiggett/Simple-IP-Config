@@ -1,4 +1,4 @@
-#AutoIt3Wrapper_Run_Au3Stripper=y
+;#AutoIt3Wrapper_Run_Au3Stripper=y
 
 ; -----------------------------------------------------------------------------
 ; Simple IP Config is free software: you can redistribute it and/or modify
@@ -101,6 +101,11 @@ Global $timerstart, $timervalue
 ; BEGIN MAIN PROGRAM
 _main()
 
+
+;------------------------------------------------------------------------------
+; Title........: _main
+; Description..: initial program setup & main running loop
+;------------------------------------------------------------------------------
 Func _main()
 	; popuplate current adapter names and mac addresses
 	;_loadAdapters()
@@ -174,8 +179,11 @@ Func _main()
 	WEnd
 EndFunc ; main()
 
-; This function is called when a new program instance posts the message we were watching for.
-; Display a tray tooltip alerting the user that the program is already running.
+;------------------------------------------------------------------------------
+; Title........: _NewInstance
+; Description..: Called when a new program instance posts the message we were watching for.
+;                Display a tray tooltip alerting the user that the program is already running.
+;------------------------------------------------------------------------------
 Func _NewInstance($hWnd, $iMsg, $iwParam, $ilParam)
 	if $iwParam == "0x00000101" Then
 		TrayTip("", "Simple IP Config is already running", 1)
