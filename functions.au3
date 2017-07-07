@@ -15,12 +15,20 @@
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
 
-
 ;==============================================================================
 ; Filename:		functions.au3
 ; Description:	- most functions related to doing something in the program
 ;==============================================================================
 
+
+
+;------------------------------------------------------------------------------
+; Title...........: _ExitChild
+; Description.....: Destroy the child window and enable the main GUI
+;
+; Parameters......: $childwin  -child window handle
+; Return value....:
+;------------------------------------------------------------------------------
 Func _ExitChild($childwin)
 	$guiState = WinGetState( $hgui )
 	GUISetState(@SW_ENABLE, $hGUI)
@@ -32,6 +40,13 @@ Func _ExitChild($childwin)
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _updateCombo
+; Description.....: Update the adapters list
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _updateCombo()
 	_setStatus("Updating Adapter List...")
 	_loadAdapters()
@@ -57,6 +72,14 @@ Func _updateCombo()
 	_setStatus("Ready")
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _blacklistAdd
+; Description.....: Add selected adapter to the edit box in the
+;				    hide adapters window
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _blacklistAdd()
 	$selected_adapter = GUICtrlRead($combo_adapters)
 	$list = GUICtrlRead($blacklistEdit)
@@ -73,6 +96,15 @@ Func _blacklistAdd()
 	GUICtrlSetData($blacklistEdit, $newString, 1)
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _arrange
+; Description.....: Arrange profiles in asc/desc order
+;
+; Parameters......: $desc  - 0=ascending order; 1=descending order
+; Return value....: 0  -success
+;				    1  -could not open file
+;				    3  -error writing to file
+;------------------------------------------------------------------------------
 Func _arrange($desc=0)
 	_loadProfiles()
 
@@ -129,7 +161,14 @@ Func _arrange($desc=0)
 	Return 0
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _checkMouse
+; Description.....: Check if mouse is over a particular control
+;
+; Parameters......: $Id  -controlID
+; Return value....: 0  -mouse is NOT over the control
+;				    1  -mouse IS over the control
+;------------------------------------------------------------------------------
 Func _checkMouse($Id)
 	$idPos = ControlGetPos($hgui, "", $Id)
 	$mPos = MouseGetPos()
@@ -141,6 +180,13 @@ Func _checkMouse($Id)
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _clickDn
+; Description.....: Check if started dragging a listview item
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _clickDn()
 	; -- check for double click --
 	If $mdblcheck = 1 Then
@@ -169,7 +215,16 @@ Func _clickDn()
 
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _clickUp
+; Description.....: On mouse click release:
+;                   if double-clicked, apply the selected profile.
+;                   if item was dragged, rearrange the items in the listview
+;                     and profiles.ini file.
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _clickUp()
     If _checkMouse($list_profiles) and _ctrlHasFocus($list_profiles) Then
 		MouseClick("left")
@@ -203,7 +258,20 @@ Func _clickUp()
 EndFunc
 
 
-;helper -
+;------------------------------------------------------------------------------
+; Title...........: _iniMove
+; Description.....:
+;
+; Parameters......: $file      -filename
+;                   $fromName  -source profile name
+;                   $toName    -destination profile name
+; Return value....: 0  -success
+;                   1  -file read error or string error
+;                   2  -string error
+;                   3  -file write error
+;
+; Notes...........: need to make these return errors more descriptive
+;------------------------------------------------------------------------------
 Func _iniMove($file, $fromName, $toName)
 	Local $sNewFile = ""
 	Local $sLeft = ""
@@ -299,7 +367,13 @@ Func _iniMove($file, $fromName, $toName)
 	Return 0
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _radios
+; Description.....: Check/set radio button interlocks
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _radios()
 	if GUICtrlRead($radio_IpAuto) = $GUI_CHECKED Then
 		GUICtrlSetState($radio_DnsAuto, $GUI_ENABLE)
@@ -335,6 +409,14 @@ Func _radios()
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _apply
+; Description.....: Apply the selected profile to the selected adapter
+;
+; Parameters......:
+; Return value....: 0  -success
+;                   1  -no adapter is selected
+;------------------------------------------------------------------------------
 Func _apply()
 	$selected_adapter = GUICtrlRead($combo_adapters)
 	If $selected_adapter = "" Then
@@ -429,11 +511,24 @@ Func _apply()
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _OSVersion
+; Description.....: Get the OS version number from the registry
+;
+; Parameters......:
+; Return value....: Version number
+;------------------------------------------------------------------------------
 Func _OSVersion()
     Return RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\", "CurrentVersion")
 EndFunc   ;==>_OSVersion
 
-
+;------------------------------------------------------------------------------
+; Title...........: _pull
+; Description.....: Get current IP information from adapter and update display
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _pull()
 	GUICtrlSetState( $radio_IpMan, $GUI_CHECKED )
 	_ctrlSetIP($ip_Ip, GUICtrlRead($label_CurrentIp) )
@@ -445,7 +540,14 @@ Func _pull()
 	_radios()
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _ctrlHasFocus
+; Description.....: Check if control currently has focus
+;
+; Parameters......: $id  -controlID
+; Return value....: 0  -control does NOT have focus
+;                   1  -control has focus
+;------------------------------------------------------------------------------
 Func _ctrlHasFocus($id)
 	$idFocus = ControlGetFocus($hgui)
 	$hFocus = ControlGetHandle($hgui, "", $idFocus)
@@ -457,7 +559,13 @@ Func _ctrlHasFocus($id)
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _disable
+; Description.....: Disable/enable selected adapter based on current state
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _disable()
 	$selected_adapter = GUICtrlRead($combo_adapters)
 	if _GUICtrlMenu_GetItemText( GUICtrlGetHandle($toolsmenu), $disableitem, 0 ) = "Disable adapter" Then
@@ -472,7 +580,13 @@ Func _disable()
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _onLvDoneEdit
+; Description.....: When done editing listview item, rename the profile
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _onLvDoneEdit()
 	$lv_newName = ControlListView ( $hgui, "", $list_profiles, "GetText", $lv_editIndex )
 	;ConsoleWrite( $lv_oldName & " " & $lv_newName )
@@ -489,7 +603,13 @@ Func _onLvDoneEdit()
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _clear
+; Description.....: Clears the IP address entry fields
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _clear()
 	_ctrlSetIP($ip_Ip, "")
 	_ctrlSetIP($ip_Subnet, "")
@@ -498,6 +618,14 @@ Func _clear()
 	_ctrlSetIP($ip_DnsAlt, "")
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _checkChangelog
+; Description.....: Check if new version and change log needs to be displayed.
+;                   Then write new version to profiles.ini file.
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _checkChangelog()
 	if $options[0][1] <> $winVersion Then
 		_changeLog()
@@ -506,6 +634,13 @@ Func _checkChangelog()
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _rename
+; Description.....: Call the ini file rename function and modify the listview
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _rename()
 	If $lv_oldName = $lv_newName Then
 		Return
@@ -535,7 +670,20 @@ Func _rename()
 	EndIf
 EndFunc
 
-;helper - the built-in inirenamesection function moves the section to the end of the file.
+;------------------------------------------------------------------------------
+; Title...........: _iniRename
+; Description.....: Rename a section of an INI file in-place.
+;                   The built-in IniRenameSection function moves the section
+;                   to the end of the file.
+;
+; Parameters......: $file     -filename
+;                   $oldName  -section name to be replaced
+;                   $newName  -new section name
+; Return value....: 0  -success
+;                   1  -file read/open error
+;                   2  -new name already exists
+;                   3  -file write error
+;------------------------------------------------------------------------------
 Func _iniRename($file, $oldName, $newName)
 	Local $sNewFile = ""
 
@@ -573,6 +721,15 @@ Func _iniRename($file, $oldName, $newName)
 	Return 0
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _iniRename
+; Description.....: Rename a section of an INI file in-place.
+;                   The built-in IniRenameSection function moves the section
+;                   to the end of the file.
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _delete($name="")
 	$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 	$selIndex = ControlListView($hgui, "", $list_profiles, "GetSelected")
@@ -608,7 +765,13 @@ Func _delete($name="")
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _new
+; Description.....: Create a new profile
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _new()
 ;	$yesno = MsgBox($MB_YESNO,"Warning!","The profile name already exists!" & @CRLF & "Do you wish to overwrite the profile?")
 	$index = ControlListView($hgui, "", $list_profiles, "GetSelected")
@@ -665,7 +828,13 @@ Func _new()
 	$profilelist[$profilelist[0][0]][1] = $sectionValues
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _save
+; Description.....: Save the selected profile
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _save()
 	;$yesno = MsgBox($MB_YESNO,"Warning!","The profile name already exists!" & @CRLF & "Do you wish to overwrite the profile?")
 	$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
@@ -725,7 +894,13 @@ Func _save()
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _refresh
+; Description.....: Load profiles from ini file and update current adapter info
+;
+; Parameters......: $init  -1=initial refresh don't change status bar text
+; Return value....:
+;------------------------------------------------------------------------------
 Func _refresh($init=0)
 	_loadProfiles()
 	_updateProfileList()
@@ -738,7 +913,13 @@ Func _refresh($init=0)
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _setProperties
+; Description.....: Set fields from profile properties
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _setProperties($init=0, $profileName="")
 	Local $profileNames[1]
 	_ArrayDelete($profileNames, 0)

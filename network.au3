@@ -15,7 +15,6 @@
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
 
-
 ;==============================================================================
 ; Filename:		network.au3
 ; Description:	- functions that interact with network interfaces

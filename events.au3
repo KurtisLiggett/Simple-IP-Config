@@ -15,7 +15,6 @@
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
 
-
 ;==============================================================================
 ; Filename:		events.au3
 ; Description:	- functions called in response to events (button clicks, etc...)
@@ -35,7 +34,6 @@ Func _onExit()
 
 	; save window position in ini file
 	If NOT BITAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
-		ConsoleWrite("saving..."&@CRLF)
 		$currentWinPos = WinGetPos($winName & " " & $winVersion)
 		$options[8][1] = $currentWinPos[0]
 		$options[9][1] = $currentWinPos[1]

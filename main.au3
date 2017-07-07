@@ -1,4 +1,4 @@
-;#AutoIt3Wrapper_Run_Au3Stripper=y
+#AutoIt3Wrapper_Run_Au3Stripper=y
 
 ; -----------------------------------------------------------------------------
 ; Simple IP Config is free software: you can redistribute it and/or modify
@@ -14,7 +14,6 @@
 ; You should have received a copy of the GNU General Public License
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
-
 
 ;==============================================================================
 ; Filename:		main.au3
@@ -100,7 +99,6 @@ Global $timerstart, $timervalue
 
 ; BEGIN MAIN PROGRAM
 _main()
-
 
 ;------------------------------------------------------------------------------
 ; Title........: _main

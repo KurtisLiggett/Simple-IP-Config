@@ -15,7 +15,6 @@
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
 
-
 ;==============================================================================
 ; Filename:		hexIcons.au3
 ; Description:	- png icons converted to hex for use in the program instead of

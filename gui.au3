@@ -15,7 +15,6 @@
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
 
-
 ;==============================================================================
 ; Filename:		gui.au3
 ; Description:	- GUI creation and related functions
