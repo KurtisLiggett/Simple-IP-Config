@@ -739,7 +739,7 @@ Func _about()
 	EndIf
 
 	$AboutChild = GUICreate("About Simple IP Config", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
-	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExitAbout")
+	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 
 	; top section
@@ -800,7 +800,7 @@ Func _about()
 	; bottom section
 
 	$bt_AboutOk = GUICtrlCreateButton("OK", $w - 55 * $dScale, $h - 27 * $dScale, 50 * $dScale, 22 * $dScale)
-	GUICtrlSetOnEvent(-1, "_onExitAbout")
+	GUICtrlSetOnEvent(-1, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hgui)
 	GUISetState(@SW_SHOW, $AboutChild)
@@ -817,7 +817,7 @@ Func _changeLog()
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
 	$changeLogChild = GUICreate( "Change Log", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
-	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChangelog")
+	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
 	GUICtrlCreateLabel("", 0, 0, $w, $h-32*$dscale)
@@ -837,7 +837,7 @@ Func _changeLog()
 	GUICtrlSetFont(-1, 8.5)
 
 	$bt_Ok = GUICtrlCreateButton( "OK", $w-55*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
-	GUICtrlSetOnEvent( -1, "_onExitChangelog")
+	GUICtrlSetOnEvent( -1, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hGUI)
 	GUISetState(@SW_SHOW, $changeLogChild)
@@ -855,7 +855,7 @@ Func _debugWindow()
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
 	$debugChild = GUICreate( "Debug Information", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
-	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitDebug")
+	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
 	GUICtrlCreateLabel("", 0, 0, $w, $h-32*$dscale)
@@ -880,7 +880,7 @@ Func _debugWindow()
 	GUICtrlSetFont(-1, 8.5)
 
 	$bt_Ok = GUICtrlCreateButton( "OK", $w-55*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
-	GUICtrlSetOnEvent( -1, "_onExitDebug")
+	GUICtrlSetOnEvent( -1, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hGUI)
 	GUISetState(@SW_SHOW, $debugChild)
@@ -899,7 +899,7 @@ Func _Settings()
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
 	$settingsChild = GUICreate( "Settings", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
-	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitSettings")
+	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
 	GUICtrlCreateLabel("", 0, 0, $w, $h-32*$dscale)
@@ -922,7 +922,7 @@ Func _Settings()
 	$bt_optSave = GUICtrlCreateButton( "Save", $w-25*$dScale-50*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( $bt_optSave, "_saveOptions")
 	$bt_optCancel = GUICtrlCreateButton( "Cancel", 25*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
-	GUICtrlSetOnEvent( $bt_optCancel, "_onExitSettings")
+	GUICtrlSetOnEvent( $bt_optCancel, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hGUI)
 	GUISetState(@SW_SHOW, $settingsChild)
@@ -945,7 +945,7 @@ Func _statusPopup()
 
 	$statusChild = GUICreate( "StatusMessage", $w, $h, $x, $y, $WS_POPUP, $WS_EX_TOOLWINDOW)
 	_WinAPI_SetParent($statusChild, $hGUI)
-	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitStatus")
+	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 	GUISetBkColor(_WinAPI_GetSysColor($COLOR_MENUBAR),$statusChild)
 
@@ -960,7 +960,7 @@ Func _statusPopup()
 	GUICtrlSetBkColor (-1, 0x404040)
 
 	$bt_Ok = GUICtrlCreateButton( "OK", $w-55*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
-	GUICtrlSetOnEvent( -1, "_onExitStatus")
+	GUICtrlSetOnEvent( -1, "_onExitChild")
 
 	;GUISetState(@SW_DISABLE, $hGUI)
 	GUISetState(@SW_SHOW, $statusChild)
@@ -981,7 +981,7 @@ Func _blacklist()
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
 	$blacklistChild = GUICreate( "Adapter Blacklist", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
-	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitBlacklist")
+	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
 	$label = GUICtrlCreateLabel("Hide the following adapters", 5, 5, $w-10)
@@ -994,7 +994,7 @@ Func _blacklist()
 	GUICtrlSetOnEvent( -1, "_onBlacklistAdd")
 
 	$bt_Cancel = GUICtrlCreateButton( "Cancel", $w-117*$dScale, $h - 50*$dScale, 52*$dScale, 40*$dScale)
-	GUICtrlSetOnEvent( -1, "_onExitBlacklist")
+	GUICtrlSetOnEvent( -1, "_onExitChild")
 
 	$bt_Ok = GUICtrlCreateButton( "Save", $w-60*$dScale, $h - 50*$dScale, 50*$dScale, 40*$dScale)
 	GUICtrlSetOnEvent( -1, "_onExitBlacklistOk")

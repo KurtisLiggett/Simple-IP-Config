@@ -971,7 +971,7 @@ Func _saveOptions()
 	$options[1][1] = _StateToStr($ck_mintoTray)
 	$options[6][1] = _StateToStr($ck_saveAdapter)
 	IniWriteSection("profiles.ini", "options", $options, 0)
-	_onExitSettings()
+	_ExitChild(@GUI_WinHandle)
 EndFunc
 
 ;helper
@@ -1215,10 +1215,9 @@ Func _setStatus($sMessage, $bError=0, $bTiming=0)
 		GUICtrlSetState($statustext, $GUI_SHOW)
 		GUICtrlSetState($statuserror, $GUI_HIDE)
 		GUICtrlSetState($wgraphic, $GUI_HIDE)
-		_onExitStatus()
+		_ExitChild($statusChild)
 	EndIf
 EndFunc
-
 
 
 ; -- asynchronous Processes - keep track of running commands, but don't block the program

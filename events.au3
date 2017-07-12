@@ -44,48 +44,12 @@ Func _onExit()
 EndFunc
 
 ;------------------------------------------------------------------------------
-; Title........: _onExitAbout
-; Description..: Close the About child window
-; Events.......: about window GUI_EVENT_CLOSE, $bt_AboutOk
+; Title........: _onExitChild
+; Description..: Close any child window
+; Events.......: child window GUI_EVENT_CLOSE, OK/Cancel button
 ;------------------------------------------------------------------------------
-Func _onExitAbout()
-	_ExitChild($AboutChild)
-EndFunc
-
-;------------------------------------------------------------------------------
-; Title........: _onExitSettings
-; Description..: Close the Settings child window
-; Events.......: settings window GUI_EVENT_CLOSE, save or cancel buttons
-;------------------------------------------------------------------------------
-Func _onExitSettings()
-	_ExitChild($settingsChild)
-EndFunc
-
-;------------------------------------------------------------------------------
-; Title........: _onExitChangelog
-; Description..: Close the Changelog child window
-; Events.......: changelog window GUI_EVENT_CLOSE, OK button
-;------------------------------------------------------------------------------
-Func _onExitChangelog()
-	_ExitChild($changeLogChild)
-EndFunc
-
-;------------------------------------------------------------------------------
-; Title........: _onExitDebug
-; Description..: Close the Debug child window
-; Events.......: debug window GUI_EVENT_CLOSE, OK button
-;------------------------------------------------------------------------------
-Func _onExitDebug()
-	_ExitChild($debugChild)
-EndFunc
-
-;------------------------------------------------------------------------------
-; Title........: _onExitBlacklist
-; Description..: Close the Blacklist child window
-; Events.......: Blacklist window GUI_EVENT_CLOSE, cancel button
-;------------------------------------------------------------------------------
-Func _onExitBlacklist()
-	_ExitChild($blacklistChild)
+Func _onExitChild()
+	_ExitChild(@GUI_WinHandle)
 EndFunc
 
 ;------------------------------------------------------------------------------
@@ -102,17 +66,8 @@ Func _onExitBlacklistOk()
 	$options[7][1] = $newBlacklist
 	IniWrite("profiles.ini", "options", $options[7][0], $options[7][1])
 
-	_onExitBlacklist()
+	_ExitChild(@GUI_WinHandle)
 	_updateCombo()
-EndFunc
-
-;------------------------------------------------------------------------------
-; Title........: _onExitStatus
-; Description..: Close the status bar details popup
-; Events.......: status window 'OK' button
-;------------------------------------------------------------------------------
-Func _onExitStatus()
-	_ExitChild($statusChild)
 EndFunc
 
 ;------------------------------------------------------------------------------

@@ -43,7 +43,7 @@ Global $footerHeight = 16
 Global $tbarHeight = 49
 Global $dscale = 1
 Global $iDPI = 0
-Global $AboutChild, $changeLogChild, $statusChild, $blacklistChild, $debugChild
+Global $statusChild
 Global $headingHeight = 20
 Global $statusbarHeight = 20
 Global $statustext, $statuserror, $sStatusMessage
