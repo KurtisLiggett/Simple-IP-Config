@@ -915,6 +915,10 @@ Func _Settings()
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_saveAdapter, _StrToState($options[6][1]))
 
+  $ck_autoUpdate = GUICtrlCreateCheckbox( "Enable automatic updates.", 10*$dScale, 70*$dScale, 230*$dScale, 20*$dScale)
+  GUICtrlSetBkColor(-1, 0xFFFFFF)
+  GUICtrlSetState($ck_autoUpdate, _StrToState($options[10][1]))
+
 	$bt_optSave = GUICtrlCreateButton( "Save", $w-25*$dScale-50*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( $bt_optSave, "_saveOptions")
 	$bt_optCancel = GUICtrlCreateButton( "Cancel", 25*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)

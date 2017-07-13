@@ -144,7 +144,9 @@ Func _main()
 
 	GUICtrlSetData($domain, _DomainComputerBelongs())
 
-  _checksSICUpdate()
+  if($options[10][1] = "true") Then
+    _checksSICUpdate()
+  EndIf
 
 	While 1
 		If Not $pIdle Then _asyncProcess()
