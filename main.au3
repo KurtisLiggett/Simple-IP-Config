@@ -1,5 +1,6 @@
 #AutoIt3Wrapper_Run_Au3Stripper=y
 
+#Region license
 ; -----------------------------------------------------------------------------
 ; Simple IP Config is free software: you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
@@ -14,6 +15,7 @@
 ; You should have received a copy of the GNU General Public License
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
+#EndRegion license
 
 ;==============================================================================
 ; Filename:		main.au3
@@ -39,8 +41,10 @@
 
 
 #requireadmin
-#NoTrayIcon	;prevent double icon for singleton check
 
+#Region Single instance check
+
+#NoTrayIcon	;prevent double icon for singleton check
 ;create a new window message
 Global $iMsg = _WinAPI_RegisterWindowMessage('newinstance_message')
 
@@ -51,8 +55,124 @@ If _Singleton("Simple IP Config", 1) = 0 Then
     Exit
 EndIf
 
-#include <WindowsConstants.au3>
+#EndRegion Single instance check
+
+#Region Global Variables
 #include <GUIConstantsEx.au3>
+
+; Global constants, for code readability
+Global Const $WIN_STATE_EXISTS = 1 ; Window exists
+Global Const $WIN_STATE_VISIBLE = 2 ; Window is visible
+Global Const $WIN_STATE_ENABLED = 4 ; Window is enabled
+Global Const $WIN_STATE_ACTIVE = 8 ; Window is active
+Global Const $WIN_STATE_MINIMIZED = 16 ; Window is minimized
+Global Const $WIN_STATE_MAXIMIZED = 32 ; Window is maximized
+Global Const $wbemFlagReturnImmediately = 0x10
+Global Const $wbemFlagForwardOnly = 0x20
+
+Global $screenshot=0
+
+;GUI stuff
+Global $winName = "Simple IP Config"
+Global $winVersion = "2.8.1"
+Global $winDate = "06/29/2017"
+Global $hgui
+Global $guiWidth = 550
+Global $guiHeight = 550
+Global $footerHeight = 16
+Global $tbarHeight = 49
+Global $dscale = 1
+Global $iDPI = 0
+
+Global $headingHeight = 20
+Global $menuHeight, $captionHeight
+Global $MinToTray, $RestoreItem
+
+Global $aAccelKeys[12][2]
+
+;GUI Fonts
+Global $MyGlobalFontName = "Arial"
+Global $MyGlobalFontSize = 9.5
+Global $MYGlobalFontSizeLarge = 11
+Global $MyGlobalFontColor = 0x000000
+Global $MyGlobalFontBKColor = $GUI_BKCOLOR_TRANSPARENT
+Global $MyGlobalFontHeight = 0
+
+;Statusbar
+Global $statusbarHeight = 20
+Global $statusChild
+Global $statustext, $statuserror, $sStatusMessage
+Global $wgraphic, $showWarning
+
+;Menu Items
+Global $toolsmenu, $disableitem, $refreshitem, $renameitem, $deleteitem, $clearitem
+Global $saveitem, $newitem, $pullitem, $send2trayitem, $helpitem, $debugmenuitem
+
+;Settings window
+Global $ck_mintoTray, $ck_startinTray, $ck_saveAdapter
+
+Global $timerstart, $timervalue
+
+Global $movetosubnet
+Global $mdblTimerInit=0, $mdblTimerDiff=1000, $mdblcheck=0, $mdblClick = 0
+Global $dragging = False, $dragitem = 0, $contextSelect = 0
+Global $prevWinPos, $winPosTimer, $writePos
+
+
+; CONTROLS
+Global $combo_adapters, $combo_dummy, $selected_adapter, $lDescription, $lMac
+Global $list_profiles, $input_filter, $filter_dummy, $dummyUp, $dummyDown
+Global $lv_oldName, $lv_newName, $lv_editIndex, $lv_doneEditing, $lv_newItem, $lv_startEditing, $lv_editing, $lv_aboutEditing
+Global $radio_IpAuto, $radio_IpMan, $ip_Ip, $ip_Subnet, $ip_Gateway, $dummyTab
+Global $label_ip, $label_subnet, $label_gateway
+Global $radio_DnsAuto, $radio_DnsMan, $ip_DnsPri, $ip_DnsAlt, $ck_dnsReg
+Global $label_DnsPri, $label_DnsAlt
+Global $label_CurrentIp, $label_CurrentSubnet, $label_CurrentGateway
+Global $label_CurrentDnsPri, $label_CurrentDnsAlt
+Global $label_CurrentDhcp, $label_CurrentAdapterState, $domain
+Global $link
+Global $blacklistEdit, $bt_BlacklistAdd
+
+; TOOLBAR
+Global $hTool, $hTool2
+Global $hToolbar, $hToolbar2
+Global $ToolbarIDs, $Toolbar2IDs
+Global Enum $tb_apply = 1000, $tb_refresh, $tb_add, $tb_save, $tb_delete, $tb_clear
+Global Enum $tb_settings = 2000, $tb_tray
+
+
+; Adapters
+Global $adapters[1][4] = [[0,0,0]]	; [0]-name, [1]-mac, [2]-description, [3]-GUID
+Global $profilelist[1][2]
+Global $options[10][2]
+$options[0][0] = "Version"
+$options[1][0] = "MinToTray"
+$options[2][0] = "StartupMode"
+$options[3][0] = "Language"
+$options[4][0] = "StartupAdapter"
+$options[5][0] = "Theme"
+$options[6][0] = "SaveAdapterToProfile"
+$options[7][0] = "AdapterBlacklist"
+$options[8][0] = "PositionX"
+$options[8][1] = ""
+$options[9][0] = "PositionY"
+$options[9][1] = ""
+
+Global $propertyFormat[9]
+$propertyFormat[0] = "IpAuto"
+$propertyFormat[1] = "IpAddress"
+$propertyFormat[2] = "IpSubnet"
+$propertyFormat[3] = "IpGateway"
+$propertyFormat[4] = "DnsAuto"
+$propertyFormat[5] = "IpDnsPref"
+$propertyFormat[6] = "IpDnsAlt"
+$propertyFormat[7] = "RegisterDns"
+$propertyFormat[8] = "AdapterName"
+
+#EndRegion Global Variables
+
+#Region includes
+#include <WindowsConstants.au3>
 #include <APIConstants.au3>
 #include <WinAPI.au3>
 #Include <WinAPIEx.au3>
@@ -68,15 +188,17 @@ EndIf
 #include <GuiComboBox.au3>
 #include <Array.au3>
 
-#include "globals.au3"
 #include "hexIcons.au3"
-#include "network.au3"
 #include "libraries\StringSize.au3"
 #include "libraries\_NetworkStatistics.au3"
+#include "asyncProcess.au3"
 #include "functions.au3"
 #include "events.au3"
+#include "network.au3"
 #include "gui.au3"
+#EndRegion includes
 
+#Region options
 Opt("TrayIconHide", 0)
 Opt("GUIOnEventMode",1)
 Opt("TrayAutoPause",0)
@@ -86,6 +208,7 @@ Opt("MouseCoordMode", 2)
 Opt("GUIResizeMode", $GUI_DOCKALL)
 Opt("WinSearchChildren",1)
 TraySetClick(16)
+#EndRegion options
 
 ; autoit wrapper options
 #AutoIt3Wrapper_Res_HiDpi=y
@@ -94,8 +217,6 @@ TraySetClick(16)
 #AutoIt3Wrapper_OutFile=Simple IP Config 2.8.1.exe
 #AutoIt3Wrapper_Res_Fileversion=2.8.1
 #AutoIt3Wrapper_Res_Description=Simple IP Config
-
-Global $timerstart, $timervalue
 
 ; BEGIN MAIN PROGRAM
 _main()
@@ -119,7 +240,7 @@ Func _main()
 	_makeGUI()
 
 	;get list of adapters and current IP info
-	_loadAdapters()
+	$adapters = _loadAdapters()
 
 	;watch for new program instances
 	GUIRegisterMsg($iMsg, '_NewInstance')
