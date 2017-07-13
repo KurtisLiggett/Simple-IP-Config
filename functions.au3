@@ -52,8 +52,11 @@ Func _checksSICUpdate()
   If (@error) Then
     MsgBox(16, "Error", "We encountered an error retrieving the update. Check your internet connection.")
   Else
-    If MsgBox(1, "Simple-IP-Config Update available", "A new version of Simple-IP-Config has been made publicly available. Press ok to download it.") = 1 Then ShellExecute($info[1])
+    If ($winVersion <> $info[0]) Then
+      If MsgBox(1, "Simple-IP-Config Update available", "A new version of Simple-IP-Config has been made publicly available. Press ok to download it.") = 1 Then ShellExecute($info[1])
+    EndIf
   Endif
+
 ;  $newFilename = "Simple.IP.Config."&$info[0]&".exe"
 ;  If ($winVersion <> $info[0]) Then
 ;    If MsgBox(1, "Simple-IP-Config Update available", "A new version of Simple-IP-Config has been made publicly available. Press ok to download and install it.") = 1 Then
