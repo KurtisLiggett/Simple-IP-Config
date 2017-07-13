@@ -54,7 +54,7 @@ Func _checksSICUpdate()
   $cleanedJSON = StringReplace($oHTTP.ResponseText, '"', "")
   $info = StringRegExp($cleanedJSON, '(?:tag_name|browser_download_url):([^\{,}]+)', 3)
 
-  If ($options[0][1] <> "2.7.1") Then
+  If ($options[0][1] <> $info[0]) Then
     If MsgBox(1, "Simple-IP-Config Update available", "A new version of Simple-IP-Config has been made publicly available. Press ok to download it.") = 1 Then
       ShellExecute($info[1])
     EndIf
