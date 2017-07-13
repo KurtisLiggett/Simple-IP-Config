@@ -26,6 +26,42 @@ Func _ExitChild($childwin)
 	EndIf
 EndFunc
 
+Func _checksSICUpdate()
+  ; This function checks if there are new releases
+  ; on github and request the user to download it
+
+  ; Actual version $options[0][1]
+
+  $github_releases = "https://api.github.com/repos/KurtisLiggett/Simple-IP-Config/releases/latest"
+
+  Local $oHTTP = ObjCreate("WinHttp.WinHttpRequest.5.1")
+
+  $oHTTP.Open("GET", $github_releases, False)
+  If (@error) Then
+    SetError(1, 0, 0)
+  EndIf
+
+  $oHTTP.Send()
+  If (@error) Then
+    SetError(2, 0, 0)
+  EndIf
+
+  If ($oHTTP.Status <> 200) Then
+    SetError(3, 0, 0)
+  EndIf
+
+  ; Do we wanna add a json parsing lib for the response?
+  $cleanedJSON = StringReplace($oHTTP.ResponseText, '"', "")
+  $info = StringRegExp($cleanedJSON, '(?:tag_name|browser_download_url):([^\{,}]+)', 3)
+
+  If ($options[0][1] <> "2.7.1") Then
+    If MsgBox(1, "Simple-IP-Config Update available", "A new version of Simple-IP-Config has been made publicly available. Press ok to download it.") = 1 Then
+      ShellExecute($info[1])
+    EndIf
+  EndIf
+
+EndFunc
+
 Func _updateCombo()
 	_setStatus("Updating Adapter List...")
 	_loadAdapters()
