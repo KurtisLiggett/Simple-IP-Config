@@ -32,7 +32,7 @@ Func _ExitChild($childwin)
 	EndIf
 EndFunc
 
-Func _checksSICUpdate()
+Func _checksSICUpdate($manualCheck=0)
   ; This function checks if there are new releases on github and request the user to download it
 
   $github_releases = "https://api.github.com/repos/KurtisLiggett/Simple-IP-Config/releases/latest"
@@ -52,8 +52,15 @@ Func _checksSICUpdate()
   If (@error) Then
     MsgBox(16, "Error", "We encountered an error retrieving the update. Check your internet connection.")
   Else
+	$updateText = "Your version is: " & $winVersion & @CRLF & _
+		"Current version is: " & $info[0] & @CRLF & @CRLF
     If ($winVersion <> $info[0]) Then
-      If MsgBox(1, "Simple-IP-Config Update available", "A new version of Simple-IP-Config has been made publicly available. Press ok to download it.") = 1 Then ShellExecute($info[1])
+		$updateText &= "A newer version is available. Press ok to download it."
+
+		If MsgBox(1, "Simple IP Config Update available", $updateText) = 1 Then ShellExecute($info[1])
+	Else
+		$updateText &= "No update is available."
+		if $manualCheck Then MsgBox(0, "Simple IP Config Update", $updateText)
     EndIf
   Endif
 

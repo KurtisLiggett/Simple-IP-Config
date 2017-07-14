@@ -245,6 +245,10 @@ Func _onHelp()
 
 EndFunc
 
+Func _onUpdateCheckItem()
+	_checksSICUpdate(1)
+EndFunc
+
 Func _onDebugItem()
 	_debugWindow()
 EndFunc
