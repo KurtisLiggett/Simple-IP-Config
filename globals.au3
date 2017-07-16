@@ -46,7 +46,7 @@ Global $menuHeight, $captionHeight
 Global $MinToTray, $RestoreItem
 Global $toolsmenu, $disableitem, $refreshitem, $renameitem, $deleteitem, $clearitem, $saveitem, $newitem, $pullitem, $send2trayitem, $helpitem, $debugmenuitem
 Global $tray_tip
-Global $settingsChild, $ck_mintoTray, $ck_startinTray, $ck_saveAdapter
+Global $settingsChild, $ck_mintoTray, $ck_startinTray, $ck_saveAdapter, $ck_autoUpdate
 Global $aAccelKeys[12][2], $movetosubnet
 Global $wgraphic, $showWarning
 Global $images[1] = [0]
@@ -98,7 +98,7 @@ Global Const $wbemFlagForwardOnly = 0x20
 ; Adapters
 Global $adapters[1][4] = [[0,0,0]]	; [0]-name, [1]-mac, [2]-description, [3]-GUID
 Global $profilelist[1][2]
-Global $options[10][2]
+Global $options[11][2]
 $options[0][0] = "Version"
 $options[1][0] = "MinToTray"
 $options[2][0] = "StartupMode"
@@ -111,6 +111,8 @@ $options[8][0] = "PositionX"
 $options[8][1] = ""
 $options[9][0] = "PositionY"
 $options[9][1] = ""
+$options[10][0] = "AutoUpdate"
+$options[10][1] = ""
 
 Global $propertyFormat[9]
 $propertyFormat[0] = "IpAuto"
@@ -196,4 +198,3 @@ $sChangeLog[1] = @CRLF & _
 	"   Detect no IP address / subnet input" & @CRLF & _
 	"   Fix DNS error occurring on some systems" & @CRLF & _
 	"   Better detection of duplicate profile names" & @CRLF
-

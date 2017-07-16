@@ -15,6 +15,12 @@
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
 
+Global $oMyError = ObjEvent("AutoIt.Error","MyErrFunc")
+
+Func MyErrFunc()
+  SetError(1)
+EndFunc
+
 Func _ExitChild($childwin)
 	$guiState = WinGetState( $hgui )
 	GUISetState(@SW_ENABLE, $hGUI)
@@ -24,6 +30,67 @@ Func _ExitChild($childwin)
 	If BitAND($guiState,$WIN_STATE_EXISTS) AND NOT (BitAND($guiState,$WIN_STATE_ACTIVE)) Then
 		_maximize()
 	EndIf
+EndFunc
+
+Func _checksSICUpdate($manualCheck=0)
+  ; This function checks if there are new releases on github and request the user to download it
+
+  $github_releases = "https://api.github.com/repos/KurtisLiggett/Simple-IP-Config/releases/latest"
+
+  Local $oHTTP = ObjCreate("WinHttp.WinHttpRequest.5.1")
+  $oHTTP.Open("GET", $github_releases, False)
+  If (@error) Then SetError(1, 0, 0)
+
+  $oHTTP.Send()
+  If (@error) Then SetError(2, 0, 0)
+
+  If ($oHTTP.Status <> 200) Then SetError(3, 0, 0)
+
+  $cleanedJSON = StringReplace($oHTTP.ResponseText, '"', "")
+  $info = StringRegExp($cleanedJSON, '(?:tag_name|browser_download_url):([^\{,}]+)', 3)
+
+  If (@error) Then
+    MsgBox(16, "Error", "We encountered an error retrieving the update. Check your internet connection.")
+  Else
+	$updateText = "Your version is: " & $winVersion & @CRLF & _
+		"Current version is: " & $info[0] & @CRLF & @CRLF
+    If ($winVersion <> $info[0]) Then
+		$updateText &= "A newer version is available. Press ok to download it."
+
+		If MsgBox(1, "Simple IP Config Update available", $updateText) = 1 Then ShellExecute($info[1])
+	Else
+		$updateText &= "No update is available."
+		if $manualCheck Then MsgBox(0, "Simple IP Config Update", $updateText)
+    EndIf
+  Endif
+
+;  $newFilename = "Simple.IP.Config."&$info[0]&".exe"
+;  If ($winVersion <> $info[0]) Then
+;    If MsgBox(1, "Simple-IP-Config Update available", "A new version of Simple-IP-Config has been made publicly available. Press ok to download and install it.") = 1 Then
+;	  $res = InetGet ($info[1], $newFilename)
+;  		If $res > 0 Then
+;  			_DoUpdate($newFilename)
+;  		EndIf
+;    EndIf
+;  Else
+;  	If FileExists('simple_ip_config_updater.cmd') Then
+;  		FileDelete('simple_ip_config_updater.cmd')  ; delete updater
+;  	EndIf
+;  EndIf
+
+EndFunc
+
+Func _DoUpdate($newFilename)
+	$fileStr = '@echo off' & @CRLF & _
+				'taskkill /pid ' & WinGetProcess($hgui) & @CRLF & _	; kill running instance
+				'del /Q "' & @ScriptFullPath & '"' & @CRLF & _ ; delete old version
+				'start "" "' & $newFilename & '"' ; start new version
+	$filename = 'simple_ip_config_updater.cmd'
+	$file = FileOpen($filename, 2) ; open/overwrite
+	FileWrite($file, $fileStr)
+	FileClose($file)
+
+	$iPID = Run(@ComSpec & " /k " & $filename, "", @SW_HIDE, $STDIN_CHILD+$STDERR_MERGED)
 EndFunc
 
 Func _updateCombo()
@@ -80,6 +147,7 @@ Func _arrange($desc=0)
 	$newfile &= $options[5][0] & "=" & $options[5][1] & @CRLF
 	$newfile &= $options[6][0] & "=" & $options[6][1] & @CRLF
 	$newfile &= $options[7][0] & "=" & $options[7][1] & @CRLF
+  $newfile &= $options[10][0] & "=" & $options[10][1] & @CRLF
 
 	Local $profileNames = _getNames()
 	$profileNamesSorted = $profileNames
@@ -783,6 +851,8 @@ Func _saveOptions()
 	$options[2][1] = _StateToStr($ck_startinTray)
 	$options[1][1] = _StateToStr($ck_mintoTray)
 	$options[6][1] = _StateToStr($ck_saveAdapter)
+  $options[10][1] = _StateToStr($ck_autoUpdate)
+
 	IniWriteSection("profiles.ini", "options", $options, 0)
 	_onExitSettings()
 EndFunc
