@@ -371,6 +371,10 @@ Func _onHelp()
 
 EndFunc
 
+Func _onUpdateCheckItem()
+	_checksSICUpdate(1)
+EndFunc
+
 ;------------------------------------------------------------------------------
 ; Title........: _onDebugItem
 ; Description..: Create debug child window

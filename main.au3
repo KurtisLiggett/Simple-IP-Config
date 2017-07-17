@@ -273,7 +273,10 @@ Func _main()
 	;get the domain
 	GUICtrlSetData($domain, _DomainComputerBelongs())
 
-	;wait for user interaction (events)
+  if($options[10][1] = "true") Then
+    _checksSICUpdate()
+  EndIf
+
 	While 1
 		If Not $pIdle Then _asyncProcess()
 
