@@ -81,8 +81,9 @@ Func _makeGUI()
 	$iyCoordMin = _WinAPI_GetSystemMetrics(77)
 	$iFullDesktopWidth = _WinAPI_GetSystemMetrics(78)
 	$iFullDesktopHeight = _WinAPI_GetSystemMetrics(79)
-	If $options[8][1] <> "" Then
-		$xpos = $options[8][1]
+	$sPositionX = Options_GetValue($options, $OPTIONS_PositionX)
+	If $sPositionX <> "" Then
+		$xpos = $sPositionX
 		If $xpos > ($ixCoordMin+$iFullDesktopWidth) Then
 			$xpos = $iFullDesktopWidth-($guiWidth*$dscale)
 		ElseIf $xpos < $ixCoordMin Then
@@ -91,8 +92,9 @@ Func _makeGUI()
 	Else
 		$xpos = @DesktopWidth/2-$guiWidth*$dscale/2
 	EndIf
-	If $options[9][1] <> "" Then
-		$ypos = $options[9][1]
+	$sPositionY = Options_GetValue($options, $OPTIONS_PositionY)
+	If $sPositionY <> "" Then
+		$ypos = $sPositionY
 		If $ypos > ($iyCoordMin+$iFullDesktopHeight) Then
 			$ypos = $iFullDesktopHeight-($guiHeight*$dscale)
 		ElseIf $ypos < $iyCoordMin Then
@@ -209,8 +211,8 @@ Func _makeGUI()
 ;~ 		EndIf
 ;~ 	EndIf
 
-
-	If $options[2][1] <> "1" and $options[2][1] <> "true" Then
+	$sStartupMode = Options_GetValue($options, $OPTIONS_StartupMode)
+	If $sStartupMode <> "1" and $sStartupMode <> "true" Then
 		GUISetState(@SW_SHOW, $hgui)
 		GUISetState(@SW_SHOWNOACTIVATE, $hTool)
 		GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
@@ -516,23 +518,6 @@ Func _makeComboSelect($label, $x, $y, $w, $h)
 	_setFont($lDescription, 8.5, $MyGlobalFontBKColor)
 	$lMac = GUICtrlCreateLabel( "MAC Address: ", $x+8*$dscale, $y + $headingHeight + 9*$dscale + 41*$dscale, $w-16*$dscale, -1, $SS_LEFTNOWORDWRAP	 )
 	_setFont($lMac, 8.5, $MyGlobalFontBKColor)
-;~ 	If NOT IsArray( $adapters ) Then
-;~ 		MsgBox( 16, "Error", "There was a problem retrieving the adapters." )
-;~ 	Else
-;~ 		_ArraySort($adapters, 0)	; connections sort ascending
-;~ 		$defaultitem = $adapters[1][0]
-;~ 		$index = _ArraySearch( $adapters, $options[4][1], 1 )
-;~ 		If ($index <> -1) Then
-;~ 			$defaultitem = $adapters[$index][0]
-;~ 		EndIf
-
-;~ 		$aBlacklist = StringSplit($options[7][1], "|")
-;~ 		For $i=1 to $adapters[0][0]
-;~ 			$indexBlacklist = _ArraySearch($aBlacklist, $adapters[$i][0], 1)
-;~ 			if $indexBlacklist <> -1 Then ContinueLoop
-;~ 			GUICtrlSetData( $combo_adapters, $adapters[$i][0], $defaultitem )
-;~ 		Next
-;~ 	EndIf
 
 	$combo_dummy = GUICtrlCreateDummy()
 	GUICtrlSetOnEvent(-1, "_onCombo")
@@ -914,17 +899,17 @@ Func _Settings()
 
 	$ck_startinTray = GUICtrlCreateCheckbox( "Startup in the system tray.", 10*$dScale, 10*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetState($ck_startinTray, _StrToState($options[2][1]))
+	GUICtrlSetState($ck_startinTray, _StrToState(Options_GetValue($options, $OPTIONS_StartupMode)))
 	$ck_mintoTray = GUICtrlCreateCheckbox( "Minimize to the system tray.", 10*$dScale, 30*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetState($ck_mintoTray, _StrToState($options[1][1]))
+	GUICtrlSetState($ck_mintoTray, _StrToState(Options_GetValue($options, $OPTIONS_MinToTray)))
 	$ck_saveAdapter = GUICtrlCreateCheckbox( "Save adapter to profile.", 10*$dScale, 50*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetState($ck_saveAdapter, _StrToState($options[6][1]))
+	GUICtrlSetState($ck_saveAdapter, _StrToState(Options_GetValue($options, $OPTIONS_SaveAdapterToProfile)))
 
-  $ck_autoUpdate = GUICtrlCreateCheckbox( "Enable automatic updates.", 10*$dScale, 70*$dScale, 230*$dScale, 20*$dScale)
-  GUICtrlSetBkColor(-1, 0xFFFFFF)
-  GUICtrlSetState($ck_autoUpdate, _StrToState($options[10][1]))
+	$ck_autoUpdate = GUICtrlCreateCheckbox( "Enable automatic updates.", 10*$dScale, 70*$dScale, 230*$dScale, 20*$dScale)
+	GUICtrlSetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetState($ck_autoUpdate, _StrToState(Options_GetValue($options, $OPTIONS_AutoUpdate)))
 
 	$bt_optSave = GUICtrlCreateButton( "Save", $w-25*$dScale-50*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( $bt_optSave, "_saveOptions")
@@ -978,7 +963,8 @@ EndFunc
 
 
 Func _blacklist()
-	Local $blacklist = StringReplace( $options[7][1], "|", @CRLF)
+	$sBlacklist = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
+	Local $blacklist = StringReplace( $sBlacklist, "|", @CRLF)
 
 	$w = 275*$dScale
 	$h = 300*$dScale

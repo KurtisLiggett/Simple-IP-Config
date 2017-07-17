@@ -111,7 +111,7 @@ EndFunc
 
 ;------------------------------------------------------------------------------
 ; Title...........: _updateCombo
-; Description.....: Update the adapters list
+; Description.....: UpdateUpdate the adapters list
 ;
 ; Parameters......:
 ; Return value....:
@@ -126,11 +126,13 @@ Func _updateCombo()
 	Else
 		_ArraySort($adapters, 0)	; connections sort ascending
 		$defaultitem = $adapters[1][0]
-		$index = _ArraySearch( $adapters, $options[4][1], 1 )
+		$sStartupAdapter = Options_GetValue($options, $OPTIONS_StartupAdapter)
+		$index = _ArraySearch( $adapters, $sStartupAdapter, 1 )
 		If ($index <> -1) Then
 			$defaultitem = $adapters[$index][0]
 		EndIf
-		$aBlacklist = StringSplit($options[7][1], "|")
+		$sBlacklist = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
+		$aBlacklist = StringSplit($sBlacklist, "|")
 		For $i=1 to $adapters[0][0]
 			$indexBlacklist = _ArraySearch($aBlacklist, $adapters[$i][0], 1)
 			if $indexBlacklist <> -1 Then ContinueLoop
@@ -179,15 +181,17 @@ Func _arrange($desc=0)
 
 	Local $newfile = ""
 	$newfile &= "[Options]" & @CRLF
-	$newfile &= $options[0][0] & "=" & $options[0][1] & @CRLF
-	$newfile &= $options[1][0] & "=" & $options[1][1] & @CRLF
-	$newfile &= $options[2][0] & "=" & $options[2][1] & @CRLF
-	$newfile &= $options[3][0] & "=" & $options[3][1] & @CRLF
-	$newfile &= $options[4][0] & "=" & $options[4][1] & @CRLF
-	$newfile &= $options[5][0] & "=" & $options[5][1] & @CRLF
-	$newfile &= $options[6][0] & "=" & $options[6][1] & @CRLF
-	$newfile &= $options[7][0] & "=" & $options[7][1] & @CRLF
-  $newfile &= $options[10][0] & "=" & $options[10][1] & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_Version) & "=" & Options_GetValue($options, $OPTIONS_Version) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_MinToTray) & "=" & Options_GetValue($options, $OPTIONS_MinToTray) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_StartupMode) & "=" & Options_GetValue($options, $OPTIONS_StartupMode) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_Language) & "=" & Options_GetValue($options, $OPTIONS_Language) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_StartupAdapter) & "=" & Options_GetValue($options, $OPTIONS_StartupAdapter) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_Theme) & "=" & Options_GetValue($options, $OPTIONS_Theme) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_SaveAdapterToProfile) & "=" & Options_GetValue($options, $OPTIONS_SaveAdapterToProfile) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_AdapterBlacklist) & "=" & Options_GetValue($options, $OPTIONS_AdapterBlacklist) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_PositionX) & "=" & Options_GetValue($options, $OPTIONS_PositionX) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_PositionY) & "=" & Options_GetValue($options, $OPTIONS_PositionY) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_AutoUpdate) & "=" & Options_GetValue($options, $OPTIONS_AutoUpdate) & @CRLF
 
 	Local $profileNames = _getNames()
 	$profileNamesSorted = $profileNames
@@ -697,10 +701,12 @@ EndFunc
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _checkChangelog()
-	if $options[0][1] <> $winVersion Then
+	$sVersion = Options_GetValue($options, $OPTIONS_Version)
+	if $sVersion <> $winVersion Then
 		_changeLog()
-		$options[0][1] = $winVersion
-		IniWrite("profiles.ini", "options", $options[0][0], $options[0][1])
+		$sVersion = $winVersion
+		$sVersionName = Options_GetName($options, $OPTIONS_Version)
+		IniWrite("profiles.ini", "options", $sVersionName, $sVersion)
 	EndIf
 EndFunc
 
@@ -1017,7 +1023,8 @@ Func _setProperties($init=0, $profileName="")
 
 			GUICtrlSetState( $ck_dnsReg, _StrToState( ($profilelist[$index][1])[7] ) )
 
-			If ($profilelist[$index][1])[8] <> "" and ($options[6][1] = 1 OR $options[6][1] = "true") Then
+			$sSaveAdapter = Options_GetValue($options, $OPTIONS_SaveAdapterToProfile)
+			If ($profilelist[$index][1])[8] <> "" and ($sSaveAdapter = 1 OR $sSaveAdapter = "true") Then
 				$adapterIndex = _ArraySearch($adapters, ($profilelist[$index][1])[8])
 				IF $adapterIndex <> -1 Then
 					ControlCommand ( $hgui, "", $combo_adapters, "SelectString", ($profilelist[$index][1])[8] )
@@ -1037,10 +1044,10 @@ EndFunc
 
 
 Func _saveOptions()
-	$options[2][1] = _StateToStr($ck_startinTray)
-	$options[1][1] = _StateToStr($ck_mintoTray)
-	$options[6][1] = _StateToStr($ck_saveAdapter)
-  $options[10][1] = _StateToStr($ck_autoUpdate)
+	Options_SetValue( $options, $OPTIONS_StartupMode, _StateToStr($ck_startinTray) )
+	Options_SetValue( $options, $OPTIONS_MinToTray, _StateToStr($ck_mintoTray) )
+	Options_SetValue( $options, $OPTIONS_SaveAdapterToProfile, _StateToStr($ck_saveAdapter) )
+	Options_SetValue( $options, $OPTIONS_AutoUpdate, _StateToStr($ck_autoUpdate) )
 
 	IniWriteSection("profiles.ini", "options", $options, 0)
 	_ExitChild(@GUI_WinHandle)
@@ -1118,12 +1125,12 @@ Func _loadProfiles()
 			If $thisName = "Options" Then
 				$index = _ArraySearch($options, $thisSection[$j][0])
 				If $index <> -1 Then
-					If $thisSection[$j][0] = "StartupAdapter" Then
+					If $thisSection[$j][0] = Options_GetName( $options, $OPTIONS_StartupAdapter) Then
 						$newName = StringReplace($thisSection[$j][1], "{lb}", "[")
 						$newName = StringReplace($newName, "{rb}", "]")
-						$options[$index][1] = $newName
+						Options_SetValue( $options, $OPTIONS_StartupAdapter, $newName)
 					Else
-						$options[$index][1] = $thisSection[$j][1]
+						Options_SetValue( $options, $index, $thisSection[$j][1])
 					EndIf
 				EndIf
 			Else
@@ -1241,7 +1248,8 @@ Func _SendToTray()
 EndFunc
 
 Func _minimize()
-	If $options[1][1] = 1 OR $options[1][1] = "true" Then
+	$sMinToTray = Options_GetValue( $options, $OPTIONS_MinToTray)
+	If $sMinToTray = 1 OR $sMinToTray = "true" Then
 		_SendToTray()
 	Else
 		GUISetState(@SW_MINIMIZE, $hGUI)

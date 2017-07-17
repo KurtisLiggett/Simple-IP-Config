@@ -109,7 +109,7 @@ Global $toolsmenu, $disableitem, $refreshitem, $renameitem, $deleteitem, $cleari
 Global $saveitem, $newitem, $pullitem, $send2trayitem, $helpitem, $debugmenuitem
 
 ;Settings window
-Global $ck_mintoTray, $ck_startinTray, $ck_saveAdapter
+Global $ck_mintoTray, $ck_startinTray, $ck_saveAdapter, $ck_autoUpdate
 
 Global $timerstart, $timervalue
 
@@ -144,19 +144,21 @@ Global Enum $tb_settings = 2000, $tb_tray
 ; Adapters
 Global $adapters[1][4] = [[0,0,0]]	; [0]-name, [1]-mac, [2]-description, [3]-GUID
 Global $profilelist[1][2]
-Global $options[10][2]
-$options[0][0] = "Version"
-$options[1][0] = "MinToTray"
-$options[2][0] = "StartupMode"
-$options[3][0] = "Language"
-$options[4][0] = "StartupAdapter"
-$options[5][0] = "Theme"
-$options[6][0] = "SaveAdapterToProfile"
-$options[7][0] = "AdapterBlacklist"
-$options[8][0] = "PositionX"
-$options[8][1] = ""
-$options[9][0] = "PositionY"
-$options[9][1] = ""
+;~ Global $options[11][2]
+;~ $options[0][0] = "Version"
+;~ $options[1][0] = "MinToTray"
+;~ $options[2][0] = "StartupMode"
+;~ $options[3][0] = "Language"
+;~ $options[4][0] = "StartupAdapter"
+;~ $options[5][0] = "Theme"
+;~ $options[6][0] = "SaveAdapterToProfile"
+;~ $options[7][0] = "AdapterBlacklist"
+;~ $options[8][0] = "PositionX"
+;~ $options[8][1] = ""
+;~ $options[9][0] = "PositionY"
+;~ $options[9][1] = ""
+;~ $options[10][0] = "AutoUpdate"
+;~ $options[10][1] = ""
 
 Global $propertyFormat[9]
 $propertyFormat[0] = "IpAuto"
@@ -187,6 +189,9 @@ $propertyFormat[8] = "AdapterName"
 #Include <GUIEdit.au3>
 #include <GuiComboBox.au3>
 #include <Array.au3>
+
+#include "model.au3"
+Global $options = Options()
 
 #include "hexIcons.au3"
 #include "libraries\StringSize.au3"
@@ -251,17 +256,21 @@ Func _main()
 	Else
 		_ArraySort($adapters, 0)	; connections sort ascending
 		$defaultitem = $adapters[1][0]
-		$index = _ArraySearch( $adapters, $options[4][1], 1 )
+		$sStartupAdapter = OPTIONS_GetValue($options, $OPTIONS_StartupAdapter)
+		$index = _ArraySearch( $adapters, $sStartupAdapter, 1 )
 		If ($index <> -1) Then
 			$defaultitem = $adapters[$index][0]
 		EndIf
 
-		$aBlacklist = StringSplit($options[7][1], "|")
-		For $i=1 to $adapters[0][0]
-			$indexBlacklist = _ArraySearch($aBlacklist, $adapters[$i][0], 1)
-			if $indexBlacklist <> -1 Then ContinueLoop
-			GUICtrlSetData( $combo_adapters, $adapters[$i][0], $defaultitem )
-		Next
+		$sAdapterBlacklist = OPTIONS_GetValue($options, $OPTIONS_AdapterBlacklist)
+		$aBlacklist = StringSplit($sAdapterBlacklist, "|")
+		If IsArray($aBlacklist) Then
+			For $i=1 to $adapters[0][0]
+				$indexBlacklist = _ArraySearch($aBlacklist, $adapters[$i][0], 1)
+				if $indexBlacklist <> -1 Then ContinueLoop
+				GUICtrlSetData( $combo_adapters, $adapters[$i][0], $defaultitem )
+			Next
+		EndIf
 	EndIf
 
 	_refresh(1)
@@ -273,9 +282,10 @@ Func _main()
 	;get the domain
 	GUICtrlSetData($domain, _DomainComputerBelongs())
 
-  if($options[10][1] = "true") Then
-    _checksSICUpdate()
-  EndIf
+	$sAutoUpdate = OPTIONS_GetValue($options, $OPTIONS_AutoUpdate)
+	if($sAutoUpdate = "true" OR $sAutoUpdate = "1") Then
+		_checksSICUpdate()
+	EndIf
 
 	While 1
 		If Not $pIdle Then _asyncProcess()
