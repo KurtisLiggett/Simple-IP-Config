@@ -26,9 +26,51 @@ Func MyErrFunc()
   SetError(1)
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: RunCallback
+; Description.....: Callback function that runs after a command is finished
+;                    *commands set IP address info through a hidden command
+;                     prompt. They run without blocking the program, so
+;                     we need a callback function to decide how to proceed
+;                     when the command is done running.
+;
+; Parameters......: $sDescription  		-Command description
+;                   $sNextDescription	-Next command description
+;                   $sStdOut       		-STD output string from command prompt
+; Return value....:
+;------------------------------------------------------------------------------
+Func RunCallback($sDescription, $sNextDescription, $sStdOut)
 
+	If $sStdOut = "Command timeout" Then
+		_setStatus("Action timed out!  Command Aborted.", 1)
+		If asyncRun_isIdle() Then
+			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+		Else
+			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+		EndIf
+	Else
+		If StringInStr($sStdOut, "failed") Then
+			_setStatus(StringReplace($sStdOut, @CRLF, " "), 1)
+			IF asyncRun_isIdle() Then
+				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+			EndIf
+		Else
+			If $sDescription = $sNextDescription Then
+				If not $showWarning Then _setStatus($sNextDescription)
+				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+			ElseIf asyncRun_isIdle() Then
+				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+				If not $showWarning Then _setStatus("Ready")
+				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+			Else
+				If not $showWarning Then _setStatus($sNextDescription)
+				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+			EndIf
+		EndIf
+	EndIf
 
-
+	_updateCurrent()
+EndFunc
 
 ;------------------------------------------------------------------------------
 ; Title...........: _ExitChild
@@ -48,6 +90,13 @@ Func _ExitChild($childwin)
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _checksSICUpdate
+; Description.....: Check for updates/ask to download
+;
+; Parameters......: $manualCheck  -manually run check from menu item
+; Return value....:
+;------------------------------------------------------------------------------
 Func _checksSICUpdate($manualCheck=0)
   ; This function checks if there are new releases on github and request the user to download it
 
@@ -529,7 +578,9 @@ Func _apply()
 			$message = "Setting static IP address..."
 		EndIf
 	EndIf
-	_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
+	;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
+	;(cmd, callback, description)
+	asyncRun($cmd1&$cmd2&$cmd3, RunCallback, $message)
 
 	$dnsp = ""
 	$dnsa = ""
@@ -548,7 +599,9 @@ Func _apply()
 		$cmd1 = $cmd1_1
 		$cmd3 = " dhcp"
 		$message = "Setting DNS DHCP..."
-		_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
+		;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
+		;(cmd, callback, description)
+		asyncRun($cmd1&$cmd2&$cmd3, RunCallback, $message)
 	Else
 		$dnsp = _ctrlGetIP( $ip_DnsPri )
 		$dnsa = _ctrlGetIP( $ip_DnsAlt )
@@ -562,25 +615,33 @@ Func _apply()
 			$cmd3 = " static " & $dnsp
 			$message = "Setting preferred DNS server..."
 			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
-			_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+			;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+			;(cmd, callback, description)
+			asyncRun($cmd1&$cmd2&$cmd3&$cmdend, RunCallback, $message)
 			If $dnsa <> "" Then
 				$cmd1 = $cmd1_2
 				$cmd3 = " " & $dnsa
 				$message = "Setting alternate DNS server..."
 				$cmdend = (_OSVersion() >= 6)?" 2 no":""
-				_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+				;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+				;(cmd, callback, description)
+				asyncRun($cmd1&$cmd2&$cmd3&$cmdend, RunCallback, $message)
 			EndIf
 		ElseIf $dnsa <> "" Then
 			$cmd1 = $cmd1_1
 			$cmd3 = " static " & $dnsp
 			$message = "Setting preferred DNS server..."
 			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
-			_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+			;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+			;(cmd, callback, description)
+			asyncRun($cmd1&$cmd2&$cmd3&$cmdend, RunCallback, $message)
 		Else
 			$cmd1 = $cmd1_3
 			$cmd3 = " all"
 			$message = "Deleting DNS servers..."
-			_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
+			;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
+			;(cmd, callback, description)
+			asyncRun($cmd1&$cmd2&$cmd3, RunCallback, $message)
 		EndIf
 	EndIf
 EndFunc

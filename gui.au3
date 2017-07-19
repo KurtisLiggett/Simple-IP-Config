@@ -223,7 +223,7 @@ Func _makeGUI()
 	Else
 		TrayItemSetText( $RestoreItem, "Restore" )
 	EndIf
-	$prevWinPos = WinGetPos($winName & " " & $winVersion)
+	$prevWinPos = WinGetPos($hgui)
 EndFunc
 
 Func _makeFooter()
@@ -717,7 +717,7 @@ Func _about()
 	$h = 230 * $dScale
 
 	If NOT BITAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
-		$currentWinPos = WinGetPos($winName)
+		$currentWinPos = WinGetPos($hgui)
 		$x = $currentWinPos[0] + $guiWidth * $dscale / 2 - $w / 2
 		$y = $currentWinPos[1] + $guiHeight * $dscale / 2 - $h / 2
 	Else
@@ -799,7 +799,7 @@ Func _changeLog()
 	$w = 305*$dScale
 	$h = 410*$dScale
 
-	$currentWinPos = WinGetPos($winName & " " & $winVersion)
+	$currentWinPos = WinGetPos($hgui)
 	$x = $currentWinPos[0] + $guiWidth*$dscale/2 - $w/2
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
@@ -838,7 +838,7 @@ Func _debugWindow()
 	$w = 305*$dScale
 	$h = 410*$dScale
 
-	$currentWinPos = WinGetPos($winName & " " & $winVersion)
+	$currentWinPos = WinGetPos($hgui)
 	$x = $currentWinPos[0] + $guiWidth*$dscale/2 - $w/2
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
@@ -882,7 +882,7 @@ Func _Settings()
 	$w = 200*$dScale
 	$h = 150*$dScale
 
-	$currentWinPos = WinGetPos($winName & " " & $winVersion)
+	$currentWinPos = WinGetPos($hgui)
 	$x = $currentWinPos[0] + $guiWidth*$dscale/2 - $w/2
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
@@ -969,7 +969,7 @@ Func _blacklist()
 	$w = 275*$dScale
 	$h = 300*$dScale
 
-	$currentWinPos = WinGetPos($winName & " " & $winVersion)
+	$currentWinPos = WinGetPos($hgui)
 	$x = $currentWinPos[0] + $guiWidth*$dscale/2 - $w/2
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 

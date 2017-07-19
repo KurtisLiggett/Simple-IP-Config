@@ -194,9 +194,9 @@ $propertyFormat[8] = "AdapterName"
 Global $options = Options()
 
 #include "hexIcons.au3"
+#include "libraries\asyncRun.au3"
 #include "libraries\StringSize.au3"
 #include "libraries\_NetworkStatistics.au3"
-#include "asyncProcess.au3"
 #include "functions.au3"
 #include "events.au3"
 #include "network.au3"
@@ -288,13 +288,6 @@ Func _main()
 	EndIf
 
 	While 1
-		If Not $pIdle Then _asyncProcess()
-
-		Switch GUIGetMsg()
-			Case $GUI_EVENT_CLOSE
-				_onExit()
-		EndSwitch
-
 		If $lv_doneEditing Then
 			_onLvDoneEdit()
 		EndIf

@@ -47,21 +47,27 @@ EndFunc
 Func _releaseDhcp()
 	$adaptername = GUICtrlRead($combo_adapters)
 	$cmd = 'ipconfig /release "' & $adaptername & '"'
-	_asyncNewCmd($cmd, "Releasing DHCP...")
+	;_asyncNewCmd($cmd, "Releasing DHCP...")
+	;(cmd, callback, description)
+	asyncRun($cmd, RunCallback, "Releasing DHCP...")
 EndFunc
 
 Func _renewDhcp()
 	$adaptername = GUICtrlRead($combo_adapters)
 	$cmd = 'ipconfig /renew "' & $adaptername & '"'
-	_asyncNewCmd($cmd, "Renewing DHCP...")
+	;_asyncNewCmd($cmd, "Renewing DHCP...")
+	;(cmd, callback, description)
+	asyncRun($cmd, RunCallback, "Renewing DHCP...")
 EndFunc
 
 Func _cycleDhcp()
 	$adaptername = GUICtrlRead($combo_adapters)
 	$cmd = 'ipconfig /release "' & $adaptername & '"'
-	_asyncNewCmd($cmd, "Releasing DHCP...")	; run release command
+	;_asyncNewCmd($cmd, "Releasing DHCP...")	; run release command
+	asyncRun($cmd, RunCallback, "Releasing DHCP...")
 	$cmd = 'ipconfig /renew "' & $adaptername & '"'
-	_asyncNewCmd($cmd, "Renewing DHCP...", 1) ; run renew command. Add to queue if not ready
+	;_asyncNewCmd($cmd, "Renewing DHCP...", 1) ; run renew command. Add to queue if not ready
+	asyncRun($cmd, RunCallback, "Renewing DHCP...")
 EndFunc
 
 Func _getIPs($adaptername)
