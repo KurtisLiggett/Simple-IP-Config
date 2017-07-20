@@ -111,7 +111,7 @@ Func _onSelect()
 EndFunc
 
 Func _onApply()
-	_apply()
+	_apply_GUI()
 EndFunc
 
 Func _onArrangeAz()
@@ -205,7 +205,7 @@ EndFunc
 
 Func _onLvEnter()
 	If Not $lv_editing Then
-		_apply()
+		_apply_GUI()
 	Else
 		GUISetAccelerators(0)
 		Send("{ENTER}")
@@ -283,7 +283,7 @@ Func _OnToolbarButton()
 	$ID = GUICtrlRead($ToolbarIDs)
 	Switch $ID
 		Case $tb_apply ; Button 1
-			_onApply()
+			_apply_GUI()
 		Case $tb_refresh ; Button 2
 			_onRefresh()
 		Case $tb_add ; Button 3

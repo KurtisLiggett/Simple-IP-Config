@@ -236,18 +236,7 @@ Func _clickUp()
     If _checkMouse($list_profiles) and _ctrlHasFocus($list_profiles) Then
 		MouseClick("left")
 		If $mdblClick Then
-      $dhcp = (GUICtrlRead($radio_IpAuto) = $GUI_CHECKED)?"true":"false"
-      $ip = _ctrlGetIP( $ip_Ip )
-      $subnet = _ctrlGetIP( $ip_Subnet )
-  		$gateway = _ctrlGetIP( $ip_Gateway )
-      $dnsdhcp = (GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED)?"true":"false"
-      $dnsp = _ctrlGetIP( $ip_DnsPri )
-  		$dnsa = _ctrlGetIP( $ip_DnsAlt )
-      $dnsreg = (BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED)?"true":"false"
-      $adapter = GUICtrlRead($combo_adapters)
-
-
-			_apply($dhcp, $ip, $subnet, $gateway, $dnsdhcp, $dnsp, $dnsa, $dnsreg, $adapter)
+			_apply_GUI()
 			$mdblClick = 0
 		Else
 			If $dragging Then
@@ -408,6 +397,20 @@ Func _radios()
 	EndIf
 EndFunc
 
+Func _apply_GUI()
+	$dhcp = (GUICtrlRead($radio_IpAuto) = $GUI_CHECKED)?"true":"false"
+	$ip = _ctrlGetIP( $ip_Ip )
+	$subnet = _ctrlGetIP( $ip_Subnet )
+	$gateway = _ctrlGetIP( $ip_Gateway )
+	$dnsdhcp = (GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED)?"true":"false"
+	$dnsp = _ctrlGetIP( $ip_DnsPri )
+	$dnsa = _ctrlGetIP( $ip_DnsAlt )
+	$dnsreg = (BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED)?"true":"false"
+	$adapter = GUICtrlRead($combo_adapters)
+
+	_apply($dhcp, $ip, $subnet, $gateway, $dnsdhcp, $dnsp, $dnsa, $dnsreg, $adapter)
+EndFunc
+
 ; MUST BE TESTED VERY CAREFULLY
 Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $adapter)
 	If $adapter = "" Then
@@ -416,7 +419,7 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 	Endif
 
 	$cmd1 = 'netsh interface ip set address '
-	$cmd2 = '"' & $selected_adapter & '"'
+	$cmd2 = '"' & $adapter & '"'
 	$cmd3 = ""
 	$message = ""
 	if ($dhcp = "true") Then
@@ -444,7 +447,7 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 	$cmd1_1 = 'netsh interface ip set dns '
 	$cmd1_2 = 'netsh interface ip add dns '
 	$cmd1_3 = 'netsh interface ip delete dns '
-	$cmd2 = '"' & $selected_adapter & '"'
+	$cmd2 = '"' & $adapter & '"'
 	$cmd3 = ""
 	$cmdend = ""
 	$message = ""
