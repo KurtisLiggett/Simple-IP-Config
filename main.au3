@@ -35,10 +35,6 @@
 #NoTrayIcon	;prevent double icon for singleton check
 
 Global $iMsg = _WinAPI_RegisterWindowMessage('newinstance_message')
-If _Singleton("Simple IP Config", 1) = 0 Then
-	_WinAPI_PostMessage(0xffff, $iMsg, 0x101, 0)
-    Exit
-EndIf
 
 #include <WindowsConstants.au3>
 #include <GUIConstantsEx.au3>
@@ -66,6 +62,7 @@ EndIf
 #include "functions.au3"
 #include "events.au3"
 #include "gui.au3"
+#include "cli.au3"
 
 Opt("TrayIconHide", 0)
 Opt("GUIOnEventMode",1)

@@ -236,7 +236,18 @@ Func _clickUp()
     If _checkMouse($list_profiles) and _ctrlHasFocus($list_profiles) Then
 		MouseClick("left")
 		If $mdblClick Then
-			_apply()
+      $dhcp = (GUICtrlRead($radio_IpAuto) = $GUI_CHECKED)?"true":"false"
+      $ip = _ctrlGetIP( $ip_Ip )
+      $subnet = _ctrlGetIP( $ip_Subnet )
+  		$gateway = _ctrlGetIP( $ip_Gateway )
+      $dnsdhcp = (GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED)?"true":"false"
+      $dnsp = _ctrlGetIP( $ip_DnsPri )
+  		$dnsa = _ctrlGetIP( $ip_DnsAlt )
+      $dnsreg = (BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED)?"true":"false"
+      $adapter = GUICtrlRead($combo_adapters)
+
+
+			_apply($dhcp, $ip, $subnet, $gateway, $dnsdhcp, $dnsp, $dnsa, $dnsreg, $adapter)
 			$mdblClick = 0
 		Else
 			If $dragging Then
@@ -397,29 +408,21 @@ Func _radios()
 	EndIf
 EndFunc
 
-Func _apply()
-	$selected_adapter = GUICtrlRead($combo_adapters)
-	If $selected_adapter = "" Then
+; MUST BE TESTED VERY CAREFULLY
+Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $adapter)
+	If $adapter = "" Then
 		_setStatus("Please select an adapter and try again", 1)
 		Return 1
 	Endif
 
-	$ip = ""
-	$subnet = ""
-	$gateway = ""
-
-	$dhcp = (GUICtrlRead($radio_IpAuto) = $GUI_CHECKED)?1:0
 	$cmd1 = 'netsh interface ip set address '
 	$cmd2 = '"' & $selected_adapter & '"'
 	$cmd3 = ""
 	$message = ""
-	if $dhcp Then
+	if ($dhcp = "true") Then
 		$cmd3 = " dhcp"
 		$message = "Setting DHCP..."
 	Else
-		$ip = _ctrlGetIP( $ip_Ip )
-		$subnet = _ctrlGetIP( $ip_Subnet )
-		$gateway = _ctrlGetIP( $ip_Gateway )
 		If $ip = "" Then
 			_setStatus("Please enter an IP address", 1)
 			Return 1
@@ -437,10 +440,6 @@ Func _apply()
 	EndIf
 	_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
 
-	$dnsp = ""
-	$dnsa = ""
-
-	$dnsDhcp = (GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED)?1:0
 	$cmd1 = ''
 	$cmd1_1 = 'netsh interface ip set dns '
 	$cmd1_2 = 'netsh interface ip add dns '
@@ -450,15 +449,13 @@ Func _apply()
 	$cmdend = ""
 	$message = ""
 	$cmdReg = ""
-	if $dnsDhcp Then
+	if ($dnsDhcp = "true") Then
 		$cmd1 = $cmd1_1
 		$cmd3 = " dhcp"
 		$message = "Setting DNS DHCP..."
 		_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
 	Else
-		$dnsp = _ctrlGetIP( $ip_DnsPri )
-		$dnsa = _ctrlGetIP( $ip_DnsAlt )
-		If BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED Then
+		If $dnsreg = "true" Then
 			$cmdReg = "both"
 		Else
 			$cmdReg = "none"
@@ -490,6 +487,100 @@ Func _apply()
 		EndIf
 	EndIf
 EndFunc
+
+;Func _OLDapply()
+;	$selected_adapter = GUICtrlRead($combo_adapters)
+;	If $selected_adapter = "" Then
+;		_setStatus("Please select an adapter and try again", 1)
+;		Return 1
+;	Endif
+;
+;	$ip = ""
+;	$subnet = ""
+;	$gateway = ""
+;
+;	$dhcp = (GUICtrlRead($radio_IpAuto) = $GUI_CHECKED)?1:0
+;	$cmd1 = 'netsh interface ip set address '
+;	$cmd2 = '"' & $selected_adapter & '"'
+;	$cmd3 = ""
+;	$message = ""
+;	if $dhcp Then
+;		$cmd3 = " dhcp"
+;		$message = "Setting DHCP..."
+;	Else
+;		$ip = _ctrlGetIP( $ip_Ip )
+;		$subnet = _ctrlGetIP( $ip_Subnet )
+;		$gateway = _ctrlGetIP( $ip_Gateway )
+;		If $ip = "" Then
+;			_setStatus("Please enter an IP address", 1)
+;			Return 1
+;		ElseIf $subnet = "" Then
+;			_setStatus("Please enter a subnet mask", 1)
+;			Return 1
+;		Else
+;			If $gateway = "" Then
+;				$cmd3 = " static " & $ip & " " & $subnet & " none"
+;			Else
+;				$cmd3 = " static " & $ip & " " & $subnet & " " & $gateway & " 1"
+;			EndIf
+;			$message = "Setting static IP address..."
+;		EndIf
+;	EndIf
+;	_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
+;
+;	$dnsp = ""
+;	$dnsa = ""
+;
+;	$dnsDhcp = (GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED)?1:0
+;	$cmd1 = ''
+;	$cmd1_1 = 'netsh interface ip set dns '
+;	$cmd1_2 = 'netsh interface ip add dns '
+;	$cmd1_3 = 'netsh interface ip delete dns '
+;	$cmd2 = '"' & $selected_adapter & '"'
+;	$cmd3 = ""
+;	$cmdend = ""
+;	$message = ""
+;	$cmdReg = ""
+;	if $dnsDhcp Then
+;		$cmd1 = $cmd1_1
+;		$cmd3 = " dhcp"
+;		$message = "Setting DNS DHCP..."
+;		_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
+;	Else
+;		$dnsp = _ctrlGetIP( $ip_DnsPri )
+;		$dnsa = _ctrlGetIP( $ip_DnsAlt )
+;		If BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED Then
+;			$cmdReg = "both"
+;		Else
+;			$cmdReg = "none"
+;		EndIf
+;		If $dnsp <> "" Then
+;			$cmd1 = $cmd1_1
+;			$cmd3 = " static " & $dnsp
+;			$message = "Setting preferred DNS server..."
+;			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
+;			_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+;			If $dnsa <> "" Then
+;				$cmd1 = $cmd1_2
+;				$cmd3 = " " & $dnsa
+;				$message = "Setting alternate DNS server..."
+;				$cmdend = (_OSVersion() >= 6)?" 2 no":""
+;				_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+;			EndIf
+;		ElseIf $dnsa <> "" Then
+;			$cmd1 = $cmd1_1
+;			$cmd3 = " static " & $dnsp
+;			$message = "Setting preferred DNS server..."
+;			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
+;			_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+;		Else
+;			$cmd1 = $cmd1_3
+;			$cmd3 = " all"
+;			$message = "Deleting DNS servers..."
+;			_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
+;		EndIf
+;	EndIf
+;EndFunc
 
 Func _OSVersion()
     Return RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\", "CurrentVersion")
