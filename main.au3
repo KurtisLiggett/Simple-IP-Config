@@ -58,6 +58,7 @@ Global $iMsg = _WinAPI_RegisterWindowMessage('newinstance_message')
 #include "hexIcons.au3"
 #include "network.au3"
 #include "libraries\StringSize.au3"
+#include "libraries\Toast.au3"
 #include "libraries\_NetworkStatistics.au3"
 #include "functions.au3"
 #include "events.au3"
