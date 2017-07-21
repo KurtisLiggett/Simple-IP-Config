@@ -32,6 +32,18 @@ Func _ExitChild($childwin)
 	EndIf
 EndFunc
 
+Func _CreateLink()
+	$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
+	$iniName = StringReplace($profileName, "[", "{lb}")
+	$iniName = StringReplace($iniName, "]", "{rb}")
+
+	$dir = FileSaveDialog( "Choose a filename", @ScriptDir, "Shortcuts (*.lnk)", 0, "Simple IP Config - " & $profileName)
+	If @error Then	Return
+
+	$res = FileCreateShortcut ( @ScriptFullPath, $dir, @ScriptDir, '/set-config "' & $iniName & '"', "desc", @ScriptFullPath )
+	If $res = -1 Then _setStatus("Could not save to the selected location!", 1)
+EndFunc
+
 Func _checksSICUpdate($manualCheck=0)
   ; This function checks if there are new releases on github and request the user to download it
 
@@ -1075,6 +1087,7 @@ EndFunc
 
 
 Func _updateCurrent($init=0, $selected_adapter="")
+	If $cmdLine Then Return
 	If NOT $init Then
 		$selected_adapter = GUICtrlRead($combo_adapters)
 	EndIf
@@ -1175,6 +1188,7 @@ Func _getNames()
 EndFunc
 
 Func _setStatus($sMessage, $bError=0, $bTiming=0)
+	if $cmdLine Then Return
 	If NOT $bTiming Then
 		$sStatusMessage = $sMessage
 	EndIf

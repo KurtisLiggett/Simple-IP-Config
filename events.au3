@@ -30,6 +30,10 @@ Func _onExit()
 	Exit
 EndFunc
 
+Func _onCreateLink()
+	_CreateLink()
+EndFunc
+
 Func _onTab()
 	ConsoleWrite(_WinAPI_GetFocus() & " | " & ControlGetHandle("","", $ip_Ip) & " | " & $ip_Ip & " | " & ControlGetFocus("","") & @CRLF)
 	If _WinAPI_GetFocus() = ControlGetHandle("","", $ip_Ip) Then
