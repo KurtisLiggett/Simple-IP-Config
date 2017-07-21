@@ -670,7 +670,7 @@ Func _checkChangelog()
 	if $options[0][1] <> $winVersion Then
 		_changeLog()
 		$options[0][1] = $winVersion
-		IniWrite("profiles.ini", "options", $options[0][0], $options[0][1])
+		IniWrite(@ScriptDir & "/profiles.ini", "options", $options[0][0], $options[0][1])
 	EndIf
 EndFunc
 
@@ -823,7 +823,7 @@ Func _new()
 	EndIf
 
 	$lv_newItem = 0
-	$ret = IniWriteSection( "profiles.ini", $iniName, $section, 0 )
+	$ret = IniWriteSection(@ScriptDir & "/profiles.ini", $iniName, $section, 0 )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
@@ -863,7 +863,7 @@ Func _save()
 
 	$iniName = StringReplace($profileName, "[", "{lb}")
 	$iniName = StringReplace($iniName, "]", "{rb}")
-	$ret = IniWriteSection( "profiles.ini", $iniName, $section, 0 )
+	$ret = IniWriteSection( @ScriptDir & "/profiles.ini", $iniName, $section, 0 )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
@@ -959,7 +959,7 @@ Func _saveOptions()
 	$options[6][1] = _StateToStr($ck_saveAdapter)
   $options[10][1] = _StateToStr($ck_autoUpdate)
 
-	IniWriteSection("profiles.ini", "options", $options, 0)
+	IniWriteSection(@ScriptDir & "/profiles.ini", "options", $options, 0)
 	_onExitSettings()
 EndFunc
 

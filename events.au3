@@ -24,7 +24,7 @@ Func _onExit()
 		$currentWinPos = WinGetPos($winName & " " & $winVersion)
 		$options[8][1] = $currentWinPos[0]
 		$options[9][1] = $currentWinPos[1]
-		IniWriteSection("profiles.ini", "options", $options, 0)
+		IniWriteSection(@ScriptDir & "/profiles.ini", "options", $options, 0)
 	EndIf
 
 	Exit
@@ -71,7 +71,7 @@ Func _onExitBlacklistOk()
 	$newBlacklist = StringReplace($newBlacklist, "[", "{lb}")
 	$newBlacklist = StringReplace($newBlacklist, "]", "{rb}")
 	$options[7][1] = $newBlacklist
-	IniWrite("profiles.ini", "options", $options[7][0], $options[7][1])
+	IniWrite(@ScriptDir & "/profiles.ini", "options", $options[7][0], $options[7][1])
 
 	_onExitBlacklist()
 	_updateCombo()
@@ -274,7 +274,7 @@ Func _OnCombo()
 	$adap = GUICtrlRead($combo_adapters)
 	$iniAdap = StringReplace($adap, "[", "{lb}")
 	$iniAdap = StringReplace($iniAdap, "]", "{rb}")
-	$ret = IniWrite( "profiles.ini", "options", $options[4][0], $iniAdap )
+	$ret = IniWrite( @ScriptDir & "/profiles.ini", "options", $options[4][0], $iniAdap )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the selected adapter", 1)
 	Else
@@ -479,5 +479,3 @@ Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
     EndSwitch
     Return $GUI_RUNDEFMSG
 EndFunc   ;==>WM_NOTIFY
-
-
