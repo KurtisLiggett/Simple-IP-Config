@@ -186,7 +186,7 @@ Func _arrange($desc=0)
 		$profilelist[$i][0] = $profileNamesSorted[$i-1]
 	Next
 
-	Local $hFileOpen = FileOpen("profiles.ini", 2)
+	Local $hFileOpen = FileOpen(@ScriptDir & "/profiles.ini", 2)
 	If $hFileOpen = -1 Then
 		Return 1
 	EndIf
@@ -256,7 +256,7 @@ Func _clickUp()
 				$dragtext = ControlListView($hgui, "", $list_profiles, "GetText", $dragitem)
 				$newtext = ControlListView($hgui, "", $list_profiles, "GetText", $newitem)
 				if $newitem <> "" Then
-					$ret = _iniMove("profiles.ini", $dragtext, $newtext)
+					$ret = _iniMove(@ScriptDir & "/profiles.ini", $dragtext, $newtext)
 					If not $ret Then
 						Select
 							Case $dragitem < $newitem
@@ -679,7 +679,7 @@ Func _rename()
 		Return
 	EndIf
 
-	$ret = _iniRename("profiles.ini", $lv_oldName, $lv_newName)
+	$ret = _iniRename(@ScriptDir & "/profiles.ini", $lv_oldName, $lv_newName)
 	If $ret = 2 Then
 		MsgBox($MB_ICONWARNING,"Warning!","The profile name already exists!")
 		_GUICtrlListView_SetItemText ( $list_profiles, $lv_editIndex, $lv_oldName )
@@ -748,7 +748,7 @@ Func _delete($name="")
 	$iniName = StringReplace($profileName, "[", "{lb}")
 	$iniName = StringReplace($iniName, "]", "{rb}")
 
-	$ret = IniDelete( "profiles.ini", $iniName )
+	$ret = IniDelete( @ScriptDir & "/profiles.ini", $iniName )
 	If $ret = 0 Then
 		_setStatus("An error occurred while deleting the profile", 1)
 	EndIf
@@ -1002,7 +1002,7 @@ Func _StateToStr($id)
 EndFunc
 
 Func _loadProfiles()
-	Local $pname = "profiles.ini"
+	Local $pname = @ScriptDir & "/profiles.ini"
 	Local $aArray[1][2] = [[0,0]]
 	$profilelist = $aArray
 	If Not FileExists( $pname ) Then
