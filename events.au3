@@ -181,7 +181,8 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onNewItem()
 	$newname = "New Item"
-	Local $profileNames = _getNames()
+	;Local $profileNames = _getNames()
+	Local $profileNames = Profiles_GetNames($profiles)
 	Local $i = 1
 	while _ArraySearch($profileNames, $newname) <> -1
 		$newname = "New Item " & $i

@@ -143,33 +143,6 @@ Global Enum $tb_settings = 2000, $tb_tray
 
 ; Adapters
 Global $adapters[1][4] = [[0,0,0]]	; [0]-name, [1]-mac, [2]-description, [3]-GUID
-Global $profilelist[1][2]
-;~ Global $options[11][2]
-;~ $options[0][0] = "Version"
-;~ $options[1][0] = "MinToTray"
-;~ $options[2][0] = "StartupMode"
-;~ $options[3][0] = "Language"
-;~ $options[4][0] = "StartupAdapter"
-;~ $options[5][0] = "Theme"
-;~ $options[6][0] = "SaveAdapterToProfile"
-;~ $options[7][0] = "AdapterBlacklist"
-;~ $options[8][0] = "PositionX"
-;~ $options[8][1] = ""
-;~ $options[9][0] = "PositionY"
-;~ $options[9][1] = ""
-;~ $options[10][0] = "AutoUpdate"
-;~ $options[10][1] = ""
-
-Global $propertyFormat[9]
-$propertyFormat[0] = "IpAuto"
-$propertyFormat[1] = "IpAddress"
-$propertyFormat[2] = "IpSubnet"
-$propertyFormat[3] = "IpGateway"
-$propertyFormat[4] = "DnsAuto"
-$propertyFormat[5] = "IpDnsPref"
-$propertyFormat[6] = "IpDnsAlt"
-$propertyFormat[7] = "RegisterDns"
-$propertyFormat[8] = "AdapterName"
 
 #EndRegion Global Variables
 
@@ -192,6 +165,7 @@ $propertyFormat[8] = "AdapterName"
 
 #include "model.au3"
 Global $options = Options()
+Global $profiles = Profiles()
 
 #include "hexIcons.au3"
 #include "libraries\asyncRun.au3"

@@ -195,11 +195,10 @@ Func _makeGUI()
 	;GUICtrlSetBkColor(-1,0xC9C9C9)
 	GUICtrlSetBkColor(-1,0x666666)
 
-
-	If IsArray($profilelist) Then
-		If $profilelist[0][0] > 0 Then
-			$profileName = $profilelist[1][0]
-;~ 			ConsoleWrite($profileName&@CRLF)
+	If IsArray($profiles) Then
+		If Profiles_GetSize($profiles) > 0 Then
+			Local $profileNames = Profiles_GetNames($profiles)
+			$profileName = $profilenames[0]
 			_setProperties(1,$profileName)
 		EndIf
 	EndIf

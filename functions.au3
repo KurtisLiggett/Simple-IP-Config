@@ -203,7 +203,6 @@ EndFunc
 Func _blacklistAdd()
 	$selected_adapter = GUICtrlRead($combo_adapters)
 	$list = GUICtrlRead($blacklistEdit)
-;~ 	_ArrayDisplay(StringToASCIIArray ($list))
 	If $list = "" OR StringRight($list, 1) = @CR OR StringRight($list, 1) = @LF Then
 		$newString = $selected_adapter
 	Else
@@ -242,29 +241,21 @@ Func _arrange($desc=0)
 	$newfile &= Options_GetName($options, $OPTIONS_PositionY) & "=" & Options_GetValue($options, $OPTIONS_PositionY) & @CRLF
 	$newfile &= Options_GetName($options, $OPTIONS_AutoUpdate) & "=" & Options_GetValue($options, $OPTIONS_AutoUpdate) & @CRLF
 
-	Local $profileNames = _getNames()
-	$profileNamesSorted = $profileNames
-	_ArraySort($profileNamesSorted, $desc)
-	For $i=0 to UBound($profileNames)-1
-		$index = _ArraySearch($profileNames, $profileNamesSorted[$i])
-		If $index <> -1 Then
-			$iniName = StringReplace($profileNamesSorted[$i], "[", "{lb}")
-			$iniName = StringReplace($iniName, "]", "{rb}")
-			$newfile &= "[" & $iniName & "]" & @CRLF
-			$newfile &= $propertyFormat[0] & "=" & ($profilelist[$index][1])[0] & @CRLF
-			$newfile &= $propertyFormat[1] & "=" & ($profilelist[$index][1])[1] & @CRLF
-			$newfile &= $propertyFormat[2] & "=" & ($profilelist[$index][1])[2] & @CRLF
-			$newfile &= $propertyFormat[3] & "=" & ($profilelist[$index][1])[3] & @CRLF
-			$newfile &= $propertyFormat[4] & "=" & ($profilelist[$index][1])[4] & @CRLF
-			$newfile &= $propertyFormat[5] & "=" & ($profilelist[$index][1])[5] & @CRLF
-			$newfile &= $propertyFormat[6] & "=" & ($profilelist[$index][1])[6] & @CRLF
-			$newfile &= $propertyFormat[7] & "=" & ($profilelist[$index][1])[7] & @CRLF
-			$newfile &= $propertyFormat[8] & "=" & ($profilelist[$index][1])[8] & @CRLF
-		EndIf
-	Next
-
-	For $i=1 to UBound($profileNamesSorted)
-		$profilelist[$i][0] = $profileNamesSorted[$i-1]
+	Profiles_Sort($profiles, $desc)
+	For $i=0 to Profiles_GetSize($profiles)-1
+		$sProfileName = Profiles_GetValueByIndex($profiles, $i, $PROFILES_Name)
+		$iniName = StringReplace($sProfileName, "[", "{lb}")
+		$iniName = StringReplace($iniName, "]", "{rb}")
+		$newfile &= "[" & $iniName & "]" & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpAuto) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpAuto) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpAddress) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpAddress) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpSubnet) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpSubnet) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpGateway) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpGateway) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_DnsAuto) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_DnsAuto) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_DnsPref) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_DnsPref) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_DnsAlt) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_DnsAlt) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_RegisterDns) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_RegisterDns) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_AdapterName) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_AdapterName) & @CRLF
 	Next
 
 	Local $hFileOpen = FileOpen("profiles.ini", 2)
@@ -790,19 +781,8 @@ Func _rename()
 	ElseIf $ret = 1 or $ret = 3 Then
 		_setStatus("An error occurred while saving the profile name", 1)
 	Else
-		Local $profileNames[1]
-		_ArrayDelete($profileNames, 0)
-		If IsArray($profilelist) Then
-			For $i=1 to $profilelist[0][0]
-				_ArrayAdd($profileNames, $profilelist[$i][0])
-			Next
-			$index = _ArraySearch($profileNames, $lv_oldName)+1
-			If $index <> -1 Then
-				$profilelist[$index][0] = $lv_newName
-			EndIf
-		Else
-			_setStatus("An error occurred while renaming the profile", 1)
-			Return 1
+		If Profiles_isNewName($profiles, $lv_oldName) Then
+			Profiles_SetValue($profiles, $lv_oldName, $PROFILES_Name, $lv_newName)
 		EndIf
 	EndIf
 EndFunc
@@ -859,10 +839,8 @@ Func _iniRename($file, $oldName, $newName)
 EndFunc
 
 ;------------------------------------------------------------------------------
-; Title...........: _iniRename
-; Description.....: Rename a section of an INI file in-place.
-;                   The built-in IniRenameSection function moves the section
-;                   to the end of the file.
+; Title...........: _delete
+; Description.....: Delete a profile
 ;
 ; Parameters......:
 ; Return value....:
@@ -879,20 +857,8 @@ Func _delete($name="")
 		_setStatus("An error occurred while deleting the profile", 1)
 	EndIf
 
-	Local $profileNames[1]
-	_ArrayDelete($profileNames, 0)
-	If IsArray($profilelist) Then
-		For $i=1 to $profilelist[0][0]
-			_ArrayAdd($profileNames, $profilelist[$i][0])
-		Next
-		$index = _ArraySearch($profileNames, $profileName)+1
-		If $index <> -1 Then
-			_ArrayDelete( $profilelist, $index )
-			$profilelist[0][0] = $profilelist[0][0] - 1
-		EndIf
-	Else
-		Return 1
-	EndIf
+	Profiles_Delete($profiles, $profileName)
+
 
 	_updateProfileList()
 	If $selIndex = ControlListView($hgui, "", $list_profiles, "GetItemCount") Then
@@ -915,54 +881,36 @@ Func _new()
 	$text = ControlListView($hgui, "", $list_profiles, "GetText", $index)
 	$profileName = $text
 
-	Local $section[9][2]
-	$section[0][0] = $propertyFormat[0]
-	$section[0][1] = _StateToStr( $radio_IpAuto )
-	$section[1][0] = $propertyFormat[1]
-	$section[1][1] = _ctrlGetIP( $ip_Ip )
-	$section[2][0] = $propertyFormat[2]
-	$section[2][1] = _ctrlGetIP( $ip_Subnet )
-	$section[3][0] = $propertyFormat[3]
-	$section[3][1] = _ctrlGetIP( $ip_Gateway )
-	$section[4][0] = $propertyFormat[4]
-	$section[4][1] = _StateToStr( $radio_DnsAuto )
-	$section[5][0] = $propertyFormat[5]
-	$section[5][1] = _ctrlGetIP( $ip_DnsPri )
-	$section[6][0] = $propertyFormat[6]
-	$section[6][1] = _ctrlGetIP( $ip_DnsAlt )
-	$adapName = StringReplace(GUICtrlRead($combo_adapters), "[", "{lb}")
-	$adapName = StringReplace($adapName, "]", "{rb}")
-	$section[7][0] = $propertyFormat[7]
-	$section[7][1] = _StateToStr( $ck_dnsReg )
-	$section[8][0] = $propertyFormat[7]
-	$section[8][1] = $adapName
-
-
-	$iniName = StringReplace($profileName, "[", "{lb}")
-	$iniName = StringReplace($iniName, "]", "{rb}")
-
-	Local $sectionValues[9]
-	for $i=0 to 8
-		$sectionValues[$i] = $section[$i][1]
-	Next
-
-	Local $profileNames = _getNames()
-	$index = _ArraySearch($profileNames, $profileName)
-	If $index <> -1 Then
+	If not Profiles_isNewName($profiles, $profileName) Then
 		MsgBox($MB_ICONWARNING, "Warning!", "Profile name already exists!")
 		$lv_startEditing = 1
 		Return
 	EndIf
 
+	Local $aSection = Profiles_CreateSection()
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpAuto, _StateToStr( $radio_IpAuto ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpAddress,  _ctrlGetIP( $ip_Ip ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpSubnet,  _ctrlGetIP( $ip_Subnet ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpGateway,  _ctrlGetIP( $ip_Gateway ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_DnsAuto, _StateToStr( $radio_DnsAuto ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_DnsPref,  _ctrlGetIP( $ip_DnsPri ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_DnsAlt,  _ctrlGetIP( $ip_DnsAlt ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_RegisterDns, _StateToStr( $ck_dnsReg ) )
+	$adapName = StringReplace(GUICtrlRead($combo_adapters), "[", "{lb}")
+	$adapName = StringReplace($adapName, "]", "{rb}")
+	Profiles_SectionSetValue( $aSection, $PROFILES_AdapterName, $adapName )
+
+	$iniName = StringReplace($profileName, "[", "{lb}")
+	$iniName = StringReplace($iniName, "]", "{rb}")
+
 	$lv_newItem = 0
-	$ret = IniWriteSection( "profiles.ini", $iniName, $section, 0 )
+	$ret = IniWriteSection( "profiles.ini", $iniName, $aSection, 0 )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
 
-	$profilelist[0][0] = $profilelist[0][0]+1
-	_ArrayAdd( $profilelist, $profileName )
-	$profilelist[$profilelist[0][0]][1] = $sectionValues
+	Profiles_AddSection($profiles, $profileName, $aSection)
+	_updateProfileList()
 EndFunc
 
 ;------------------------------------------------------------------------------
@@ -975,60 +923,28 @@ EndFunc
 Func _save()
 	;$yesno = MsgBox($MB_YESNO,"Warning!","The profile name already exists!" & @CRLF & "Do you wish to overwrite the profile?")
 	$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
-	Local $section[9][2]
-	$section[0][0] = $propertyFormat[0]
-	$section[0][1] = _StateToStr( $radio_IpAuto )
-	$section[1][0] = $propertyFormat[1]
-	$section[1][1] = _ctrlGetIP( $ip_Ip )
-	$section[2][0] = $propertyFormat[2]
-	$section[2][1] = _ctrlGetIP( $ip_Subnet )
-	$section[3][0] = $propertyFormat[3]
-	$section[3][1] = _ctrlGetIP( $ip_Gateway )
-	$section[4][0] = $propertyFormat[4]
-	$section[4][1] = _StateToStr( $radio_DnsAuto )
-	$section[5][0] = $propertyFormat[5]
-	$section[5][1] = _ctrlGetIP( $ip_DnsPri )
-	$section[6][0] = $propertyFormat[6]
-	$section[6][1] = _ctrlGetIP( $ip_DnsAlt )
 
+	Local $aSection = Profiles_CreateSection()
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpAuto, _StateToStr( $radio_IpAuto ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpAddress,  _ctrlGetIP( $ip_Ip ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpSubnet,  _ctrlGetIP( $ip_Subnet ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpGateway,  _ctrlGetIP( $ip_Gateway ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_DnsAuto, _StateToStr( $radio_DnsAuto ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_DnsPref,  _ctrlGetIP( $ip_DnsPri ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_DnsAlt,  _ctrlGetIP( $ip_DnsAlt ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_RegisterDns, _StateToStr( $ck_dnsReg ) )
 	$adapName = StringReplace(GUICtrlRead($combo_adapters), "[", "{lb}")
 	$adapName = StringReplace($adapName, "]", "{rb}")
-	$section[7][0] = $propertyFormat[7]
-	$section[7][1] = _StateToStr( $ck_dnsReg )
-	$section[8][0] = $propertyFormat[8]
-	$section[8][1] = $adapName
-
+	Profiles_SectionSetValue( $aSection, $PROFILES_AdapterName, $adapName )
 
 	$iniName = StringReplace($profileName, "[", "{lb}")
 	$iniName = StringReplace($iniName, "]", "{rb}")
-	$ret = IniWriteSection( "profiles.ini", $iniName, $section, 0 )
+	$ret = IniWriteSection( "profiles.ini", $iniName, $aSection, 0 )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
 
-	Local $sectionValues[9]
-	for $i=0 to 8
-		$sectionValues[$i] = $section[$i][1]
-	Next
-
-	Local $profileNames[1]
-	_ArrayDelete($profileNames, 0)
-	If IsArray($profilelist) Then
-		For $i=1 to $profilelist[0][0]
-			_ArrayAdd($profileNames, $profilelist[$i][0])
-		Next
-		$index = _ArraySearch($profileNames, $profileName)+1
-		If $index <> -1 Then
-			$profilelist[$index][1] = $sectionValues
-		Else
-			$profilelist[0][0] = $profilelist[0][0]+1
-			_ArrayAdd( $profilelist, $profileName )
-			$profilelist[$profilelist[0][0]][1] = $sectionValues
-		EndIf
-	Else
-		_setStatus("An error occurred while saving the profile", 1)
-		Return 1
-	EndIf
+	Profiles_AddSection($profiles, $profileName, $aSection)
 EndFunc
 
 ;------------------------------------------------------------------------------
@@ -1058,47 +974,42 @@ EndFunc
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _setProperties($init=0, $profileName="")
-	Local $profileNames[1]
-	_ArrayDelete($profileNames, 0)
-	If IsArray($profilelist) Then
-		if NOT $init Then
-			$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
-		EndIf
-		For $i=1 to $profilelist[0][0]
-			_ArrayAdd($profileNames, $profilelist[$i][0])
-		Next
-		$index = _ArraySearch($profileNames, $profileName)+1
+	if NOT $init Then
+		$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
+	EndIf
 
-		If $index <> -1 Then
-			;ConsoleWrite($index&@CRLF)
-			GUICtrlSetState( $radio_IpMan, $GUI_CHECKED )
-			GUICtrlSetState( $radio_IpAuto, _StrToState( ($profilelist[$index][1])[0] ) )
-			_ctrlSetIP($ip_Ip, ($profilelist[$index][1])[1])
-			_ctrlSetIP($ip_Subnet, ($profilelist[$index][1])[2])
-			_ctrlSetIP($ip_Gateway, ($profilelist[$index][1])[3])
+	If Not Profiles_isNewName($profiles, $profileName) Then
+		$ipAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAuto)
+		$ipAddress = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAddress)
+		$ipSubnet = Profiles_GetValue($profiles, $profileName, $PROFILES_IpSubnet)
+		$ipGateway = Profiles_GetValue($profiles, $profileName, $PROFILES_IpGateway)
+		GUICtrlSetState( $radio_IpMan, $GUI_CHECKED )
+		GUICtrlSetState( $radio_IpAuto, _StrToState( $ipAuto ) )
+		_ctrlSetIP($ip_Ip, $ipAddress )
+		_ctrlSetIP($ip_Subnet, $ipSubnet )
+		_ctrlSetIP($ip_Gateway, $ipGateway )
 
-			GUICtrlSetState( $radio_DnsMan, $GUI_CHECKED )
-			GUICtrlSetState( $radio_DnsAuto, _StrToState( ($profilelist[$index][1])[4] ) )
-			_ctrlSetIP($ip_DnsPri, ($profilelist[$index][1])[5])
-			_ctrlSetIP($ip_DnsAlt, ($profilelist[$index][1])[6])
+		$dnsAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsAuto)
+		$dnsPref = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsPref)
+		$dnsAlt = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsAlt)
+		$dnsReg = Profiles_GetValue($profiles, $profileName, $PROFILES_RegisterDns)
+		GUICtrlSetState( $radio_DnsMan, $GUI_CHECKED )
+		GUICtrlSetState( $radio_DnsAuto, _StrToState( $dnsAuto ) )
+		_ctrlSetIP($ip_DnsPri, $dnsPref )
+		_ctrlSetIP($ip_DnsAlt, $dnsAlt )
+		GUICtrlSetState( $ck_dnsReg, _StrToState( $dnsReg ) )
 
-			GUICtrlSetState( $ck_dnsReg, _StrToState( ($profilelist[$index][1])[7] ) )
-
-			$sSaveAdapter = Options_GetValue($options, $OPTIONS_SaveAdapterToProfile)
-			If ($profilelist[$index][1])[8] <> "" and ($sSaveAdapter = 1 OR $sSaveAdapter = "true") Then
-				$adapterIndex = _ArraySearch($adapters, ($profilelist[$index][1])[8])
-				IF $adapterIndex <> -1 Then
-					ControlCommand ( $hgui, "", $combo_adapters, "SelectString", ($profilelist[$index][1])[8] )
-				EndIf
+		$sSaveAdapter = Options_GetValue($options, $OPTIONS_SaveAdapterToProfile)
+		$profileAdapter = Profiles_GetValue($profiles, $profileName, $PROFILES_AdapterName)
+		If $profileAdapter <> "" and ($sSaveAdapter = 1 OR $sSaveAdapter = "true") Then
+			If Not Profiles_isNewName($profiles, $profileAdapter) Then
+				ControlCommand ( $hgui, "", $combo_adapters, "SelectString", $profileAdapter )
 			EndIf
-
-			_radios()
-		Else
-			_setStatus("An error occurred while setting the profile properties", 1)
-			Return 1
 		EndIf
+
+		_radios()
 	Else
-		_setStatus("An error occurred while retrieving the profile properties", 1)
+		_setStatus("An error occurred while setting the profile properties", 1)
 		Return 1
 	EndIf
 EndFunc
@@ -1154,8 +1065,7 @@ EndFunc
 
 Func _loadProfiles()
 	Local $pname = "profiles.ini"
-	Local $aArray[1][2] = [[0,0]]
-	$profilelist = $aArray
+
 	If Not FileExists( $pname ) Then
 		_setStatus("Profiles.ini file not found - A new file will be created", 1)
 		Return 1
@@ -1167,7 +1077,7 @@ Func _loadProfiles()
 		Return 1
 	EndIf
 
-	$currentindex = 0
+	Profiles_DeleteAll($profiles)
 	For $i = 1 to $names[0]
 		$thisName = StringReplace($names[$i], "{lb}", "[")
 		$thisName = StringReplace($thisName, "{rb}", "]")
@@ -1175,39 +1085,70 @@ Func _loadProfiles()
 		If @error Then
             ContinueLoop
         EndIf
-		If $thisName <> "Options" Then
-			$profilelist[0][0] = $profilelist[0][0]+1
-			$currentindex = $profilelist[0][0]
-			_ArrayAdd( $profilelist, $thisName & "|")
-		EndIf
 
-		Local $thisProfile[9]
+		Local $aSection = Profiles_CreateSection()
 		For $j = 1 to $thisSection[0][0]
-			If $thisName = "Options" Then
-				$index = _ArraySearch($options, $thisSection[$j][0])
-				If $index <> -1 Then
-					If $thisSection[$j][0] = Options_GetName( $options, $OPTIONS_StartupAdapter) Then
+			If $thisName = "Options" or $thisName = "options" Then
+				Switch $thisSection[$j][0]
+					Case Options_GetName($options, $OPTIONS_Version)
+						Options_SetValue( $options, $OPTIONS_Version, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_MinToTray)
+						Options_SetValue( $options, $OPTIONS_MinToTray, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_StartupMode)
+						Options_SetValue( $options, $OPTIONS_StartupMode, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_Language)
+						Options_SetValue( $options, $OPTIONS_Language, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_StartupAdapter)
 						$newName = StringReplace($thisSection[$j][1], "{lb}", "[")
 						$newName = StringReplace($newName, "{rb}", "]")
 						Options_SetValue( $options, $OPTIONS_StartupAdapter, $newName)
-					Else
-						Options_SetValue( $options, $index, $thisSection[$j][1])
-					EndIf
-				EndIf
+					Case Options_GetName($options, $OPTIONS_Theme)
+						Options_SetValue( $options, $OPTIONS_Theme, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_SaveAdapterToProfile)
+						Options_SetValue( $options, $OPTIONS_SaveAdapterToProfile, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_AdapterBlacklist)
+						Options_SetValue( $options, $OPTIONS_AdapterBlacklist, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_PositionX)
+						Options_SetValue( $options, $OPTIONS_PositionX, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_PositionY)
+						Options_SetValue( $options, $OPTIONS_PositionY, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_AutoUpdate)
+						Options_SetValue( $options, $OPTIONS_AutoUpdate, $thisSection[$j][1])
+				EndSwitch
 			Else
-				$index = _ArraySearch($propertyFormat, $thisSection[$j][0])
-				If $index <> -1 Then
-					$thisProfile[$index] = $thisSection[$j][1]
-				EndIf
+				Switch $thisSection[$j][0]
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpAuto)
+						Profiles_SectionSetValue( $aSection, $PROFILES_IpAuto, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpAddress)
+						Profiles_SectionSetValue( $aSection, $PROFILES_IpAddress, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpSubnet)
+						Profiles_SectionSetValue( $aSection, $PROFILES_IpSubnet, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpGateway)
+						Profiles_SectionSetValue( $aSection, $PROFILES_IpGateway, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_DnsAuto)
+						Profiles_SectionSetValue( $aSection, $PROFILES_DnsAuto, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_DnsPref)
+						Profiles_SectionSetValue( $aSection, $PROFILES_DnsPref, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_DnsAlt)
+						Profiles_SectionSetValue( $aSection, $PROFILES_DnsAlt, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_RegisterDns)
+						Profiles_SectionSetValue( $aSection, $PROFILES_RegisterDns, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_AdapterName)
+						$adapName = StringReplace($thisSection[$j][1], "[", "{lb}")
+						$adapName = StringReplace($adapName, "]", "{rb}")
+						Profiles_SectionSetValue( $aSection, $PROFILES_AdapterName, $adapName)
+				EndSwitch
 			EndIf
 		Next
-		$profilelist[$currentindex][1] = $thisProfile
+		If $thisName <> "Options" Then
+			Profiles_AddSection($profiles, $thisName, $aSection)
+		EndIf
 	Next
 
 EndFunc
 
 Func _updateProfileList()
-	$ap_names = _getNames()
+	$ap_names = Profiles_GetNames($profiles)
 	$lv_count = ControlListView( $hgui, "", $list_profiles, "GetItemCount" )
 
 	Local $diff = 0
@@ -1225,9 +1166,9 @@ Func _updateProfileList()
 	If not $diff Then Return
 
 	_GUICtrlListView_DeleteAllItems(GUICtrlGetHandle($list_profiles))
-	If IsArray($profilelist) Then
-		For $i=1 to $profilelist[0][0]
-			GUICtrlCreateListViewItem( $profilelist[$i][0], $list_profiles )
+	If IsArray($ap_names) Then
+		For $i=0 to UBound($ap_names)-1
+			GUICtrlCreateListViewItem( $ap_names[$i], $list_profiles )
 			GUICtrlSetOnEvent( -1, "_onSelect" )
 		Next
 	Else
@@ -1268,17 +1209,16 @@ EndFunc
 
 
 Func _filterProfiles()
-	;_ArrayDisplay($profilelist)
 	Local $aArray[1] = [0]
 	_ArrayDelete( $aArray, 0 )
 	$strPattern = GUICtrlRead( $input_filter )
 	_GUICtrlListView_DeleteAllItems( $list_profiles )
 
-	$aNames = _getNames()
+	$aNames = Profiles_GetNames($profiles)
 	if $strPattern <> "" Then
 		$pattern = '(?i)(?U)' & StringReplace( $strPattern, "*", ".*")
 		;MsgBox(0,"",$pattern)
-		for $k=0 to $profilelist[0][0]-1
+		for $k=0 to UBound($aNames)-1
 			$matched = StringRegExp($aNames[$k], $pattern, $STR_REGEXPMATCH )
 			If $matched = 1 Then
 				_ArrayAdd( $aArray, $aNames[$k] )
@@ -1291,8 +1231,6 @@ Func _filterProfiles()
 	For $i=0 to UBound($aArray)-1
 		_GUICtrlListView_AddItem( $list_profiles, $aArray[$i] )
 	Next
-
-	;_ArrayDisplay($aArray)
 EndFunc
 
 
@@ -1325,18 +1263,6 @@ Func _maximize()
 	GUISetState(@SW_SHOWNOACTIVATE, $hTool)
 	GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
 	TrayItemSetText( $RestoreItem, "Hide" )
-EndFunc
-
-Func _getNames()
-	Local $profileNames[1]
-	If IsArray($profilelist) Then
-		_ArrayDelete($profileNames, 0)
-		For $i=1 to $profilelist[0][0]
-			_ArrayAdd($profileNames, $profilelist[$i][0])
-		Next
-	EndIf
-
-	Return $profileNames
 EndFunc
 
 Func _setStatus($sMessage, $bError=0, $bTiming=0)
