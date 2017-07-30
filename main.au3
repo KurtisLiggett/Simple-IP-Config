@@ -174,6 +174,9 @@ EndFunc ; main()
 
 Func _NewInstance($hWnd, $iMsg, $iwParam, $ilParam)
 	if $iwParam == "0x00000101" Then
-		TrayTip("", "Simple IP Config is already running", 1)
+		;TrayTip("", "Simple IP Config is already running", 1)
+		$sMsg  = 'Simple IP Config is already running'
+		_Toast_Set(0, 0xAAAAAA, 0x000000, 0xFFFFFF, 0x000000, 10, "", 250, 250)
+		$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, -5, False) ; Delay can be set here because script continues
 	EndIf
 EndFunc
