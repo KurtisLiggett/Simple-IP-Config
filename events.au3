@@ -38,10 +38,14 @@ Func _onExit()
 		$currentWinPos = WinGetPos($hgui)
 		Options_SetValue($options, $OPTIONS_PositionX, $currentWinPos[0])
 		Options_SetValue($options, $OPTIONS_PositionY, $currentWinPos[1])
-		IniWriteSection("profiles.ini", "options", $options, 0)
+		IniWriteSection(@ScriptDir & "/profiles.ini", "options", $options, 0)
 	EndIf
 
 	Exit
+EndFunc
+
+Func _onCreateLink()
+	_CreateLink()
 EndFunc
 
 ;------------------------------------------------------------------------------
@@ -62,6 +66,7 @@ EndFunc
 Func _onExitBlacklistOk()
 	$guiState = WinGetState( $hgui )
 	$newBlacklist = StringReplace(GUICtrlRead($blacklistEdit), @CRLF, "|")
+	IniWrite(@ScriptDir & "/profiles.ini", "options", $options[7][0], $options[7][1])
 	$newBlacklist = iniNameEncode($newBlacklist)
 	Options_SetValue($options, $OPTIONS_PositionY, $newBlacklist)
 	$keyname = Options_GetName($options, $OPTIONS_AdapterBlacklist)
@@ -140,7 +145,7 @@ EndFunc
 ; Events.......: File menu 'Apply profile' button, toolbar 'Apply' button
 ;------------------------------------------------------------------------------
 Func _onApply()
-	_apply()
+	_apply_GUI()
 EndFunc
 
 ;------------------------------------------------------------------------------
@@ -294,7 +299,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onLvEnter()
 	If Not $lv_editing Then
-		_apply()
+		_apply_GUI()
 	Else
 		GUISetAccelerators(0)
 		Send("{ENTER}")
@@ -424,7 +429,7 @@ Func _OnCombo()
 	$adap = GUICtrlRead($combo_adapters)
 	$iniAdap = iniNameEncode($adap)
 	$keyname = Options_GetName($options, $OPTIONS_StartupAdapter)
-	$ret = IniWrite( "profiles.ini", "options", $keyname, $iniAdap )
+	$ret = IniWrite( @ScriptDir & "/profiles.ini", "options", $keyname, $iniAdap )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the selected adapter", 1)
 	Else
@@ -441,7 +446,7 @@ Func _OnToolbarButton()
 	$ID = GUICtrlRead($ToolbarIDs)
 	Switch $ID
 		Case $tb_apply ; Button 1
-			_onApply()
+			_apply_GUI()
 		Case $tb_refresh ; Button 2
 			_onRefresh()
 		Case $tb_add ; Button 3
@@ -654,5 +659,3 @@ Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
     EndSwitch
     Return $GUI_RUNDEFMSG
 EndFunc   ;==>WM_NOTIFY
-
-

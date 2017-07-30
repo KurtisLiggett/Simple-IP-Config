@@ -171,11 +171,13 @@ Global $adapters = Adapter()
 #include "hexIcons.au3"
 #include "libraries\asyncRun.au3"
 #include "libraries\StringSize.au3"
+#include "libraries\Toast.au3"
 #include "libraries\_NetworkStatistics.au3"
 #include "functions.au3"
 #include "events.au3"
 #include "network.au3"
 #include "gui.au3"
+#include "cli.au3"
 #EndRegion includes
 
 #Region options
@@ -286,6 +288,9 @@ EndFunc ; main()
 ;------------------------------------------------------------------------------
 Func _NewInstance($hWnd, $iMsg, $iwParam, $ilParam)
 	if $iwParam == "0x00000101" Then
-		TrayTip("", "Simple IP Config is already running", 1)
+		;TrayTip("", "Simple IP Config is already running", 1)
+		$sMsg  = 'Simple IP Config is already running'
+		_Toast_Set(0, 0xAAAAAA, 0x000000, 0xFFFFFF, 0x000000, 10, "", 250, 250)
+		$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, -5, False) ; Delay can be set here because script continues
 	EndIf
 EndFunc
