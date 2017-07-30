@@ -1,3 +1,4 @@
+#Region license
 ; -----------------------------------------------------------------------------
 ; This file is part of Simple IP Config.
 ;
@@ -14,6 +15,7 @@
 ; You should have received a copy of the GNU General Public License
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
+#EndRegion
 
 ;==============================================================================
 ; Filename:		events.au3
@@ -60,8 +62,7 @@ EndFunc
 Func _onExitBlacklistOk()
 	$guiState = WinGetState( $hgui )
 	$newBlacklist = StringReplace(GUICtrlRead($blacklistEdit), @CRLF, "|")
-	$newBlacklist = StringReplace($newBlacklist, "[", "{lb}")
-	$newBlacklist = StringReplace($newBlacklist, "]", "{rb}")
+	$newBlacklist = iniNameEncode($newBlacklist)
 	Options_SetValue($options, $OPTIONS_PositionY, $newBlacklist)
 	$keyname = Options_GetName($options, $OPTIONS_AdapterBlacklist)
 	$keyvalue = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
@@ -421,8 +422,7 @@ EndFunc
 Func _OnCombo()
 	_updateCurrent()
 	$adap = GUICtrlRead($combo_adapters)
-	$iniAdap = StringReplace($adap, "[", "{lb}")
-	$iniAdap = StringReplace($iniAdap, "]", "{rb}")
+	$iniAdap = iniNameEncode($adap)
 	$keyname = Options_GetName($options, $OPTIONS_StartupAdapter)
 	$ret = IniWrite( "profiles.ini", "options", $keyname, $iniAdap )
 	If $ret = 0 Then

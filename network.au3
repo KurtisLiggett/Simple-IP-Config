@@ -37,8 +37,7 @@ Func _loadAdapters()
 			$mac = $aIPAllAddrTable[$index][4]
 			$desc = $aIPAllAddrTable[$index][6]
 		EndIf
-		$ladapters[0][0] = $ladapters[0][0]+1
-		_ArrayAdd($ladapters, $tadapters[$i] & "|" & $mac & "|" & $desc)
+		Adapter_Add($adapters, $tadapters[$i], $mac, $desc)
 	Next
 	Return $ladapters
 

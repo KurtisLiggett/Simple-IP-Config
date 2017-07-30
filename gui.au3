@@ -1,3 +1,4 @@
+#Region license
 ; -----------------------------------------------------------------------------
 ; This file is part of Simple IP Config.
 ;
@@ -14,6 +15,7 @@
 ; You should have received a copy of the GNU General Public License
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
+#EndRegion
 
 ;==============================================================================
 ; Filename:		gui.au3
@@ -21,60 +23,7 @@
 ;				- child window creation functions
 ;==============================================================================
 
-
-; #FUNCTION# ====================================================================================================================
-; Name ..........: _GDIPlus_GraphicsGetDPIRatio
-; Description ...:
-; Syntax ........: _GDIPlus_GraphicsGetDPIRatio([$iDPIDef = 96])
-; Parameters ....: $iDPIDef             - [optional] An integer value. Default is 96.
-; Return values .: None
-; Author ........: UEZ
-; Modified ......:
-; Remarks .......:
-; Related .......:
-; Link ..........: http://www.autoitscript.com/forum/topic/159612-dpi-resolution-problem/?hl=%2Bdpi#entry1158317
-; Example .......: No
-; ===============================================================================================================================
-Func _GDIPlus_GraphicsGetDPIRatio($iDPIDef = 96)
-	_GDIPlus_Startup()
-	Local $hGfx = _GDIPlus_GraphicsCreateFromHWND(0)
-	If @error Then Return SetError(1, @extended, 0)
-	Local $aResult
-	#forcedef $__g_hGDIPDll, $ghGDIPDll
-
-	$aResult = DllCall($__g_hGDIPDll, "int", "GdipGetDpiX", "handle", $hGfx, "float*", 0)
-
-	If @error Then Return SetError(2, @extended, 0)
-	Local $iDPI = $aResult[2]
-	Local $aresults[2] = [$iDPIDef / $iDPI, $iDPI / $iDPIDef]
-	_GDIPlus_GraphicsDispose($hGfx)
-	_GDIPlus_Shutdown()
-;~ 	ConsoleWrite("DPI Ratio: " & $aresults[1]&@CRLF)
-	Return $aresults[1]
-EndFunc   ;==>_GDIPlus_GraphicsGetDPIRatio
-
-Func _getDpiScale()
-    Local $hDC = _WinAPI_GetDC(0)
-    Local $DPI = _WinAPI_GetDeviceCaps($hDC, $LOGPIXELSY)
-    _WinAPI_ReleaseDC(0, $hDC)
-
-    Select
-        Case $DPI = 0
-            $DPI = 1
-        Case $DPI < 84
-            $DPI /= 105
-        Case $DPI < 121
-            $DPI /= 96
-        Case $DPI < 145
-            $DPI /= 95
-        Case Else
-            $DPI /= 94
-    EndSelect
-
-	Return Round($DPI, 2)
-EndFunc
-
-
+#Region -- MAIN GUI CREATION --
 Func _makeGUI()
 	; GUI FORMATTING
 	$ixCoordMin = _WinAPI_GetSystemMetrics(76)
@@ -202,13 +151,6 @@ Func _makeGUI()
 			_setProperties(1,$profileName)
 		EndIf
 	EndIf
-
-;~ 	If IsArray( $adapters ) Then
-;~ 		If $adapters[0][0] > 0 Then
-;~ 			_ArraySort($adapters, 0)	; connections sort ascending
-;~ 			_updateCurrent(1, $adapters[1][0])
-;~ 		EndIf
-;~ 	EndIf
 
 	$sStartupMode = Options_GetValue($options, $OPTIONS_StartupMode)
 	If $sStartupMode <> "1" and $sStartupMode <> "true" Then
@@ -594,20 +536,6 @@ Func _makeToolbar()
 	GUICtrlSetBkColor(-1, 0x101010)
 EndFunc
 
-Func _memoryToPic($idPic, $name)
-	$hBmp = _GDIPlus_BitmapCreateFromMemory(Binary($name),1)
-	_WinAPI_DeleteObject(GUICtrlSendMsg($idPic, 0x0172, 0, $hBmp))
-	_WinAPI_DeleteObject($hBmp)
-	Return 0
-EndFunc
-
-Func _getMemoryAsIcon($name)
-	$Bmp = _GDIPlus_BitmapCreateFromMemory(Binary($name))
-	$hIcon = _GDIPlus_HICONCreateFromBitmap($Bmp)
-	_GDIPlus_ImageDispose($Bmp)
-	Return $hIcon
-EndFunc
-
 ; Create Header
 Func _makeHeading($sLabel, $x, $y, $w, $height=-1, $color=-1, $lightness=-1)
 	$strSize = _StringSize($sLabel, 8.5,  400, 0 , "Segoe UI")
@@ -688,6 +616,22 @@ Func _makeBox($x, $y, $w, $h, $bkcolor=0xFFFFFF)
 ;~ 	GUICtrlSetBkColor(-1, 0x000880)
 	GUICtrlSetBkColor(-1, 0x003973)
 EndFunc
+#EndRegion
+
+#Region -- Helper Functions --
+Func _memoryToPic($idPic, $name)
+	$hBmp = _GDIPlus_BitmapCreateFromMemory(Binary($name),1)
+	_WinAPI_DeleteObject(GUICtrlSendMsg($idPic, 0x0172, 0, $hBmp))
+	_WinAPI_DeleteObject($hBmp)
+	Return 0
+EndFunc
+
+Func _getMemoryAsIcon($name)
+	$Bmp = _GDIPlus_BitmapCreateFromMemory(Binary($name))
+	$hIcon = _GDIPlus_HICONCreateFromBitmap($Bmp)
+	_GDIPlus_ImageDispose($Bmp)
+	Return $hIcon
+EndFunc
 
 Func _setFont($ControlID, $size, $bkcolor=-1, $color=0x000000)
 	Local $LControlID
@@ -703,12 +647,88 @@ Func _setFont($ControlID, $size, $bkcolor=-1, $color=0x000000)
 	EndIf
 EndFunc
 
+; #FUNCTION# ====================================================================================================================
+; Author ........: Gary Frost (gafrost)
+; Modified By....: Kurtis Liggett
+; ===============================================================================================================================
+Func _GUICtrlIpAddress_SetFontByHeight($hWnd, $sFaceName = "Arial", $iFontSize = 12, $iFontWeight = 400, $bFontItalic = False)
+	Local $hDC = _WinAPI_GetDC(0)
+	;Local $iHeight = Round(($iFontSize * _WinAPI_GetDeviceCaps($hDC, $__IPADDRESSCONSTANT_LOGPIXELSX)) / 72, 0)
+	Local $iHeight = $iFontSize
+	_WinAPI_ReleaseDC(0, $hDC)
+
+	Local $tFont = DllStructCreate($tagLOGFONT)
+	DllStructSetData($tFont, "Height", $iHeight)
+	DllStructSetData($tFont, "Weight", $iFontWeight)
+	DllStructSetData($tFont, "Italic", $bFontItalic)
+	DllStructSetData($tFont, "Underline", False) ; font underline
+	DllStructSetData($tFont, "Strikeout", False) ; font strikethru
+	DllStructSetData($tFont, "Quality", $__IPADDRESSCONSTANT_PROOF_QUALITY)
+	DllStructSetData($tFont, "FaceName", $sFaceName)
+
+	Local $hFont = _WinAPI_CreateFontIndirect($tFont)
+	_WinAPI_SetFont($hWnd, $hFont)
+EndFunc   ;==>_GUICtrlIpAddress_SetFont
+
 Func _GUIGetLastCtrlID()
     Local $aRet = DllCall("user32.dll", "int", "GetDlgCtrlID", "hwnd", GUICtrlGetHandle(-1))
     Return $aRet[0]
 EndFunc
 
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _GDIPlus_GraphicsGetDPIRatio
+; Description ...:
+; Syntax ........: _GDIPlus_GraphicsGetDPIRatio([$iDPIDef = 96])
+; Parameters ....: $iDPIDef             - [optional] An integer value. Default is 96.
+; Return values .: None
+; Author ........: UEZ
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........: http://www.autoitscript.com/forum/topic/159612-dpi-resolution-problem/?hl=%2Bdpi#entry1158317
+; Example .......: No
+; ===============================================================================================================================
+Func _GDIPlus_GraphicsGetDPIRatio($iDPIDef = 96)
+	_GDIPlus_Startup()
+	Local $hGfx = _GDIPlus_GraphicsCreateFromHWND(0)
+	If @error Then Return SetError(1, @extended, 0)
+	Local $aResult
+	#forcedef $__g_hGDIPDll, $ghGDIPDll
 
+	$aResult = DllCall($__g_hGDIPDll, "int", "GdipGetDpiX", "handle", $hGfx, "float*", 0)
+
+	If @error Then Return SetError(2, @extended, 0)
+	Local $iDPI = $aResult[2]
+	Local $aresults[2] = [$iDPIDef / $iDPI, $iDPI / $iDPIDef]
+	_GDIPlus_GraphicsDispose($hGfx)
+	_GDIPlus_Shutdown()
+;~ 	ConsoleWrite("DPI Ratio: " & $aresults[1]&@CRLF)
+	Return $aresults[1]
+EndFunc   ;==>_GDIPlus_GraphicsGetDPIRatio
+
+Func _getDpiScale()
+    Local $hDC = _WinAPI_GetDC(0)
+    Local $DPI = _WinAPI_GetDeviceCaps($hDC, $LOGPIXELSY)
+    _WinAPI_ReleaseDC(0, $hDC)
+
+    Select
+        Case $DPI = 0
+            $DPI = 1
+        Case $DPI < 84
+            $DPI /= 105
+        Case $DPI < 121
+            $DPI /= 96
+        Case $DPI < 145
+            $DPI /= 95
+        Case Else
+            $DPI /= 94
+    EndSelect
+
+	Return Round($DPI, 2)
+EndFunc
+#EndRegion
+
+#Region -- ABOUT WINDOW --
 ; ABOUT WINDOW
 Func _about()
 	Local $bt_AboutOk, $lb_Heading, $lb_date, $lb_version, $lb_info, $lb_sig, $pic, $lb_license, $GFLine
@@ -791,8 +811,9 @@ Func _about()
 	GUISetState(@SW_DISABLE, $hgui)
 	GUISetState(@SW_SHOW, $AboutChild)
 EndFunc
+#EndRegion
 
-
+#Region -- CHANGELOG WINDOW --
 ; Changelog WINDOW
 Func _changeLog()
 	$w = 305*$dScale
@@ -831,7 +852,9 @@ Func _changeLog()
 
 	Send("^{HOME}")
 EndFunc
+#EndRegion
 
+#Region -- DEBUG WINDOW --
 ; debug WINDOW
 Func _debugWindow()
 	$w = 305*$dScale
@@ -874,8 +897,9 @@ Func _debugWindow()
 
 	Send("^{HOME}")
 EndFunc
+#EndRegion
 
-
+#Region -- SETTINGS WINDOW --
 ; Settings WINDOW
 Func _Settings()
 	$w = 200*$dScale
@@ -918,8 +942,9 @@ Func _Settings()
 	GUISetState(@SW_DISABLE, $hGUI)
 	GUISetState(@SW_SHOW, $settingsChild)
 EndFunc
+#EndRegion
 
-
+#Region -- STATUS WINDOW --
 ; Status Message Popup
 Func _statusPopup()
 	$wPos = WinGetPos($hgui)
@@ -959,8 +984,9 @@ Func _statusPopup()
 	;Switch to the parent window
     GUISwitch($hgui)
 EndFunc
+#EndRegion
 
-
+#Region -- BLACKLIST WINDOW --
 Func _blacklist()
 	$sBlacklist = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
 	Local $blacklist = StringReplace( $sBlacklist, "|", @CRLF)
@@ -996,3 +1022,4 @@ Func _blacklist()
 
 	Send("{END}")
 EndFunc
+#EndRegion

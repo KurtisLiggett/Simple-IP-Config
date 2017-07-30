@@ -152,11 +152,40 @@ Func Profiles_SetValue(ByRef $hObject, $sName, $iproperty, $sData)
     $hObject[$profIndex][$iproperty] = $sData	;set the property
 EndFunc
 
+; Get entire profile
+Func Profiles_GetProfile(ByRef $hObject, $sName)
+	If Not _Profiles_IsObject($hObject) Then Return
+
+	Local $aProfile[$PROFILES_MAX]
+	For $i = 0 to $PROFILES_MAX-1
+		$aProfile[$i] = Profiles_GetValue($hObject, $sName, $i)
+	Next
+
+	Return $aProfile
+EndFunc
+
+; insert entire profile
+Func Profiles_InsertProfile(ByRef $hObject, $index, $sName, ByRef $aProfile)
+	If Not _Profiles_IsObject($hObject) Then Return
+	If Not Profiles_isNewName($hObject, $sName) Then Return
+
+	If $index+1 < UBound($hObject) Then
+		_ArrayInsert($hObject, $index+1, $sName)
+	Else
+		_ArrayAdd($hObject, $sName)
+	EndIf
+
+	For $i = 0 to $PROFILES_MAX-1
+		Profiles_SetValue($hObject, $sName, $i, $aProfile[$i])
+	Next
+EndFunc
+
 ; add profile
 Func Profiles_Add(ByRef $hObject, $sName)
 	If Not _Profiles_IsObject($hObject) Then Return
     _ArrayAdd($hObject, $sName)
 EndFunc
+
 
 ; delete profile
 Func Profiles_Delete(ByRef $hObject, $sName)
@@ -208,18 +237,6 @@ Func Profiles_AddSection(ByRef $hObject, $sName, ByRef $aSection)
 	Next
 EndFunc
 
-; Update section of profiles object
-Func Profiles_UpdateSection(ByRef $hObject, $sName, ByRef $aSection)
-	If Not _Profiles_IsObject($hObject) Then Return
-
-	$profIndex = _ArraySearch($hObject, $sName)
-	If $profIndex = -1 Then Return
-
-	For $i = 0 to $PROFILES_MAX-1
-		Profiles_SetValue($hObject, $sName, $i, $aSection[$i][1])
-	Next
-EndFunc
-
 ; Get array of profile names
 Func Profiles_GetNames(ByRef $hObject)
 	If Not _Profiles_IsObject($hObject) Then Return
@@ -235,5 +252,103 @@ EndFunc
 #EndRegion -- profiles --
 
 #Region -- adapters --
+Global Enum $ADAPTER_Name, $ADAPTER_Description, $ADAPTER_MAC, $ADAPTER_MAX
 
+; Constructor
+Func Adapter()
+	Local $hObject[1][3] = [[0,0,0]]	; [0]-name, [1]-mac, [2]-description, [3]-GUID
+
+    ; Return the 'object'
+    Return $hObject
+EndFunc
+
+; Check if name exists
+Func Adapter_Exists(ByRef $hObject, $sName)
+	If Not _Adapter_IsObject($hObject) Then Return Null
+
+	$iIndex = _ArraySearch($hObject, $sName)
+	Return $iIndex = -1 ? 0 : 1
+EndFunc
+
+; sort Adapter
+Func Adapter_Sort(ByRef $hObject, $desc=0)
+	If Not _Adapter_IsObject($hObject) Then Return Null
+
+	_ArraySort($hObject, $desc)
+EndFunc
+
+; get size
+Func Adapter_GetSize(ByRef $hObject)
+	If Not _Adapter_IsObject($hObject) Then Return Null
+
+	Return UBound($hObject)
+EndFunc
+
+; property Getters
+Func Adapter_GetName(ByRef $hObject, $iIndex)
+	If Not _Adapter_IsObject($hObject) Then Return Null
+
+	Return $iIndex <> -1 ? $hObject[$iIndex][0] : Null
+EndFunc
+
+Func Adapter_GetMAC(ByRef $hObject, $sName)
+	If Not _Adapter_IsObject($hObject) Then Return Null
+
+	$iIndex = _ArraySearch($hObject, $sName)
+	Return $iIndex <> -1 ? $hObject[$iIndex][1] : Null
+EndFunc
+
+Func Adapter_GetDescription(ByRef $hObject, $sName)
+	If Not _Adapter_IsObject($hObject) Then Return Null
+
+	$iIndex = _ArraySearch($hObject, $sName)
+	Return $iIndex <> -1 ? $hObject[$iIndex][2] : Null
+EndFunc
+
+; add adapter
+Func Adapter_Add(ByRef $hObject, $sName, $sMAC, $sDescription)
+	If Not _Adapter_IsObject($hObject) Then Return
+
+	If UBound($hObject) = 1 and $hObject[0][0] = "" Then
+		$hObject[0][0] = $sName
+		$hObject[0][1] = $sMAC
+		$hObject[0][2] = $sDescription
+	Else
+		_ArrayAdd($hObject, $sName & "|" & $sMAC & "|" & $sDescription)
+	EndIf
+EndFunc
+
+; delete profile
+Func Adapter_Delete(ByRef $hObject, $sName)
+	If Not _Adapter_IsObject($hObject) Then Return
+
+	$profIndex = _ArraySearch($hObject, $sName)
+	If $profIndex = -1 Then Return
+
+    _ArrayDelete($hObject, $profIndex)
+EndFunc
+
+; delete all Adapters
+Func Adapter_DeleteAll(ByRef $hObject)
+	If Not _Adapter_IsObject($hObject) Then Return
+
+    _ArrayDelete($hObject, "0-"&UBound($hObject))
+EndFunc
+
+; Check if it's a valid 'object'. INTERNAL ONLY!
+Func _Adapter_IsObject(ByRef $hObject)
+    Return UBound($hObject, 2) = $ADAPTER_MAX
+EndFunc
+
+; Get array of profile names
+Func Adapter_GetNames(ByRef $hObject)
+	If Not _Adapter_IsObject($hObject) Then Return
+
+	$size = UBound($hObject)
+    Local $aNames[$size]
+	For $i = 0 to $size-1
+		$aNames[$i] = $hObject[$i][0]
+	Next
+	Return $aNames
+EndFunc
 #EndRegion -- adapters --

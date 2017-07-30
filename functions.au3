@@ -167,14 +167,15 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _updateCombo()
 	_setStatus("Updating Adapter List...")
-	$adapters = _loadAdapters()
+	_loadAdapters()
+	Local $adapterNames = Adapter_GetNames($adapters)
 	_GUICtrlComboBox_ResetContent (GUICtrlGetHandle($combo_adapters))
 
 	If NOT IsArray( $adapters ) Then
 		MsgBox( 16, "Error", "There was a problem retrieving the adapters." )
 	Else
-		_ArraySort($adapters, 0)	; connections sort ascending
-		$defaultitem = $adapters[1][0]
+		Adapter_Sort($adapters)	; connections sort ascending
+		$defaultitem = $adapterNames[0]
 		$sStartupAdapter = Options_GetValue($options, $OPTIONS_StartupAdapter)
 		$index = _ArraySearch( $adapters, $sStartupAdapter, 1 )
 		If ($index <> -1) Then
@@ -182,10 +183,10 @@ Func _updateCombo()
 		EndIf
 		$sBlacklist = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
 		$aBlacklist = StringSplit($sBlacklist, "|")
-		For $i=1 to $adapters[0][0]
-			$indexBlacklist = _ArraySearch($aBlacklist, $adapters[$i][0], 1)
+		For $i=0 to UBound($adapterNames)-1
+			$indexBlacklist = _ArraySearch($aBlacklist, $adapterNames[$i], 1)
 			if $indexBlacklist <> -1 Then ContinueLoop
-			GUICtrlSetData( $combo_adapters, $adapters[$i][0], $defaultitem )
+			GUICtrlSetData( $combo_adapters, $adapterNames[$i], $defaultitem )
 		Next
 	EndIf
 	ControlSend ($hgui, "", $combo_adapters, "{END}")
@@ -244,8 +245,7 @@ Func _arrange($desc=0)
 	Profiles_Sort($profiles, $desc)
 	For $i=0 to Profiles_GetSize($profiles)-1
 		$sProfileName = Profiles_GetValueByIndex($profiles, $i, $PROFILES_Name)
-		$iniName = StringReplace($sProfileName, "[", "{lb}")
-		$iniName = StringReplace($iniName, "]", "{rb}")
+		$iniName = iniNameEncode($sProfileName)
 		$newfile &= "[" & $iniName & "]" & @CRLF
 		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpAuto) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpAuto) & @CRLF
 		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpAddress) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpAddress) & @CRLF
@@ -350,25 +350,19 @@ Func _clickUp()
 				$newitem = ControlListView($hgui, "", $list_profiles, "GetSelected")
 				$dragtext = ControlListView($hgui, "", $list_profiles, "GetText", $dragitem)
 				$newtext = ControlListView($hgui, "", $list_profiles, "GetText", $newitem)
-				if $newitem <> "" Then
+				if $newitem <> "" and $dragtext <> $newtext Then
 					$ret = _iniMove("profiles.ini", $dragtext, $newtext)
 					If not $ret Then
-						Select
-							Case $dragitem < $newitem
-								_GUICtrlListView_DeleteItem (GUICtrlGetHandle($list_profiles), $dragitem)
-								_GUICtrlListView_InsertItem (GUICtrlGetHandle($list_profiles), $dragtext, $newitem)
-							Case $dragitem > $newitem
-								_GUICtrlListView_DeleteItem (GUICtrlGetHandle($list_profiles), $dragitem)
-								_GUICtrlListView_InsertItem (GUICtrlGetHandle($list_profiles), $dragtext, $newitem)
-						EndSelect
-						$newtext = ControlListView($hgui, "", $list_profiles, "Select", $newitem)
+						$dragProfile = Profiles_GetProfile($profiles, $dragtext)
+						Profiles_Delete($profiles, $dragtext)
+						Profiles_InsertProfile($profiles, $newitem, $dragtext, $dragProfile)
+						_updateProfileList()
 					EndIf
 				EndIf
 			EndIf
 		EndIf
     EndIf
 	$dragging = False
-
 EndFunc
 
 
@@ -394,12 +388,8 @@ Func _iniMove($file, $fromName, $toName)
 	Local $sRight = ""
 	Local $sAfterTo = ""
 
-
-	$inifromName = StringReplace($fromName, "[", "{lb}")
-	$inifromName = StringReplace($inifromName, "]", "{rb}")
-
-	$initoName = StringReplace($toName, "[", "{lb}")
-	$initoName = StringReplace($initoName, "]", "{rb}")
+	$inifromName = iniNameEncode($fromName)
+	$initoName = iniNameEncode($toName)
 
     Local $sFileRead = FileRead($file)
     If @error <> 0 Then
@@ -701,7 +691,7 @@ Func _disable()
 		_AdapterMod($selected_adapter, 1)
 		GUICtrlSetData($disableitem, "Disable adapter")
 		_setStatus("Updating Adapter List...")
-		$adapters = _loadAdapters()
+		_loadAdapters()
 		_setStatus("Ready")
 	EndIf
 EndFunc
@@ -781,62 +771,10 @@ Func _rename()
 	ElseIf $ret = 1 or $ret = 3 Then
 		_setStatus("An error occurred while saving the profile name", 1)
 	Else
-		If Profiles_isNewName($profiles, $lv_oldName) Then
-			Profiles_SetValue($profiles, $lv_oldName, $PROFILES_Name, $lv_newName)
-		EndIf
+		Profiles_SetValue($profiles, $lv_oldName, $PROFILES_Name, $lv_newName)
 	EndIf
 EndFunc
 
-;------------------------------------------------------------------------------
-; Title...........: _iniRename
-; Description.....: Rename a section of an INI file in-place.
-;                   The built-in IniRenameSection function moves the section
-;                   to the end of the file.
-;
-; Parameters......: $file     -filename
-;                   $oldName  -section name to be replaced
-;                   $newName  -new section name
-; Return value....: 0  -success
-;                   1  -file read/open error
-;                   2  -new name already exists
-;                   3  -file write error
-;------------------------------------------------------------------------------
-Func _iniRename($file, $oldName, $newName)
-	Local $sNewFile = ""
-
-	$iniOldName = StringReplace($oldName, "[", "{lb}")
-	$iniOldName = StringReplace($iniOldName, "]", "{rb}")
-
-	$iniNewName = StringReplace($newName, "[", "{lb}")
-	$iniNewName = StringReplace($iniNewName, "]", "{rb}")
-
-    Local $sFileRead = FileRead($file)
-    If @error <> 0 Then
-        Return 1
-    EndIf
-
-	$strPos = StringInStr($sFileRead, "["&$iniNewName&"]")
-	If $strPos <> 0 Then
-		Return 2
-	Else
-		$sNewFile = StringReplace($sFileRead, $iniOldName, $iniNewName, 1)
-	EndIf
-
-	Local $hFileOpen = FileOpen($file, 2)
-	If $hFileOpen = -1 Then
-		Return 1
-	EndIf
-
-	Local $sFileWrite = FileWrite($hFileOpen, $sNewFile)
-	if @error <> 0 Then
-		FileClose($hFileOpen)
-		Return 3
-	EndIf
-
-    FileClose($hFileOpen)
-
-	Return 0
-EndFunc
 
 ;------------------------------------------------------------------------------
 ; Title...........: _delete
@@ -849,9 +787,7 @@ Func _delete($name="")
 	$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 	$selIndex = ControlListView($hgui, "", $list_profiles, "GetSelected")
 
-	$iniName = StringReplace($profileName, "[", "{lb}")
-	$iniName = StringReplace($iniName, "]", "{rb}")
-
+	$iniName = iniNameEncode($profileName)
 	$ret = IniDelete( "profiles.ini", $iniName )
 	If $ret = 0 Then
 		_setStatus("An error occurred while deleting the profile", 1)
@@ -896,13 +832,9 @@ Func _new()
 	Profiles_SectionSetValue( $aSection, $PROFILES_DnsPref,  _ctrlGetIP( $ip_DnsPri ) )
 	Profiles_SectionSetValue( $aSection, $PROFILES_DnsAlt,  _ctrlGetIP( $ip_DnsAlt ) )
 	Profiles_SectionSetValue( $aSection, $PROFILES_RegisterDns, _StateToStr( $ck_dnsReg ) )
-	$adapName = StringReplace(GUICtrlRead($combo_adapters), "[", "{lb}")
-	$adapName = StringReplace($adapName, "]", "{rb}")
+	$adapName = iniNameEncode(GUICtrlRead($combo_adapters))
 	Profiles_SectionSetValue( $aSection, $PROFILES_AdapterName, $adapName )
-
-	$iniName = StringReplace($profileName, "[", "{lb}")
-	$iniName = StringReplace($iniName, "]", "{rb}")
-
+	$iniName = iniNameEncode($profileName)
 	$lv_newItem = 0
 	$ret = IniWriteSection( "profiles.ini", $iniName, $aSection, 0 )
 	If $ret = 0 Then
@@ -933,12 +865,9 @@ Func _save()
 	Profiles_SectionSetValue( $aSection, $PROFILES_DnsPref,  _ctrlGetIP( $ip_DnsPri ) )
 	Profiles_SectionSetValue( $aSection, $PROFILES_DnsAlt,  _ctrlGetIP( $ip_DnsAlt ) )
 	Profiles_SectionSetValue( $aSection, $PROFILES_RegisterDns, _StateToStr( $ck_dnsReg ) )
-	$adapName = StringReplace(GUICtrlRead($combo_adapters), "[", "{lb}")
-	$adapName = StringReplace($adapName, "]", "{rb}")
+	$adapName = iniNameEncode(GUICtrlRead($combo_adapters))
 	Profiles_SectionSetValue( $aSection, $PROFILES_AdapterName, $adapName )
-
-	$iniName = StringReplace($profileName, "[", "{lb}")
-	$iniName = StringReplace($iniName, "]", "{rb}")
+	$iniName = iniNameEncode($profileName)
 	$ret = IniWriteSection( "profiles.ini", $iniName, $aSection, 0 )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
@@ -978,6 +907,7 @@ Func _setProperties($init=0, $profileName="")
 		$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 	EndIf
 
+;~ 	_ArrayDisplay($profiles)
 	If Not Profiles_isNewName($profiles, $profileName) Then
 		$ipAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAuto)
 		$ipAddress = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAddress)
@@ -1079,8 +1009,7 @@ Func _loadProfiles()
 
 	Profiles_DeleteAll($profiles)
 	For $i = 1 to $names[0]
-		$thisName = StringReplace($names[$i], "{lb}", "[")
-		$thisName = StringReplace($thisName, "{rb}", "]")
+		$thisName = iniNameDecode($names[$i])
 		$thisSection = IniReadSection($pname, $names[$i])
 		If @error Then
             ContinueLoop
@@ -1099,8 +1028,7 @@ Func _loadProfiles()
 					Case Options_GetName($options, $OPTIONS_Language)
 						Options_SetValue( $options, $OPTIONS_Language, $thisSection[$j][1])
 					Case Options_GetName($options, $OPTIONS_StartupAdapter)
-						$newName = StringReplace($thisSection[$j][1], "{lb}", "[")
-						$newName = StringReplace($newName, "{rb}", "]")
+						$newName = iniNameDecode($thisSection[$j][1])
 						Options_SetValue( $options, $OPTIONS_StartupAdapter, $newName)
 					Case Options_GetName($options, $OPTIONS_Theme)
 						Options_SetValue( $options, $OPTIONS_Theme, $thisSection[$j][1])
@@ -1134,8 +1062,7 @@ Func _loadProfiles()
 					Case Profiles_GetKeyName($profiles, $PROFILES_RegisterDns)
 						Profiles_SectionSetValue( $aSection, $PROFILES_RegisterDns, $thisSection[$j][1])
 					Case Profiles_GetKeyName($profiles, $PROFILES_AdapterName)
-						$adapName = StringReplace($thisSection[$j][1], "[", "{lb}")
-						$adapName = StringReplace($adapName, "]", "{rb}")
+						$adapName = iniNameEncode($thisSection[$j][1])
 						Profiles_SectionSetValue( $aSection, $PROFILES_AdapterName, $adapName)
 				EndSwitch
 			EndIf
@@ -1156,6 +1083,7 @@ Func _updateProfileList()
 
 	If not $diff then
 		For $i=0 to $lv_count-1
+;~ 			ConsoleWrite($ap_names[$i] & " " & ControlListView( $hgui, "", $list_profiles, "GetText", $i ) & @CRLF)
 			If $ap_names[$i] <> ControlListView( $hgui, "", $list_profiles, "GetText", $i ) Then
 				$diff = 1
 				ExitLoop
@@ -1165,6 +1093,7 @@ Func _updateProfileList()
 
 	If not $diff Then Return
 
+	$selItem = ControlListView($hgui, "", $list_profiles, "GetSelected")
 	_GUICtrlListView_DeleteAllItems(GUICtrlGetHandle($list_profiles))
 	If IsArray($ap_names) Then
 		For $i=0 to UBound($ap_names)-1
@@ -1175,6 +1104,11 @@ Func _updateProfileList()
 		_setStatus("An error occurred while building the profile list", 1)
 		Return 1
 	EndIf
+	If $selItem < UBound($ap_names) Then
+		ControlListView($hgui, "", $list_profiles, "Select", $selItem)
+	Else
+		ControlListView($hgui, "", $list_profiles, "Select", UBound($ap_names)-1)
+	EndIf
 EndFunc
 
 
@@ -1182,10 +1116,14 @@ Func _updateCurrent($init=0, $selected_adapter="")
 	If NOT $init Then
 		$selected_adapter = GUICtrlRead($combo_adapters)
 	EndIf
-	Local $index = _ArraySearch($adapters, $selected_adapter)
-	If $index <> -1 Then
-		GUICtrlSetData( $lDescription, $adapters[$index][2] )
-		GUICtrlSetData( $lMac, "MAC Address: " & $adapters[$index][1] )
+
+	If Adapter_Exists($adapters, $selected_adapter) Then
+		GUICtrlSetData( $lDescription, Adapter_GetDescription($adapters, $selected_adapter) )
+		If $screenshot Then
+			GUICtrlSetData( $lMac, "MAC Address: " & "XX-XX-XX-XX-XX-XX" )
+		Else
+			GUICtrlSetData( $lMac, "MAC Address: " & Adapter_GetMAC($adapters, $selected_adapter) )
+		EndIf
 	Else
 		GUICtrlSetData( $lDescription, "! Adapter not found !" )
 		GUICtrlSetData( $lMac, "" )
@@ -1322,28 +1260,6 @@ Func _MoveToSubnet()
 	$movetosubnet = 0
 EndFunc
 
-; #FUNCTION# ====================================================================================================================
-; Author ........: Gary Frost (gafrost)
-; Modified By....: Kurtis Liggett
-; ===============================================================================================================================
-Func _GUICtrlIpAddress_SetFontByHeight($hWnd, $sFaceName = "Arial", $iFontSize = 12, $iFontWeight = 400, $bFontItalic = False)
-	Local $hDC = _WinAPI_GetDC(0)
-	;Local $iHeight = Round(($iFontSize * _WinAPI_GetDeviceCaps($hDC, $__IPADDRESSCONSTANT_LOGPIXELSX)) / 72, 0)
-	Local $iHeight = $iFontSize
-	_WinAPI_ReleaseDC(0, $hDC)
-
-	Local $tFont = DllStructCreate($tagLOGFONT)
-	DllStructSetData($tFont, "Height", $iHeight)
-	DllStructSetData($tFont, "Weight", $iFontWeight)
-	DllStructSetData($tFont, "Italic", $bFontItalic)
-	DllStructSetData($tFont, "Underline", False) ; font underline
-	DllStructSetData($tFont, "Strikeout", False) ; font strikethru
-	DllStructSetData($tFont, "Quality", $__IPADDRESSCONSTANT_PROOF_QUALITY)
-	DllStructSetData($tFont, "FaceName", $sFaceName)
-
-	Local $hFont = _WinAPI_CreateFontIndirect($tFont)
-	_WinAPI_SetFont($hWnd, $hFont)
-EndFunc   ;==>_GUICtrlIpAddress_SetFont
 
 ;------------------------------------------------------------------------------
 ; Title...........: GetChangeLogData
@@ -1428,3 +1344,65 @@ Func GetChangeLogData()
 
 	Return $sChangeLog
 EndFunc
+
+#Region -- INI related --
+Func iniNameDecode($sName)
+	$thisName = StringReplace($sName, "{lb}", "[")
+	$thisName = StringReplace($thisName, "{rb}", "]")
+	Return $thisName
+EndFunc
+
+Func iniNameEncode($sName)
+	$iniName = StringReplace($sName, "[", "{lb}")
+	$iniName = StringReplace($iniName, "]", "{rb}")
+	Return $iniName
+EndFunc
+
+;------------------------------------------------------------------------------
+; Title...........: _iniRename
+; Description.....: Rename a section of an INI file in-place.
+;                   The built-in IniRenameSection function moves the section
+;                   to the end of the file.
+;
+; Parameters......: $file     -filename
+;                   $oldName  -section name to be replaced
+;                   $newName  -new section name
+; Return value....: 0  -success
+;                   1  -file read/open error
+;                   2  -new name already exists
+;                   3  -file write error
+;------------------------------------------------------------------------------
+Func _iniRename($file, $oldName, $newName)
+	Local $sNewFile = ""
+
+	$iniOldName = iniNameEncode($oldName)
+	$iniNewName = iniNameEncode($newName)
+
+    Local $sFileRead = FileRead($file)
+    If @error <> 0 Then
+        Return 1
+    EndIf
+
+	$strPos = StringInStr($sFileRead, "["&$iniNewName&"]")
+	If $strPos <> 0 Then
+		Return 2
+	Else
+		$sNewFile = StringReplace($sFileRead, $iniOldName, $iniNewName, 1)
+	EndIf
+
+	Local $hFileOpen = FileOpen($file, 2)
+	If $hFileOpen = -1 Then
+		Return 1
+	EndIf
+
+	Local $sFileWrite = FileWrite($hFileOpen, $sNewFile)
+	if @error <> 0 Then
+		FileClose($hFileOpen)
+		Return 3
+	EndIf
+
+    FileClose($hFileOpen)
+
+	Return 0
+EndFunc
+#EndRegion

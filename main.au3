@@ -142,7 +142,7 @@ Global Enum $tb_settings = 2000, $tb_tray
 
 
 ; Adapters
-Global $adapters[1][4] = [[0,0,0]]	; [0]-name, [1]-mac, [2]-description, [3]-GUID
+;Global $adapters[1][4] = [[0,0,0]]	; [0]-name, [1]-mac, [2]-description, [3]-GUID
 
 #EndRegion Global Variables
 
@@ -166,6 +166,7 @@ Global $adapters[1][4] = [[0,0,0]]	; [0]-name, [1]-mac, [2]-description, [3]-GUI
 #include "model.au3"
 Global $options = Options()
 Global $profiles = Profiles()
+Global $adapters = Adapter()
 
 #include "hexIcons.au3"
 #include "libraries\asyncRun.au3"
@@ -219,7 +220,7 @@ Func _main()
 	_makeGUI()
 
 	;get list of adapters and current IP info
-	$adapters = _loadAdapters()
+	_loadAdapters()
 
 	;watch for new program instances
 	GUIRegisterMsg($iMsg, '_NewInstance')
@@ -228,21 +229,21 @@ Func _main()
 	If NOT IsArray( $adapters ) Then
 		MsgBox( 16, "Error", "There was a problem retrieving the adapters." )
 	Else
-		_ArraySort($adapters, 0)	; connections sort ascending
-		$defaultitem = $adapters[1][0]
+		Adapter_Sort($adapters)	; connections sort ascending
+		$defaultitem = Adapter_GetName($adapters, 0)
 		$sStartupAdapter = OPTIONS_GetValue($options, $OPTIONS_StartupAdapter)
-		$index = _ArraySearch( $adapters, $sStartupAdapter, 1 )
-		If ($index <> -1) Then
-			$defaultitem = $adapters[$index][0]
+		If Adapter_Exists($adapters, $sStartupAdapter) Then
+			$defaultitem = $sStartupAdapter
 		EndIf
 
 		$sAdapterBlacklist = OPTIONS_GetValue($options, $OPTIONS_AdapterBlacklist)
 		$aBlacklist = StringSplit($sAdapterBlacklist, "|")
 		If IsArray($aBlacklist) Then
-			For $i=1 to $adapters[0][0]
-				$indexBlacklist = _ArraySearch($aBlacklist, $adapters[$i][0], 1)
+			Local $adapterNames = Adapter_GetNames($adapters)
+			For $i=0 to UBound($adapterNames)-1
+				$indexBlacklist = _ArraySearch($aBlacklist, $adapterNames[$i], 1)
 				if $indexBlacklist <> -1 Then ContinueLoop
-				GUICtrlSetData( $combo_adapters, $adapters[$i][0], $defaultitem )
+				GUICtrlSetData( $combo_adapters, $adapterNames[$i], $defaultitem )
 			Next
 		EndIf
 	EndIf
