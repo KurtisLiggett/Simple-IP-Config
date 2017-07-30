@@ -71,7 +71,7 @@ Func _onExitBlacklistOk()
 	Options_SetValue($options, $OPTIONS_PositionY, $newBlacklist)
 	$keyname = Options_GetName($options, $OPTIONS_AdapterBlacklist)
 	$keyvalue = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
-	IniWrite("profiles.ini", "options", $keyname, $keyvalue)
+	IniWrite(@ScriptDir & "/profiles.ini", "options", $keyname, $keyvalue)
 
 	_ExitChild(@GUI_WinHandle)
 	_updateCombo()
