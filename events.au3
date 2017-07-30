@@ -24,10 +24,14 @@ Func _onExit()
 		$currentWinPos = WinGetPos($winName & " " & $winVersion)
 		$options[8][1] = $currentWinPos[0]
 		$options[9][1] = $currentWinPos[1]
-		IniWriteSection("profiles.ini", "options", $options, 0)
+		IniWriteSection(@ScriptDir & "/profiles.ini", "options", $options, 0)
 	EndIf
 
 	Exit
+EndFunc
+
+Func _onCreateLink()
+	_CreateLink()
 EndFunc
 
 Func _onTab()
@@ -67,7 +71,7 @@ Func _onExitBlacklistOk()
 	$newBlacklist = StringReplace($newBlacklist, "[", "{lb}")
 	$newBlacklist = StringReplace($newBlacklist, "]", "{rb}")
 	$options[7][1] = $newBlacklist
-	IniWrite("profiles.ini", "options", $options[7][0], $options[7][1])
+	IniWrite(@ScriptDir & "/profiles.ini", "options", $options[7][0], $options[7][1])
 
 	_onExitBlacklist()
 	_updateCombo()
@@ -111,7 +115,7 @@ Func _onSelect()
 EndFunc
 
 Func _onApply()
-	_apply()
+	_apply_GUI()
 EndFunc
 
 Func _onArrangeAz()
@@ -205,7 +209,7 @@ EndFunc
 
 Func _onLvEnter()
 	If Not $lv_editing Then
-		_apply()
+		_apply_GUI()
 	Else
 		GUISetAccelerators(0)
 		Send("{ENTER}")
@@ -270,7 +274,7 @@ Func _OnCombo()
 	$adap = GUICtrlRead($combo_adapters)
 	$iniAdap = StringReplace($adap, "[", "{lb}")
 	$iniAdap = StringReplace($iniAdap, "]", "{rb}")
-	$ret = IniWrite( "profiles.ini", "options", $options[4][0], $iniAdap )
+	$ret = IniWrite( @ScriptDir & "/profiles.ini", "options", $options[4][0], $iniAdap )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the selected adapter", 1)
 	Else
@@ -283,7 +287,7 @@ Func _OnToolbarButton()
 	$ID = GUICtrlRead($ToolbarIDs)
 	Switch $ID
 		Case $tb_apply ; Button 1
-			_onApply()
+			_apply_GUI()
 		Case $tb_refresh ; Button 2
 			_onRefresh()
 		Case $tb_add ; Button 3
@@ -475,5 +479,3 @@ Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
     EndSwitch
     Return $GUI_RUNDEFMSG
 EndFunc   ;==>WM_NOTIFY
-
-

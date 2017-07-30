@@ -32,6 +32,18 @@ Func _ExitChild($childwin)
 	EndIf
 EndFunc
 
+Func _CreateLink()
+	$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
+	$iniName = StringReplace($profileName, "[", "{lb}")
+	$iniName = StringReplace($iniName, "]", "{rb}")
+
+	$dir = FileSaveDialog( "Choose a filename", @ScriptDir, "Shortcuts (*.lnk)", 0, "Simple IP Config - " & $profileName)
+	If @error Then	Return
+
+	$res = FileCreateShortcut ( @ScriptFullPath, $dir, @ScriptDir, '/set-config "' & $iniName & '"', "desc", @ScriptFullPath )
+	If $res = -1 Then _setStatus("Could not save to the selected location!", 1)
+EndFunc
+
 Func _checksSICUpdate($manualCheck=0)
   ; This function checks if there are new releases on github and request the user to download it
 
@@ -174,7 +186,7 @@ Func _arrange($desc=0)
 		$profilelist[$i][0] = $profileNamesSorted[$i-1]
 	Next
 
-	Local $hFileOpen = FileOpen("profiles.ini", 2)
+	Local $hFileOpen = FileOpen(@ScriptDir & "/profiles.ini", 2)
 	If $hFileOpen = -1 Then
 		Return 1
 	EndIf
@@ -236,7 +248,7 @@ Func _clickUp()
     If _checkMouse($list_profiles) and _ctrlHasFocus($list_profiles) Then
 		MouseClick("left")
 		If $mdblClick Then
-			_apply()
+			_apply_GUI()
 			$mdblClick = 0
 		Else
 			If $dragging Then
@@ -244,7 +256,7 @@ Func _clickUp()
 				$dragtext = ControlListView($hgui, "", $list_profiles, "GetText", $dragitem)
 				$newtext = ControlListView($hgui, "", $list_profiles, "GetText", $newitem)
 				if $newitem <> "" Then
-					$ret = _iniMove("profiles.ini", $dragtext, $newtext)
+					$ret = _iniMove(@ScriptDir & "/profiles.ini", $dragtext, $newtext)
 					If not $ret Then
 						Select
 							Case $dragitem < $newitem
@@ -397,29 +409,35 @@ Func _radios()
 	EndIf
 EndFunc
 
-Func _apply()
-	$selected_adapter = GUICtrlRead($combo_adapters)
-	If $selected_adapter = "" Then
+Func _apply_GUI()
+	$dhcp = (GUICtrlRead($radio_IpAuto) = $GUI_CHECKED)?"true":"false"
+	$ip = _ctrlGetIP( $ip_Ip )
+	$subnet = _ctrlGetIP( $ip_Subnet )
+	$gateway = _ctrlGetIP( $ip_Gateway )
+	$dnsdhcp = (GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED)?"true":"false"
+	$dnsp = _ctrlGetIP( $ip_DnsPri )
+	$dnsa = _ctrlGetIP( $ip_DnsAlt )
+	$dnsreg = (BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED)?"true":"false"
+	$adapter = GUICtrlRead($combo_adapters)
+
+	_apply($dhcp, $ip, $subnet, $gateway, $dnsdhcp, $dnsp, $dnsa, $dnsreg, $adapter)
+EndFunc
+
+; MUST BE TESTED VERY CAREFULLY
+Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $adapter)
+	If $adapter = "" Then
 		_setStatus("Please select an adapter and try again", 1)
 		Return 1
 	Endif
 
-	$ip = ""
-	$subnet = ""
-	$gateway = ""
-
-	$dhcp = (GUICtrlRead($radio_IpAuto) = $GUI_CHECKED)?1:0
 	$cmd1 = 'netsh interface ip set address '
-	$cmd2 = '"' & $selected_adapter & '"'
+	$cmd2 = '"' & $adapter & '"'
 	$cmd3 = ""
 	$message = ""
-	if $dhcp Then
+	if ($dhcp = "true") Then
 		$cmd3 = " dhcp"
 		$message = "Setting DHCP..."
 	Else
-		$ip = _ctrlGetIP( $ip_Ip )
-		$subnet = _ctrlGetIP( $ip_Subnet )
-		$gateway = _ctrlGetIP( $ip_Gateway )
 		If $ip = "" Then
 			_setStatus("Please enter an IP address", 1)
 			Return 1
@@ -437,28 +455,22 @@ Func _apply()
 	EndIf
 	_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
 
-	$dnsp = ""
-	$dnsa = ""
-
-	$dnsDhcp = (GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED)?1:0
 	$cmd1 = ''
 	$cmd1_1 = 'netsh interface ip set dns '
 	$cmd1_2 = 'netsh interface ip add dns '
 	$cmd1_3 = 'netsh interface ip delete dns '
-	$cmd2 = '"' & $selected_adapter & '"'
+	$cmd2 = '"' & $adapter & '"'
 	$cmd3 = ""
 	$cmdend = ""
 	$message = ""
 	$cmdReg = ""
-	if $dnsDhcp Then
+	if ($dnsDhcp = "true") Then
 		$cmd1 = $cmd1_1
 		$cmd3 = " dhcp"
 		$message = "Setting DNS DHCP..."
 		_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
 	Else
-		$dnsp = _ctrlGetIP( $ip_DnsPri )
-		$dnsa = _ctrlGetIP( $ip_DnsAlt )
-		If BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED Then
+		If $dnsreg = "true" Then
 			$cmdReg = "both"
 		Else
 			$cmdReg = "none"
@@ -490,6 +502,100 @@ Func _apply()
 		EndIf
 	EndIf
 EndFunc
+
+;Func _OLDapply()
+;	$selected_adapter = GUICtrlRead($combo_adapters)
+;	If $selected_adapter = "" Then
+;		_setStatus("Please select an adapter and try again", 1)
+;		Return 1
+;	Endif
+;
+;	$ip = ""
+;	$subnet = ""
+;	$gateway = ""
+;
+;	$dhcp = (GUICtrlRead($radio_IpAuto) = $GUI_CHECKED)?1:0
+;	$cmd1 = 'netsh interface ip set address '
+;	$cmd2 = '"' & $selected_adapter & '"'
+;	$cmd3 = ""
+;	$message = ""
+;	if $dhcp Then
+;		$cmd3 = " dhcp"
+;		$message = "Setting DHCP..."
+;	Else
+;		$ip = _ctrlGetIP( $ip_Ip )
+;		$subnet = _ctrlGetIP( $ip_Subnet )
+;		$gateway = _ctrlGetIP( $ip_Gateway )
+;		If $ip = "" Then
+;			_setStatus("Please enter an IP address", 1)
+;			Return 1
+;		ElseIf $subnet = "" Then
+;			_setStatus("Please enter a subnet mask", 1)
+;			Return 1
+;		Else
+;			If $gateway = "" Then
+;				$cmd3 = " static " & $ip & " " & $subnet & " none"
+;			Else
+;				$cmd3 = " static " & $ip & " " & $subnet & " " & $gateway & " 1"
+;			EndIf
+;			$message = "Setting static IP address..."
+;		EndIf
+;	EndIf
+;	_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
+;
+;	$dnsp = ""
+;	$dnsa = ""
+;
+;	$dnsDhcp = (GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED)?1:0
+;	$cmd1 = ''
+;	$cmd1_1 = 'netsh interface ip set dns '
+;	$cmd1_2 = 'netsh interface ip add dns '
+;	$cmd1_3 = 'netsh interface ip delete dns '
+;	$cmd2 = '"' & $selected_adapter & '"'
+;	$cmd3 = ""
+;	$cmdend = ""
+;	$message = ""
+;	$cmdReg = ""
+;	if $dnsDhcp Then
+;		$cmd1 = $cmd1_1
+;		$cmd3 = " dhcp"
+;		$message = "Setting DNS DHCP..."
+;		_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
+;	Else
+;		$dnsp = _ctrlGetIP( $ip_DnsPri )
+;		$dnsa = _ctrlGetIP( $ip_DnsAlt )
+;		If BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED Then
+;			$cmdReg = "both"
+;		Else
+;			$cmdReg = "none"
+;		EndIf
+;		If $dnsp <> "" Then
+;			$cmd1 = $cmd1_1
+;			$cmd3 = " static " & $dnsp
+;			$message = "Setting preferred DNS server..."
+;			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
+;			_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+;			If $dnsa <> "" Then
+;				$cmd1 = $cmd1_2
+;				$cmd3 = " " & $dnsa
+;				$message = "Setting alternate DNS server..."
+;				$cmdend = (_OSVersion() >= 6)?" 2 no":""
+;				_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+;			EndIf
+;		ElseIf $dnsa <> "" Then
+;			$cmd1 = $cmd1_1
+;			$cmd3 = " static " & $dnsp
+;			$message = "Setting preferred DNS server..."
+;			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
+;			_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+;		Else
+;			$cmd1 = $cmd1_3
+;			$cmd3 = " all"
+;			$message = "Deleting DNS servers..."
+;			_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
+;		EndIf
+;	EndIf
+;EndFunc
 
 Func _OSVersion()
     Return RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\", "CurrentVersion")
@@ -564,7 +670,7 @@ Func _checkChangelog()
 	if $options[0][1] <> $winVersion Then
 		_changeLog()
 		$options[0][1] = $winVersion
-		IniWrite("profiles.ini", "options", $options[0][0], $options[0][1])
+		IniWrite(@ScriptDir & "/profiles.ini", "options", $options[0][0], $options[0][1])
 	EndIf
 EndFunc
 
@@ -573,7 +679,7 @@ Func _rename()
 		Return
 	EndIf
 
-	$ret = _iniRename("profiles.ini", $lv_oldName, $lv_newName)
+	$ret = _iniRename(@ScriptDir & "/profiles.ini", $lv_oldName, $lv_newName)
 	If $ret = 2 Then
 		MsgBox($MB_ICONWARNING,"Warning!","The profile name already exists!")
 		_GUICtrlListView_SetItemText ( $list_profiles, $lv_editIndex, $lv_oldName )
@@ -642,7 +748,7 @@ Func _delete($name="")
 	$iniName = StringReplace($profileName, "[", "{lb}")
 	$iniName = StringReplace($iniName, "]", "{rb}")
 
-	$ret = IniDelete( "profiles.ini", $iniName )
+	$ret = IniDelete( @ScriptDir & "/profiles.ini", $iniName )
 	If $ret = 0 Then
 		_setStatus("An error occurred while deleting the profile", 1)
 	EndIf
@@ -717,7 +823,7 @@ Func _new()
 	EndIf
 
 	$lv_newItem = 0
-	$ret = IniWriteSection( "profiles.ini", $iniName, $section, 0 )
+	$ret = IniWriteSection(@ScriptDir & "/profiles.ini", $iniName, $section, 0 )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
@@ -757,7 +863,7 @@ Func _save()
 
 	$iniName = StringReplace($profileName, "[", "{lb}")
 	$iniName = StringReplace($iniName, "]", "{rb}")
-	$ret = IniWriteSection( "profiles.ini", $iniName, $section, 0 )
+	$ret = IniWriteSection( @ScriptDir & "/profiles.ini", $iniName, $section, 0 )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
@@ -853,7 +959,7 @@ Func _saveOptions()
 	$options[6][1] = _StateToStr($ck_saveAdapter)
   $options[10][1] = _StateToStr($ck_autoUpdate)
 
-	IniWriteSection("profiles.ini", "options", $options, 0)
+	IniWriteSection(@ScriptDir & "/profiles.ini", "options", $options, 0)
 	_onExitSettings()
 EndFunc
 
@@ -896,7 +1002,7 @@ Func _StateToStr($id)
 EndFunc
 
 Func _loadProfiles()
-	Local $pname = "profiles.ini"
+	Local $pname = @ScriptDir & "/profiles.ini"
 	Local $aArray[1][2] = [[0,0]]
 	$profilelist = $aArray
 	If Not FileExists( $pname ) Then
@@ -981,6 +1087,7 @@ EndFunc
 
 
 Func _updateCurrent($init=0, $selected_adapter="")
+	If $cmdLine Then Return
 	If NOT $init Then
 		$selected_adapter = GUICtrlRead($combo_adapters)
 	EndIf
@@ -1081,6 +1188,7 @@ Func _getNames()
 EndFunc
 
 Func _setStatus($sMessage, $bError=0, $bTiming=0)
+	if $cmdLine Then Return
 	If NOT $bTiming Then
 		$sStatusMessage = $sMessage
 	EndIf
