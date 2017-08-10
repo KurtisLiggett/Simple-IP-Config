@@ -36,6 +36,7 @@ Func asyncRun($sCmd, $CallbackFunc, $sDescription="", $iTimeout=10000)
 	$__asyncProcess__Data[$size-1][1] = $CallbackFunc
 	$__asyncProcess__Data[$size-1][2] = $sDescription
 	$__asyncProcess__Data[$size-1][3] = $iTimeout
+	$__asyncProcess__Data[0][2] = 0
 	if $size = 2 Then
 		$CallbackFunc($sDescription, $sDescription, "")
 	EndIf

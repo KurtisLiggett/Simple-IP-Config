@@ -26,7 +26,6 @@
 #EndRegion description
 
 #include-once
-#include <Array.au3>
 
 #Region -- options --
 Global Enum $OPTIONS_Version, $OPTIONS_MinToTray, $OPTIONS_StartupMode, $OPTIONS_Language, _

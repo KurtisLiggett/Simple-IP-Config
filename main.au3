@@ -48,12 +48,7 @@
 ;create a new window message
 Global $iMsg = _WinAPI_RegisterWindowMessage('newinstance_message')
 
-;check to see if another instance is already running
-If _Singleton("Simple IP Config", 1) = 0 Then
-	;alert existing program instances of the new instance, then exit
-	_WinAPI_PostMessage(0xffff, $iMsg, 0x101, 0)
-    Exit
-EndIf
+;single window check in cli.au3 file
 
 #EndRegion Single instance check
 
@@ -75,7 +70,7 @@ Global $screenshot=0
 ;GUI stuff
 Global $winName = "Simple IP Config"
 Global $winVersion = "2.8.1"
-Global $winDate = "06/29/2017"
+Global $winDate = "08/10/2017"
 Global $hgui
 Global $guiWidth = 550
 Global $guiHeight = 550
@@ -139,10 +134,6 @@ Global $hToolbar, $hToolbar2
 Global $ToolbarIDs, $Toolbar2IDs
 Global Enum $tb_apply = 1000, $tb_refresh, $tb_add, $tb_save, $tb_delete, $tb_clear
 Global Enum $tb_settings = 2000, $tb_tray
-
-
-; Adapters
-;Global $adapters[1][4] = [[0,0,0]]	; [0]-name, [1]-mac, [2]-description, [3]-GUID
 
 #EndRegion Global Variables
 

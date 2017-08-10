@@ -40,7 +40,6 @@ EndFunc
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func RunCallback($sDescription, $sNextDescription, $sStdOut)
-
 	If $sStdOut = "Command timeout" Then
 		_setStatus("Action timed out!  Command Aborted.", 1)
 		If asyncRun_isIdle() Then
@@ -536,8 +535,9 @@ Func _apply_GUI()
 	$dnsreg = (BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED)?"true":"false"
 	$adapter = GUICtrlRead($combo_adapters)
 
-	_apply($dhcp, $ip, $subnet, $gateway, $dnsdhcp, $dnsp, $dnsa, $dnsreg, $adapter)
+	_apply($dhcp, $ip, $subnet, $gateway, $dnsdhcp, $dnsp, $dnsa, $dnsreg, $adapter, RunCallback)
 EndFunc
+
 
 ;------------------------------------------------------------------------------
 ; Title...........: _apply
@@ -548,7 +548,7 @@ EndFunc
 ;                   1  -no adapter is selected
 ;------------------------------------------------------------------------------
 ; MUST BE TESTED VERY CAREFULLY
-Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $adapter)
+Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $adapter, $Callback)
 	If $adapter = "" Then
 		_setStatus("Please select an adapter and try again", 1)
 		Return 1
@@ -579,7 +579,7 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 	EndIf
 	;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
 	;(cmd, callback, description)
-	asyncRun($cmd1&$cmd2&$cmd3, RunCallback, $message)
+	asyncRun($cmd1&$cmd2&$cmd3, $Callback, $message)
 
 	$cmd1 = ''
 	$cmd1_1 = 'netsh interface ip set dns '
@@ -596,7 +596,7 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 		$message = "Setting DNS DHCP..."
 		;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
 		;(cmd, callback, description)
-		asyncRun($cmd1&$cmd2&$cmd3, RunCallback, $message)
+		asyncRun($cmd1&$cmd2&$cmd3, $Callback, $message)
 	Else
 		If $dnsreg = "true" Then
 			$cmdReg = "both"
@@ -610,7 +610,7 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
 			;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
 			;(cmd, callback, description)
-			asyncRun($cmd1&$cmd2&$cmd3&$cmdend, RunCallback, $message)
+			asyncRun($cmd1&$cmd2&$cmd3&$cmdend, $Callback, $message)
 			If $dnsa <> "" Then
 				$cmd1 = $cmd1_2
 				$cmd3 = " " & $dnsa
@@ -618,7 +618,7 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 				$cmdend = (_OSVersion() >= 6)?" 2 no":""
 				;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
 				;(cmd, callback, description)
-				asyncRun($cmd1&$cmd2&$cmd3&$cmdend, RunCallback, $message)
+				asyncRun($cmd1&$cmd2&$cmd3&$cmdend, $Callback, $message)
 			EndIf
 		ElseIf $dnsa <> "" Then
 			$cmd1 = $cmd1_1
@@ -627,14 +627,14 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
 			;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
 			;(cmd, callback, description)
-			asyncRun($cmd1&$cmd2&$cmd3&$cmdend, RunCallback, $message)
+			asyncRun($cmd1&$cmd2&$cmd3&$cmdend, $Callback, $message)
 		Else
 			$cmd1 = $cmd1_3
 			$cmd3 = " all"
 			$message = "Deleting DNS servers..."
 			;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
 			;(cmd, callback, description)
-			asyncRun($cmd1&$cmd2&$cmd3, RunCallback, $message)
+			asyncRun($cmd1&$cmd2&$cmd3, $Callback, $message)
 		EndIf
 	EndIf
 EndFunc
@@ -853,6 +853,7 @@ Func _checkChangelog()
 	if $sVersion <> $winVersion Then
 		_changeLog()
 		$sVersion = $winVersion
+		Options_SetValue($options, $OPTIONS_Version, $sVersion)
 		$sVersionName = Options_GetName($options, $OPTIONS_Version)
 		IniWrite(@ScriptDir & "/profiles.ini", "options", $sVersionName, $sVersion)
 	EndIf
