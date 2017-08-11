@@ -41,18 +41,14 @@
 
 
 #requireadmin
+#NoTrayIcon	;prevent double icon when checking for already running instance
 
-#Region Single instance check
-
-#NoTrayIcon	;prevent double icon for singleton check
-;create a new window message
-Global $iMsg = _WinAPI_RegisterWindowMessage('newinstance_message')
-
-;single window check in cli.au3 file
-
-#EndRegion Single instance check
 
 #Region Global Variables
+Global $options
+Global $profiles
+Global $adapters
+
 #include <GUIConstantsEx.au3>
 
 ; Global constants, for code readability
@@ -155,10 +151,6 @@ Global Enum $tb_settings = 2000, $tb_tray
 #include <Array.au3>
 
 #include "model.au3"
-Global $options = Options()
-Global $profiles = Profiles()
-Global $adapters = Adapter()
-
 #include "hexIcons.au3"
 #include "libraries\asyncRun.au3"
 #include "libraries\StringSize.au3"
@@ -191,8 +183,28 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_Fileversion=2.8.1
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
-; BEGIN MAIN PROGRAM
+#Region PROGRAM CONTROL
+;create the main 'objects'
+$options = Options()
+$profiles = Profiles()
+$adapters = Adapter()
+
+;check to see if called with command line arguments
+CheckCmdLine()
+
+;create a new window message
+Global $iMsg = _WinAPI_RegisterWindowMessage('newinstance_message')
+
+;Check if already running. If running, send a message to the first
+;instance to show a popup message then close this instance.
+If _Singleton("Simple IP Config", 1) = 0 Then
+	_WinAPI_PostMessage(0xffff, $iMsg, 0x101, 0)
+    Exit
+EndIf
+
+;begin main program
 _main()
+#EndRegion
 
 ;------------------------------------------------------------------------------
 ; Title........: _main
