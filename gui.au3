@@ -224,8 +224,10 @@ Func _makeStatusbar()
 	GUICtrlSetBkColor (-1, _WinAPI_GetSysColor($COLOR_MENUBAR ) )
 EndFunc
 
+
 Func _makeMenu()
 	$filemenu = GUICtrlCreateMenu("&File")
+
 	$saveitem = GUICtrlCreateMenuItem("Apply profile" & @TAB & "Enter", $filemenu)
 	GUICtrlSetOnEvent(-1, "_onApply")
 	GUICtrlCreateMenuItem("", $filemenu)

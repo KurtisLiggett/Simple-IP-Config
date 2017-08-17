@@ -22,8 +22,10 @@
 ;==============================================================================
 Global $oMyError = ObjEvent("AutoIt.Error","MyErrFunc")
 
-Func MyErrFunc()
+Func MyErrFunc($oError)
   SetError(1)
+    ; Do anything here.
+	MsgBox(1,"COM Error","Simple IP Config COM Error!" & @CRLF & "Error Number: " & Hex($oError.number))
 EndFunc
 
 ;------------------------------------------------------------------------------
