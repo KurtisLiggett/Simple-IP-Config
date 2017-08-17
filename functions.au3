@@ -1050,7 +1050,10 @@ Func _loadProfiles()
 				EndIf
 			EndIf
 		Next
-		$profilelist[$currentindex][1] = $thisProfile
+		If $thisName <> "Options" Then
+			$profilelist[$currentindex][1] = $thisProfile
+		EndIf
+
 	Next
 
 EndFunc
