@@ -21,7 +21,7 @@ Func _onExit()
 	; save window position in ini file
 	If NOT BITAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
 		ConsoleWrite("saving..."&@CRLF)
-		$currentWinPos = WinGetPos($winName & " " & $winVersion)
+		$currentWinPos = WinGetPos($hgui)
 		$options[8][1] = $currentWinPos[0]
 		$options[9][1] = $currentWinPos[1]
 		IniWriteSection(@ScriptDir & "/profiles.ini", "options", $options, 0)
@@ -66,7 +66,7 @@ Func _onExitBlacklist()
 EndFunc
 
 Func _onExitBlacklistOk()
-	$guiState = WinGetState( $winname & " " & $winversion )
+	$guiState = WinGetState( $hgui )
 	$newBlacklist = StringReplace(GUICtrlRead($blacklistEdit), @CRLF, "|")
 	$newBlacklist = StringReplace($newBlacklist, "[", "{lb}")
 	$newBlacklist = StringReplace($newBlacklist, "]", "{rb}")
