@@ -354,7 +354,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _clickUp()
     If _checkMouse($list_profiles) and _ctrlHasFocus($list_profiles) Then
-		MouseClick("left")
+		MouseClick($MOUSE_CLICK_PRIMARY)
 		If $mdblClick Then
 			_apply_GUI()
 			$mdblClick = 0
