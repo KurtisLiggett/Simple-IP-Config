@@ -15,12 +15,71 @@
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
 
+
+;==============================================================================
+; Filename:		functions.au3
+; Description:	- most functions related to doing something in the program
+;==============================================================================
 Global $oMyError = ObjEvent("AutoIt.Error","MyErrFunc")
 
-Func MyErrFunc()
+Func MyErrFunc($oError)
   SetError(1)
+    ; Do anything here.
+	MsgBox(1,"COM Error","Simple IP Config COM Error!" & @CRLF & "Error Number: " & Hex($oError.number))
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: RunCallback
+; Description.....: Callback function that runs after a command is finished
+;                    *commands set IP address info through a hidden command
+;                     prompt. They run without blocking the program, so
+;                     we need a callback function to decide how to proceed
+;                     when the command is done running.
+;
+; Parameters......: $sDescription  		-Command description
+;                   $sNextDescription	-Next command description
+;                   $sStdOut       		-STD output string from command prompt
+; Return value....:
+;------------------------------------------------------------------------------
+Func RunCallback($sDescription, $sNextDescription, $sStdOut)
+	If $sStdOut = "Command timeout" Then
+		_setStatus("Action timed out!  Command Aborted.", 1)
+		If asyncRun_isIdle() Then
+			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+		Else
+			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+		EndIf
+	Else
+		If StringInStr($sStdOut, "failed") Then
+			_setStatus(StringReplace($sStdOut, @CRLF, " "), 1)
+			IF asyncRun_isIdle() Then
+				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+			EndIf
+		Else
+			If $sDescription = $sNextDescription Then
+				If not $showWarning Then _setStatus($sNextDescription)
+				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+			ElseIf asyncRun_isIdle() Then
+				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+				If not $showWarning Then _setStatus("Ready")
+				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+			Else
+				If not $showWarning Then _setStatus($sNextDescription)
+				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+			EndIf
+		EndIf
+	EndIf
+
+	_updateCurrent()
+EndFunc
+
+;------------------------------------------------------------------------------
+; Title...........: _ExitChild
+; Description.....: Destroy the child window and enable the main GUI
+;
+; Parameters......: $childwin  -child window handle
+; Return value....:
+;------------------------------------------------------------------------------
 Func _ExitChild($childwin)
 	$guiState = WinGetState( $hgui )
 	GUISetState(@SW_ENABLE, $hGUI)
@@ -44,6 +103,13 @@ Func _CreateLink()
 	If $res = -1 Then _setStatus("Could not save to the selected location!", 1)
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _checksSICUpdate
+; Description.....: Check for updates/ask to download
+;
+; Parameters......: $manualCheck  -manually run check from menu item
+; Return value....:
+;------------------------------------------------------------------------------
 Func _checksSICUpdate($manualCheck=0)
   ; This function checks if there are new releases on github and request the user to download it
 
@@ -105,35 +171,52 @@ Func _DoUpdate($newFilename)
 	$iPID = Run(@ComSpec & " /k " & $filename, "", @SW_HIDE, $STDIN_CHILD+$STDERR_MERGED)
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _updateCombo
+; Description.....: UpdateUpdate the adapters list
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _updateCombo()
 	_setStatus("Updating Adapter List...")
 	_loadAdapters()
+	Local $adapterNames = Adapter_GetNames($adapters)
 	_GUICtrlComboBox_ResetContent (GUICtrlGetHandle($combo_adapters))
 
 	If NOT IsArray( $adapters ) Then
 		MsgBox( 16, "Error", "There was a problem retrieving the adapters." )
 	Else
-		_ArraySort($adapters, 0)	; connections sort ascending
-		$defaultitem = $adapters[1][0]
-		$index = _ArraySearch( $adapters, $options[4][1], 1 )
+		Adapter_Sort($adapters)	; connections sort ascending
+		$defaultitem = $adapterNames[0]
+		$sStartupAdapter = Options_GetValue($options, $OPTIONS_StartupAdapter)
+		$index = _ArraySearch( $adapters, $sStartupAdapter, 1 )
 		If ($index <> -1) Then
 			$defaultitem = $adapters[$index][0]
 		EndIf
-		$aBlacklist = StringSplit($options[7][1], "|")
-		For $i=1 to $adapters[0][0]
-			$indexBlacklist = _ArraySearch($aBlacklist, $adapters[$i][0], 1)
+		$sBlacklist = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
+		$aBlacklist = StringSplit($sBlacklist, "|")
+		For $i=0 to UBound($adapterNames)-1
+			$indexBlacklist = _ArraySearch($aBlacklist, $adapterNames[$i], 1)
 			if $indexBlacklist <> -1 Then ContinueLoop
-			GUICtrlSetData( $combo_adapters, $adapters[$i][0], $defaultitem )
+			GUICtrlSetData( $combo_adapters, $adapterNames[$i], $defaultitem )
 		Next
 	EndIf
 	ControlSend ($hgui, "", $combo_adapters, "{END}")
 	_setStatus("Ready")
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _blacklistAdd
+; Description.....: Add selected adapter to the edit box in the
+;				    hide adapters window
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _blacklistAdd()
 	$selected_adapter = GUICtrlRead($combo_adapters)
 	$list = GUICtrlRead($blacklistEdit)
-;~ 	_ArrayDisplay(StringToASCIIArray ($list))
 	If $list = "" OR StringRight($list, 1) = @CR OR StringRight($list, 1) = @LF Then
 		$newString = $selected_adapter
 	Else
@@ -146,44 +229,46 @@ Func _blacklistAdd()
 	GUICtrlSetData($blacklistEdit, $newString, 1)
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _arrange
+; Description.....: Arrange profiles in asc/desc order
+;
+; Parameters......: $desc  - 0=ascending order; 1=descending order
+; Return value....: 0  -success
+;				    1  -could not open file
+;				    3  -error writing to file
+;------------------------------------------------------------------------------
 Func _arrange($desc=0)
 	_loadProfiles()
 
 	Local $newfile = ""
 	$newfile &= "[Options]" & @CRLF
-	$newfile &= $options[0][0] & "=" & $options[0][1] & @CRLF
-	$newfile &= $options[1][0] & "=" & $options[1][1] & @CRLF
-	$newfile &= $options[2][0] & "=" & $options[2][1] & @CRLF
-	$newfile &= $options[3][0] & "=" & $options[3][1] & @CRLF
-	$newfile &= $options[4][0] & "=" & $options[4][1] & @CRLF
-	$newfile &= $options[5][0] & "=" & $options[5][1] & @CRLF
-	$newfile &= $options[6][0] & "=" & $options[6][1] & @CRLF
-	$newfile &= $options[7][0] & "=" & $options[7][1] & @CRLF
-  $newfile &= $options[10][0] & "=" & $options[10][1] & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_Version) & "=" & Options_GetValue($options, $OPTIONS_Version) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_MinToTray) & "=" & Options_GetValue($options, $OPTIONS_MinToTray) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_StartupMode) & "=" & Options_GetValue($options, $OPTIONS_StartupMode) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_Language) & "=" & Options_GetValue($options, $OPTIONS_Language) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_StartupAdapter) & "=" & Options_GetValue($options, $OPTIONS_StartupAdapter) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_Theme) & "=" & Options_GetValue($options, $OPTIONS_Theme) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_SaveAdapterToProfile) & "=" & Options_GetValue($options, $OPTIONS_SaveAdapterToProfile) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_AdapterBlacklist) & "=" & Options_GetValue($options, $OPTIONS_AdapterBlacklist) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_PositionX) & "=" & Options_GetValue($options, $OPTIONS_PositionX) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_PositionY) & "=" & Options_GetValue($options, $OPTIONS_PositionY) & @CRLF
+	$newfile &= Options_GetName($options, $OPTIONS_AutoUpdate) & "=" & Options_GetValue($options, $OPTIONS_AutoUpdate) & @CRLF
 
-	Local $profileNames = _getNames()
-	$profileNamesSorted = $profileNames
-	_ArraySort($profileNamesSorted, $desc)
-	For $i=0 to UBound($profileNames)-1
-		$index = _ArraySearch($profileNames, $profileNamesSorted[$i])
-		If $index <> -1 Then
-			$iniName = StringReplace($profileNamesSorted[$i], "[", "{lb}")
-			$iniName = StringReplace($iniName, "]", "{rb}")
-			$newfile &= "[" & $iniName & "]" & @CRLF
-			$newfile &= $propertyFormat[0] & "=" & ($profilelist[$index][1])[0] & @CRLF
-			$newfile &= $propertyFormat[1] & "=" & ($profilelist[$index][1])[1] & @CRLF
-			$newfile &= $propertyFormat[2] & "=" & ($profilelist[$index][1])[2] & @CRLF
-			$newfile &= $propertyFormat[3] & "=" & ($profilelist[$index][1])[3] & @CRLF
-			$newfile &= $propertyFormat[4] & "=" & ($profilelist[$index][1])[4] & @CRLF
-			$newfile &= $propertyFormat[5] & "=" & ($profilelist[$index][1])[5] & @CRLF
-			$newfile &= $propertyFormat[6] & "=" & ($profilelist[$index][1])[6] & @CRLF
-			$newfile &= $propertyFormat[7] & "=" & ($profilelist[$index][1])[7] & @CRLF
-			$newfile &= $propertyFormat[8] & "=" & ($profilelist[$index][1])[8] & @CRLF
-		EndIf
-	Next
-
-	For $i=1 to UBound($profileNamesSorted)
-		$profilelist[$i][0] = $profileNamesSorted[$i-1]
+	Profiles_Sort($profiles, $desc)
+	For $i=0 to Profiles_GetSize($profiles)-1
+		$sProfileName = Profiles_GetValueByIndex($profiles, $i, $PROFILES_Name)
+		$iniName = iniNameEncode($sProfileName)
+		$newfile &= "[" & $iniName & "]" & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpAuto) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpAuto) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpAddress) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpAddress) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpSubnet) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpSubnet) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpGateway) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpGateway) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_DnsAuto) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_DnsAuto) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_DnsPref) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_DnsPref) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_DnsAlt) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_DnsAlt) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_RegisterDns) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_RegisterDns) & @CRLF
+		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_AdapterName) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_AdapterName) & @CRLF
 	Next
 
 	Local $hFileOpen = FileOpen(@ScriptDir & "/profiles.ini", 2)
@@ -203,7 +288,14 @@ Func _arrange($desc=0)
 	Return 0
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _checkMouse
+; Description.....: Check if mouse is over a particular control
+;
+; Parameters......: $Id  -controlID
+; Return value....: 0  -mouse is NOT over the control
+;				    1  -mouse IS over the control
+;------------------------------------------------------------------------------
 Func _checkMouse($Id)
 	$idPos = ControlGetPos($hgui, "", $Id)
 	$mPos = MouseGetPos()
@@ -215,6 +307,13 @@ Func _checkMouse($Id)
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _clickDn
+; Description.....: Check if started dragging a listview item
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _clickDn()
 	; -- check for double click --
 	If $mdblcheck = 1 Then
@@ -243,7 +342,16 @@ Func _clickDn()
 
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _clickUp
+; Description.....: On mouse click release:
+;                   if double-clicked, apply the selected profile.
+;                   if item was dragged, rearrange the items in the listview
+;                     and profiles.ini file.
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _clickUp()
     If _checkMouse($list_profiles) and _ctrlHasFocus($list_profiles) Then
 		MouseClick($MOUSE_CLICK_PRIMARY)
@@ -255,29 +363,36 @@ Func _clickUp()
 				$newitem = ControlListView($hgui, "", $list_profiles, "GetSelected")
 				$dragtext = ControlListView($hgui, "", $list_profiles, "GetText", $dragitem)
 				$newtext = ControlListView($hgui, "", $list_profiles, "GetText", $newitem)
-				if $newitem <> "" Then
+				if $newitem <> "" and $dragtext <> $newtext Then
 					$ret = _iniMove(@ScriptDir & "/profiles.ini", $dragtext, $newtext)
 					If not $ret Then
-						Select
-							Case $dragitem < $newitem
-								_GUICtrlListView_DeleteItem (GUICtrlGetHandle($list_profiles), $dragitem)
-								_GUICtrlListView_InsertItem (GUICtrlGetHandle($list_profiles), $dragtext, $newitem)
-							Case $dragitem > $newitem
-								_GUICtrlListView_DeleteItem (GUICtrlGetHandle($list_profiles), $dragitem)
-								_GUICtrlListView_InsertItem (GUICtrlGetHandle($list_profiles), $dragtext, $newitem)
-						EndSelect
-						$newtext = ControlListView($hgui, "", $list_profiles, "Select", $newitem)
+						$dragProfile = Profiles_GetProfile($profiles, $dragtext)
+						Profiles_Delete($profiles, $dragtext)
+						Profiles_InsertProfile($profiles, $newitem, $dragtext, $dragProfile)
+						_updateProfileList()
 					EndIf
 				EndIf
 			EndIf
 		EndIf
     EndIf
 	$dragging = False
-
 EndFunc
 
 
-;helper -
+;------------------------------------------------------------------------------
+; Title...........: _iniMove
+; Description.....:
+;
+; Parameters......: $file      -filename
+;                   $fromName  -source profile name
+;                   $toName    -destination profile name
+; Return value....: 0  -success
+;                   1  -file read error or string error
+;                   2  -string error
+;                   3  -file write error
+;
+; Notes...........: need to make these return errors more descriptive
+;------------------------------------------------------------------------------
 Func _iniMove($file, $fromName, $toName)
 	Local $sNewFile = ""
 	Local $sLeft = ""
@@ -286,12 +401,8 @@ Func _iniMove($file, $fromName, $toName)
 	Local $sRight = ""
 	Local $sAfterTo = ""
 
-
-	$inifromName = StringReplace($fromName, "[", "{lb}")
-	$inifromName = StringReplace($inifromName, "]", "{rb}")
-
-	$initoName = StringReplace($toName, "[", "{lb}")
-	$initoName = StringReplace($initoName, "]", "{rb}")
+	$inifromName = iniNameEncode($fromName)
+	$initoName = iniNameEncode($toName)
 
     Local $sFileRead = FileRead($file)
     If @error <> 0 Then
@@ -373,7 +484,13 @@ Func _iniMove($file, $fromName, $toName)
 	Return 0
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _radios
+; Description.....: Check/set radio button interlocks
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _radios()
 	if GUICtrlRead($radio_IpAuto) = $GUI_CHECKED Then
 		GUICtrlSetState($radio_DnsAuto, $GUI_ENABLE)
@@ -420,11 +537,20 @@ Func _apply_GUI()
 	$dnsreg = (BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED)?"true":"false"
 	$adapter = GUICtrlRead($combo_adapters)
 
-	_apply($dhcp, $ip, $subnet, $gateway, $dnsdhcp, $dnsp, $dnsa, $dnsreg, $adapter)
+	_apply($dhcp, $ip, $subnet, $gateway, $dnsdhcp, $dnsp, $dnsa, $dnsreg, $adapter, RunCallback)
 EndFunc
 
+
+;------------------------------------------------------------------------------
+; Title...........: _apply
+; Description.....: Apply the selected profile to the selected adapter
+;
+; Parameters......:
+; Return value....: 0  -success
+;                   1  -no adapter is selected
+;------------------------------------------------------------------------------
 ; MUST BE TESTED VERY CAREFULLY
-Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $adapter)
+Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $adapter, $Callback)
 	If $adapter = "" Then
 		_setStatus("Please select an adapter and try again", 1)
 		Return 1
@@ -453,7 +579,9 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 			$message = "Setting static IP address..."
 		EndIf
 	EndIf
-	_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
+	;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
+	;(cmd, callback, description)
+	asyncRun($cmd1&$cmd2&$cmd3, $Callback, $message)
 
 	$cmd1 = ''
 	$cmd1_1 = 'netsh interface ip set dns '
@@ -468,7 +596,9 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 		$cmd1 = $cmd1_1
 		$cmd3 = " dhcp"
 		$message = "Setting DNS DHCP..."
-		_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
+		;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
+		;(cmd, callback, description)
+		asyncRun($cmd1&$cmd2&$cmd3, $Callback, $message)
 	Else
 		If $dnsreg = "true" Then
 			$cmdReg = "both"
@@ -480,25 +610,33 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 			$cmd3 = " static " & $dnsp
 			$message = "Setting preferred DNS server..."
 			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
-			_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+			;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+			;(cmd, callback, description)
+			asyncRun($cmd1&$cmd2&$cmd3&$cmdend, $Callback, $message)
 			If $dnsa <> "" Then
 				$cmd1 = $cmd1_2
 				$cmd3 = " " & $dnsa
 				$message = "Setting alternate DNS server..."
 				$cmdend = (_OSVersion() >= 6)?" 2 no":""
-				_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+				;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+				;(cmd, callback, description)
+				asyncRun($cmd1&$cmd2&$cmd3&$cmdend, $Callback, $message)
 			EndIf
 		ElseIf $dnsa <> "" Then
 			$cmd1 = $cmd1_1
 			$cmd3 = " static " & $dnsp
 			$message = "Setting preferred DNS server..."
 			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
-			_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+			;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
+			;(cmd, callback, description)
+			asyncRun($cmd1&$cmd2&$cmd3&$cmdend, $Callback, $message)
 		Else
 			$cmd1 = $cmd1_3
 			$cmd3 = " all"
 			$message = "Deleting DNS servers..."
-			_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
+			;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
+			;(cmd, callback, description)
+			asyncRun($cmd1&$cmd2&$cmd3, $Callback, $message)
 		EndIf
 	EndIf
 EndFunc
@@ -597,11 +735,24 @@ EndFunc
 ;	EndIf
 ;EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _OSVersion
+; Description.....: Get the OS version number from the registry
+;
+; Parameters......:
+; Return value....: Version number
+;------------------------------------------------------------------------------
 Func _OSVersion()
     Return RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\", "CurrentVersion")
 EndFunc   ;==>_OSVersion
 
-
+;------------------------------------------------------------------------------
+; Title...........: _pull
+; Description.....: Get current IP information from adapter and update display
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _pull()
 	GUICtrlSetState( $radio_IpMan, $GUI_CHECKED )
 	_ctrlSetIP($ip_Ip, GUICtrlRead($label_CurrentIp) )
@@ -613,7 +764,14 @@ Func _pull()
 	_radios()
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _ctrlHasFocus
+; Description.....: Check if control currently has focus
+;
+; Parameters......: $id  -controlID
+; Return value....: 0  -control does NOT have focus
+;                   1  -control has focus
+;------------------------------------------------------------------------------
 Func _ctrlHasFocus($id)
 	$idFocus = ControlGetFocus($hgui)
 	$hFocus = ControlGetHandle($hgui, "", $idFocus)
@@ -625,7 +783,13 @@ Func _ctrlHasFocus($id)
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _disable
+; Description.....: Disable/enable selected adapter based on current state
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _disable()
 	$selected_adapter = GUICtrlRead($combo_adapters)
 	if _GUICtrlMenu_GetItemText( GUICtrlGetHandle($toolsmenu), $disableitem, 0 ) = "Disable adapter" Then
@@ -640,7 +804,13 @@ Func _disable()
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _onLvDoneEdit
+; Description.....: When done editing listview item, rename the profile
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _onLvDoneEdit()
 	$lv_newName = ControlListView ( $hgui, "", $list_profiles, "GetText", $lv_editIndex )
 	;ConsoleWrite( $lv_oldName & " " & $lv_newName )
@@ -657,7 +827,13 @@ Func _onLvDoneEdit()
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _clear
+; Description.....: Clears the IP address entry fields
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _clear()
 	_ctrlSetIP($ip_Ip, "")
 	_ctrlSetIP($ip_Subnet, "")
@@ -666,14 +842,32 @@ Func _clear()
 	_ctrlSetIP($ip_DnsAlt, "")
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _checkChangelog
+; Description.....: Check if new version and change log needs to be displayed.
+;                   Then write new version to profiles.ini file.
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _checkChangelog()
-	if $options[0][1] <> $winVersion Then
+	$sVersion = Options_GetValue($options, $OPTIONS_Version)
+	if $sVersion <> $winVersion Then
 		_changeLog()
-		$options[0][1] = $winVersion
-		IniWrite(@ScriptDir & "/profiles.ini", "options", $options[0][0], $options[0][1])
+		$sVersion = $winVersion
+		Options_SetValue($options, $OPTIONS_Version, $sVersion)
+		$sVersionName = Options_GetName($options, $OPTIONS_Version)
+		IniWrite(@ScriptDir & "/profiles.ini", "options", $sVersionName, $sVersion)
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title...........: _rename
+; Description.....: Call the ini file rename function and modify the listview
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _rename()
 	If $lv_oldName = $lv_newName Then
 		Return
@@ -686,87 +880,30 @@ Func _rename()
 	ElseIf $ret = 1 or $ret = 3 Then
 		_setStatus("An error occurred while saving the profile name", 1)
 	Else
-		Local $profileNames[1]
-		_ArrayDelete($profileNames, 0)
-		If IsArray($profilelist) Then
-			For $i=1 to $profilelist[0][0]
-				_ArrayAdd($profileNames, $profilelist[$i][0])
-			Next
-			$index = _ArraySearch($profileNames, $lv_oldName)+1
-			If $index <> -1 Then
-				$profilelist[$index][0] = $lv_newName
-			EndIf
-		Else
-			_setStatus("An error occurred while renaming the profile", 1)
-			Return 1
-		EndIf
+		Profiles_SetValue($profiles, $lv_oldName, $PROFILES_Name, $lv_newName)
 	EndIf
 EndFunc
 
-;helper - the built-in inirenamesection function moves the section to the end of the file.
-Func _iniRename($file, $oldName, $newName)
-	Local $sNewFile = ""
 
-	$iniOldName = StringReplace($oldName, "[", "{lb}")
-	$iniOldName = StringReplace($iniOldName, "]", "{rb}")
-
-	$iniNewName = StringReplace($newName, "[", "{lb}")
-	$iniNewName = StringReplace($iniNewName, "]", "{rb}")
-
-    Local $sFileRead = FileRead($file)
-    If @error <> 0 Then
-        Return 1
-    EndIf
-
-	$strPos = StringInStr($sFileRead, "["&$iniNewName&"]")
-	If $strPos <> 0 Then
-		Return 2
-	Else
-		$sNewFile = StringReplace($sFileRead, $iniOldName, $iniNewName, 1)
-	EndIf
-
-	Local $hFileOpen = FileOpen($file, 2)
-	If $hFileOpen = -1 Then
-		Return 1
-	EndIf
-
-	Local $sFileWrite = FileWrite($hFileOpen, $sNewFile)
-	if @error <> 0 Then
-		FileClose($hFileOpen)
-		Return 3
-	EndIf
-
-    FileClose($hFileOpen)
-
-	Return 0
-EndFunc
-
+;------------------------------------------------------------------------------
+; Title...........: _delete
+; Description.....: Delete a profile
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _delete($name="")
 	$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 	$selIndex = ControlListView($hgui, "", $list_profiles, "GetSelected")
 
-	$iniName = StringReplace($profileName, "[", "{lb}")
-	$iniName = StringReplace($iniName, "]", "{rb}")
-
+	$iniName = iniNameEncode($profileName)
 	$ret = IniDelete( @ScriptDir & "/profiles.ini", $iniName )
 	If $ret = 0 Then
 		_setStatus("An error occurred while deleting the profile", 1)
 	EndIf
 
-	Local $profileNames[1]
-	_ArrayDelete($profileNames, 0)
-	If IsArray($profilelist) Then
-		For $i=1 to $profilelist[0][0]
-			_ArrayAdd($profileNames, $profilelist[$i][0])
-		Next
-		$index = _ArraySearch($profileNames, $profileName)+1
-		If $index <> -1 Then
-			_ArrayDelete( $profilelist, $index )
-			$profilelist[0][0] = $profilelist[0][0] - 1
-		EndIf
-	Else
-		Return 1
-	EndIf
+	Profiles_Delete($profiles, $profileName)
+
 
 	_updateProfileList()
 	If $selIndex = ControlListView($hgui, "", $list_profiles, "GetItemCount") Then
@@ -776,124 +913,85 @@ Func _delete($name="")
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _new
+; Description.....: Create a new profile
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _new()
 ;	$yesno = MsgBox($MB_YESNO,"Warning!","The profile name already exists!" & @CRLF & "Do you wish to overwrite the profile?")
 	$index = ControlListView($hgui, "", $list_profiles, "GetSelected")
 	$text = ControlListView($hgui, "", $list_profiles, "GetText", $index)
 	$profileName = $text
 
-	Local $section[9][2]
-	$section[0][0] = $propertyFormat[0]
-	$section[0][1] = _StateToStr( $radio_IpAuto )
-	$section[1][0] = $propertyFormat[1]
-	$section[1][1] = _ctrlGetIP( $ip_Ip )
-	$section[2][0] = $propertyFormat[2]
-	$section[2][1] = _ctrlGetIP( $ip_Subnet )
-	$section[3][0] = $propertyFormat[3]
-	$section[3][1] = _ctrlGetIP( $ip_Gateway )
-	$section[4][0] = $propertyFormat[4]
-	$section[4][1] = _StateToStr( $radio_DnsAuto )
-	$section[5][0] = $propertyFormat[5]
-	$section[5][1] = _ctrlGetIP( $ip_DnsPri )
-	$section[6][0] = $propertyFormat[6]
-	$section[6][1] = _ctrlGetIP( $ip_DnsAlt )
-	$adapName = StringReplace(GUICtrlRead($combo_adapters), "[", "{lb}")
-	$adapName = StringReplace($adapName, "]", "{rb}")
-	$section[7][0] = $propertyFormat[7]
-	$section[7][1] = _StateToStr( $ck_dnsReg )
-	$section[8][0] = $propertyFormat[7]
-	$section[8][1] = $adapName
-
-
-	$iniName = StringReplace($profileName, "[", "{lb}")
-	$iniName = StringReplace($iniName, "]", "{rb}")
-
-	Local $sectionValues[9]
-	for $i=0 to 8
-		$sectionValues[$i] = $section[$i][1]
-	Next
-
-	Local $profileNames = _getNames()
-	$index = _ArraySearch($profileNames, $profileName)
-	If $index <> -1 Then
+	If not Profiles_isNewName($profiles, $profileName) Then
 		MsgBox($MB_ICONWARNING, "Warning!", "Profile name already exists!")
 		$lv_startEditing = 1
 		Return
 	EndIf
 
+	Local $aSection = Profiles_CreateSection()
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpAuto, _StateToStr( $radio_IpAuto ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpAddress,  _ctrlGetIP( $ip_Ip ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpSubnet,  _ctrlGetIP( $ip_Subnet ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpGateway,  _ctrlGetIP( $ip_Gateway ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_DnsAuto, _StateToStr( $radio_DnsAuto ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_DnsPref,  _ctrlGetIP( $ip_DnsPri ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_DnsAlt,  _ctrlGetIP( $ip_DnsAlt ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_RegisterDns, _StateToStr( $ck_dnsReg ) )
+	$adapName = iniNameEncode(GUICtrlRead($combo_adapters))
+	Profiles_SectionSetValue( $aSection, $PROFILES_AdapterName, $adapName )
+	$iniName = iniNameEncode($profileName)
 	$lv_newItem = 0
-	$ret = IniWriteSection(@ScriptDir & "/profiles.ini", $iniName, $section, 0 )
+	$ret = IniWriteSection( @ScriptDir & "/profiles.ini", $iniName, $aSection, 0 )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
 
-	$profilelist[0][0] = $profilelist[0][0]+1
-	_ArrayAdd( $profilelist, $profileName )
-	$profilelist[$profilelist[0][0]][1] = $sectionValues
+	Profiles_AddSection($profiles, $profileName, $aSection)
+	_updateProfileList()
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _save
+; Description.....: Save the selected profile
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _save()
 	;$yesno = MsgBox($MB_YESNO,"Warning!","The profile name already exists!" & @CRLF & "Do you wish to overwrite the profile?")
 	$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
-	Local $section[9][2]
-	$section[0][0] = $propertyFormat[0]
-	$section[0][1] = _StateToStr( $radio_IpAuto )
-	$section[1][0] = $propertyFormat[1]
-	$section[1][1] = _ctrlGetIP( $ip_Ip )
-	$section[2][0] = $propertyFormat[2]
-	$section[2][1] = _ctrlGetIP( $ip_Subnet )
-	$section[3][0] = $propertyFormat[3]
-	$section[3][1] = _ctrlGetIP( $ip_Gateway )
-	$section[4][0] = $propertyFormat[4]
-	$section[4][1] = _StateToStr( $radio_DnsAuto )
-	$section[5][0] = $propertyFormat[5]
-	$section[5][1] = _ctrlGetIP( $ip_DnsPri )
-	$section[6][0] = $propertyFormat[6]
-	$section[6][1] = _ctrlGetIP( $ip_DnsAlt )
 
-	$adapName = StringReplace(GUICtrlRead($combo_adapters), "[", "{lb}")
-	$adapName = StringReplace($adapName, "]", "{rb}")
-	$section[7][0] = $propertyFormat[7]
-	$section[7][1] = _StateToStr( $ck_dnsReg )
-	$section[8][0] = $propertyFormat[8]
-	$section[8][1] = $adapName
-
-
-	$iniName = StringReplace($profileName, "[", "{lb}")
-	$iniName = StringReplace($iniName, "]", "{rb}")
-	$ret = IniWriteSection( @ScriptDir & "/profiles.ini", $iniName, $section, 0 )
+	Local $aSection = Profiles_CreateSection()
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpAuto, _StateToStr( $radio_IpAuto ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpAddress,  _ctrlGetIP( $ip_Ip ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpSubnet,  _ctrlGetIP( $ip_Subnet ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_IpGateway,  _ctrlGetIP( $ip_Gateway ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_DnsAuto, _StateToStr( $radio_DnsAuto ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_DnsPref,  _ctrlGetIP( $ip_DnsPri ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_DnsAlt,  _ctrlGetIP( $ip_DnsAlt ) )
+	Profiles_SectionSetValue( $aSection, $PROFILES_RegisterDns, _StateToStr( $ck_dnsReg ) )
+	$adapName = iniNameEncode(GUICtrlRead($combo_adapters))
+	Profiles_SectionSetValue( $aSection, $PROFILES_AdapterName, $adapName )
+	$iniName = iniNameEncode($profileName)
+	$ret = IniWriteSection( @ScriptDir & "/profiles.ini", $iniName, $aSection, 0 )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
 
-	Local $sectionValues[9]
-	for $i=0 to 8
-		$sectionValues[$i] = $section[$i][1]
-	Next
-
-	Local $profileNames[1]
-	_ArrayDelete($profileNames, 0)
-	If IsArray($profilelist) Then
-		For $i=1 to $profilelist[0][0]
-			_ArrayAdd($profileNames, $profilelist[$i][0])
-		Next
-		$index = _ArraySearch($profileNames, $profileName)+1
-		If $index <> -1 Then
-			$profilelist[$index][1] = $sectionValues
-		Else
-			$profilelist[0][0] = $profilelist[0][0]+1
-			_ArrayAdd( $profilelist, $profileName )
-			$profilelist[$profilelist[0][0]][1] = $sectionValues
-		EndIf
-	Else
-		_setStatus("An error occurred while saving the profile", 1)
-		Return 1
-	EndIf
+	Profiles_AddSection($profiles, $profileName, $aSection)
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _refresh
+; Description.....: Load profiles from ini file and update current adapter info
+;
+; Parameters......: $init  -1=initial refresh don't change status bar text
+; Return value....:
+;------------------------------------------------------------------------------
 Func _refresh($init=0)
 	_loadProfiles()
 	_updateProfileList()
@@ -906,61 +1004,64 @@ Func _refresh($init=0)
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title...........: _setProperties
+; Description.....: Set fields from profile properties
+;
+; Parameters......:
+; Return value....:
+;------------------------------------------------------------------------------
 Func _setProperties($init=0, $profileName="")
-	Local $profileNames[1]
-	_ArrayDelete($profileNames, 0)
-	If IsArray($profilelist) Then
-		if NOT $init Then
-			$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
-		EndIf
-		For $i=1 to $profilelist[0][0]
-			_ArrayAdd($profileNames, $profilelist[$i][0])
-		Next
-		$index = _ArraySearch($profileNames, $profileName)+1
+	if NOT $init Then
+		$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
+	EndIf
 
-		If $index <> -1 Then
-			;ConsoleWrite($index&@CRLF)
-			GUICtrlSetState( $radio_IpMan, $GUI_CHECKED )
-			GUICtrlSetState( $radio_IpAuto, _StrToState( ($profilelist[$index][1])[0] ) )
-			_ctrlSetIP($ip_Ip, ($profilelist[$index][1])[1])
-			_ctrlSetIP($ip_Subnet, ($profilelist[$index][1])[2])
-			_ctrlSetIP($ip_Gateway, ($profilelist[$index][1])[3])
+;~ 	_ArrayDisplay($profiles)
+	If Not Profiles_isNewName($profiles, $profileName) Then
+		$ipAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAuto)
+		$ipAddress = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAddress)
+		$ipSubnet = Profiles_GetValue($profiles, $profileName, $PROFILES_IpSubnet)
+		$ipGateway = Profiles_GetValue($profiles, $profileName, $PROFILES_IpGateway)
+		GUICtrlSetState( $radio_IpMan, $GUI_CHECKED )
+		GUICtrlSetState( $radio_IpAuto, _StrToState( $ipAuto ) )
+		_ctrlSetIP($ip_Ip, $ipAddress )
+		_ctrlSetIP($ip_Subnet, $ipSubnet )
+		_ctrlSetIP($ip_Gateway, $ipGateway )
 
-			GUICtrlSetState( $radio_DnsMan, $GUI_CHECKED )
-			GUICtrlSetState( $radio_DnsAuto, _StrToState( ($profilelist[$index][1])[4] ) )
-			_ctrlSetIP($ip_DnsPri, ($profilelist[$index][1])[5])
-			_ctrlSetIP($ip_DnsAlt, ($profilelist[$index][1])[6])
+		$dnsAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsAuto)
+		$dnsPref = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsPref)
+		$dnsAlt = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsAlt)
+		$dnsReg = Profiles_GetValue($profiles, $profileName, $PROFILES_RegisterDns)
+		GUICtrlSetState( $radio_DnsMan, $GUI_CHECKED )
+		GUICtrlSetState( $radio_DnsAuto, _StrToState( $dnsAuto ) )
+		_ctrlSetIP($ip_DnsPri, $dnsPref )
+		_ctrlSetIP($ip_DnsAlt, $dnsAlt )
+		GUICtrlSetState( $ck_dnsReg, _StrToState( $dnsReg ) )
 
-			GUICtrlSetState( $ck_dnsReg, _StrToState( ($profilelist[$index][1])[7] ) )
-
-			If ($profilelist[$index][1])[8] <> "" and ($options[6][1] = 1 OR $options[6][1] = "true") Then
-				$adapterIndex = _ArraySearch($adapters, ($profilelist[$index][1])[8])
-				IF $adapterIndex <> -1 Then
-					ControlCommand ( $hgui, "", $combo_adapters, "SelectString", ($profilelist[$index][1])[8] )
-				EndIf
+		$sSaveAdapter = Options_GetValue($options, $OPTIONS_SaveAdapterToProfile)
+		$profileAdapter = Profiles_GetValue($profiles, $profileName, $PROFILES_AdapterName)
+		If $profileAdapter <> "" and ($sSaveAdapter = 1 OR $sSaveAdapter = "true") Then
+			If Not Profiles_isNewName($profiles, $profileAdapter) Then
+				ControlCommand ( $hgui, "", $combo_adapters, "SelectString", $profileAdapter )
 			EndIf
-
-			_radios()
-		Else
-			_setStatus("An error occurred while setting the profile properties", 1)
-			Return 1
 		EndIf
+
+		_radios()
 	Else
-		_setStatus("An error occurred while retrieving the profile properties", 1)
+		_setStatus("An error occurred while setting the profile properties", 1)
 		Return 1
 	EndIf
 EndFunc
 
 
 Func _saveOptions()
-	$options[2][1] = _StateToStr($ck_startinTray)
-	$options[1][1] = _StateToStr($ck_mintoTray)
-	$options[6][1] = _StateToStr($ck_saveAdapter)
-  $options[10][1] = _StateToStr($ck_autoUpdate)
+	Options_SetValue( $options, $OPTIONS_StartupMode, _StateToStr($ck_startinTray) )
+	Options_SetValue( $options, $OPTIONS_MinToTray, _StateToStr($ck_mintoTray) )
+	Options_SetValue( $options, $OPTIONS_SaveAdapterToProfile, _StateToStr($ck_saveAdapter) )
+	Options_SetValue( $options, $OPTIONS_AutoUpdate, _StateToStr($ck_autoUpdate) )
 
 	IniWriteSection(@ScriptDir & "/profiles.ini", "options", $options, 0)
-	_onExitSettings()
+	_ExitChild(@GUI_WinHandle)
 EndFunc
 
 ;helper
@@ -1003,8 +1104,7 @@ EndFunc
 
 Func _loadProfiles()
 	Local $pname = @ScriptDir & "/profiles.ini"
-	Local $aArray[1][2] = [[0,0]]
-	$profilelist = $aArray
+
 	If Not FileExists( $pname ) Then
 		_setStatus("Profiles.ini file not found - A new file will be created", 1)
 		Return 1
@@ -1016,50 +1116,75 @@ Func _loadProfiles()
 		Return 1
 	EndIf
 
-	$currentindex = 0
+	Profiles_DeleteAll($profiles)
 	For $i = 1 to $names[0]
-		$thisName = StringReplace($names[$i], "{lb}", "[")
-		$thisName = StringReplace($thisName, "{rb}", "]")
+		$thisName = iniNameDecode($names[$i])
 		$thisSection = IniReadSection($pname, $names[$i])
 		If @error Then
             ContinueLoop
         EndIf
-		If $thisName <> "Options" Then
-			$profilelist[0][0] = $profilelist[0][0]+1
-			$currentindex = $profilelist[0][0]
-			_ArrayAdd( $profilelist, $thisName & "|")
-		EndIf
 
-		Local $thisProfile[9]
+		Local $aSection = Profiles_CreateSection()
 		For $j = 1 to $thisSection[0][0]
-			If $thisName = "Options" Then
-				$index = _ArraySearch($options, $thisSection[$j][0])
-				If $index <> -1 Then
-					If $thisSection[$j][0] = "StartupAdapter" Then
-						$newName = StringReplace($thisSection[$j][1], "{lb}", "[")
-						$newName = StringReplace($newName, "{rb}", "]")
-						$options[$index][1] = $newName
-					Else
-						$options[$index][1] = $thisSection[$j][1]
-					EndIf
-				EndIf
+			If $thisName = "Options" or $thisName = "options" Then
+				Switch $thisSection[$j][0]
+					Case Options_GetName($options, $OPTIONS_Version)
+						Options_SetValue( $options, $OPTIONS_Version, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_MinToTray)
+						Options_SetValue( $options, $OPTIONS_MinToTray, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_StartupMode)
+						Options_SetValue( $options, $OPTIONS_StartupMode, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_Language)
+						Options_SetValue( $options, $OPTIONS_Language, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_StartupAdapter)
+						$newName = iniNameDecode($thisSection[$j][1])
+						Options_SetValue( $options, $OPTIONS_StartupAdapter, $newName)
+					Case Options_GetName($options, $OPTIONS_Theme)
+						Options_SetValue( $options, $OPTIONS_Theme, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_SaveAdapterToProfile)
+						Options_SetValue( $options, $OPTIONS_SaveAdapterToProfile, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_AdapterBlacklist)
+						Options_SetValue( $options, $OPTIONS_AdapterBlacklist, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_PositionX)
+						Options_SetValue( $options, $OPTIONS_PositionX, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_PositionY)
+						Options_SetValue( $options, $OPTIONS_PositionY, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_AutoUpdate)
+						Options_SetValue( $options, $OPTIONS_AutoUpdate, $thisSection[$j][1])
+				EndSwitch
 			Else
-				$index = _ArraySearch($propertyFormat, $thisSection[$j][0])
-				If $index <> -1 Then
-					$thisProfile[$index] = $thisSection[$j][1]
-				EndIf
+				Switch $thisSection[$j][0]
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpAuto)
+						Profiles_SectionSetValue( $aSection, $PROFILES_IpAuto, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpAddress)
+						Profiles_SectionSetValue( $aSection, $PROFILES_IpAddress, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpSubnet)
+						Profiles_SectionSetValue( $aSection, $PROFILES_IpSubnet, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpGateway)
+						Profiles_SectionSetValue( $aSection, $PROFILES_IpGateway, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_DnsAuto)
+						Profiles_SectionSetValue( $aSection, $PROFILES_DnsAuto, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_DnsPref)
+						Profiles_SectionSetValue( $aSection, $PROFILES_DnsPref, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_DnsAlt)
+						Profiles_SectionSetValue( $aSection, $PROFILES_DnsAlt, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_RegisterDns)
+						Profiles_SectionSetValue( $aSection, $PROFILES_RegisterDns, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_AdapterName)
+						$adapName = iniNameEncode($thisSection[$j][1])
+						Profiles_SectionSetValue( $aSection, $PROFILES_AdapterName, $adapName)
+				EndSwitch
 			EndIf
 		Next
 		If $thisName <> "Options" Then
-			$profilelist[$currentindex][1] = $thisProfile
+			Profiles_AddSection($profiles, $thisName, $aSection)
 		EndIf
-
 	Next
 
 EndFunc
 
 Func _updateProfileList()
-	$ap_names = _getNames()
+	$ap_names = Profiles_GetNames($profiles)
 	$lv_count = ControlListView( $hgui, "", $list_profiles, "GetItemCount" )
 
 	Local $diff = 0
@@ -1067,6 +1192,7 @@ Func _updateProfileList()
 
 	If not $diff then
 		For $i=0 to $lv_count-1
+;~ 			ConsoleWrite($ap_names[$i] & " " & ControlListView( $hgui, "", $list_profiles, "GetText", $i ) & @CRLF)
 			If $ap_names[$i] <> ControlListView( $hgui, "", $list_profiles, "GetText", $i ) Then
 				$diff = 1
 				ExitLoop
@@ -1076,15 +1202,21 @@ Func _updateProfileList()
 
 	If not $diff Then Return
 
+	$selItem = ControlListView($hgui, "", $list_profiles, "GetSelected")
 	_GUICtrlListView_DeleteAllItems(GUICtrlGetHandle($list_profiles))
-	If IsArray($profilelist) Then
-		For $i=1 to $profilelist[0][0]
-			GUICtrlCreateListViewItem( $profilelist[$i][0], $list_profiles )
+	If IsArray($ap_names) Then
+		For $i=0 to UBound($ap_names)-1
+			GUICtrlCreateListViewItem( $ap_names[$i], $list_profiles )
 			GUICtrlSetOnEvent( -1, "_onSelect" )
 		Next
 	Else
 		_setStatus("An error occurred while building the profile list", 1)
 		Return 1
+	EndIf
+	If $selItem < UBound($ap_names) Then
+		ControlListView($hgui, "", $list_profiles, "Select", $selItem)
+	Else
+		ControlListView($hgui, "", $list_profiles, "Select", UBound($ap_names)-1)
 	EndIf
 EndFunc
 
@@ -1094,10 +1226,14 @@ Func _updateCurrent($init=0, $selected_adapter="")
 	If NOT $init Then
 		$selected_adapter = GUICtrlRead($combo_adapters)
 	EndIf
-	Local $index = _ArraySearch($adapters, $selected_adapter)
-	If $index <> -1 Then
-		GUICtrlSetData( $lDescription, $adapters[$index][2] )
-		GUICtrlSetData( $lMac, "MAC Address: " & $adapters[$index][1] )
+
+	If Adapter_Exists($adapters, $selected_adapter) Then
+		GUICtrlSetData( $lDescription, Adapter_GetDescription($adapters, $selected_adapter) )
+		If $screenshot Then
+			GUICtrlSetData( $lMac, "MAC Address: " & "XX-XX-XX-XX-XX-XX" )
+		Else
+			GUICtrlSetData( $lMac, "MAC Address: " & Adapter_GetMAC($adapters, $selected_adapter) )
+		EndIf
 	Else
 		GUICtrlSetData( $lDescription, "! Adapter not found !" )
 		GUICtrlSetData( $lMac, "" )
@@ -1121,17 +1257,16 @@ EndFunc
 
 
 Func _filterProfiles()
-	;_ArrayDisplay($profilelist)
 	Local $aArray[1] = [0]
 	_ArrayDelete( $aArray, 0 )
 	$strPattern = GUICtrlRead( $input_filter )
 	_GUICtrlListView_DeleteAllItems( $list_profiles )
 
-	$aNames = _getNames()
+	$aNames = Profiles_GetNames($profiles)
 	if $strPattern <> "" Then
 		$pattern = '(?i)(?U)' & StringReplace( $strPattern, "*", ".*")
 		;MsgBox(0,"",$pattern)
-		for $k=0 to $profilelist[0][0]-1
+		for $k=0 to UBound($aNames)-1
 			$matched = StringRegExp($aNames[$k], $pattern, $STR_REGEXPMATCH )
 			If $matched = 1 Then
 				_ArrayAdd( $aArray, $aNames[$k] )
@@ -1144,12 +1279,12 @@ Func _filterProfiles()
 	For $i=0 to UBound($aArray)-1
 		_GUICtrlListView_AddItem( $list_profiles, $aArray[$i] )
 	Next
-
-	;_ArrayDisplay($aArray)
 EndFunc
 
 
 Func _SendToTray()
+	Static $tray_tip
+
 	GUISetState(@SW_MINIMIZE, $hGUI)
 	GUISetState(@SW_HIDE, $hGUI)
 	TrayItemSetText ( $RestoreItem, "Restore" )
@@ -1160,7 +1295,8 @@ Func _SendToTray()
 EndFunc
 
 Func _minimize()
-	If $options[1][1] = 1 OR $options[1][1] = "true" Then
+	$sMinToTray = Options_GetValue( $options, $OPTIONS_MinToTray)
+	If $sMinToTray = 1 OR $sMinToTray = "true" Then
 		_SendToTray()
 	Else
 		GUISetState(@SW_MINIMIZE, $hGUI)
@@ -1175,19 +1311,6 @@ Func _maximize()
 	GUISetState(@SW_SHOWNOACTIVATE, $hTool)
 	GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
 	TrayItemSetText( $RestoreItem, "Hide" )
-EndFunc
-
-
-Func _getNames()
-	Local $profileNames[1]
-	If IsArray($profilelist) Then
-		_ArrayDelete($profileNames, 0)
-		For $i=1 to $profilelist[0][0]
-			_ArrayAdd($profileNames, $profilelist[$i][0])
-		Next
-	EndIf
-
-	Return $profileNames
 EndFunc
 
 Func _setStatus($sMessage, $bError=0, $bTiming=0)
@@ -1207,108 +1330,10 @@ Func _setStatus($sMessage, $bError=0, $bTiming=0)
 		GUICtrlSetState($statustext, $GUI_SHOW)
 		GUICtrlSetState($statuserror, $GUI_HIDE)
 		GUICtrlSetState($wgraphic, $GUI_HIDE)
-		_onExitStatus()
+		_ExitChild($statusChild)
 	EndIf
 EndFunc
 
-
-
-; -- asynchronous Processes - keep track of running commands, but don't block the program
-Func _asyncNewCmd($sCmd, $sMessage="", $addToQueue=-1)
-	If not ProcessExists ( $iPID ) Then
-		$sStdOut = ""
-		$sStdErr = ""
-		_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
-		ConsoleWrite($sCmd&@CRLF)
-		$showWarning = 0
-;~ 		$iPID = Run(@ComSpec & " /k " & $sCmd & "& pause", "", @SW_HIDE, $STDIN_CHILD+$STDERR_MERGED)
-		$iPID = Run(@ComSpec & " /k " & $sCmd & "& echo simple ip config cmd done", "", @SW_HIDE, $STDIN_CHILD+$STDERR_MERGED)
-		$pRuntime = TimerInit()
-		$pIdle = 0
-		If $sMessage <> "" Then
-			_setStatus($sMessage)
-		EndIf
-		;Sleep(500)
-	ElseIf $addToQueue Then
-		_asyncAddToQueue($sCmd, $sMessage)
-	EndIf
-EndFunc
-
-Func _asyncAddToQueue($sCmd, $sMessage)
-	$pQueue[0][0] = $pQueue[0][0] + 1
-	_ArrayAdd($pQueue, $sCmd&"|"&$sMessage)
-EndFunc
-
-Func _asyncCheckQueue()
-	If $pQueue[0][0] > 0 Then
-		_asyncNewCmd($pQueue[1][0], $pQueue[1][1])
-		_ArrayDelete($pQueue, 1)
-		$pQueue[0][0] = $pQueue[0][0] -1
-	EndIf
-EndFunc
-
-Func _asyncClearQueue()
-	If $pQueue[0][0] > 0 Then
-		_ArrayDelete($pQueue, "1-"&$pQueue[0][0])
-		$pQueue[0][0] = 0
-	EndIf
-EndFunc
-
-Func _asyncProcess()
-	Local $dTimeout
-	$pExists = ProcessExists ( $iPID )
-	If $pExists Then
-		$sStdOut = $sStdOut & StdoutRead($iPID)
-		$sStdErr = $sStdErr & StderrRead ($iPID)
-
-;~ 		ConsoleWrite($sStdOut&@CRLF)
-		if StringInStr($sStdOut, "simple ip config cmd done") Then	;look for our unique phrase to signal we're done
-			$sStdOut = StringLeft($sStdOut, StringLen($sStdOut)-33)
-			ProcessClose($iPID)
-			$pDone = 1
-			$iPID = -1
-		ElseIf TimerDiff($pRuntime) > 10000 Then
-			$dTimeout = 1
-			$sStdOut = ""
-			ProcessClose($iPID)
-			$pDone = 1
-			$iPID = -1
-			ConsoleWrite("Timeout" & @CRLF)
-		Else
-			$countdown = 10 - Round(TimerDiff($pRuntime)/1000)
-			if $countdown <=5 Then
-				_setStatus($sStatusMessage & "  " & "Timeout in " & $countdown & " seconds",0,1)
-			EndIf
-		EndIf
-	Else
-		$pIdle = 1
-	EndIf
-
-	If $pDone Then
-		$pDone = 0
-		If $dTimeout Then
-			$dTimeout = 0
-			_setStatus("Action timed out!  Command Aborted.", 1)
-			_asyncClearQueue()
-			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
-		Else
-	;~ 		ConsoleWrite($sStdOut&@CRLF)
-			If StringInStr($sStdOut, "failed") Then
-				_setStatus(StringReplace($sStdOut, @CRLF, " "), 1)
-				IF $pQueue[0][0] = 0 Then
-					_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
-				EndIf
-			Else
-				IF $pQueue[0][0] = 0 Then
-					_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
-					If not $showWarning Then _setStatus("Ready")
-				EndIf
-			EndIf
-		EndIf
-		_updateCurrent()
-		_asyncCheckQueue()
-	EndIf
-EndFunc
 
 Func _DomainComputerBelongs($strComputer = "localhost")
     ; Generated by AutoIt Scriptomatic
@@ -1319,7 +1344,7 @@ Func _DomainComputerBelongs($strComputer = "localhost")
 		return $Domain
 	EndIf
 
-    ;$objWMIService = ObjGet("winmgmts:\\" & $strComputer & "\root\CIMV2")
+	Local $objWMI = ObjGet("winmgmts:{impersonationLevel = impersonate}!\\" & "." & "\root\cimv2")
     If Not IsObj($objWMI) Then Return SetError(1, 0, '')
     $colItems = $objWMI.ExecQuery("SELECT * FROM Win32_ComputerSystem", "WQL", _
                                             $wbemFlagReturnImmediately + $wbemFlagForwardOnly)
@@ -1337,7 +1362,6 @@ Func _DomainComputerBelongs($strComputer = "localhost")
     Return $Domain
 EndFunc
 
-
 Func _MoveToSubnet()
 	if WinActive($hgui) and _WinAPI_GetAncestor (_WinAPI_GetFocus(),$GA_PARENT ) = ControlGetHandle($hgui,"", $ip_Subnet) Then
 		If _GUICtrlIpAddress_Get($ip_Subnet) = "0.0.0.0" Then
@@ -1347,25 +1371,149 @@ Func _MoveToSubnet()
 	$movetosubnet = 0
 EndFunc
 
-; #FUNCTION# ====================================================================================================================
-; Author ........: Gary Frost (gafrost)
-; Modified By....: Kurtis Liggett
-; ===============================================================================================================================
-Func _GUICtrlIpAddress_SetFontByHeight($hWnd, $sFaceName = "Arial", $iFontSize = 12, $iFontWeight = 400, $bFontItalic = False)
-	Local $hDC = _WinAPI_GetDC(0)
-	;Local $iHeight = Round(($iFontSize * _WinAPI_GetDeviceCaps($hDC, $__IPADDRESSCONSTANT_LOGPIXELSX)) / 72, 0)
-	Local $iHeight = $iFontSize
-	_WinAPI_ReleaseDC(0, $hDC)
 
-	Local $tFont = DllStructCreate($tagLOGFONT)
-	DllStructSetData($tFont, "Height", $iHeight)
-	DllStructSetData($tFont, "Weight", $iFontWeight)
-	DllStructSetData($tFont, "Italic", $bFontItalic)
-	DllStructSetData($tFont, "Underline", False) ; font underline
-	DllStructSetData($tFont, "Strikeout", False) ; font strikethru
-	DllStructSetData($tFont, "Quality", $__IPADDRESSCONSTANT_PROOF_QUALITY)
-	DllStructSetData($tFont, "FaceName", $sFaceName)
+;------------------------------------------------------------------------------
+; Title...........: GetChangeLogData
+; Description.....: Get the change log string data
+;
+; Parameters......:
+; Return value....: change log string array
+;------------------------------------------------------------------------------
+Func GetChangeLogData()
+	Local $sChangeLog[2]
+	$sChangeLog[0] = "Changelog - " & $winVersion
+	$sChangeLog[1] = @CRLF & _
+	"v"&$winVersion & @CRLF & _
+	"MINOR CHANGES:" & @CRLF & _
+	"   Added Debug item to Help menu to help troubleshoot issues." & @CRLF & _
+	@CRLF & _
+	"v2.8" & @CRLF & _
+	"BUG FIXES:" & @CRLF & _
+	"   IP address entry text scaling" & @CRLF & _
+	@CRLF & _
+	"v2.8" & @CRLF & _
+	"MAJOR CHANGES:" & @CRLF & _
+	"   Now using IP Helper API (Iphlpapi.dll) instead of WMI" & @CRLF & _
+	"   Speed improvements -> 2x faster!" & @CRLF & _
+	@CRLF & _
+	"MINOR CHANGES:" & @CRLF & _
+	"   Automatically fill in 255.255.255.0 for subnet" & @CRLF & _
+	"   Save last window position on exit" & @CRLF & _
+	"   Tray message when an trying to start a new instance" & @CRLF & _
+	"   Smaller exe file size" & @CRLF & _
+	"   Popup window positioning follows main window" & @CRLF & _
+	"   Allow more space for current properties" & @CRLF & _
+	"   Smoother startup process" & @CRLF & _
+	"   Get current information from disconnected adapters" & @CRLF & _
+	@CRLF & _
+	"BUG FIXES:" & @CRLF & _
+	"   IP address entry text scaling" & @CRLF & _
+	"   Fixed 'start in system tray' setting" & @CRLF & _
+	"   Fixed starting without toolbar icons" & @CRLF & _
+	"   Display disabled adapters" & @CRLF & _
+	"   Get current properties from disabled adapters" & @CRLF & _
+	"   Disabled adapters behavior" & @CRLF & _
+	"   Fixed hanging on setting profiles" & @CRLF & _
+	"   Fixed renaming/creating profiles issues" & @CRLF & _
+	"   Fixed additional DPI scaling issues" & @CRLF & _
+	@CRLF & _
+	"v2.7" & @CRLF & _
+	"MAJOR CHANGES:" & @CRLF & _
+	"   Code switched back to AutoIt" & @CRLF & _
+	"   Proper DPI scaling" & @CRLF & _
+	@CRLF & _
+	"NEW FEATURES:" & @CRLF & _
+	"   Enable DNS address registration" & @CRLF & _
+	"   Hide unused adapters" & "(View->Hide adapters)" & @CRLF & _
+	"   Display computer name and domain address" & @CRLF & _
+	@CRLF & _
+	"OTHER CHANGES:" & @CRLF & _
+	"   Single click to restore from system tray" & @CRLF & _
+	"   Improved status bar" & @CRLF & _
+	"   Allow only 1 instance to run" & @CRLF & _
+	@CRLF & _
+	"BUG FIXES:" & @CRLF & _
+	"   Proper scaling with larger/smaller screen fonts" & @CRLF & _
+	"   Fixed tooltip in system tray" & @CRLF & _
+	@CRLF & _
+	"v2.6" & @CRLF & _
+	"NEW FEATURES:" & @CRLF & _
+	"   Filter Profiles!" & @CRLF & _
+	"   'Start in System Tray' setting" & @CRLF & _
+	"   Release / renew DHCP tool" & @CRLF & _
+	"   'Saveas' button is now 'New' button" & @CRLF & _
+	@CRLF & _
+	"OTHER CHANGES:" & @CRLF & _
+	"   Enhanced 'Rename' interface" & @CRLF & _
+	"   New layout to show more profiles" & @CRLF & _
+	"   Other GUI enhancements" & @CRLF & _
+	@CRLF & _
+	"BUG FIXES:" & @CRLF & _
+	"   Detect no IP address / subnet input" & @CRLF & _
+	"   Fix DNS error occurring on some systems" & @CRLF & _
+	"   Better detection of duplicate profile names" & @CRLF
 
-	Local $hFont = _WinAPI_CreateFontIndirect($tFont)
-	_WinAPI_SetFont($hWnd, $hFont)
-EndFunc   ;==>_GUICtrlIpAddress_SetFont
+	Return $sChangeLog
+EndFunc
+
+#Region -- INI related --
+Func iniNameDecode($sName)
+	$thisName = StringReplace($sName, "{lb}", "[")
+	$thisName = StringReplace($thisName, "{rb}", "]")
+	Return $thisName
+EndFunc
+
+Func iniNameEncode($sName)
+	$iniName = StringReplace($sName, "[", "{lb}")
+	$iniName = StringReplace($iniName, "]", "{rb}")
+	Return $iniName
+EndFunc
+
+;------------------------------------------------------------------------------
+; Title...........: _iniRename
+; Description.....: Rename a section of an INI file in-place.
+;                   The built-in IniRenameSection function moves the section
+;                   to the end of the file.
+;
+; Parameters......: $file     -filename
+;                   $oldName  -section name to be replaced
+;                   $newName  -new section name
+; Return value....: 0  -success
+;                   1  -file read/open error
+;                   2  -new name already exists
+;                   3  -file write error
+;------------------------------------------------------------------------------
+Func _iniRename($file, $oldName, $newName)
+	Local $sNewFile = ""
+
+	$iniOldName = iniNameEncode($oldName)
+	$iniNewName = iniNameEncode($newName)
+
+    Local $sFileRead = FileRead($file)
+    If @error <> 0 Then
+        Return 1
+    EndIf
+
+	$strPos = StringInStr($sFileRead, "["&$iniNewName&"]")
+	If $strPos <> 0 Then
+		Return 2
+	Else
+		$sNewFile = StringReplace($sFileRead, $iniOldName, $iniNewName, 1)
+	EndIf
+
+	Local $hFileOpen = FileOpen($file, 2)
+	If $hFileOpen = -1 Then
+		Return 1
+	EndIf
+
+	Local $sFileWrite = FileWrite($hFileOpen, $sNewFile)
+	if @error <> 0 Then
+		FileClose($hFileOpen)
+		Return 3
+	EndIf
+
+    FileClose($hFileOpen)
+
+	Return 0
+EndFunc
+#EndRegion

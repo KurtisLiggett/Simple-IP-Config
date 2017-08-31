@@ -1,3 +1,4 @@
+#Region license
 ; -----------------------------------------------------------------------------
 ; This file is part of Simple IP Config.
 ;
@@ -14,16 +15,29 @@
 ; You should have received a copy of the GNU General Public License
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
+#EndRegion
 
+;==============================================================================
+; Filename:		events.au3
+; Description:	- functions called in response to events (button clicks, etc...)
+;				- 'onFunctionName' naming convention
+;				- also includes WM_COMMAND and WM_NOTIFY
+;==============================================================================
+
+
+;------------------------------------------------------------------------------
+; Title........: _onExit
+; Description..: Clean up and exit the program
+; Events.......: GUI_EVENT_CLOSE, tray item 'Exit', File menu 'Exit'
+;------------------------------------------------------------------------------
 Func _onExit()
 	_GDIPlus_Shutdown()
 
 	; save window position in ini file
 	If NOT BITAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
-		ConsoleWrite("saving..."&@CRLF)
 		$currentWinPos = WinGetPos($hgui)
-		$options[8][1] = $currentWinPos[0]
-		$options[9][1] = $currentWinPos[1]
+		Options_SetValue($options, $OPTIONS_PositionX, $currentWinPos[0])
+		Options_SetValue($options, $OPTIONS_PositionY, $currentWinPos[1])
 		IniWriteSection(@ScriptDir & "/profiles.ini", "options", $options, 0)
 	EndIf
 
@@ -34,53 +48,40 @@ Func _onCreateLink()
 	_CreateLink()
 EndFunc
 
-Func _onTab()
-	ConsoleWrite(_WinAPI_GetFocus() & " | " & ControlGetHandle("","", $ip_Ip) & " | " & $ip_Ip & " | " & ControlGetFocus("","") & @CRLF)
-	If _WinAPI_GetFocus() = ControlGetHandle("","", $ip_Ip) Then
-
-	Else
-		GUISetAccelerators(0)
-		Send("{TAB}")
-		GUISetAccelerators($aAccelKeys)
-	EndIf
+;------------------------------------------------------------------------------
+; Title........: _onExitChild
+; Description..: Close any child window
+; Events.......: child window GUI_EVENT_CLOSE, OK/Cancel button
+;------------------------------------------------------------------------------
+Func _onExitChild()
+	_ExitChild(@GUI_WinHandle)
 EndFunc
 
-Func _onExitAbout()
-	_ExitChild($AboutChild)
-EndFunc
-
-Func _onExitSettings()
-	_ExitChild($settingsChild)
-EndFunc
-
-Func _onExitChangelog()
-	_ExitChild($changeLogChild)
-EndFunc
-
-Func _onExitDebug()
-	_ExitChild($debugChild)
-EndFunc
-
-Func _onExitBlacklist()
-	_ExitChild($blacklistChild)
-EndFunc
-
+;------------------------------------------------------------------------------
+; Title........: _onExitBlacklistOk
+; Description..: save the the Blacklist child window data,
+;                then call the exit function
+; Events.......: Blacklist window 'Save' button
+;------------------------------------------------------------------------------
 Func _onExitBlacklistOk()
 	$guiState = WinGetState( $hgui )
 	$newBlacklist = StringReplace(GUICtrlRead($blacklistEdit), @CRLF, "|")
-	$newBlacklist = StringReplace($newBlacklist, "[", "{lb}")
-	$newBlacklist = StringReplace($newBlacklist, "]", "{rb}")
-	$options[7][1] = $newBlacklist
 	IniWrite(@ScriptDir & "/profiles.ini", "options", $options[7][0], $options[7][1])
+	$newBlacklist = iniNameEncode($newBlacklist)
+	Options_SetValue($options, $OPTIONS_PositionY, $newBlacklist)
+	$keyname = Options_GetName($options, $OPTIONS_AdapterBlacklist)
+	$keyvalue = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
+	IniWrite(@ScriptDir & "/profiles.ini", "options", $keyname, $keyvalue)
 
-	_onExitBlacklist()
+	_ExitChild(@GUI_WinHandle)
 	_updateCombo()
 EndFunc
 
-Func _onExitStatus()
-	_ExitChild($statusChild)
-EndFunc
-
+;------------------------------------------------------------------------------
+; Title........: _OnTrayClick
+; Description..: Restore or hide program to system tray
+; Events.......: single left-click on tray icon
+;------------------------------------------------------------------------------
 Func _OnTrayClick()
 	If TrayItemGetText( $RestoreItem ) = "Restore" Then
 		_maximize()
@@ -89,6 +90,11 @@ Func _OnTrayClick()
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _OnRestore
+; Description..: Restore or hide program to system tray
+; Events.......: 'Restore' item in tray right-click menu
+;------------------------------------------------------------------------------
 Func _OnRestore()
 	If TrayItemGetText( $RestoreItem ) = "Restore" Then
 		_maximize()
@@ -97,36 +103,75 @@ Func _OnRestore()
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title........: _onBlacklist
+; Description..: Create the 'Hide adapters' child window
+; Events.......: 'Hide adapters' item in the 'View' menu
+;------------------------------------------------------------------------------
 Func _onBlacklist()
 	_blacklist()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onBlacklistAdd
+; Description..: Add selected adapter to the hide adapters list
+; Events.......: 'Add Selected Adapter' button
+;------------------------------------------------------------------------------
 Func _onBlacklistAdd()
 	_blacklistAdd()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onRadio
+; Description..: Update radio button selections and states
+; Events.......: Any radio button state changed
+;------------------------------------------------------------------------------
 Func _onRadio()
 	_radios()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onSelect
+; Description..: Set IP address information from profile
+; Events.......: Click on profile list item
+;------------------------------------------------------------------------------
 Func _onSelect()
 	_setProperties()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onApply
+; Description..: Apply the selected profile
+; Events.......: File menu 'Apply profile' button, toolbar 'Apply' button
+;------------------------------------------------------------------------------
 Func _onApply()
 	_apply_GUI()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onArrangeAz
+; Description..: Arrange profiles in alphabetical order
+; Events.......: Profiles listview context menu item
+;------------------------------------------------------------------------------
 Func _onArrangeAz()
 	_arrange()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onArrangeZa
+; Description..: Arrange profiles in reverse alphabetical order
+; Events.......: Profiles listview context menu item
+;------------------------------------------------------------------------------
 Func _onArrangeZa()
 	_arrange(1)
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title........: _onRename
+; Description..: Start editing profile name for the selected listview item
+; Events.......: Profiles listview context menu item, F2 accelerator,
+;                File menu 'Rename' item
+;------------------------------------------------------------------------------
 Func _onRename()
 	If NOT _ctrlHasFocus($list_profiles) Then
 		Return
@@ -135,10 +180,15 @@ Func _onRename()
 	_GUICtrlListView_EditLabel( ControlGetHandle($hgui, "", $list_profiles), $Index )
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title........: _onNewItem
+; Description..: Create new listview item and start editing the name
+; Events.......: Toolbar button, File menu 'New' item
+;------------------------------------------------------------------------------
 Func _onNewItem()
 	$newname = "New Item"
-	Local $profileNames = _getNames()
+	;Local $profileNames = _getNames()
+	Local $profileNames = Profiles_GetNames($profiles)
 	Local $i = 1
 	while _ArraySearch($profileNames, $newname) <> -1
 		$newname = "New Item " & $i
@@ -154,18 +204,38 @@ Func _onNewItem()
 	_GUICtrlListView_EditLabel( ControlGetHandle($hgui, "", $list_profiles), $index-1 )
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onSave
+; Description..: Save the current settings to the selected profile
+; Events.......: Toolbar button, File menu 'Save' item, Ctrl+s accelerator
+;------------------------------------------------------------------------------
 Func _onSave()
 	_save()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onDelete
+; Description..: Delete the selected profile
+; Events.......: Toolbar button, Del accelerator
+;------------------------------------------------------------------------------
 Func _onDelete()
 	_delete()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onClear
+; Description..: Clear the current address fields
+; Events.......: Toolbar button, File menu 'Clear' item
+;------------------------------------------------------------------------------
 Func _onClear()
 	_clear()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onRefresh
+; Description..: Refresh the profiles list and current IP info
+; Events.......: Toolbar button, View menu 'Refresh' item
+;------------------------------------------------------------------------------
 Func _onRefresh()
 	$showWarning = 0
 	$index = ControlListView($hgui, "", $list_profiles, "GetSelected")
@@ -173,6 +243,11 @@ Func _onRefresh()
 	ControlListView($hgui, "", $list_profiles, "Select", $index)
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onLvDel
+; Description..: Delete the selected listview item
+; Events.......: File menu Delete item, listview context menu Delete item
+;------------------------------------------------------------------------------
 Func _onLvDel()
 	if _ctrlHasFocus($list_profiles) Then
 		_delete()
@@ -183,6 +258,11 @@ Func _onLvDel()
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onLvUp
+; Description..: Move listview selection up 1 index and get the profile info
+; Events.......: UP key accelerator
+;------------------------------------------------------------------------------
 Func _onLvUp()
 	if _ctrlHasFocus($list_profiles) Then
 		$index = ControlListView($hgui, "", $list_profiles, "GetSelected")
@@ -195,6 +275,11 @@ Func _onLvUp()
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onLvDown
+; Description..: Move listview selection down 1 index and get the profile info
+; Events.......: DOWN key accelerator
+;------------------------------------------------------------------------------
 Func _onLvDown()
 	if _ctrlHasFocus($list_profiles) Then
 		$index = ControlListView($hgui, "", $list_profiles, "GetSelected")
@@ -207,6 +292,11 @@ Func _onLvDown()
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onLvEnter
+; Description..: Apply the selected profile
+; Events.......: Enter key on listview item
+;------------------------------------------------------------------------------
 Func _onLvEnter()
 	If Not $lv_editing Then
 		_apply_GUI()
@@ -217,34 +307,74 @@ Func _onLvEnter()
 	EndIf
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onTray
+; Description..: Hide or show main GUI window
+; Events.......: Toolbar button, View menu "Send to tray" item
+;------------------------------------------------------------------------------
 Func _onTray()
 	_SendToTray()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onPull
+; Description..: Get current IP information from adapter
+; Events.......: Tools menu "Pull from adapter" item
+;------------------------------------------------------------------------------
 Func _onPull()
 	_Pull()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onDisable
+; Description..: Disable / Enable the selected adapter
+; Events.......: Tools menu "Disable adapter" item
+;------------------------------------------------------------------------------
 Func _onDisable()
 	_disable()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onRelease
+; Description..: Release DHCP for the selected adapter
+; Events.......: Tools menu "Release DHCP" item
+;------------------------------------------------------------------------------
 Func _onRelease()
 	_releaseDhcp()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onRenew
+; Description..: Renew DHCP for the selected adapter
+; Events.......: Tools menu "Renew DHCP" item
+;------------------------------------------------------------------------------
 Func _onRenew()
 	_renewDhcp()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onCycle
+; Description..: Release DHCP followed by Renew DHCP for the selected adapter
+; Events.......: Tools menu "Release/renew cycle" item
+;------------------------------------------------------------------------------
 Func _onCycle()
 	_cycleDhcp()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onSettings
+; Description..: Create the settings child window
+; Events.......: Tools menu "Settings" item
+;------------------------------------------------------------------------------
 Func _onSettings()
 	_settings()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onHelp
+; Description..: Navigate to documentation link <-- needs to be created!
+; Events.......: Help menu "Online Documentation" item
+;------------------------------------------------------------------------------
 Func _onHelp()
 
 EndFunc
@@ -253,36 +383,65 @@ Func _onUpdateCheckItem()
 	_checksSICUpdate(1)
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onDebugItem
+; Description..: Create debug child window
+; Events.......: Help menu "Debug Information" item
+;------------------------------------------------------------------------------
 Func _onDebugItem()
 	_debugWindow()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onChangelog
+; Description..: Create change log child window
+; Events.......: Help menu "Show Change Log" item
+;------------------------------------------------------------------------------
 Func _onChangelog()
 	_changeLog()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onAbout
+; Description..: Create the About child window
+; Events.......: Help menu "About Simple IP Config" item, tray right-click menu
+;------------------------------------------------------------------------------
 Func _onAbout()
 	_about()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _onFilter
+; Description..: Filter the profiles listview
+; Events.......: Filter input text change
+;------------------------------------------------------------------------------
 Func _onFilter()
 	_filterProfiles()
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _OnCombo
+; Description..: Update adapter information, save last used adapter to profiles.ini
+; Events.......: Combobox selection change
+;------------------------------------------------------------------------------
 Func _OnCombo()
 	_updateCurrent()
 	$adap = GUICtrlRead($combo_adapters)
-	$iniAdap = StringReplace($adap, "[", "{lb}")
-	$iniAdap = StringReplace($iniAdap, "]", "{rb}")
-	$ret = IniWrite( @ScriptDir & "/profiles.ini", "options", $options[4][0], $iniAdap )
+	$iniAdap = iniNameEncode($adap)
+	$keyname = Options_GetName($options, $OPTIONS_StartupAdapter)
+	$ret = IniWrite( @ScriptDir & "/profiles.ini", "options", $keyname, $iniAdap )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the selected adapter", 1)
 	Else
-		$options[4][1] = $adap
+		Options_SetValue($options, $OPTIONS_StartupAdapter, $adap)
 	EndIf
 EndFunc
 
-
+;------------------------------------------------------------------------------
+; Title........: _OnToolbarButton
+; Description..: Check to see which toolbar button was clicked
+; Events.......: Any toolbar button click
+;------------------------------------------------------------------------------
 Func _OnToolbarButton()
 	$ID = GUICtrlRead($ToolbarIDs)
 	Switch $ID
@@ -303,6 +462,11 @@ Func _OnToolbarButton()
 	EndSwitch
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _OnToolbar2Button
+; Description..: Check to see which right toolbar button was clicked
+; Events.......: Any right toolbar button click
+;------------------------------------------------------------------------------
 Func _OnToolbar2Button()
 	$ID = GUICtrlRead($Toolbar2IDs)
 	Switch $ID
@@ -315,14 +479,23 @@ Func _OnToolbar2Button()
 	EndSwitch
 EndFunc
 
+;------------------------------------------------------------------------------
+; Title........: _iconLink
+; Description..: Open browser and go to icon website
+; Events.......: Click on link in About window
+;------------------------------------------------------------------------------
 Func _iconLink()
 	ShellExecute('http://www.aha-soft.com/')
 	GUICtrlSetColor(@GUI_CtrlId,0x551A8B)
 EndFunc
 
-
-; ---- WINDOWS MESSAGES
-
+;------------------------------------------------------------------------------
+; Title........: WM_COMMAND
+; Description..: Process WM_COMMAND messages
+;                - Toolbar buttons
+;                - Listview filter
+;                - Combobox selection changed
+;------------------------------------------------------------------------------
 Func WM_COMMAND($hWnd, $iMsg, $wParam, $lParam)
 
     Local $ID = BitAND($wParam, 0xFFFF)
@@ -362,6 +535,13 @@ Func WM_COMMAND($hWnd, $iMsg, $wParam, $lParam)
     Return $GUI_RUNDEFMSG
 EndFunc   ;==>WM_COMMAND
 
+;------------------------------------------------------------------------------
+; Title........: WM_NOTIFY
+; Description..: Process WM_NOTIFY messages
+;                - Toolbar tooltips
+;                - Listview begin/end label edit
+;                - Detect moving from IP address to Subnet mask
+;------------------------------------------------------------------------------
 Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 
     Local $tNMIA = DllStructCreate($tagNMITEMACTIVATE, $lParam)

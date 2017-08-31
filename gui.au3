@@ -1,3 +1,4 @@
+#Region license
 ; -----------------------------------------------------------------------------
 ; This file is part of Simple IP Config.
 ;
@@ -14,68 +15,24 @@
 ; You should have received a copy of the GNU General Public License
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
+#EndRegion
 
-; #FUNCTION# ====================================================================================================================
-; Name ..........: _GDIPlus_GraphicsGetDPIRatio
-; Description ...:
-; Syntax ........: _GDIPlus_GraphicsGetDPIRatio([$iDPIDef = 96])
-; Parameters ....: $iDPIDef             - [optional] An integer value. Default is 96.
-; Return values .: None
-; Author ........: UEZ
-; Modified ......:
-; Remarks .......:
-; Related .......:
-; Link ..........: http://www.autoitscript.com/forum/topic/159612-dpi-resolution-problem/?hl=%2Bdpi#entry1158317
-; Example .......: No
-; ===============================================================================================================================
-Func _GDIPlus_GraphicsGetDPIRatio($iDPIDef = 96)
-	_GDIPlus_Startup()
-	Local $hGfx = _GDIPlus_GraphicsCreateFromHWND(0)
-	If @error Then Return SetError(1, @extended, 0)
-	Local $aResult
-	#forcedef $__g_hGDIPDll, $ghGDIPDll
+;==============================================================================
+; Filename:		gui.au3
+; Description:	- GUI creation and related functions
+;				- child window creation functions
+;==============================================================================
 
-	$aResult = DllCall($__g_hGDIPDll, "int", "GdipGetDpiX", "handle", $hGfx, "float*", 0)
-
-	If @error Then Return SetError(2, @extended, 0)
-	Local $iDPI = $aResult[2]
-	Local $aresults[2] = [$iDPIDef / $iDPI, $iDPI / $iDPIDef]
-	_GDIPlus_GraphicsDispose($hGfx)
-	_GDIPlus_Shutdown()
-;~ 	ConsoleWrite("DPI Ratio: " & $aresults[1]&@CRLF)
-	Return $aresults[1]
-EndFunc   ;==>_GDIPlus_GraphicsGetDPIRatio
-
-Func _getDpiScale()
-    Local $hDC = _WinAPI_GetDC(0)
-    Local $DPI = _WinAPI_GetDeviceCaps($hDC, $LOGPIXELSY)
-    _WinAPI_ReleaseDC(0, $hDC)
-
-    Select
-        Case $DPI = 0
-            $DPI = 1
-        Case $DPI < 84
-            $DPI /= 105
-        Case $DPI < 121
-            $DPI /= 96
-        Case $DPI < 145
-            $DPI /= 95
-        Case Else
-            $DPI /= 94
-    EndSelect
-
-	Return Round($DPI, 2)
-EndFunc
-
-
+#Region -- MAIN GUI CREATION --
 Func _makeGUI()
 	; GUI FORMATTING
 	$ixCoordMin = _WinAPI_GetSystemMetrics(76)
 	$iyCoordMin = _WinAPI_GetSystemMetrics(77)
 	$iFullDesktopWidth = _WinAPI_GetSystemMetrics(78)
 	$iFullDesktopHeight = _WinAPI_GetSystemMetrics(79)
-	If $options[8][1] <> "" Then
-		$xpos = $options[8][1]
+	$sPositionX = Options_GetValue($options, $OPTIONS_PositionX)
+	If $sPositionX <> "" Then
+		$xpos = $sPositionX
 		If $xpos > ($ixCoordMin+$iFullDesktopWidth) Then
 			$xpos = $iFullDesktopWidth-($guiWidth*$dscale)
 		ElseIf $xpos < $ixCoordMin Then
@@ -84,8 +41,9 @@ Func _makeGUI()
 	Else
 		$xpos = @DesktopWidth/2-$guiWidth*$dscale/2
 	EndIf
-	If $options[9][1] <> "" Then
-		$ypos = $options[9][1]
+	$sPositionY = Options_GetValue($options, $OPTIONS_PositionY)
+	If $sPositionY <> "" Then
+		$ypos = $sPositionY
 		If $ypos > ($iyCoordMin+$iFullDesktopHeight) Then
 			$ypos = $iFullDesktopHeight-($guiHeight*$dscale)
 		ElseIf $ypos < $iyCoordMin Then
@@ -186,24 +144,16 @@ Func _makeGUI()
 	;GUICtrlSetBkColor(-1,0xC9C9C9)
 	GUICtrlSetBkColor(-1,0x666666)
 
-
-	If IsArray($profilelist) Then
-		If $profilelist[0][0] > 0 Then
-			$profileName = $profilelist[1][0]
-;~ 			ConsoleWrite($profileName&@CRLF)
+	If IsArray($profiles) Then
+		If Profiles_GetSize($profiles) > 0 Then
+			Local $profileNames = Profiles_GetNames($profiles)
+			$profileName = $profilenames[0]
 			_setProperties(1,$profileName)
 		EndIf
 	EndIf
 
-;~ 	If IsArray( $adapters ) Then
-;~ 		If $adapters[0][0] > 0 Then
-;~ 			_ArraySort($adapters, 0)	; connections sort ascending
-;~ 			_updateCurrent(1, $adapters[1][0])
-;~ 		EndIf
-;~ 	EndIf
-
-
-	If $options[2][1] <> "1" and $options[2][1] <> "true" Then
+	$sStartupMode = Options_GetValue($options, $OPTIONS_StartupMode)
+	If $sStartupMode <> "1" and $sStartupMode <> "true" Then
 		GUISetState(@SW_SHOW, $hgui)
 		GUISetState(@SW_SHOWNOACTIVATE, $hTool)
 		GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
@@ -250,7 +200,7 @@ Func _makeStatusbar()
 	$h = $statusbarHeight*$dscale
 
 	$wgraphic = GUICtrlCreatePic("", $w-20, $y+2*$dscale, 16, 16)
-	_memoryToPic($wgraphic, $pngWarning)
+	_memoryToPic($wgraphic, GetIconData($pngWarning))
 	GUICtrlSetOnEvent(-1, "_statusPopup")
 	GUICtrlSetState($wgraphic, $GUI_HIDE)
 	GUICtrlSetCursor($wgraphic, 0)
@@ -274,8 +224,10 @@ Func _makeStatusbar()
 	GUICtrlSetBkColor (-1, _WinAPI_GetSysColor($COLOR_MENUBAR ) )
 EndFunc
 
+
 Func _makeMenu()
 	$filemenu = GUICtrlCreateMenu("&File")
+
 	$saveitem = GUICtrlCreateMenuItem("Apply profile" & @TAB & "Enter", $filemenu)
 	GUICtrlSetOnEvent(-1, "_onApply")
 	GUICtrlCreateMenuItem("", $filemenu)
@@ -449,9 +401,6 @@ Func _makeIpProps($label, $x, $y, $w, $h)
 	$ip_Ip = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+48*$dscale, 135*$dscale, 22*$dscale )
 	_GUICtrlIpAddress_SetFontByHeight( $ip_Ip, $MyGlobalFontName, $MyGlobalFontHeight)
 
-;~ 	$dummyTab = GUICtrlCreateDummy()
-;~ 	GUICtrlSetOnEvent(-1, "_onTab")
-
 	$label_subnet = GUICtrlCreateLabel( "Subnet Mask:", $x+8*$dscale, $y+$headingHeight+77*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	$ip_Subnet = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+74*$dscale, 135*$dscale, 22*$dscale )
@@ -469,7 +418,7 @@ Func _makeProfileSelect($label, $x, $y, $w, $h)
 	Local $headingHeight = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
 	$searchgraphic = GUICtrlCreatePic("", $x+5, $y+$headingHeight+3+2*$dscale, 16, 16)
 	;_ResourceSetImageToCtrl($hGUI, $searchgraphic, "search_png")
-	_memoryToPic($searchgraphic, $pngSearch)
+	_memoryToPic($searchgraphic, GetIconData($pngSearch))
 
 	$input_filter = GUICtrlCreateInput( "*", $x+12+11, $y+$headingHeight+3+2*$dscale, $w-12-18, 15*$dscale, -1, $WS_EX_TOOLWINDOW)
 	GUICtrlCreateLabel( "", $x+3, $y+$headingHeight+3, $w-6, 20*$dscale)
@@ -517,23 +466,6 @@ Func _makeComboSelect($label, $x, $y, $w, $h)
 	_setFont($lDescription, 8.5, $MyGlobalFontBKColor)
 	$lMac = GUICtrlCreateLabel( "MAC Address: ", $x+8*$dscale, $y + $headingHeight + 9*$dscale + 41*$dscale, $w-16*$dscale, -1, $SS_LEFTNOWORDWRAP	 )
 	_setFont($lMac, 8.5, $MyGlobalFontBKColor)
-;~ 	If NOT IsArray( $adapters ) Then
-;~ 		MsgBox( 16, "Error", "There was a problem retrieving the adapters." )
-;~ 	Else
-;~ 		_ArraySort($adapters, 0)	; connections sort ascending
-;~ 		$defaultitem = $adapters[1][0]
-;~ 		$index = _ArraySearch( $adapters, $options[4][1], 1 )
-;~ 		If ($index <> -1) Then
-;~ 			$defaultitem = $adapters[$index][0]
-;~ 		EndIf
-
-;~ 		$aBlacklist = StringSplit($options[7][1], "|")
-;~ 		For $i=1 to $adapters[0][0]
-;~ 			$indexBlacklist = _ArraySearch($aBlacklist, $adapters[$i][0], 1)
-;~ 			if $indexBlacklist <> -1 Then ContinueLoop
-;~ 			GUICtrlSetData( $combo_adapters, $adapters[$i][0], $defaultitem )
-;~ 		Next
-;~ 	EndIf
 
 	$combo_dummy = GUICtrlCreateDummy()
 	GUICtrlSetOnEvent(-1, "_onCombo")
@@ -551,12 +483,12 @@ Func _makeToolbar()
 	GUICtrlSetOnEvent(-1, "_OnToolbarButton")
 
 	$hImageList = _GUIImageList_Create(24, 24, 5, 1, 5)
-	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon($pngAccept))
-	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon($pngRefresh))
-	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon($pngAdd))
-	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon($pngSave))
-	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon($pngDelete))
-	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon($pngEdit))
+	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon(GetIconData($pngAccept)))
+	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon(GetIconData($pngRefresh)))
+	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon(GetIconData($pngAdd)))
+	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon(GetIconData($pngSave)))
+	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon(GetIconData($pngDelete)))
+	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon(GetIconData($pngEdit)))
 
 	_GUICtrlToolbar_SetImageList($hToolbar, $hImageList)
 
@@ -592,8 +524,8 @@ Func _makeToolbar()
 	GUICtrlSetOnEvent(-1, "_OnToolbar2Button")
 
 	$hImageList2 = _GUIImageList_Create(16, 16, 5, 1, 2)
-	_GUIImageList_ReplaceIcon($hImageList2, -1,_getMemoryAsIcon($pngSettings))
-	_GUIImageList_ReplaceIcon($hImageList2, -1, _getMemoryAsIcon($pngTray))
+	_GUIImageList_ReplaceIcon($hImageList2, -1,_getMemoryAsIcon(GetIconData($pngSettings)))
+	_GUIImageList_ReplaceIcon($hImageList2, -1, _getMemoryAsIcon(GetIconData($pngTray)))
 
 	_GUICtrlToolbar_SetImageList($hToolbar2, $hImageList2)
 
@@ -609,20 +541,6 @@ Func _makeToolbar()
 
 	GUICtrlCreateLabel('', 0, $tbarHeight*$dscale, $guiWidth*$dscale, 1)
 	GUICtrlSetBkColor(-1, 0x101010)
-EndFunc
-
-Func _memoryToPic($idPic, $name)
-	$hBmp = _GDIPlus_BitmapCreateFromMemory(Binary($name),1)
-	_WinAPI_DeleteObject(GUICtrlSendMsg($idPic, 0x0172, 0, $hBmp))
-	_WinAPI_DeleteObject($hBmp)
-	Return 0
-EndFunc
-
-Func _getMemoryAsIcon($name)
-	$Bmp = _GDIPlus_BitmapCreateFromMemory(Binary($name))
-	$hIcon = _GDIPlus_HICONCreateFromBitmap($Bmp)
-	_GDIPlus_ImageDispose($Bmp)
-	Return $hIcon
 EndFunc
 
 ; Create Header
@@ -705,6 +623,22 @@ Func _makeBox($x, $y, $w, $h, $bkcolor=0xFFFFFF)
 ;~ 	GUICtrlSetBkColor(-1, 0x000880)
 	GUICtrlSetBkColor(-1, 0x003973)
 EndFunc
+#EndRegion
+
+#Region -- Helper Functions --
+Func _memoryToPic($idPic, $name)
+	$hBmp = _GDIPlus_BitmapCreateFromMemory(Binary($name),1)
+	_WinAPI_DeleteObject(GUICtrlSendMsg($idPic, 0x0172, 0, $hBmp))
+	_WinAPI_DeleteObject($hBmp)
+	Return 0
+EndFunc
+
+Func _getMemoryAsIcon($name)
+	$Bmp = _GDIPlus_BitmapCreateFromMemory(Binary($name))
+	$hIcon = _GDIPlus_HICONCreateFromBitmap($Bmp)
+	_GDIPlus_ImageDispose($Bmp)
+	Return $hIcon
+EndFunc
 
 Func _setFont($ControlID, $size, $bkcolor=-1, $color=0x000000)
 	Local $LControlID
@@ -720,12 +654,88 @@ Func _setFont($ControlID, $size, $bkcolor=-1, $color=0x000000)
 	EndIf
 EndFunc
 
+; #FUNCTION# ====================================================================================================================
+; Author ........: Gary Frost (gafrost)
+; Modified By....: Kurtis Liggett
+; ===============================================================================================================================
+Func _GUICtrlIpAddress_SetFontByHeight($hWnd, $sFaceName = "Arial", $iFontSize = 12, $iFontWeight = 400, $bFontItalic = False)
+	Local $hDC = _WinAPI_GetDC(0)
+	;Local $iHeight = Round(($iFontSize * _WinAPI_GetDeviceCaps($hDC, $__IPADDRESSCONSTANT_LOGPIXELSX)) / 72, 0)
+	Local $iHeight = $iFontSize
+	_WinAPI_ReleaseDC(0, $hDC)
+
+	Local $tFont = DllStructCreate($tagLOGFONT)
+	DllStructSetData($tFont, "Height", $iHeight)
+	DllStructSetData($tFont, "Weight", $iFontWeight)
+	DllStructSetData($tFont, "Italic", $bFontItalic)
+	DllStructSetData($tFont, "Underline", False) ; font underline
+	DllStructSetData($tFont, "Strikeout", False) ; font strikethru
+	DllStructSetData($tFont, "Quality", $__IPADDRESSCONSTANT_PROOF_QUALITY)
+	DllStructSetData($tFont, "FaceName", $sFaceName)
+
+	Local $hFont = _WinAPI_CreateFontIndirect($tFont)
+	_WinAPI_SetFont($hWnd, $hFont)
+EndFunc   ;==>_GUICtrlIpAddress_SetFont
+
 Func _GUIGetLastCtrlID()
     Local $aRet = DllCall("user32.dll", "int", "GetDlgCtrlID", "hwnd", GUICtrlGetHandle(-1))
     Return $aRet[0]
 EndFunc
 
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _GDIPlus_GraphicsGetDPIRatio
+; Description ...:
+; Syntax ........: _GDIPlus_GraphicsGetDPIRatio([$iDPIDef = 96])
+; Parameters ....: $iDPIDef             - [optional] An integer value. Default is 96.
+; Return values .: None
+; Author ........: UEZ
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........: http://www.autoitscript.com/forum/topic/159612-dpi-resolution-problem/?hl=%2Bdpi#entry1158317
+; Example .......: No
+; ===============================================================================================================================
+Func _GDIPlus_GraphicsGetDPIRatio($iDPIDef = 96)
+	_GDIPlus_Startup()
+	Local $hGfx = _GDIPlus_GraphicsCreateFromHWND(0)
+	If @error Then Return SetError(1, @extended, 0)
+	Local $aResult
+	#forcedef $__g_hGDIPDll, $ghGDIPDll
 
+	$aResult = DllCall($__g_hGDIPDll, "int", "GdipGetDpiX", "handle", $hGfx, "float*", 0)
+
+	If @error Then Return SetError(2, @extended, 0)
+	Local $iDPI = $aResult[2]
+	Local $aresults[2] = [$iDPIDef / $iDPI, $iDPI / $iDPIDef]
+	_GDIPlus_GraphicsDispose($hGfx)
+	_GDIPlus_Shutdown()
+;~ 	ConsoleWrite("DPI Ratio: " & $aresults[1]&@CRLF)
+	Return $aresults[1]
+EndFunc   ;==>_GDIPlus_GraphicsGetDPIRatio
+
+Func _getDpiScale()
+    Local $hDC = _WinAPI_GetDC(0)
+    Local $DPI = _WinAPI_GetDeviceCaps($hDC, $LOGPIXELSY)
+    _WinAPI_ReleaseDC(0, $hDC)
+
+    Select
+        Case $DPI = 0
+            $DPI = 1
+        Case $DPI < 84
+            $DPI /= 105
+        Case $DPI < 121
+            $DPI /= 96
+        Case $DPI < 145
+            $DPI /= 95
+        Case Else
+            $DPI /= 94
+    EndSelect
+
+	Return Round($DPI, 2)
+EndFunc
+#EndRegion
+
+#Region -- ABOUT WINDOW --
 ; ABOUT WINDOW
 Func _about()
 	Local $bt_AboutOk, $lb_Heading, $lb_date, $lb_version, $lb_info, $lb_sig, $pic, $lb_license, $GFLine
@@ -733,7 +743,7 @@ Func _about()
 	$h = 230 * $dScale
 
 	If NOT BITAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
-		$currentWinPos = WinGetPos($winName)
+		$currentWinPos = WinGetPos($hgui)
 		$x = $currentWinPos[0] + $guiWidth * $dscale / 2 - $w / 2
 		$y = $currentWinPos[1] + $guiHeight * $dscale / 2 - $h / 2
 	Else
@@ -742,7 +752,7 @@ Func _about()
 	EndIf
 
 	$AboutChild = GUICreate("About Simple IP Config", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
-	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExitAbout")
+	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 
 	; top section
@@ -755,7 +765,7 @@ Func _about()
 	GUICtrlSetBkColor(-1, 0x000000)
 
 	$pic = GUICtrlCreatePic("", 17 * $dScale, 22 * $dScale, 64, 64)
-	_memoryToPic($pic, $pngBigicon)
+	_memoryToPic($pic, GetIconData($pngBigicon))
 
 	GUICtrlCreateLabel("Simple IP Config", 75 * $dscale, 10 * $dscale, 200 * $dscale, -1, $SS_CENTER)
 	GUICtrlSetFont(-1, 13, 800)
@@ -803,13 +813,14 @@ Func _about()
 	; bottom section
 
 	$bt_AboutOk = GUICtrlCreateButton("OK", $w - 55 * $dScale, $h - 27 * $dScale, 50 * $dScale, 22 * $dScale)
-	GUICtrlSetOnEvent(-1, "_onExitAbout")
+	GUICtrlSetOnEvent(-1, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hgui)
 	GUISetState(@SW_SHOW, $AboutChild)
 EndFunc
+#EndRegion
 
-
+#Region -- CHANGELOG WINDOW --
 ; Changelog WINDOW
 Func _changeLog()
 	$w = 305*$dScale
@@ -820,7 +831,7 @@ Func _changeLog()
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
 	$changeLogChild = GUICreate( "Change Log", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
-	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChangelog")
+	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
 	GUICtrlCreateLabel("", 0, 0, $w, $h-32*$dscale)
@@ -830,6 +841,7 @@ Func _changeLog()
 	GUICtrlCreateLabel("", 0, $h-32*$dscale, $w, 1)
 	GUICtrlSetBkColor(-1, 0x000000)
 
+	Local $sChangelog = GetChangeLogData()
 	$labelTitle = GUICtrlCreateLabel($sChangelog[0], 5, 5, $w-10, 20*$dscale)
 	GUICtrlSetColor(-1, 0x0000FF)
 	GUICtrlSetBkColor (-1, 0xFFFFFF)
@@ -840,14 +852,16 @@ Func _changeLog()
 	GUICtrlSetFont(-1, 8.5)
 
 	$bt_Ok = GUICtrlCreateButton( "OK", $w-55*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
-	GUICtrlSetOnEvent( -1, "_onExitChangelog")
+	GUICtrlSetOnEvent( -1, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hGUI)
 	GUISetState(@SW_SHOW, $changeLogChild)
 
 	Send("^{HOME}")
 EndFunc
+#EndRegion
 
+#Region -- DEBUG WINDOW --
 ; debug WINDOW
 Func _debugWindow()
 	$w = 305*$dScale
@@ -858,7 +872,7 @@ Func _debugWindow()
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
 	$debugChild = GUICreate( "Debug Information", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
-	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitDebug")
+	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
 	GUICtrlCreateLabel("", 0, 0, $w, $h-32*$dscale)
@@ -883,16 +897,17 @@ Func _debugWindow()
 	GUICtrlSetFont(-1, 8.5)
 
 	$bt_Ok = GUICtrlCreateButton( "OK", $w-55*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
-	GUICtrlSetOnEvent( -1, "_onExitDebug")
+	GUICtrlSetOnEvent( -1, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hGUI)
 	GUISetState(@SW_SHOW, $debugChild)
 
 	Send("^{HOME}")
 EndFunc
+#EndRegion
 
-
-; Changelog WINDOW
+#Region -- SETTINGS WINDOW --
+; Settings WINDOW
 Func _Settings()
 	$w = 200*$dScale
 	$h = 150*$dScale
@@ -902,7 +917,7 @@ Func _Settings()
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
 	$settingsChild = GUICreate( "Settings", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
-	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitSettings")
+	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
 	GUICtrlCreateLabel("", 0, 0, $w, $h-32*$dscale)
@@ -914,28 +929,29 @@ Func _Settings()
 
 	$ck_startinTray = GUICtrlCreateCheckbox( "Startup in the system tray.", 10*$dScale, 10*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetState($ck_startinTray, _StrToState($options[2][1]))
+	GUICtrlSetState($ck_startinTray, _StrToState(Options_GetValue($options, $OPTIONS_StartupMode)))
 	$ck_mintoTray = GUICtrlCreateCheckbox( "Minimize to the system tray.", 10*$dScale, 30*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetState($ck_mintoTray, _StrToState($options[1][1]))
+	GUICtrlSetState($ck_mintoTray, _StrToState(Options_GetValue($options, $OPTIONS_MinToTray)))
 	$ck_saveAdapter = GUICtrlCreateCheckbox( "Save adapter to profile.", 10*$dScale, 50*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetState($ck_saveAdapter, _StrToState($options[6][1]))
+	GUICtrlSetState($ck_saveAdapter, _StrToState(Options_GetValue($options, $OPTIONS_SaveAdapterToProfile)))
 
-  $ck_autoUpdate = GUICtrlCreateCheckbox( "Enable automatic updates.", 10*$dScale, 70*$dScale, 230*$dScale, 20*$dScale)
-  GUICtrlSetBkColor(-1, 0xFFFFFF)
-  GUICtrlSetState($ck_autoUpdate, _StrToState($options[10][1]))
+	$ck_autoUpdate = GUICtrlCreateCheckbox( "Enable automatic updates.", 10*$dScale, 70*$dScale, 230*$dScale, 20*$dScale)
+	GUICtrlSetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetState($ck_autoUpdate, _StrToState(Options_GetValue($options, $OPTIONS_AutoUpdate)))
 
 	$bt_optSave = GUICtrlCreateButton( "Save", $w-25*$dScale-50*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( $bt_optSave, "_saveOptions")
 	$bt_optCancel = GUICtrlCreateButton( "Cancel", 25*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
-	GUICtrlSetOnEvent( $bt_optCancel, "_onExitSettings")
+	GUICtrlSetOnEvent( $bt_optCancel, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hGUI)
 	GUISetState(@SW_SHOW, $settingsChild)
 EndFunc
+#EndRegion
 
-
+#Region -- STATUS WINDOW --
 ; Status Message Popup
 Func _statusPopup()
 	$wPos = WinGetPos($hgui)
@@ -952,7 +968,7 @@ Func _statusPopup()
 
 	$statusChild = GUICreate( "StatusMessage", $w, $h, $x, $y, $WS_POPUP, $WS_EX_TOOLWINDOW)
 	_WinAPI_SetParent($statusChild, $hGUI)
-	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitStatus")
+	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 	GUISetBkColor(_WinAPI_GetSysColor($COLOR_MENUBAR),$statusChild)
 
@@ -967,7 +983,7 @@ Func _statusPopup()
 	GUICtrlSetBkColor (-1, 0x404040)
 
 	$bt_Ok = GUICtrlCreateButton( "OK", $w-55*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
-	GUICtrlSetOnEvent( -1, "_onExitStatus")
+	GUICtrlSetOnEvent( -1, "_onExitChild")
 
 	;GUISetState(@SW_DISABLE, $hGUI)
 	GUISetState(@SW_SHOW, $statusChild)
@@ -975,10 +991,12 @@ Func _statusPopup()
 	;Switch to the parent window
     GUISwitch($hgui)
 EndFunc
+#EndRegion
 
-
+#Region -- BLACKLIST WINDOW --
 Func _blacklist()
-	Local $blacklist = StringReplace( $options[7][1], "|", @CRLF)
+	$sBlacklist = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
+	Local $blacklist = StringReplace( $sBlacklist, "|", @CRLF)
 
 	$w = 275*$dScale
 	$h = 300*$dScale
@@ -988,7 +1006,7 @@ Func _blacklist()
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
 	$blacklistChild = GUICreate( "Adapter Blacklist", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
-	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitBlacklist")
+	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
 	$label = GUICtrlCreateLabel("Hide the following adapters", 5, 5, $w-10)
@@ -1001,7 +1019,7 @@ Func _blacklist()
 	GUICtrlSetOnEvent( -1, "_onBlacklistAdd")
 
 	$bt_Cancel = GUICtrlCreateButton( "Cancel", $w-117*$dScale, $h - 50*$dScale, 52*$dScale, 40*$dScale)
-	GUICtrlSetOnEvent( -1, "_onExitBlacklist")
+	GUICtrlSetOnEvent( -1, "_onExitChild")
 
 	$bt_Ok = GUICtrlCreateButton( "Save", $w-60*$dScale, $h - 50*$dScale, 50*$dScale, 40*$dScale)
 	GUICtrlSetOnEvent( -1, "_onExitBlacklistOk")
@@ -1011,3 +1029,4 @@ Func _blacklist()
 
 	Send("{END}")
 EndFunc
+#EndRegion
