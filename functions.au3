@@ -315,30 +315,33 @@ EndFunc
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _clickDn()
-	; -- check for double click --
-	If $mdblcheck = 1 Then
-		$mdblTimerDiff = TimerDiff( $mdblTimerInit )
-	EndIf
-	If $mdblTimerDiff <= 500 Then
-		$mdblTimerInit = TimerInit()
-		$mdblClick = 1
-		Return
-	Else
-		$mdblTimerInit = TimerInit()
-		$mdblcheck = 1
-		$mdblClick = 0
-	EndIf
+	Static $dragItemPrev
+	$dragitem = ControlListView($hgui, "", $list_profiles, "GetSelected")
 
-    if _checkMouse($list_profiles) Then
-        $dragitem = ControlListView($hgui, "", $list_profiles, "GetSelected")
-		if $dragitem <> "" Then
+    if _checkMouse($list_profiles) and $dragitem <> "" Then
+		; -- check for double click --
+		$mdblTimerDiff = TimerDiff( $mdblTimerInit )
+		If $mdblTimerDiff <= $mDblClickTime Then
+			if $dragItemPrev == $dragitem Then
+				$mdblClick = 1
+			EndIf
+		Else
+			$mdblClick = 0
+		EndIf
+		$mdblTimerInit = TimerInit()
+
+		; -- check for dragging --
+		if $dragitem <> "" and $mdblClick <> 1 Then
 			$dragging = True
 		Else
 			$dragging = False
 		EndIf
     Else
         $dragging = False
+		$mdblClick = 0
     EndIf
+
+	$dragItemPrev = $dragitem
 
 EndFunc
 

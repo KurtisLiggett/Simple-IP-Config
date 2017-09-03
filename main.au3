@@ -105,7 +105,7 @@ Global $ck_mintoTray, $ck_startinTray, $ck_saveAdapter, $ck_autoUpdate
 Global $timerstart, $timervalue
 
 Global $movetosubnet
-Global $mdblTimerInit=0, $mdblTimerDiff=1000, $mdblcheck=0, $mdblClick = 0
+Global $mdblTimerInit=0, $mdblTimerDiff=1000, $mdblClick = 0, $mDblClickTime=500
 Global $dragging = False, $dragitem = 0, $contextSelect = 0
 Global $prevWinPos, $winPosTimer, $writePos
 
@@ -255,6 +255,10 @@ Func _main()
 
 	_refresh(1)
 	ControlListView( $hgui, "", $list_profiles, "Select", 0 )
+
+	;get system double-click time
+	$retval = DllCall('user32.dll', 'uint', 'GetDoubleClickTime')
+	$mDblClickTime = $retval[0]
 
 	;see if we should display the changelog
 	_checkChangelog()
