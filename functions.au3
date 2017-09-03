@@ -896,6 +896,11 @@ EndFunc
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _delete($name="")
+	;check to make sure a profile is selected
+	If ControlListView($hgui, "", $list_profiles, "GetSelectedCount") = 0 Then
+		_setStatus("No profile is selected!", 1)
+		Return 1
+	EndIf
 	$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 	$selIndex = ControlListView($hgui, "", $list_profiles, "GetSelected")
 
@@ -965,7 +970,11 @@ EndFunc
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _save()
-	;$yesno = MsgBox($MB_YESNO,"Warning!","The profile name already exists!" & @CRLF & "Do you wish to overwrite the profile?")
+	;check to make sure a profile is selected
+	If ControlListView($hgui, "", $list_profiles, "GetSelectedCount") = 0 Then
+		_setStatus("No profile is selected!", 1)
+		Return 1
+	EndIf
 	$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 
 	Local $aSection = Profiles_CreateSection()
