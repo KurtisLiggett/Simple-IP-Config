@@ -901,17 +901,20 @@ Func _delete($name="")
 		_setStatus("No profile is selected!", 1)
 		Return 1
 	EndIf
-	$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 	$selIndex = ControlListView($hgui, "", $list_profiles, "GetSelected")
 
-	$iniName = iniNameEncode($profileName)
-	$ret = IniDelete( @ScriptDir & "/profiles.ini", $iniName )
-	If $ret = 0 Then
-		_setStatus("An error occurred while deleting the profile", 1)
+	If not $lv_editing Then
+		$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
+		$iniName = iniNameEncode($profileName)
+		$ret = IniDelete( @ScriptDir & "/profiles.ini", $iniName )
+		If $ret = 0 Then
+			_setStatus("An error occurred while deleting the profile", 1)
+		EndIf
+
+		Profiles_Delete($profiles, $profileName)
+	Else
+		_GUICtrlListView_CancelEditLabel ( ControlGetHandle($hgui, "", $list_profiles) )
 	EndIf
-
-	Profiles_Delete($profiles, $profileName)
-
 
 	_updateProfileList()
 	If $selIndex = ControlListView($hgui, "", $list_profiles, "GetItemCount") Then
@@ -975,6 +978,12 @@ Func _save()
 		_setStatus("No profile is selected!", 1)
 		Return 1
 	EndIf
+
+	If $lv_editing Then
+		Send("{ENTER}")
+		Return
+	EndIf
+
 	$profileName = StringReplace( GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 
 	Local $aSection = Profiles_CreateSection()
@@ -1005,6 +1014,10 @@ EndFunc
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _refresh($init=0)
+	If $lv_editing Then
+		_GUICtrlListView_CancelEditLabel ( ControlGetHandle($hgui, "", $list_profiles) )
+	EndIf
+
 	_loadProfiles()
 	_updateProfileList()
 	_updateCurrent()
