@@ -65,8 +65,8 @@ Global $screenshot=0
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.8.1"
-Global $winDate = "08/11/2017"
+Global $winVersion = "2.9.b1"
+Global $winDate = "09/04/2017"
 Global $hgui
 Global $guiWidth = 550
 Global $guiHeight = 550
