@@ -1409,10 +1409,25 @@ Func GetChangeLogData()
 	$sChangeLog[0] = "Changelog - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 	"v"&$winVersion & @CRLF & _
+	"NEW FEATURES:" & @CRLF & _
+	"   #15  Automatic Updates" & @CRLF & _
+	"   #4   Create desktop shortcuts to profiles" & @CRLF & _
+	"MAJOR CHANGES:" & @CRLF & _
+	"   Major code improvements" & @CRLF & _
 	"MINOR CHANGES:" & @CRLF & _
-	"   Added Debug item to Help menu to help troubleshoot issues." & @CRLF & _
+	"   #7   Added Debug item to Help menu for troubleshooting issues." & @CRLF & _
+	"BUG FIXES:" & @CRLF & _
+	"   #3   Setting profiles when profiles.ini is out of order." & @CRLF & _
+	"   #3   Setting profiles after drag-and-drop to rearrange." & @CRLF & _
+	"   #13  Issue opening the program two times." & @CRLF & _
+	"   #19  Program starts off screen with dual screens." & @CRLF & _
+	"   #22  Program crashes on Delete." & @CRLF & _
+	"   #23  Profile '0' created unintentionally." & @CRLF & _
+	"   #24  Double-clicking profiles behavior." & @CRLF & _
+	"   #25  Adapters not showing up with underscore." & @CRLF & _
+	"   #26  Left-handed mouse could not select profiles." & @CRLF & _
 	@CRLF & _
-	"v2.8" & @CRLF & _
+	"v2.8.1" & @CRLF & _
 	"BUG FIXES:" & @CRLF & _
 	"   IP address entry text scaling" & @CRLF & _
 	@CRLF & _
