@@ -559,6 +559,28 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 		Return 1
 	Endif
 
+	; ***** TESTING ******
+	; override input parameters and use test values
+	$ip = "192.168.1.3|192.168.1.2|192.168.1.4"
+	$subnet = "255.255.255.0|255.255.255.0|255.255.0.0"
+	; ***** END TEST VALUES ******
+
+
+	; create arrays of IP addresses and subnet masks
+	$bMultipleIps = 0
+	$aIPs = StringSplit($ip, "|")
+	$aSubnets = StringSplit($subnet, "|")
+	if $aIPs[0] > 1 Then
+		$bMultipleIps = 1
+	EndIf
+
+	; error if different numnber of IP addresses and subnet masks
+	if $aIPs[0] <> $aSubnets[0] Then
+		_setStatus("Invalid configuration!", 1)
+		Return 1
+	EndIf
+
+	; set first IP addresss, subnet, and gateway
 	$cmd1 = 'netsh interface ip set address '
 	$cmd2 = '"' & $adapter & '"'
 	$cmd3 = ""
@@ -575,16 +597,26 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 			Return 1
 		Else
 			If $gateway = "" Then
-				$cmd3 = " static " & $ip & " " & $subnet & " none"
+				$cmd3 = " static " & $aIPs[1] & " " & $aSubnets[1] & " none"
 			Else
-				$cmd3 = " static " & $ip & " " & $subnet & " " & $gateway & " 1"
+				$cmd3 = " static " & $aIPs[1] & " " & $aSubnets[1] & " " & $gateway & " 1"
 			EndIf
 			$message = "Setting static IP address..."
 		EndIf
 	EndIf
-	;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
-	;(cmd, callback, description)
 	asyncRun($cmd1&$cmd2&$cmd3, $Callback, $message)
+
+	; if multiple IPs, then add the rest
+	If $dhcp <> "true" Then
+		If $aIPs[0] > 1 Then
+			$cmd1 = 'netsh interface ip add address '
+			$cmd2 = '"' & $adapter & '"'
+			For $i=2 To $aIPs[0]
+				$cmd3 = " " & $aIPs[$i] & " " & $aSubnets[$i]
+				asyncRun($cmd1&$cmd2&$cmd3, $Callback, $message)
+			Next
+		EndIf
+	EndIf
 
 	$cmd1 = ''
 	$cmd1_1 = 'netsh interface ip set dns '
@@ -599,8 +631,6 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 		$cmd1 = $cmd1_1
 		$cmd3 = " dhcp"
 		$message = "Setting DNS DHCP..."
-		;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
-		;(cmd, callback, description)
 		asyncRun($cmd1&$cmd2&$cmd3, $Callback, $message)
 	Else
 		If $dnsreg = "true" Then
@@ -630,113 +660,16 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 			$cmd3 = " static " & $dnsp
 			$message = "Setting preferred DNS server..."
 			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
-			;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
-			;(cmd, callback, description)
 			asyncRun($cmd1&$cmd2&$cmd3&$cmdend, $Callback, $message)
 		Else
 			$cmd1 = $cmd1_3
 			$cmd3 = " all"
 			$message = "Deleting DNS servers..."
-			;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
-			;(cmd, callback, description)
 			asyncRun($cmd1&$cmd2&$cmd3, $Callback, $message)
 		EndIf
 	EndIf
 EndFunc
 
-;Func _OLDapply()
-;	$selected_adapter = GUICtrlRead($combo_adapters)
-;	If $selected_adapter = "" Then
-;		_setStatus("Please select an adapter and try again", 1)
-;		Return 1
-;	Endif
-;
-;	$ip = ""
-;	$subnet = ""
-;	$gateway = ""
-;
-;	$dhcp = (GUICtrlRead($radio_IpAuto) = $GUI_CHECKED)?1:0
-;	$cmd1 = 'netsh interface ip set address '
-;	$cmd2 = '"' & $selected_adapter & '"'
-;	$cmd3 = ""
-;	$message = ""
-;	if $dhcp Then
-;		$cmd3 = " dhcp"
-;		$message = "Setting DHCP..."
-;	Else
-;		$ip = _ctrlGetIP( $ip_Ip )
-;		$subnet = _ctrlGetIP( $ip_Subnet )
-;		$gateway = _ctrlGetIP( $ip_Gateway )
-;		If $ip = "" Then
-;			_setStatus("Please enter an IP address", 1)
-;			Return 1
-;		ElseIf $subnet = "" Then
-;			_setStatus("Please enter a subnet mask", 1)
-;			Return 1
-;		Else
-;			If $gateway = "" Then
-;				$cmd3 = " static " & $ip & " " & $subnet & " none"
-;			Else
-;				$cmd3 = " static " & $ip & " " & $subnet & " " & $gateway & " 1"
-;			EndIf
-;			$message = "Setting static IP address..."
-;		EndIf
-;	EndIf
-;	_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
-;
-;	$dnsp = ""
-;	$dnsa = ""
-;
-;	$dnsDhcp = (GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED)?1:0
-;	$cmd1 = ''
-;	$cmd1_1 = 'netsh interface ip set dns '
-;	$cmd1_2 = 'netsh interface ip add dns '
-;	$cmd1_3 = 'netsh interface ip delete dns '
-;	$cmd2 = '"' & $selected_adapter & '"'
-;	$cmd3 = ""
-;	$cmdend = ""
-;	$message = ""
-;	$cmdReg = ""
-;	if $dnsDhcp Then
-;		$cmd1 = $cmd1_1
-;		$cmd3 = " dhcp"
-;		$message = "Setting DNS DHCP..."
-;		_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
-;	Else
-;		$dnsp = _ctrlGetIP( $ip_DnsPri )
-;		$dnsa = _ctrlGetIP( $ip_DnsAlt )
-;		If BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED Then
-;			$cmdReg = "both"
-;		Else
-;			$cmdReg = "none"
-;		EndIf
-;		If $dnsp <> "" Then
-;			$cmd1 = $cmd1_1
-;			$cmd3 = " static " & $dnsp
-;			$message = "Setting preferred DNS server..."
-;			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
-;			_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
-;			If $dnsa <> "" Then
-;				$cmd1 = $cmd1_2
-;				$cmd3 = " " & $dnsa
-;				$message = "Setting alternate DNS server..."
-;				$cmdend = (_OSVersion() >= 6)?" 2 no":""
-;				_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
-;			EndIf
-;		ElseIf $dnsa <> "" Then
-;			$cmd1 = $cmd1_1
-;			$cmd3 = " static " & $dnsp
-;			$message = "Setting preferred DNS server..."
-;			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
-;			_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
-;		Else
-;			$cmd1 = $cmd1_3
-;			$cmd3 = " all"
-;			$message = "Deleting DNS servers..."
-;			_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
-;		EndIf
-;	EndIf
-;EndFunc
 
 ;------------------------------------------------------------------------------
 ; Title...........: _OSVersion
