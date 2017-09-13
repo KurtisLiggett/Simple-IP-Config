@@ -192,7 +192,7 @@ Func _updateCombo()
 		$sStartupAdapter = Options_GetValue($options, $OPTIONS_StartupAdapter)
 		$index = _ArraySearch( $adapters, $sStartupAdapter, 1 )
 		If ($index <> -1) Then
-			$defaultitem = $adapters[$index][0]
+			$defaultitem = $sStartupAdapter
 		EndIf
 		$sBlacklist = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
 		$aBlacklist = StringSplit($sBlacklist, "|")
@@ -214,20 +214,20 @@ EndFunc
 ; Parameters......:
 ; Return value....:
 ;------------------------------------------------------------------------------
-Func _blacklistAdd()
-	$selected_adapter = GUICtrlRead($combo_adapters)
-	$list = GUICtrlRead($blacklistEdit)
-	If $list = "" OR StringRight($list, 1) = @CR OR StringRight($list, 1) = @LF Then
-		$newString = $selected_adapter
-	Else
-		$newString = @CRLF&$selected_adapter
-	EndIf
+;~ Func _blacklistAdd()
+;~ 	$selected_adapter = GUICtrlRead($combo_adapters)
+;~ 	$list = GUICtrlRead($blacklistEdit)
+;~ 	If $list = "" OR StringRight($list, 1) = @CR OR StringRight($list, 1) = @LF Then
+;~ 		$newString = $selected_adapter
+;~ 	Else
+;~ 		$newString = @CRLF&$selected_adapter
+;~ 	EndIf
 
-	$iEnd = StringLen($list & $newString)
-	_GUICtrlEdit_SetSel($blacklistEdit, $iEnd, $iEnd)
-	_GUICtrlEdit_Scroll($blacklistEdit, 4)
-	GUICtrlSetData($blacklistEdit, $newString, 1)
-EndFunc
+;~ 	$iEnd = StringLen($list & $newString)
+;~ 	_GUICtrlEdit_SetSel($blacklistEdit, $iEnd, $iEnd)
+;~ 	_GUICtrlEdit_Scroll($blacklistEdit, 4)
+;~ 	GUICtrlSetData($blacklistEdit, $newString, 1)
+;~ EndFunc
 
 ;------------------------------------------------------------------------------
 ; Title...........: _arrange

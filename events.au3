@@ -65,7 +65,16 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onExitBlacklistOk()
 	$guiState = WinGetState( $hgui )
-	$newBlacklist = StringReplace(GUICtrlRead($blacklistEdit), @CRLF, "|")
+	$newBlacklist = ""
+	$itemCount = _GUICtrlListView_GetItemCount($blacklistLV)
+
+	For $i = 0 To $itemCount-1
+		If _GUICtrlListView_GetItemChecked($blacklistLV, $i) Then
+			$newBlacklist &= _GUICtrlListView_GetItemTextString($blacklistLV, $i) & "|"
+		EndIf
+	Next
+	$newBlacklist = StringLeft($newBlacklist, StringLen($newBlacklist)-1)
+
 	$newBlacklist = iniNameEncode($newBlacklist)
 	Options_SetValue($options, $OPTIONS_AdapterBlacklist, $newBlacklist)
 	$keyname = Options_GetName($options, $OPTIONS_AdapterBlacklist)
@@ -116,9 +125,9 @@ EndFunc
 ; Description..: Add selected adapter to the hide adapters list
 ; Events.......: 'Add Selected Adapter' button
 ;------------------------------------------------------------------------------
-Func _onBlacklistAdd()
-	_blacklistAdd()
-EndFunc
+;~ Func _onBlacklistAdd()
+;~ 	_blacklistAdd()
+;~ EndFunc
 
 ;------------------------------------------------------------------------------
 ; Title........: _onRadio

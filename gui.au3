@@ -996,7 +996,7 @@ EndFunc
 #Region -- BLACKLIST WINDOW --
 Func _blacklist()
 	$sBlacklist = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
-	Local $blacklist = StringReplace( $sBlacklist, "|", @CRLF)
+	Local $aBlacklist = StringSplit( $sBlacklist, "|", 2)
 
 	$w = 275*$dScale
 	$h = 300*$dScale
@@ -1006,22 +1006,43 @@ Func _blacklist()
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
 	$blacklistChild = GUICreate( "Adapter Blacklist", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
+	GUISetBkColor(0x888889)
 	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
-	$label = GUICtrlCreateLabel("Hide the following adapters", 5, 5, $w-10)
-	GUICtrlSetBkColor ($blacklistEdit, 0xFFFFFF)
+	$bkLabel = GUICtrlCreateLabel("", 0, 0, $w, $h-35*$dscale)
+	GUICtrlSetBkColor($bkLabel, 0xFFFFFF)
+	GUICtrlSetState($bkLabel, $GUI_DISABLE)
 
-	$blacklistEdit = GUICtrlCreateEdit($blacklist, 5, 25*$dscale, $w-10, $h-60*$dscale-25*$dscale, BitOR($ES_WANTRETURN, $WS_VSCROLL, $ES_AUTOVSCROLL))
-	GUICtrlSetBkColor ($blacklistEdit, 0xFFFFFF)
+	$labelTitle = GUICtrlCreateLabel("Select Adapters to Hide", 5, 5, $w-10, 20*$dscale)
+;~ 	GUICtrlSetColor(-1, 0x0000FF)
+	GUICtrlSetBkColor (-1, 0xFFFFFF)
+	GUICtrlSetFont(-1, 12)
 
-	$bt_BlacklistAdd = GUICtrlCreateButton( "Add Selected Adapter", 10*$dScale, $h - 50*$dScale, 110*$dScale, 40*$dScale, $BS_MULTILINE)
-	GUICtrlSetOnEvent( -1, "_onBlacklistAdd")
+	$labelTitleLine = GUICtrlCreateLabel("", 2, 20*$dscale+5+3, $w-4, 1)
+	GUICtrlSetBkColor (-1, 0x999999)
 
-	$bt_Cancel = GUICtrlCreateButton( "Cancel", $w-117*$dScale, $h - 50*$dScale, 52*$dScale, 40*$dScale)
+	$blacklistLV = GUICtrlCreateListView("Adapter Name", 5, 35*$dscale, $w-10, $h-35*$dscale-35*$dscale, BitOR($GUI_SS_DEFAULT_LISTVIEW, $LVS_NOCOLUMNHEADER), $LVS_EX_CHECKBOXES)
+	GUICtrlSetBkColor ($blacklistLV, 0xFFFFFF)
+	_GUICtrlListView_SetColumnWidth($blacklistLV, 0, $w-20*$dscale)		; sets column width
+	Local $aAdapters = Adapter_GetNames($adapters)
+	$numAdapters = UBound($aAdapters)
+	if $numAdapters > 0 Then
+		For $i=0 to $numAdapters-1
+			GUICtrlCreateListViewItem($aAdapters[$i], $blacklistLV)
+			If _ArraySearch($aBlacklist, $aAdapters[$i]) <> -1 Then
+				_GUICtrlListView_SetItemChecked($blacklistLV, $i)
+			EndIf
+		Next
+	EndIf
+
+	$labelBottomLine = GUICtrlCreateLabel("", 0, $h-35*$dscale+1, $w, 1)
+	GUICtrlSetBkColor (-1, 0x444444)
+
+	$bt_Cancel = GUICtrlCreateButton( "Cancel", $w-117*$dScale, $h - 30*$dScale, 52*$dScale, 25*$dScale)
 	GUICtrlSetOnEvent( -1, "_onExitChild")
 
-	$bt_Ok = GUICtrlCreateButton( "Save", $w-60*$dScale, $h - 50*$dScale, 50*$dScale, 40*$dScale)
+	$bt_Ok = GUICtrlCreateButton( "Save", $w-60*$dScale, $h - 30*$dScale, 50*$dScale, 25*$dScale)
 	GUICtrlSetOnEvent( -1, "_onExitBlacklistOk")
 
 	GUISetState(@SW_DISABLE, $hGUI)
