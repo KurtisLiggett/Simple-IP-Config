@@ -375,7 +375,7 @@ EndFunc
 ; Events.......: Help menu "Online Documentation" item
 ;------------------------------------------------------------------------------
 Func _onHelp()
-
+	ShellExecute('https://github.com/KurtisLiggett/Simple-IP-Config/wiki')
 EndFunc
 
 Func _onUpdateCheckItem()
