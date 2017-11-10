@@ -1410,6 +1410,11 @@ Func GetChangeLogData()
 	$sChangeLog[1] = @CRLF & _
 	"v"&$winVersion & @CRLF & _
 	"BUG FIXES:" & @CRLF & _
+	"   #44   	Help menu link to documentation." & @CRLF & _
+	"   #45   	Added menu mnemonics (access keys)." & @CRLF & _
+	@CRLF & _
+	"v2.9 Beta 2" & @CRLF & _
+	"BUG FIXES:" & @CRLF & _
 	"   #35   	Hide adapters broken." & @CRLF & _
 	"   #39/40  Sort profiles broken." & @CRLF & _
 	@CRLF & _
