@@ -117,7 +117,7 @@ EndFunc
 Func _checksSICUpdate($manualCheck=0)
   ; This function checks if there are new releases on github and request the user to download it
 
-  $github_releases = "https://api.github.com/repos/KurtisLiggett/Simple-IP-Config/releases/latest"
+  $github_releases = "https://api.github.com/repos/KurtisLiggett/Simple-IP-Config/releases"
 
   Local $oHTTP = ObjCreate("WinHttp.WinHttpRequest.5.1")
   $oHTTP.Open("GET", $github_releases, False)
@@ -129,13 +129,13 @@ Func _checksSICUpdate($manualCheck=0)
   If ($oHTTP.Status <> 200) Then SetError(3, 0, 0)
 
   $cleanedJSON = StringReplace($oHTTP.ResponseText, '"', "")
-  $info = StringRegExp($cleanedJSON, '(?:tag_name|browser_download_url):([^\{,}]+)', 3)
+  $info = StringRegExp($cleanedJSON, '(?:name:v|browser_download_url:)([^\{,}]+)', 3)
 
-  If (@error) Then
-    MsgBox(16, "Error", "We encountered an error retrieving the update. Check your internet connection.")
-  Else
+;~   If (@error) Then
+;~     MsgBox(16, "Error", "We encountered an error retrieving the update. Check your internet connection.")
+;~   Else
 	$updateText = "Your version is: " & $winVersion & @CRLF & _
-		"Current version is: " & $info[0] & @CRLF & @CRLF
+		"Latest version is: " & $info[0] & @CRLF & @CRLF
     If ($winVersion <> $info[0]) Then
 		$updateText &= "A newer version is available. Press ok to download it."
 
@@ -144,7 +144,7 @@ Func _checksSICUpdate($manualCheck=0)
 		$updateText &= "No update is available."
 		if $manualCheck Then MsgBox(0, "Simple IP Config Update", $updateText)
     EndIf
-  Endif
+;~   Endif
 
 ;  $newFilename = "Simple.IP.Config."&$info[0]&".exe"
 ;  If ($winVersion <> $info[0]) Then
