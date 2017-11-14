@@ -55,6 +55,10 @@ Func RunCallback($sDescription, $sNextDescription, $sStdOut)
 			IF asyncRun_isIdle() Then
 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
 			EndIf
+		ElseIf StringInStr($sStdOut, "exists") Then
+			_setStatus(StringReplace($sStdOut, @CRLF, " "), 1)
+			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+			_asyncRun_Clear()
 		Else
 			If $sDescription = $sNextDescription Then
 				If not $showWarning Then _setStatus($sNextDescription)
