@@ -38,6 +38,8 @@ Func asyncRun($sCmd, $CallbackFunc, $sDescription="", $iTimeout=10000)
 	$__asyncProcess__Data[$size-1][3] = $iTimeout
 	$__asyncProcess__Data[0][2] = 0
 	if $size = 2 Then
+		$sStdOut = ""
+		_setStatus("")
 		$CallbackFunc($sDescription, $sDescription, "")
 	EndIf
 	AdlibRegister("_asyncRun_Process", 100)
@@ -45,6 +47,12 @@ EndFunc
 
 Func _asyncRun_Execute($sCmd)
 
+EndFunc
+
+Func _asyncRun_Clear()
+	For $i=1 to UBound($__asyncProcess__Data)-1
+		_ArrayDelete($__asyncProcess__Data, 1)
+	Next
 EndFunc
 
 Func _asyncRun_Process()
