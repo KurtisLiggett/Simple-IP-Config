@@ -1414,8 +1414,10 @@ Func GetChangeLogData()
 	$sChangeLog[1] = @CRLF & _
 	"v"&$winVersion & @CRLF & _
 	"BUG FIXES:" & @CRLF & _
+	"   #42   	Issue with checking for updates." & @CRLF & _
 	"   #44   	Help menu link to documentation." & @CRLF & _
 	"   #45   	Added menu mnemonics (access keys)." & @CRLF & _
+	"   #47   	Fixed message on duplicate IP address." & @CRLF & _
 	@CRLF & _
 	"v2.9 Beta 2" & @CRLF & _
 	"BUG FIXES:" & @CRLF & _
