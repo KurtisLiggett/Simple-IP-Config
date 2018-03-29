@@ -1413,25 +1413,12 @@ Func GetChangeLogData()
 	$sChangeLog[0] = "Changelog - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 	"v"&$winVersion & @CRLF & _
-	"BUG FIXES:" & @CRLF & _
-	"   #42   	Issue with checking for updates." & @CRLF & _
-	"   #44   	Help menu link to documentation." & @CRLF & _
-	"   #45   	Added menu mnemonics (access keys)." & @CRLF & _
-	"   #47   	Fixed message on duplicate IP address." & @CRLF & _
-	@CRLF & _
-	"v2.9 Beta 2" & @CRLF & _
-	"BUG FIXES:" & @CRLF & _
-	"   #35   	Hide adapters broken." & @CRLF & _
-	"   #39/40  Sort profiles broken." & @CRLF & _
-	@CRLF & _
-	"v2.9 Beta 1" & @CRLF & _
 	"NEW FEATURES:" & @CRLF & _
-	"   #15  Automatic Updates" & @CRLF & _
 	"   #4   Create desktop shortcuts to profiles" & @CRLF & _
+	"   #15  Automatic Updates" & @CRLF & _
+	"   #7   Added Debug item to Help menu for troubleshooting issues." & @CRLF & _
 	"MAJOR CHANGES:" & @CRLF & _
 	"   Major code improvements" & @CRLF & _
-	"MINOR CHANGES:" & @CRLF & _
-	"   #7   Added Debug item to Help menu for troubleshooting issues." & @CRLF & _
 	"BUG FIXES:" & @CRLF & _
 	"   #3   Setting profiles when profiles.ini is out of order." & @CRLF & _
 	"   #3   Setting profiles after drag-and-drop to rearrange." & @CRLF & _
@@ -1442,6 +1429,12 @@ Func GetChangeLogData()
 	"   #24  Double-clicking profiles behavior." & @CRLF & _
 	"   #25  Adapters not showing up with underscore." & @CRLF & _
 	"   #26  Left-handed mouse could not select profiles." & @CRLF & _
+	"   #35   	Hide adapters broken." & @CRLF & _
+	"   #39/40  Sort profiles broken." & @CRLF & _
+	"   #42   	Issue with checking for updates." & @CRLF & _
+	"   #44   	Help menu link to documentation." & @CRLF & _
+	"   #45   	Added menu mnemonics (access keys)." & @CRLF & _
+	"   #47   	Fixed message on duplicate IP address." & @CRLF & _
 	@CRLF & _
 	"v2.8.1" & @CRLF & _
 	"BUG FIXES:" & @CRLF & _
