@@ -102,7 +102,7 @@ EndFunc
 Func Profiles_Sort(ByRef $hObject, $desc=0)
 	If Not _Profiles_IsObject($hObject) Then Return Null
 
-	_ArraySort($hObject, $desc)
+	_ArraySort($hObject, $desc, 1)
 EndFunc
 
 ; get size

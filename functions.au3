@@ -55,6 +55,10 @@ Func RunCallback($sDescription, $sNextDescription, $sStdOut)
 			IF asyncRun_isIdle() Then
 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
 			EndIf
+		ElseIf StringInStr($sStdOut, "exists") Then
+			_setStatus(StringReplace($sStdOut, @CRLF, " "), 1)
+			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+			_asyncRun_Clear()
 		Else
 			If $sDescription = $sNextDescription Then
 				If not $showWarning Then _setStatus($sNextDescription)
@@ -113,7 +117,7 @@ EndFunc
 Func _checksSICUpdate($manualCheck=0)
   ; This function checks if there are new releases on github and request the user to download it
 
-  $github_releases = "https://api.github.com/repos/KurtisLiggett/Simple-IP-Config/releases/latest"
+  $github_releases = "https://api.github.com/repos/KurtisLiggett/Simple-IP-Config/releases"
 
   Local $oHTTP = ObjCreate("WinHttp.WinHttpRequest.5.1")
   $oHTTP.Open("GET", $github_releases, False)
@@ -125,13 +129,13 @@ Func _checksSICUpdate($manualCheck=0)
   If ($oHTTP.Status <> 200) Then SetError(3, 0, 0)
 
   $cleanedJSON = StringReplace($oHTTP.ResponseText, '"', "")
-  $info = StringRegExp($cleanedJSON, '(?:tag_name|browser_download_url):([^\{,}]+)', 3)
+  $info = StringRegExp($cleanedJSON, '(?:name:v|browser_download_url:)([^\{,}]+)', 3)
 
-  If (@error) Then
-    MsgBox(16, "Error", "We encountered an error retrieving the update. Check your internet connection.")
-  Else
+;~   If (@error) Then
+;~     MsgBox(16, "Error", "We encountered an error retrieving the update. Check your internet connection.")
+;~   Else
 	$updateText = "Your version is: " & $winVersion & @CRLF & _
-		"Current version is: " & $info[0] & @CRLF & @CRLF
+		"Latest version is: " & $info[0] & @CRLF & @CRLF
     If ($winVersion <> $info[0]) Then
 		$updateText &= "A newer version is available. Press ok to download it."
 
@@ -140,7 +144,7 @@ Func _checksSICUpdate($manualCheck=0)
 		$updateText &= "No update is available."
 		if $manualCheck Then MsgBox(0, "Simple IP Config Update", $updateText)
     EndIf
-  Endif
+;~   Endif
 
 ;  $newFilename = "Simple.IP.Config."&$info[0]&".exe"
 ;  If ($winVersion <> $info[0]) Then
@@ -797,10 +801,10 @@ Func _disable()
 	$selected_adapter = GUICtrlRead($combo_adapters)
 	if _GUICtrlMenu_GetItemText( GUICtrlGetHandle($toolsmenu), $disableitem, 0 ) = "Disable adapter" Then
 		_AdapterMod($selected_adapter, 0)
-		GUICtrlSetData($disableitem, "Enable adapter")
+		GUICtrlSetData($disableitem, "En&able adapter")
 	Else
 		_AdapterMod($selected_adapter, 1)
-		GUICtrlSetData($disableitem, "Disable adapter")
+		GUICtrlSetData($disableitem, "Dis&able adapter")
 		_setStatus("Updating Adapter List...")
 		_loadAdapters()
 		_setStatus("Ready")
@@ -1274,9 +1278,9 @@ Func _updateCurrent($init=0, $selected_adapter="")
 	ControlSetText($hgui, "", $label_CurrentDhcp, $props[5] )
 	ControlSetText($hgui, "", $label_CurrentAdapterState, $props[6] )
 	If $props[6] = "Disabled" Then
-		GUICtrlSetData($disableitem, "Enable adapter")
+		GUICtrlSetData($disableitem, "En&able adapter")
 	Else
-		GUICtrlSetData($disableitem, "Disable adapter")
+		GUICtrlSetData($disableitem, "Dis&able adapter")
 	EndIf
 EndFunc
 
@@ -1410,12 +1414,11 @@ Func GetChangeLogData()
 	$sChangeLog[1] = @CRLF & _
 	"v"&$winVersion & @CRLF & _
 	"NEW FEATURES:" & @CRLF & _
-	"   #15  Automatic Updates" & @CRLF & _
 	"   #4   Create desktop shortcuts to profiles" & @CRLF & _
+	"   #15  Automatic Updates" & @CRLF & _
+	"   #7   Added Debug item to Help menu for troubleshooting issues." & @CRLF & _
 	"MAJOR CHANGES:" & @CRLF & _
 	"   Major code improvements" & @CRLF & _
-	"MINOR CHANGES:" & @CRLF & _
-	"   #7   Added Debug item to Help menu for troubleshooting issues." & @CRLF & _
 	"BUG FIXES:" & @CRLF & _
 	"   #3   Setting profiles when profiles.ini is out of order." & @CRLF & _
 	"   #3   Setting profiles after drag-and-drop to rearrange." & @CRLF & _
@@ -1426,6 +1429,12 @@ Func GetChangeLogData()
 	"   #24  Double-clicking profiles behavior." & @CRLF & _
 	"   #25  Adapters not showing up with underscore." & @CRLF & _
 	"   #26  Left-handed mouse could not select profiles." & @CRLF & _
+	"   #35   	Hide adapters broken." & @CRLF & _
+	"   #39/40  Sort profiles broken." & @CRLF & _
+	"   #42   	Issue with checking for updates." & @CRLF & _
+	"   #44   	Help menu link to documentation." & @CRLF & _
+	"   #45   	Added menu mnemonics (access keys)." & @CRLF & _
+	"   #47   	Fixed message on duplicate IP address." & @CRLF & _
 	@CRLF & _
 	"v2.8.1" & @CRLF & _
 	"BUG FIXES:" & @CRLF & _

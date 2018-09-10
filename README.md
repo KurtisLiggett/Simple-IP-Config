@@ -17,11 +17,14 @@ Features
 
 Installing
 ---
-1. Download the latest stable version [Simple IP Config v2.8.1][latest].  
-Or check out [v2.9 beta 1](https://github.com/KurtisLiggett/Simple-IP-Config/releases/download/2.9.b1/Simple.IP.Config.2.9.b1.exe) which has a number of bug fixes and a few new features!
+1. Download the latest Setup file: [Simple IP Config v2.9][latest].
+2. Run the installer.
+
+**Manual Installation (Portable):**
+1. Download the latest .exe: [Simple IP Config v2.9][latest].
 2. Run the .exe file from any location on your computer or USB drive.
 
-You can download other versions from the [releases page][releases].
+You can download older versions from the [releases page][releases].
 
 Help & Support
 ---

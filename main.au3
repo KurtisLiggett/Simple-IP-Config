@@ -52,12 +52,6 @@ Global $adapters
 #include <GUIConstantsEx.au3>
 
 ; Global constants, for code readability
-Global Const $WIN_STATE_EXISTS = 1 ; Window exists
-Global Const $WIN_STATE_VISIBLE = 2 ; Window is visible
-Global Const $WIN_STATE_ENABLED = 4 ; Window is enabled
-Global Const $WIN_STATE_ACTIVE = 8 ; Window is active
-Global Const $WIN_STATE_MINIMIZED = 16 ; Window is minimized
-Global Const $WIN_STATE_MAXIMIZED = 32 ; Window is maximized
 Global Const $wbemFlagReturnImmediately = 0x10
 Global Const $wbemFlagForwardOnly = 0x20
 
@@ -65,8 +59,8 @@ Global $screenshot=0
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.9.b1"
-Global $winDate = "09/04/2017"
+Global $winVersion = "2.9"
+Global $winDate = "03/29/2018"
 Global $hgui
 Global $guiWidth = 550
 Global $guiHeight = 550
@@ -179,8 +173,8 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.b1.exe
-#AutoIt3Wrapper_Res_Fileversion=2.9.0.1
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.exe
+#AutoIt3Wrapper_Res_Fileversion=2.9.0.4
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
 #Region PROGRAM CONTROL
