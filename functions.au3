@@ -1433,6 +1433,10 @@ Func GetChangeLogData()
 	$sChangeLog[0] = "Changelog - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 	"v"&$winVersion & @CRLF & _
+	"BUG FIXES:" & @CRLF & _
+	"   #71   COM error when no internet connection." & @CRLF & _
+	@CRLF & _
+	"v2.9" & @CRLF & _
 	"NEW FEATURES:" & @CRLF & _
 	"   #4   Create desktop shortcuts to profiles" & @CRLF & _
 	"   #15  Automatic Updates" & @CRLF & _
