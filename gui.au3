@@ -1045,6 +1045,8 @@ Func _blacklist()
 	$bt_Ok = GUICtrlCreateButton( "Save", $w-60*$dScale, $h - 30*$dScale, 50*$dScale, 25*$dScale)
 	GUICtrlSetOnEvent( -1, "_onExitBlacklistOk")
 
+	GUICtrlSetState($bt_Cancel, $GUI_FOCUS)
+
 	GUISetState(@SW_DISABLE, $hGUI)
 	GUISetState(@SW_SHOW, $blacklistChild)
 
