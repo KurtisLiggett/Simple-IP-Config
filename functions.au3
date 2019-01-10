@@ -21,11 +21,14 @@
 ; Description:	- most functions related to doing something in the program
 ;==============================================================================
 Global $oMyError = ObjEvent("AutoIt.Error","MyErrFunc")
+Global $suppressComError = 0
 
 Func MyErrFunc($oError)
-  SetError(1)
-    ; Do anything here.
-	MsgBox(1,"COM Error","Simple IP Config COM Error!" & @CRLF & "Error Number: " & Hex($oError.number))
+	if not $suppressComError Then
+		SetError(1)
+		; Do anything here.
+		MsgBox(1,"COM Error","Simple IP Config COM Error!" & @CRLF & "Error Number: " & Hex($oError.number))
+	EndIf
 EndFunc
 
 ;------------------------------------------------------------------------------
@@ -120,20 +123,37 @@ Func _checksSICUpdate($manualCheck=0)
   $github_releases = "https://api.github.com/repos/KurtisLiggett/Simple-IP-Config/releases"
 
   Local $oHTTP = ObjCreate("WinHttp.WinHttpRequest.5.1")
+
+  $suppressComError = 1
   $oHTTP.Open("GET", $github_releases, False)
-  If (@error) Then SetError(1, 0, 0)
+  If (@error) Then
+	SetError(1001, 0, 0)
+	MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Please check your internet connection." & @CRLF & "Error code: " & @error)
+	Return
+  EndIf
 
   $oHTTP.Send()
-  If (@error) Then SetError(2, 0, 0)
+  If (@error) Then
+	SetError(1002, 0, 0)
+	MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Please check your internet connection." & @CRLF & "Error code: " & @error)
+	Return
+  EndIf
 
-  If ($oHTTP.Status <> 200) Then SetError(3, 0, 0)
+  If ($oHTTP.Status <> 200) Then
+	SetError(1003, 0, 0)
+	MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Please check your internet connection." & @CRLF & "Error code: " & @error)
+	Return
+  EndIf
+  $suppressComError = 0
+
 
   $cleanedJSON = StringReplace($oHTTP.ResponseText, '"', "")
   $info = StringRegExp($cleanedJSON, '(?:name:v|browser_download_url:)([^\{,}]+)', 3)
 
-;~   If (@error) Then
-;~     MsgBox(16, "Error", "We encountered an error retrieving the update. Check your internet connection.")
-;~   Else
+  If (@error) Then
+	SetError(1004, 0, 0)
+	MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Invalid result string." & @CRLF & "Error code: " & @error)
+  Else
 	$updateText = "Your version is: " & $winVersion & @CRLF & _
 		"Latest version is: " & $info[0] & @CRLF & @CRLF
     If ($winVersion <> $info[0]) Then
@@ -144,7 +164,7 @@ Func _checksSICUpdate($manualCheck=0)
 		$updateText &= "No update is available."
 		if $manualCheck Then MsgBox(0, "Simple IP Config Update", $updateText)
     EndIf
-;~   Endif
+  Endif
 
 ;  $newFilename = "Simple.IP.Config."&$info[0]&".exe"
 ;  If ($winVersion <> $info[0]) Then
@@ -1413,6 +1433,10 @@ Func GetChangeLogData()
 	$sChangeLog[0] = "Changelog - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 	"v"&$winVersion & @CRLF & _
+	"BUG FIXES:" & @CRLF & _
+	"   #71   COM error when no internet connection." & @CRLF & _
+	@CRLF & _
+	"v2.9" & @CRLF & _
 	"NEW FEATURES:" & @CRLF & _
 	"   #4   Create desktop shortcuts to profiles" & @CRLF & _
 	"   #15  Automatic Updates" & @CRLF & _
