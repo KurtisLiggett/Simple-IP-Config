@@ -29,6 +29,7 @@ Func _loadAdapters()
 
 	Local $tadapters = _GetAdapters()	; get list of adapter names from 'network connections'
 	Local $ladapters[1][3] = [[0,0,0]]
+	Adapter_DeleteAll($adapters)
 	for $i=0 to UBound($tadapters)-1
 		$index = _ArraySearch( $aIPAllAddrTable, $tadapters[$i], 0 )
 		$mac = ""

@@ -116,7 +116,7 @@ Global $label_CurrentIp, $label_CurrentSubnet, $label_CurrentGateway
 Global $label_CurrentDnsPri, $label_CurrentDnsAlt
 Global $label_CurrentDhcp, $label_CurrentAdapterState, $domain
 Global $link
-Global $blacklistEdit, $bt_BlacklistAdd
+Global $blacklistLV
 
 ; TOOLBAR
 Global $hTool, $hTool2

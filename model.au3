@@ -331,7 +331,7 @@ EndFunc
 Func Adapter_DeleteAll(ByRef $hObject)
 	If Not _Adapter_IsObject($hObject) Then Return
 
-    _ArrayDelete($hObject, "0-"&UBound($hObject))
+    _ArrayDelete($hObject, "0-"&UBound($hObject)-1)
 EndFunc
 
 ; Check if it's a valid 'object'. INTERNAL ONLY!
