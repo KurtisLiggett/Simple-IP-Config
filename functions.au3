@@ -1431,9 +1431,15 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func GetChangeLogData()
 	Local $sChangeLog[2]
+	;"v"&$winVersion & @CRLF & _
 	$sChangeLog[0] = "Changelog - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
-	"v"&$winVersion & @CRLF & _
+	"BUG FIXES:" & @CRLF & _
+	"   #75   After search, profiles don't load." & @CRLF & _
+	"NEW FEATURES:" & @CRLF & _
+	"   #36   Better hide adapters popup selection." & @CRLF & _
+	@CRLF & _
+	"v2.9.1" & @CRLF & _
 	"BUG FIXES:" & @CRLF & _
 	"   #71   COM error when no internet connection." & @CRLF & _
 	@CRLF & _
