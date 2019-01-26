@@ -1326,7 +1326,8 @@ Func _filterProfiles()
 	EndIf
 
 	For $i=0 to UBound($aArray)-1
-		_GUICtrlListView_AddItem( $list_profiles, $aArray[$i] )
+		GUICtrlCreateListViewItem( $aArray[$i], $list_profiles )
+		GUICtrlSetOnEvent( -1, "_onSelect" )
 	Next
 EndFunc
 
