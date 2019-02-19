@@ -266,6 +266,16 @@ Func _main()
 	EndIf
 
 	While 1
+		If $dragging Then
+			Local $aLVHit = _GUICtrlListView_HitTest(GUICtrlGetHandle($list_profiles))
+			Local $iCurr_Index = $aLVHit[0]
+			If $iCurr_Index >= $dragitem Then
+				_GUICtrlListView_SetInsertMark($list_profiles, $iCurr_Index, True)
+			Else
+				_GUICtrlListView_SetInsertMark($list_profiles, $iCurr_Index, False)
+			EndIf
+		EndIf
+
 		If $lv_doneEditing Then
 			_onLvDoneEdit()
 		EndIf
