@@ -498,6 +498,17 @@ Func _iconLink()
 EndFunc
 
 ;------------------------------------------------------------------------------
+; Title........: _updateLink
+; Description..: Open browser and go to latest version
+; Events.......: Click on link in update window
+;------------------------------------------------------------------------------
+Func _updateLink()
+	$sURL = "https://github.com/KurtisLiggett/Simple-IP-Config/releases/latest"
+	ShellExecute($sURL)
+	GUICtrlSetColor(@GUI_CtrlId,0x551A8B)
+EndFunc
+
+;------------------------------------------------------------------------------
 ; Title........: WM_COMMAND
 ; Description..: Process WM_COMMAND messages
 ;                - Toolbar buttons
