@@ -143,6 +143,7 @@ Global Enum $tb_settings = 2000, $tb_tray
 #Include <GUIEdit.au3>
 #include <GuiComboBox.au3>
 #include <Array.au3>
+#include <Date.au3>
 
 #include "model.au3"
 #include "hexIcons.au3"

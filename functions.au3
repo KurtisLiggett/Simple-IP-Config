@@ -219,19 +219,26 @@ Func _checksSICUpdate($manualCheck = 0)
 	Local $isNew = 0
 	If $result == 1 Then
 		$isNew = 1
-		ConsoleWrite("new version" & @CRLF)
+		$dateNow = _NowCalcDate()
+		$dateLastCheck = Options_GetValue($options, $OPTIONS_LastUpdateCheck)
+
 		$updateText = "Your version is: " & $thisVersion & @CRLF & _
 				"Latest version is: " & $currentVersion & @CRLF & @CRLF & _
 				"A newer version is available"
-		_ShowUpdateDialog($thisVersion, $currentVersion, $isNew)
-;		MsgBox(0, "Simple IP Config Update", $updateText)
+		If $manualCheck Or _DateDiff('D', $dateLastCheck, $dateNow) >= 7 Or $dateLastCheck='' Then
+			_ShowUpdateDialog($thisVersion, $currentVersion, $isNew)
+
+			Options_SetValue($options, $OPTIONS_LastUpdateCheck, $dateNow)
+			Local $LastUpdateCheckName = Options_GetName($options, $OPTIONS_LastUpdateCheck)
+			IniWrite(@ScriptDir & "/profiles.ini", "options", $LastUpdateCheckName, $dateNow)
+		EndIf
 	Else
-		ConsoleWrite("latest" & @CRLF)
 		$updateText = "Your version is: " & $thisVersion & @CRLF & _
 				"Latest version is: " & $currentVersion & @CRLF & @CRLF & _
 				"You have the latest version."
 		If $manualCheck Then _ShowUpdateDialog($thisVersion, $currentVersion, $isNew)
 	EndIf
+
 EndFunc   ;==>_checksSICUpdate
 
 Func _DoUpdate($newFilename)
@@ -1252,6 +1259,8 @@ Func _loadProfiles()
 						Options_SetValue($options, $OPTIONS_PositionY, $thisSection[$j][1])
 					Case Options_GetName($options, $OPTIONS_AutoUpdate)
 						Options_SetValue($options, $OPTIONS_AutoUpdate, $thisSection[$j][1])
+					Case Options_GetName($options, $OPTIONS_LastUpdateCheck)
+						Options_SetValue($options, $OPTIONS_LastUpdateCheck, $thisSection[$j][1])
 				EndSwitch
 			Else
 				Switch $thisSection[$j][0]
