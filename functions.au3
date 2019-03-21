@@ -1496,6 +1496,12 @@ Func GetChangeLogData()
 	$sChangeLog[0] = "Changelog - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
+			"   #80   Bad automatic update behavior." & @CRLF & _
+			"NEW FEATURES:" & @CRLF & _
+			"   #80   Better update handling / new dialog." & @CRLF & _
+			@CRLF & _
+			"v2.9.2" & @CRLF & _
+			"BUG FIXES:" & @CRLF & _
 			"   #75   After search, profiles don't load." & @CRLF & _
 			"NEW FEATURES:" & @CRLF & _
 			"   #36   Better hide adapters popup selection." & @CRLF & _

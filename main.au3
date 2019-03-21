@@ -59,8 +59,8 @@ Global $screenshot=0
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.9.2"
-Global $winDate = "01/26/2019"
+Global $winVersion = "2.9.3"
+Global $winDate = "03/20/2019"
 Global $hgui
 Global $guiWidth = 550
 Global $guiHeight = 550
@@ -174,8 +174,8 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.2.exe
-#AutoIt3Wrapper_Res_Fileversion=2.9.0.6
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.3.exe
+#AutoIt3Wrapper_Res_Fileversion=2.9.3.0
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
 #Region PROGRAM CONTROL
