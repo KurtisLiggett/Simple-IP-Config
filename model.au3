@@ -30,7 +30,7 @@
 #Region -- options --
 Global Enum $OPTIONS_Version, $OPTIONS_MinToTray, $OPTIONS_StartupMode, $OPTIONS_Language, _
 	$OPTIONS_StartupAdapter, $OPTIONS_Theme, $OPTIONS_SaveAdapterToProfile, $OPTIONS_AdapterBlacklist, _
-	$OPTIONS_PositionX, $OPTIONS_PositionY, $OPTIONS_AutoUpdate, $OPTIONS_MAX
+	$OPTIONS_PositionX, $OPTIONS_PositionY, $OPTIONS_AutoUpdate, $OPTIONS_LastUpdateCheck, $OPTIONS_MAX
 
 ; Constructor
 Func Options()
@@ -46,6 +46,7 @@ Func Options()
 		$hObject[$OPTIONS_PositionX][0] = "PositionX"
 		$hObject[$OPTIONS_PositionY][0] = "PositionY"
 		$hObject[$OPTIONS_AutoUpdate][0] = "AutoUpdate"
+		$hObject[$OPTIONS_LastUpdateCheck][0] = "LastUpdateCheck"
 
     ; Return the 'object'
     Return $hObject
