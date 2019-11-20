@@ -898,19 +898,30 @@ EndFunc   ;==>_disable
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _onLvDoneEdit()
+	Local $hFilehandle = FileOpen(@ScriptDir & "/log.csv", $FO_APPEND)
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Done editing." & @CRLF)
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Get new profile name." & @CRLF)
 	$lv_newName = ControlListView($hgui, "", $list_profiles, "GetText", $lv_editIndex)
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "New profile name: " & $lv_newName & @CRLF)
 	;ConsoleWrite( $lv_oldName & " " & $lv_newName )
 	$lv_doneEditing = 0
 
 	If $lv_aboutEditing Then
+		FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Editing was cancelled, discard new name." & @CRLF)
+		FileClose($hFilehandle)
 		Return
 	EndIf
 
 	If $lv_newItem = 0 Then
+		FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Rename the selected profile." & @CRLF)
+		FileClose($hFilehandle)
 		_rename()
 	Else
+		FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Create the new profile." & @CRLF)
+		FileClose($hFilehandle)
 		_new()
 	EndIf
+
 EndFunc   ;==>_onLvDoneEdit
 
 ;------------------------------------------------------------------------------
@@ -1015,6 +1026,9 @@ EndFunc   ;==>_delete
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _new()
+	Local $hFilehandle = FileOpen(@ScriptDir & "/log.csv", $FO_APPEND)
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Creating new profile." & @CRLF)
+
 	;	$yesno = MsgBox($MB_YESNO,"Warning!","The profile name already exists!" & @CRLF & "Do you wish to overwrite the profile?")
 	$index = ControlListView($hgui, "", $list_profiles, "GetSelected")
 	$text = ControlListView($hgui, "", $list_profiles, "GetText", $index)
@@ -1026,6 +1040,7 @@ Func _new()
 		Return
 	EndIf
 
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Create a new ini section for profile." & @CRLF)
 	Local $aSection = Profiles_CreateSection()
 	Profiles_SectionSetValue($aSection, $PROFILES_IpAuto, _StateToStr($radio_IpAuto))
 	Profiles_SectionSetValue($aSection, $PROFILES_IpAddress, _ctrlGetIP($ip_Ip))
@@ -1039,11 +1054,21 @@ Func _new()
 	Profiles_SectionSetValue($aSection, $PROFILES_AdapterName, $adapName)
 	$iniName = iniNameEncode($profileName)
 	$lv_newItem = 0
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "New section contents:" & @CRLF)
+;~ 	_ArrayDisplay($aSection)
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "[" & $iniName & "]" & @CRLF)
+	For $i=0 to UBound($aSection)-1
+		FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & $aSection[$i][0] & "=" & $aSection[$i][1] & @CRLF)
+	Next
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Write new section to profiles.ini file." & @CRLF)
 	$ret = IniWriteSection(@ScriptDir & "/profiles.ini", $iniName, $aSection, 0)
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Write section result: " & $ret & @CRLF)
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
 
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Add profile to internal data object." & @CRLF)
+	FileClose($hFilehandle)
 	Profiles_AddSection($profiles, $profileName, $aSection)
 	_updateProfileList()
 EndFunc   ;==>_new

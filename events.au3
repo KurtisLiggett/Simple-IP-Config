@@ -194,6 +194,12 @@ EndFunc
 ; Events.......: Toolbar button, File menu 'New' item
 ;------------------------------------------------------------------------------
 Func _onNewItem()
+	Local $writeHeader = NOT FileExists(@ScriptDir & "/log.csv")
+	Local $hFilehandle = FileOpen(@ScriptDir & "/log.csv", $FO_APPEND)
+	If $writeHeader Then
+		FileWrite($hFilehandle, "Date" & @TAB & "Time" & @TAB & "Description" & @CRLF)
+	EndIf
+
 	$newname = "New Item"
 	;Local $profileNames = _getNames()
 	Local $profileNames = Profiles_GetNames($profiles)
@@ -202,13 +208,19 @@ Func _onNewItem()
 		$newname = "New Item " & $i
 		$i = $i + 1
 	WEnd
-
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "New temporary profile name: " & $newname & @CRLF)
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Set focus on profile listview." & @CRLF)
 	ControlFocus( $hgui, "", $list_profiles)
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Create new listview item." & @CRLF)
 	GUICtrlCreateListViewItem( $newname, $list_profiles )
 	GUICtrlSetOnEvent( -1, "_onSelect" )
 	$lv_newItem = 1
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Get current item count." & @CRLF)
 	$index = ControlListView($hgui, "", $list_profiles, "GetItemCount")
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Current item count: " & $index & @CRLF)
+	FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Select the new listview item" & @CRLF)
 	ControlListView ( $hgui, "", $list_profiles, "Select", $index-1 )
+	FileClose($hFilehandle)
 	_GUICtrlListView_EditLabel( ControlGetHandle($hgui, "", $list_profiles), $index-1 )
 EndFunc
 
@@ -638,34 +650,51 @@ Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 				Case $hWndListView
 					Switch $iCode
 						Case $LVN_BEGINLABELEDITA, $LVN_BEGINLABELEDITW ; Start of label editing for an item
+							Local $hFilehandle = FileOpen(@ScriptDir & "/log.csv", $FO_APPEND)
+							FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Begin label editing." & @CRLF)
+							FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Get selected index." & @CRLF)
 							$lv_editIndex = _GUICtrlListView_GetSelectedIndices ($list_profiles)
+							FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Selected index: " & $lv_editIndex & @CRLF)
+							FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Get old profile name." & @CRLF)
 							$lv_oldName = ControlListView ( $hgui, "", $list_profiles, "GetText", $lv_editIndex )
+							FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Old name: " & $lv_oldName & @CRLF)
 							$lv_editing = 1
 							$lv_startEditing = 0
 							$lv_aboutEditing = 0
+							FileClose($hFilehandle)
 							Return False
 						Case $LVN_ENDLABELEDITA, $LVN_ENDLABELEDITW ; The end of label editing for an item
+							Local $hFilehandle = FileOpen(@ScriptDir & "/log.csv", $FO_APPEND)
+							FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "End label editing." & @CRLF)
 							$lv_doneEditing = 1
 							$lv_editing = 0
 							$tInfo = DllStructCreate($tagNMLVDISPINFO, $lParam)
 							If _WinAPI_GetAsyncKeyState($VK_RETURN) == 1 Then	;enter key was pressed
+								FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "ENTER key was pressed." & @CRLF)
 								Local $tBuffer = DllStructCreate("char Text[" & DllStructGetData($tInfo, "TextMax") & "]", DllStructGetData($tInfo, "Text"))
-									If StringLen(DllStructGetData($tBuffer, "Text")) Then
+								If StringLen(DllStructGetData($tBuffer, "Text")) Then
+									FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Text not blank, proceed to end editing." & @CRLF)
+									FileClose($hFilehandle)
 									Return True
 								Else
+									FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Text is blank, cancel editing." & @CRLF)
 									if $lv_newItem = 1 Then
+										FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Delete the new listview item at index " & $lv_editIndex & @CRLF)
 										_GUICtrlListView_DeleteItem(ControlGetHandle($hgui, "", $list_profiles), $lv_editIndex)
 										$lv_newItem = 0
 									EndIf
 									$lv_aboutEditing = 1
 								EndIf
 							Else
+								FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "ENTER key was not pressed, cancel editing." & @CRLF)
 								if $lv_newItem = 1 Then
+									FileWrite($hFilehandle, _NowDate() & @TAB & _NowTime(5) & @TAB & "Delete the new listview item at index " & $lv_editIndex & @CRLF)
 									_GUICtrlListView_DeleteItem(ControlGetHandle($hgui, "", $list_profiles), $lv_editIndex)
 									$lv_newItem = 0
 								EndIf
 								$lv_aboutEditing = 1
 							EndIf
+							FileClose($hFilehandle)
 					EndSwitch
 				Case $ip_Ip
 					Switch $iCode

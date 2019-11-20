@@ -1,0 +1,87 @@
+Date	Time	Description
+11/20/2019	11:01:12	New temporary profile name: New Item
+11/20/2019	11:01:12	Set focus on profile listview.
+11/20/2019	11:01:12	Create new listview item.
+11/20/2019	11:01:12	Get current item count.
+11/20/2019	11:01:12	Current item count: 22
+11/20/2019	11:01:12	Select the new listview item
+11/20/2019	11:01:12	Begin label editing.
+11/20/2019	11:01:12	Get selected index.
+11/20/2019	11:01:12	Selected index: 21
+11/20/2019	11:01:12	Get old profile name.
+11/20/2019	11:01:12	Old name: New Item
+11/20/2019	11:01:14	End label editing.
+11/20/2019	11:01:14	ENTER key was pressed.
+11/20/2019	11:01:14	Text not blank, proceed to end editing.
+11/20/2019	11:01:14	Done editing.
+11/20/2019	11:01:14	Get new profile name.
+11/20/2019	11:01:14	New profile name: test
+11/20/2019	11:01:14	Create the new profile.
+11/20/2019	11:01:14	Creating new profile.
+11/20/2019	11:01:14	Create a new ini section for profile.
+11/20/2019	11:01:14	New section contents:
+11/20/2019	11:01:14	[test]
+11/20/2019	11:01:14	AdapterName=Ethernet
+11/20/2019	11:01:14	IpAuto=true
+11/20/2019	11:01:14	IpAddress=192.168.1.1
+11/20/2019	11:01:14	IpSubnet=255.255.255.0
+11/20/2019	11:01:14	IpGateway=192.168.1.1
+11/20/2019	11:01:14	DnsAuto=false
+11/20/2019	11:01:14	IpDnsPref=
+11/20/2019	11:01:14	IpDnsAlt=
+11/20/2019	11:01:14	RegisterDns=true
+11/20/2019	11:01:14	Write new section to profiles.ini file.
+11/20/2019	11:01:14	Write section result: 1
+11/20/2019	11:01:14	Add profile to internal data object.
+11/20/2019	11:01:23	New temporary profile name: New Item
+11/20/2019	11:01:23	Set focus on profile listview.
+11/20/2019	11:01:23	Create new listview item.
+11/20/2019	11:01:23	Get current item count.
+11/20/2019	11:01:23	Current item count: 23
+11/20/2019	11:01:23	Select the new listview item
+11/20/2019	11:01:23	Begin label editing.
+11/20/2019	11:01:23	Get selected index.
+11/20/2019	11:01:23	Selected index: 22
+11/20/2019	11:01:23	Get old profile name.
+11/20/2019	11:01:23	Old name: New Item
+11/20/2019	11:01:24	End label editing.
+11/20/2019	11:01:24	ENTER key was pressed.
+11/20/2019	11:01:24	Text not blank, proceed to end editing.
+11/20/2019	11:01:24	Done editing.
+11/20/2019	11:01:24	Get new profile name.
+11/20/2019	11:01:24	New profile name: New Item
+11/20/2019	11:01:24	Create the new profile.
+11/20/2019	11:01:24	Creating new profile.
+11/20/2019	11:01:24	Create a new ini section for profile.
+11/20/2019	11:01:24	New section contents:
+11/20/2019	11:01:24	[New Item]
+11/20/2019	11:01:24	AdapterName=Ethernet
+11/20/2019	11:01:24	IpAuto=true
+11/20/2019	11:01:24	IpAddress=192.168.1.1
+11/20/2019	11:01:24	IpSubnet=255.255.255.0
+11/20/2019	11:01:24	IpGateway=192.168.1.1
+11/20/2019	11:01:24	DnsAuto=false
+11/20/2019	11:01:24	IpDnsPref=
+11/20/2019	11:01:24	IpDnsAlt=
+11/20/2019	11:01:24	RegisterDns=true
+11/20/2019	11:01:24	Write new section to profiles.ini file.
+11/20/2019	11:01:24	Write section result: 1
+11/20/2019	11:01:24	Add profile to internal data object.
+11/20/2019	11:01:44	New temporary profile name: New Item 1
+11/20/2019	11:01:44	Set focus on profile listview.
+11/20/2019	11:01:44	Create new listview item.
+11/20/2019	11:01:44	Get current item count.
+11/20/2019	11:01:44	Current item count: 24
+11/20/2019	11:01:44	Select the new listview item
+11/20/2019	11:01:44	Begin label editing.
+11/20/2019	11:01:44	Get selected index.
+11/20/2019	11:01:44	Selected index: 23
+11/20/2019	11:01:44	Get old profile name.
+11/20/2019	11:01:44	Old name: New Item 1
+11/20/2019	11:01:45	End label editing.
+11/20/2019	11:01:45	ENTER key was not pressed, cancel editing.
+11/20/2019	11:01:45	Delete the new listview item at index 23
+11/20/2019	11:01:45	Done editing.
+11/20/2019	11:01:45	Get new profile name.
+11/20/2019	11:01:45	New profile name: 
+11/20/2019	11:01:45	Editing was cancelled, discard new name.
