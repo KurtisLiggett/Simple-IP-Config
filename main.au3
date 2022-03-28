@@ -56,6 +56,7 @@ Global Const $wbemFlagReturnImmediately = 0x10
 Global Const $wbemFlagForwardOnly = 0x20
 
 Global $screenshot=0
+Global $sProfileName = @ScriptDir & "/profiles.ini"
 
 ;GUI stuff
 Global $winName = "Simple IP Config"

@@ -230,7 +230,7 @@ Func _checksSICUpdate($manualCheck = 0)
 
 			Options_SetValue($options, $OPTIONS_LastUpdateCheck, $dateNow)
 			Local $LastUpdateCheckName = Options_GetName($options, $OPTIONS_LastUpdateCheck)
-			IniWrite(@ScriptDir & "/profiles.ini", "options", $LastUpdateCheckName, $dateNow)
+			IniWrite($sProfileName, "options", $LastUpdateCheckName, $dateNow)
 		EndIf
 	Else
 		$updateText = "Your version is: " & $thisVersion & @CRLF & _
@@ -354,7 +354,7 @@ Func _arrange($desc = 0)
 		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_AdapterName) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_AdapterName) & @CRLF
 	Next
 
-	Local $hFileOpen = FileOpen(@ScriptDir & "/profiles.ini", 2)
+	Local $hFileOpen = FileOpen($sProfileName, 2)
 	If $hFileOpen = -1 Then
 		Return 1
 	EndIf
@@ -450,7 +450,7 @@ Func _clickUp()
 				$dragtext = ControlListView($hgui, "", $list_profiles, "GetText", $dragitem)
 				$newtext = ControlListView($hgui, "", $list_profiles, "GetText", $newitem)
 				If $newitem <> "" And $dragtext <> $newtext Then
-					$ret = _iniMove(@ScriptDir & "/profiles.ini", $dragtext, $newtext)
+					$ret = _iniMove($sProfileName, $dragtext, $newtext)
 					If Not $ret Then
 						$dragProfile = Profiles_GetProfile($profiles, $dragtext)
 						Profiles_Delete($profiles, $dragtext)
@@ -943,7 +943,7 @@ Func _checkChangelog()
 		$sVersion = $winVersion
 		Options_SetValue($options, $OPTIONS_Version, $sVersion)
 		$sVersionName = Options_GetName($options, $OPTIONS_Version)
-		IniWrite(@ScriptDir & "/profiles.ini", "options", $sVersionName, $sVersion)
+		IniWrite($sProfileName, "options", $sVersionName, $sVersion)
 	EndIf
 EndFunc   ;==>_checkChangelog
 
@@ -959,7 +959,7 @@ Func _rename()
 		Return
 	EndIf
 
-	$ret = _iniRename(@ScriptDir & "/profiles.ini", $lv_oldName, $lv_newName)
+	$ret = _iniRename($sProfileName, $lv_oldName, $lv_newName)
 	If $ret = 2 Then
 		MsgBox($MB_ICONWARNING, "Warning!", "The profile name already exists!")
 		_GUICtrlListView_SetItemText($list_profiles, $lv_editIndex, $lv_oldName)
@@ -989,7 +989,7 @@ Func _delete($name = "")
 	If Not $lv_editing Then
 		$profileName = StringReplace(GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 		$iniName = iniNameEncode($profileName)
-		$ret = IniDelete(@ScriptDir & "/profiles.ini", $iniName)
+		$ret = IniDelete($sProfileName, $iniName)
 		If $ret = 0 Then
 			_setStatus("An error occurred while deleting the profile", 1)
 		EndIf
@@ -1039,7 +1039,7 @@ Func _new()
 	Profiles_SectionSetValue($aSection, $PROFILES_AdapterName, $adapName)
 	$iniName = iniNameEncode($profileName)
 	$lv_newItem = 0
-	$ret = IniWriteSection(@ScriptDir & "/profiles.ini", $iniName, $aSection, 0)
+	$ret = IniWriteSection($sProfileName, $iniName, $aSection, 0)
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
@@ -1081,7 +1081,7 @@ Func _save()
 	$adapName = iniNameEncode(GUICtrlRead($combo_adapters))
 	Profiles_SectionSetValue($aSection, $PROFILES_AdapterName, $adapName)
 	$iniName = iniNameEncode($profileName)
-	$ret = IniWriteSection(@ScriptDir & "/profiles.ini", $iniName, $aSection, 0)
+	$ret = IniWriteSection($sProfileName, $iniName, $aSection, 0)
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
@@ -1168,7 +1168,7 @@ Func _saveOptions()
 	Options_SetValue($options, $OPTIONS_SaveAdapterToProfile, _StateToStr($ck_saveAdapter))
 	Options_SetValue($options, $OPTIONS_AutoUpdate, _StateToStr($ck_autoUpdate))
 
-	IniWriteSection(@ScriptDir & "/profiles.ini", "options", $options, 0)
+	IniWriteSection($sProfileName, "options", $options, 0)
 	_ExitChild(@GUI_WinHandle)
 EndFunc   ;==>_saveOptions
 
@@ -1211,7 +1211,7 @@ Func _StateToStr($Id)
 EndFunc   ;==>_StateToStr
 
 Func _loadProfiles()
-	Local $pname = @ScriptDir & "/profiles.ini"
+	Local $pname = $sProfileName
 
 	If Not FileExists($pname) Then
 		_setStatus("Profiles.ini file not found - A new file will be created", 1)
