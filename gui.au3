@@ -244,6 +244,13 @@ Func _makeMenu()
 	$createLinkItem = GUICtrlCreateMenuItem("Create s&hortcut to profile", $filemenu)
 	GUICtrlSetOnEvent(-1, "_onCreateLink")
 	GUICtrlCreateMenuItem("", $filemenu) 	; create a separator line
+	$profilesOpenItem = GUICtrlCreateMenuItem("Open File", $filemenu)
+	GUICtrlSetOnEvent(-1, "_onOpenProfiles")
+	$profilesImportItem = GUICtrlCreateMenuItem("Import profiles", $filemenu)
+	GUICtrlSetOnEvent(-1, "_onImportProfiles")
+	$profilesExportItem = GUICtrlCreateMenuItem("Export profiles", $filemenu)
+	GUICtrlSetOnEvent(-1, "_onExportProfiles")
+	GUICtrlCreateMenuItem("", $filemenu)
 	$exititem = GUICtrlCreateMenuItem("&Exit" & @TAB & "Esc", $filemenu)
 	GUICtrlSetOnEvent(-1, "_onExit")
 

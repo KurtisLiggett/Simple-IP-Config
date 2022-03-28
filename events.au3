@@ -509,6 +509,33 @@ Func _updateLink()
 EndFunc
 
 ;------------------------------------------------------------------------------
+; Title........: _onOpenProfiles
+; Description..: Open a custom profiles.ini file
+; Events.......: File menu
+;------------------------------------------------------------------------------
+Func _onOpenProfiles()
+	$OpenFileFlag = 1
+EndFunc
+
+;------------------------------------------------------------------------------
+; Title........: _onImportProfiles
+; Description..: Import profiles from a file
+; Events.......: File menu
+;------------------------------------------------------------------------------
+Func _onImportProfiles()
+	$ImportFileFlag = 1
+EndFunc
+
+;------------------------------------------------------------------------------
+; Title........: _onExportProfiles
+; Description..: export profiles to a file
+; Events.......: File menu
+;------------------------------------------------------------------------------
+Func _onExportProfiles()
+	$ExportFileFlag = 1
+EndFunc
+
+;------------------------------------------------------------------------------
 ; Title........: WM_COMMAND
 ; Description..: Process WM_COMMAND messages
 ;                - Toolbar buttons
