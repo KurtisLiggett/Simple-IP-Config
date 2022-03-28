@@ -1293,6 +1293,59 @@ Func _loadProfiles()
 
 EndFunc   ;==>_loadProfiles
 
+Func _ImportProfiles($pname)
+	If Not FileExists($pname) Then
+		_setStatus("Profiles.ini file not found - A new file will be created", 1)
+		Return 1
+	EndIf
+
+	$names = IniReadSectionNames($pname)
+	If @error Then
+		_setStatus("Error reading profiles.ini", 1)
+		Return 1
+	EndIf
+
+	For $i = 1 To $names[0]
+		$thisName = iniNameDecode($names[$i])
+		$thisSection = IniReadSection($pname, $names[$i])
+		If @error Then
+			ContinueLoop
+		EndIf
+
+		Local $aSection = Profiles_CreateSection()
+		For $j = 1 To $thisSection[0][0]
+			If $thisName <> "Options" And $thisName <> "options" Then
+				Switch $thisSection[$j][0]
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpAuto)
+						Profiles_SectionSetValue($aSection, $PROFILES_IpAuto, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpAddress)
+						Profiles_SectionSetValue($aSection, $PROFILES_IpAddress, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpSubnet)
+						Profiles_SectionSetValue($aSection, $PROFILES_IpSubnet, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpGateway)
+						Profiles_SectionSetValue($aSection, $PROFILES_IpGateway, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_DnsAuto)
+						Profiles_SectionSetValue($aSection, $PROFILES_DnsAuto, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_DnsPref)
+						Profiles_SectionSetValue($aSection, $PROFILES_DnsPref, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_DnsAlt)
+						Profiles_SectionSetValue($aSection, $PROFILES_DnsAlt, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_RegisterDns)
+						Profiles_SectionSetValue($aSection, $PROFILES_RegisterDns, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_AdapterName)
+						$adapName = iniNameEncode($thisSection[$j][1])
+						Profiles_SectionSetValue($aSection, $PROFILES_AdapterName, $adapName)
+				EndSwitch
+			EndIf
+		Next
+		If $thisName <> "Options" Then
+			Profiles_AddSection($profiles, $thisName, $aSection)
+			$ret = IniWriteSection($sProfileName, $thisName, $aSection, 0)
+		EndIf
+	Next
+
+EndFunc   ;==>_ImportProfiles
+
 Func _updateProfileList()
 	$ap_names = Profiles_GetNames($profiles)
 	$lv_count = ControlListView($hgui, "", $list_profiles, "GetItemCount")

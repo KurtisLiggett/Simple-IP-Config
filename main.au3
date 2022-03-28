@@ -289,11 +289,18 @@ Func _main()
 				$options = Options()
 				$profiles = Profiles()
 				_refresh(1)
+				_setStatus("Loaded file " & $filePath, 0)
 			EndIf
 		EndIf
 
 		If $ImportFileFlag Then
 			$ImportFileFlag = 0
+			$filePath = FileOpenDialog ("Select File", @ScriptDir, "INI files (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
+			if Not @error Then
+				_ImportProfiles($filePath)
+				_refresh(1)
+				_setStatus("Done importing profiles", 0)
+			EndIf
 		EndIf
 
 		If $ExportFileFlag Then
@@ -305,6 +312,7 @@ Func _main()
 					$filePath &= ".ini"
 				EndIf
 				FileCopy($sProfileName, $filePath,  $FC_OVERWRITE )
+				_setStatus("File saved: " & $filePath, 0)
 			EndIf
 		EndIf
 
