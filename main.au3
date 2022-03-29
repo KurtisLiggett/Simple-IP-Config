@@ -264,7 +264,9 @@ Func _main()
 
 	$sAutoUpdate = OPTIONS_GetValue($options, $OPTIONS_AutoUpdate)
 	if($sAutoUpdate = "true" OR $sAutoUpdate = "1") Then
+		$suppressComError = 1
 		_checksSICUpdate()
+		$suppressComError = 0
 	EndIf
 
 	Local $filePath

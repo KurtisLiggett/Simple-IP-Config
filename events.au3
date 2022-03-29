@@ -388,7 +388,9 @@ Func _onHelp()
 EndFunc
 
 Func _onUpdateCheckItem()
+	$suppressComError = 1
 	_checksSICUpdate(1)
+	$suppressComError = 0
 EndFunc
 
 ;------------------------------------------------------------------------------
