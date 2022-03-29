@@ -230,7 +230,7 @@ Func _checksSICUpdate($manualCheck = 0)
 
 			Options_SetValue($options, $OPTIONS_LastUpdateCheck, $dateNow)
 			Local $LastUpdateCheckName = Options_GetName($options, $OPTIONS_LastUpdateCheck)
-			IniWrite(@ScriptDir & "/profiles.ini", "options", $LastUpdateCheckName, $dateNow)
+			IniWrite($sProfileName, "options", $LastUpdateCheckName, $dateNow)
 		EndIf
 	Else
 		$updateText = "Your version is: " & $thisVersion & @CRLF & _
@@ -354,7 +354,7 @@ Func _arrange($desc = 0)
 		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_AdapterName) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_AdapterName) & @CRLF
 	Next
 
-	Local $hFileOpen = FileOpen(@ScriptDir & "/profiles.ini", 2)
+	Local $hFileOpen = FileOpen($sProfileName, 2)
 	If $hFileOpen = -1 Then
 		Return 1
 	EndIf
@@ -450,7 +450,7 @@ Func _clickUp()
 				$dragtext = ControlListView($hgui, "", $list_profiles, "GetText", $dragitem)
 				$newtext = ControlListView($hgui, "", $list_profiles, "GetText", $newitem)
 				If $newitem <> "" And $dragtext <> $newtext Then
-					$ret = _iniMove(@ScriptDir & "/profiles.ini", $dragtext, $newtext)
+					$ret = _iniMove($sProfileName, $dragtext, $newtext)
 					If Not $ret Then
 						$dragProfile = Profiles_GetProfile($profiles, $dragtext)
 						Profiles_Delete($profiles, $dragtext)
@@ -943,7 +943,7 @@ Func _checkChangelog()
 		$sVersion = $winVersion
 		Options_SetValue($options, $OPTIONS_Version, $sVersion)
 		$sVersionName = Options_GetName($options, $OPTIONS_Version)
-		IniWrite(@ScriptDir & "/profiles.ini", "options", $sVersionName, $sVersion)
+		IniWrite($sProfileName, "options", $sVersionName, $sVersion)
 	EndIf
 EndFunc   ;==>_checkChangelog
 
@@ -959,7 +959,7 @@ Func _rename()
 		Return
 	EndIf
 
-	$ret = _iniRename(@ScriptDir & "/profiles.ini", $lv_oldName, $lv_newName)
+	$ret = _iniRename($sProfileName, $lv_oldName, $lv_newName)
 	If $ret = 2 Then
 		MsgBox($MB_ICONWARNING, "Warning!", "The profile name already exists!")
 		_GUICtrlListView_SetItemText($list_profiles, $lv_editIndex, $lv_oldName)
@@ -989,7 +989,7 @@ Func _delete($name = "")
 	If Not $lv_editing Then
 		$profileName = StringReplace(GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 		$iniName = iniNameEncode($profileName)
-		$ret = IniDelete(@ScriptDir & "/profiles.ini", $iniName)
+		$ret = IniDelete($sProfileName, $iniName)
 		If $ret = 0 Then
 			_setStatus("An error occurred while deleting the profile", 1)
 		EndIf
@@ -1039,7 +1039,7 @@ Func _new()
 	Profiles_SectionSetValue($aSection, $PROFILES_AdapterName, $adapName)
 	$iniName = iniNameEncode($profileName)
 	$lv_newItem = 0
-	$ret = IniWriteSection(@ScriptDir & "/profiles.ini", $iniName, $aSection, 0)
+	$ret = IniWriteSection($sProfileName, $iniName, $aSection, 0)
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
@@ -1081,7 +1081,7 @@ Func _save()
 	$adapName = iniNameEncode(GUICtrlRead($combo_adapters))
 	Profiles_SectionSetValue($aSection, $PROFILES_AdapterName, $adapName)
 	$iniName = iniNameEncode($profileName)
-	$ret = IniWriteSection(@ScriptDir & "/profiles.ini", $iniName, $aSection, 0)
+	$ret = IniWriteSection($sProfileName, $iniName, $aSection, 0)
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the profile properties", 1)
 	EndIf
@@ -1168,7 +1168,7 @@ Func _saveOptions()
 	Options_SetValue($options, $OPTIONS_SaveAdapterToProfile, _StateToStr($ck_saveAdapter))
 	Options_SetValue($options, $OPTIONS_AutoUpdate, _StateToStr($ck_autoUpdate))
 
-	IniWriteSection(@ScriptDir & "/profiles.ini", "options", $options, 0)
+	IniWriteSection($sProfileName, "options", $options, 0)
 	_ExitChild(@GUI_WinHandle)
 EndFunc   ;==>_saveOptions
 
@@ -1211,7 +1211,7 @@ Func _StateToStr($Id)
 EndFunc   ;==>_StateToStr
 
 Func _loadProfiles()
-	Local $pname = @ScriptDir & "/profiles.ini"
+	Local $pname = $sProfileName
 
 	If Not FileExists($pname) Then
 		_setStatus("Profiles.ini file not found - A new file will be created", 1)
@@ -1292,6 +1292,59 @@ Func _loadProfiles()
 	Next
 
 EndFunc   ;==>_loadProfiles
+
+Func _ImportProfiles($pname)
+	If Not FileExists($pname) Then
+		_setStatus("Profiles.ini file not found - A new file will be created", 1)
+		Return 1
+	EndIf
+
+	$names = IniReadSectionNames($pname)
+	If @error Then
+		_setStatus("Error reading profiles.ini", 1)
+		Return 1
+	EndIf
+
+	For $i = 1 To $names[0]
+		$thisName = iniNameDecode($names[$i])
+		$thisSection = IniReadSection($pname, $names[$i])
+		If @error Then
+			ContinueLoop
+		EndIf
+
+		Local $aSection = Profiles_CreateSection()
+		For $j = 1 To $thisSection[0][0]
+			If $thisName <> "Options" And $thisName <> "options" Then
+				Switch $thisSection[$j][0]
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpAuto)
+						Profiles_SectionSetValue($aSection, $PROFILES_IpAuto, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpAddress)
+						Profiles_SectionSetValue($aSection, $PROFILES_IpAddress, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpSubnet)
+						Profiles_SectionSetValue($aSection, $PROFILES_IpSubnet, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_IpGateway)
+						Profiles_SectionSetValue($aSection, $PROFILES_IpGateway, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_DnsAuto)
+						Profiles_SectionSetValue($aSection, $PROFILES_DnsAuto, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_DnsPref)
+						Profiles_SectionSetValue($aSection, $PROFILES_DnsPref, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_DnsAlt)
+						Profiles_SectionSetValue($aSection, $PROFILES_DnsAlt, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_RegisterDns)
+						Profiles_SectionSetValue($aSection, $PROFILES_RegisterDns, $thisSection[$j][1])
+					Case Profiles_GetKeyName($profiles, $PROFILES_AdapterName)
+						$adapName = iniNameEncode($thisSection[$j][1])
+						Profiles_SectionSetValue($aSection, $PROFILES_AdapterName, $adapName)
+				EndSwitch
+			EndIf
+		Next
+		If $thisName <> "Options" Then
+			Profiles_AddSection($profiles, $thisName, $aSection)
+			$ret = IniWriteSection($sProfileName, $thisName, $aSection, 0)
+		EndIf
+	Next
+
+EndFunc   ;==>_ImportProfiles
 
 Func _updateProfileList()
 	$ap_names = Profiles_GetNames($profiles)

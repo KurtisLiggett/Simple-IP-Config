@@ -38,7 +38,7 @@ Func _onExit()
 		$currentWinPos = WinGetPos($hgui)
 		Options_SetValue($options, $OPTIONS_PositionX, $currentWinPos[0])
 		Options_SetValue($options, $OPTIONS_PositionY, $currentWinPos[1])
-		IniWriteSection(@ScriptDir & "/profiles.ini", "options", $options, 0)
+		IniWriteSection($sProfileName, "options", $options, 0)
 	EndIf
 
 	Exit
@@ -79,7 +79,7 @@ Func _onExitBlacklistOk()
 	Options_SetValue($options, $OPTIONS_AdapterBlacklist, $newBlacklist)
 	$keyname = Options_GetName($options, $OPTIONS_AdapterBlacklist)
 	$keyvalue = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
-	IniWrite(@ScriptDir & "/profiles.ini", "options", $keyname, $keyvalue)
+	IniWrite($sProfileName, "options", $keyname, $keyvalue)
 
 	_ExitChild(@GUI_WinHandle)
 	_updateCombo()
@@ -437,7 +437,7 @@ Func _OnCombo()
 	$adap = GUICtrlRead($combo_adapters)
 	$iniAdap = iniNameEncode($adap)
 	$keyname = Options_GetName($options, $OPTIONS_StartupAdapter)
-	$ret = IniWrite( @ScriptDir & "/profiles.ini", "options", $keyname, $iniAdap )
+	$ret = IniWrite( $sProfileName, "options", $keyname, $iniAdap )
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the selected adapter", 1)
 	Else
@@ -506,6 +506,33 @@ Func _updateLink()
 	$sURL = "https://github.com/KurtisLiggett/Simple-IP-Config/releases/latest"
 	ShellExecute($sURL)
 	GUICtrlSetColor(@GUI_CtrlId,0x551A8B)
+EndFunc
+
+;------------------------------------------------------------------------------
+; Title........: _onOpenProfiles
+; Description..: Open a custom profiles.ini file
+; Events.......: File menu
+;------------------------------------------------------------------------------
+Func _onOpenProfiles()
+	$OpenFileFlag = 1
+EndFunc
+
+;------------------------------------------------------------------------------
+; Title........: _onImportProfiles
+; Description..: Import profiles from a file
+; Events.......: File menu
+;------------------------------------------------------------------------------
+Func _onImportProfiles()
+	$ImportFileFlag = 1
+EndFunc
+
+;------------------------------------------------------------------------------
+; Title........: _onExportProfiles
+; Description..: export profiles to a file
+; Events.......: File menu
+;------------------------------------------------------------------------------
+Func _onExportProfiles()
+	$ExportFileFlag = 1
 EndFunc
 
 ;------------------------------------------------------------------------------

@@ -56,6 +56,7 @@ Global Const $wbemFlagReturnImmediately = 0x10
 Global Const $wbemFlagForwardOnly = 0x20
 
 Global $screenshot=0
+Global $sProfileName = @ScriptDir & "\profiles.ini"
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
@@ -102,7 +103,7 @@ Global $movetosubnet
 Global $mdblTimerInit=0, $mdblTimerDiff=1000, $mdblClick = 0, $mDblClickTime=500
 Global $dragging = False, $dragitem = 0, $contextSelect = 0
 Global $prevWinPos, $winPosTimer, $writePos
-
+Global $OpenFileFlag, $ImportFileFlag, $ExportFileFlag
 
 ; CONTROLS
 Global $combo_adapters, $combo_dummy, $selected_adapter, $lDescription, $lMac
@@ -266,6 +267,7 @@ Func _main()
 		_checksSICUpdate()
 	EndIf
 
+	Local $filePath
 	While 1
 		If $lv_doneEditing Then
 			_onLvDoneEdit()
@@ -277,6 +279,41 @@ Func _main()
 
 		If $movetosubnet Then
 			_MoveToSubnet()
+		EndIf
+
+		If $OpenFileFlag Then
+			$OpenFileFlag = 0
+			$filePath = FileOpenDialog ("Select File", @ScriptDir, "INI files (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
+			if Not @error Then
+				$sProfileName = $filePath
+				$options = Options()
+				$profiles = Profiles()
+				_refresh(1)
+				_setStatus("Loaded file " & $filePath, 0)
+			EndIf
+		EndIf
+
+		If $ImportFileFlag Then
+			$ImportFileFlag = 0
+			$filePath = FileOpenDialog ("Select File", @ScriptDir, "INI files (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
+			if Not @error Then
+				_ImportProfiles($filePath)
+				_refresh(1)
+				_setStatus("Done importing profiles", 0)
+			EndIf
+		EndIf
+
+		If $ExportFileFlag Then
+			$ExportFileFlag = 0
+			$filePath = FileSaveDialog ("Select File", @ScriptDir, "INI files (*.ini)", $FD_PROMPTOVERWRITE, "profiles.ini")
+			if Not @error Then
+				ConsoleWrite("write" & @CRLF)
+				If StringRight($filePath, 4) <> ".ini" Then
+					$filePath &= ".ini"
+				EndIf
+				FileCopy($sProfileName, $filePath,  $FC_OVERWRITE )
+				_setStatus("File saved: " & $filePath, 0)
+			EndIf
 		EndIf
 
 		Sleep(100)
