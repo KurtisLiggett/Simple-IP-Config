@@ -60,8 +60,8 @@ Global $sProfileName = @ScriptDir & "\profiles.ini"
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.9.3"
-Global $winDate = "03/20/2019"
+Global $winVersion = "2.9.4"
+Global $winDate = "03/29/2022"
 Global $hgui
 Global $guiWidth = 550
 Global $guiHeight = 550
@@ -175,8 +175,8 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.3.exe
-#AutoIt3Wrapper_Res_Fileversion=2.9.3.0
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4.exe
+#AutoIt3Wrapper_Res_Fileversion=2.9.4.0
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
 #Region PROGRAM CONTROL
