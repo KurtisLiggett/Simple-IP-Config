@@ -60,8 +60,8 @@ Global $sProfileName = @ScriptDir & "\profiles.ini"
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.9.3"
-Global $winDate = "03/20/2019"
+Global $winVersion = "2.9.4"
+Global $winDate = "03/29/2022"
 Global $hgui
 Global $guiWidth = 550
 Global $guiHeight = 550
@@ -175,8 +175,8 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.3.exe
-#AutoIt3Wrapper_Res_Fileversion=2.9.3.0
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4.exe
+#AutoIt3Wrapper_Res_Fileversion=2.9.4.0
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
 #Region PROGRAM CONTROL
@@ -325,13 +325,16 @@ EndFunc ; main()
 ;------------------------------------------------------------------------------
 ; Title........: _NewInstance
 ; Description..: Called when a new program instance posts the message we were watching for.
-;                Display a tray tooltip alerting the user that the program is already running.
+;                Bring the running program instance to the foreground.
 ;------------------------------------------------------------------------------
 Func _NewInstance($hWnd, $iMsg, $iwParam, $ilParam)
 	if $iwParam == "0x00000101" Then
-		;TrayTip("", "Simple IP Config is already running", 1)
-		$sMsg  = 'Simple IP Config is already running'
-		_Toast_Set(0, 0xAAAAAA, 0x000000, 0xFFFFFF, 0x000000, 10, "", 250, 250)
-		$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, -5, False) ; Delay can be set here because script continues
+;~ 		TrayTip("", "Simple IP Config is already running", 1)
+
+;~ 		$sMsg  = 'Simple IP Config is already running'
+;~ 		_Toast_Set(0, 0xAAAAAA, 0x000000, 0xFFFFFF, 0x000000, 10, "", 250, 250)
+;~ 		$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, -5, False) ; Delay can be set here because script continues
+
+		_maximize()
 	EndIf
 EndFunc
