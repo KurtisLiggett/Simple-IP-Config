@@ -1551,7 +1551,8 @@ Func GetChangeLogData()
 			"BUG FIXES:" & @CRLF & _
 			"   #103   COM Error 80020009 checking for updates." & @CRLF & _
 			"NEW FEATURES:" & @CRLF & _
-			"   #99   Added ability to open, import, and export profiles." & @CRLF & _
+			"     #99   Added ability to open, import, and export profiles." & @CRLF & _
+			"   #104   Bring to foreground if already running." & @CRLF & _
 			@CRLF & _
 			"v2.9.3" & @CRLF & _
 			"BUG FIXES:" & @CRLF & _
