@@ -1551,6 +1551,7 @@ Func GetChangeLogData()
 			"BUG FIXES:" & @CRLF & _
 			"   #103   COM Error 80020009 checking for updates." & @CRLF & _
 			"NEW FEATURES:" & @CRLF & _
+			"     #43   Escape key will not close the program." & @CRLF & _
 			"     #99   Added ability to open, import, and export profiles." & @CRLF & _
 			"   #104   Bring to foreground if already running." & @CRLF & _
 			@CRLF & _
