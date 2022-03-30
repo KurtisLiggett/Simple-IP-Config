@@ -168,6 +168,7 @@ Opt("TrayMenuMode",3)
 Opt("MouseCoordMode", 2)
 Opt("GUIResizeMode", $GUI_DOCKALL)
 Opt("WinSearchChildren",1)
+Opt("GUICloseOnESC", 0)
 TraySetClick(16)
 #EndRegion options
 
