@@ -1,8 +1,6 @@
 ![Simple IP Config][logo]  
 Simple IP Config is a small, portable ip changer utility to change common Windows network settings quickly and easily without having to click through the endless system windows.  
 
-![latest using](https://github.com/KurtisLiggett/Simple-IP-Config/blob/gh-pages/public/gif_latest.gif?raw=true "using Simple IP Config")
-
 Features
 ---
 * View / Change IP Address, Subnet Mask, Gateway, DNS Servers
@@ -13,7 +11,7 @@ Features
 * Save unlimited number of profiles for quickly changing settings
 * Shortcuts for most actions
 * Send to tray for later use
-* Absolutely FREE! No ads!
+* Free for personal and commercial use
 
 Installing
 ---
@@ -29,8 +27,8 @@ You can download older versions from the [releases page][releases].
 Help & Support
 ---
 * To view currently open bugs, [click here][bugs]
-* To view new feature requests, [click here][new-features]
-* To report a bug or request a new feature, go to the [Issues Page][issues] and create a _New Issue_.
+* To view or submit neww feature requests, visit the [discussions](https://github.com/KurtisLiggett/Simple-IP-Config/discussions/categories/ideas) page and look for the _Ideas_ category.
+* Have a question? Visit the [discussions](https://github.com/KurtisLiggett/Simple-IP-Config/discussions/categories/q-a) page and look for the _Q&A_ category.
 
 License
 ---
