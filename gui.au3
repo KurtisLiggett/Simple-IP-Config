@@ -917,7 +917,7 @@ EndFunc
 #Region -- SETTINGS WINDOW --
 ; Settings WINDOW
 Func _Settings()
-	$w = 200*$dScale
+	$w = 210*$dScale
 	$h = 150*$dScale
 
 	$currentWinPos = WinGetPos($hgui)
@@ -935,17 +935,17 @@ Func _Settings()
 	GUICtrlCreateLabel("", 0, $h-32*$dscale, $w, 1)
 	GUICtrlSetBkColor(-1, 0x000000)
 
-	$ck_startinTray = GUICtrlCreateCheckbox( "Startup in the system tray.", 10*$dScale, 10*$dScale, 230*$dScale, 20*$dScale)
+	$ck_startinTray = GUICtrlCreateCheckbox( "Startup in the system tray", 10*$dScale, 10*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_startinTray, _StrToState(Options_GetValue($options, $OPTIONS_StartupMode)))
-	$ck_mintoTray = GUICtrlCreateCheckbox( "Minimize to the system tray.", 10*$dScale, 30*$dScale, 230*$dScale, 20*$dScale)
+	$ck_mintoTray = GUICtrlCreateCheckbox( "Minimize to the system tray", 10*$dScale, 30*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_mintoTray, _StrToState(Options_GetValue($options, $OPTIONS_MinToTray)))
-	$ck_saveAdapter = GUICtrlCreateCheckbox( "Save adapter to profile.", 10*$dScale, 50*$dScale, 230*$dScale, 20*$dScale)
+	$ck_saveAdapter = GUICtrlCreateCheckbox( "Save adapter to profile", 10*$dScale, 50*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_saveAdapter, _StrToState(Options_GetValue($options, $OPTIONS_SaveAdapterToProfile)))
 
-	$ck_autoUpdate = GUICtrlCreateCheckbox( "Enable automatic updates.", 10*$dScale, 70*$dScale, 230*$dScale, 20*$dScale)
+	$ck_autoUpdate = GUICtrlCreateCheckbox( "Automatically check for updates", 10*$dScale, 70*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_autoUpdate, _StrToState(Options_GetValue($options, $OPTIONS_AutoUpdate)))
 
