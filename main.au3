@@ -43,7 +43,6 @@
 #requireadmin
 #NoTrayIcon	;prevent double icon when checking for already running instance
 
-
 #Region Global Variables
 Global $options
 Global $profiles
@@ -61,7 +60,7 @@ Global $sProfileName = @ScriptDir & "\profiles.ini"
 ;GUI stuff
 Global $winName = "Simple IP Config"
 Global $winVersion = "2.9.4"
-Global $winDate = "03/29/2022"
+Global $winDate = "03/31/2022"
 Global $hgui
 Global $guiWidth = 550
 Global $guiHeight = 550
@@ -145,6 +144,7 @@ Global Enum $tb_settings = 2000, $tb_tray
 #include <GuiComboBox.au3>
 #include <Array.au3>
 #include <Date.au3>
+#include <Inet.au3>
 
 #include "model.au3"
 #include "hexIcons.au3"
@@ -152,6 +152,7 @@ Global Enum $tb_settings = 2000, $tb_tray
 #include "libraries\StringSize.au3"
 #include "libraries\Toast.au3"
 #include "libraries\_NetworkStatistics.au3"
+#include "libraries\Json\json.au3"
 #include "functions.au3"
 #include "events.au3"
 #include "network.au3"

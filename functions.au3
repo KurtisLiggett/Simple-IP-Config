@@ -114,47 +114,39 @@ EndFunc   ;==>_CreateLink
 ; Title...........: _checksSICUpdate
 ; Description.....: Check for updates/ask to download
 ;
-; Parameters......: $manualCheck  -manually run check from menu item
+; Parameters......: $manualCheck  -manually run check from menu item and display errors on failure
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _checksSICUpdate($manualCheck = 0)
-	; This function checks if there are new releases on github and request the user to download it
+	Local $sGithubReleasesURL = "https://api.github.com/repos/KurtisLiggett/Simple-IP-Config/releases/latest"
 
-	$github_releases = "https://api.github.com/repos/KurtisLiggett/Simple-IP-Config/releases/latest"
-
-	Local $oHTTP = ObjCreate("WinHttp.WinHttpRequest.5.1")
-
-	$oHTTP.Open("GET", $github_releases, False)
+	Local $sResponseJSON = _INetGetSource($sGithubReleasesURL)
 	If (@error) Then
 		SetError(1001, 0, 0)
 		If $manualCheck Then
-			MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Please check your internet connection." & @CRLF & "Error code: " & @error)
+			MsgBox(16, "Check For Update Error", "An error was encountered while retrieving the update." & @CRLF & "Please check your internet connection." & @CRLF & "Error code: " & @error)
 		EndIf
 		Return
 	EndIf
 
-	$oHTTP.Send()
+	Local $oJsonData = json_decode($sResponseJSON)
 	If (@error) Then
-		SetError(1002, 0, 0)
 		If $manualCheck Then
-			MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Please check your internet connection." & @CRLF & "Error code: " & @error)
+			SetError(1001, 0, 0)
+			MsgBox(16, "JSON Error", "Error parsing JSON data." & @CRLF & "Error code: " & @error)
+		EndIf
+		Return
+	EndIf
+	Local $scurrentVersion = json_get($oJsonData, ".tag_name")
+	If (@error) Then
+		If $manualCheck Then
+			SetError(1002, 0, 0)
+			MsgBox(16, "JSON Error", "Error parsing JSON data." & @CRLF & "Error code: " & @error)
 		EndIf
 		Return
 	EndIf
 
-	If ($oHTTP.Status <> 200) Then
-		SetError(1003, 0, 0)
-		If $manualCheck Then
-			MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Please check your internet connection." & @CRLF & "Error code: " & @error)
-		EndIf
-		Return
-	EndIf
-
-	Local $cleanedJSON = StringReplace($oHTTP.ResponseText, '"', "")
-	Local $JSONinfo = StringRegExp($cleanedJSON, '(?:tag_name:)([^\{,}]+)', 3)
-
-	Local $currentVersion = $JSONinfo[0]
-	Local $currentVersiontokens = StringSplit($currentVersion, ".")
+	Local $currentVersiontokens = StringSplit($scurrentVersion, ".")
 	If (@error) Then
 		If $manualCheck Then
 			SetError(1004, 0, 0)
@@ -223,10 +215,10 @@ Func _checksSICUpdate($manualCheck = 0)
 		$dateLastCheck = Options_GetValue($options, $OPTIONS_LastUpdateCheck)
 
 		$updateText = "Your version is: " & $thisVersion & @CRLF & _
-				"Latest version is: " & $currentVersion & @CRLF & @CRLF & _
+				"Latest version is: " & $scurrentVersion & @CRLF & @CRLF & _
 				"A newer version is available"
 		If $manualCheck Or _DateDiff('D', $dateLastCheck, $dateNow) >= 7 Or $dateLastCheck='' Then
-			_ShowUpdateDialog($thisVersion, $currentVersion, $isNew)
+			_ShowUpdateDialog($thisVersion, $scurrentVersion, $isNew)
 
 			Options_SetValue($options, $OPTIONS_LastUpdateCheck, $dateNow)
 			Local $LastUpdateCheckName = Options_GetName($options, $OPTIONS_LastUpdateCheck)
@@ -234,9 +226,9 @@ Func _checksSICUpdate($manualCheck = 0)
 		EndIf
 	Else
 		$updateText = "Your version is: " & $thisVersion & @CRLF & _
-				"Latest version is: " & $currentVersion & @CRLF & @CRLF & _
+				"Latest version is: " & $scurrentVersion & @CRLF & @CRLF & _
 				"You have the latest version."
-		If $manualCheck Then _ShowUpdateDialog($thisVersion, $currentVersion, $isNew)
+		If $manualCheck Then _ShowUpdateDialog($thisVersion, $scurrentVersion, $isNew)
 	EndIf
 
 EndFunc   ;==>_checksSICUpdate
@@ -1554,6 +1546,8 @@ Func GetChangeLogData()
 			"     #43   Escape key will not close the program." & @CRLF & _
 			"     #99   Added ability to open, import, and export profiles." & @CRLF & _
 			"   #104   Bring to foreground if already running." & @CRLF & _
+			"MAINT:" & @CRLF & _
+			"           Updated check for updates functionality." & @CRLF & _
 			@CRLF & _
 			"v2.9.3" & @CRLF & _
 			"BUG FIXES:" & @CRLF & _
