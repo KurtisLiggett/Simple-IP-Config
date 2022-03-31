@@ -129,11 +129,24 @@ Func _checksSICUpdate($manualCheck = 0)
 		Return
 	EndIf
 
-	Local $cleanedJSON = StringReplace($sResponseJSON, '"', "")
-	Local $JSONinfo = StringRegExp($cleanedJSON, '(?:tag_name:)([^\{,}]+)', 3)
+	Local $oJsonData = json_decode($sResponseJSON)
+	If (@error) Then
+		If $manualCheck Then
+			SetError(1001, 0, 0)
+			MsgBox(16, "JSON Error", "Error parsing JSON data." & @CRLF & "Error code: " & @error)
+		EndIf
+		Return
+	EndIf
+	Local $scurrentVersion = json_get($oJsonData, ".tag_name")
+	If (@error) Then
+		If $manualCheck Then
+			SetError(1002, 0, 0)
+			MsgBox(16, "JSON Error", "Error parsing JSON data." & @CRLF & "Error code: " & @error)
+		EndIf
+		Return
+	EndIf
 
-	Local $currentVersion = $JSONinfo[0]
-	Local $currentVersiontokens = StringSplit($currentVersion, ".")
+	Local $currentVersiontokens = StringSplit($scurrentVersion, ".")
 	If (@error) Then
 		If $manualCheck Then
 			SetError(1004, 0, 0)
@@ -202,10 +215,10 @@ Func _checksSICUpdate($manualCheck = 0)
 		$dateLastCheck = Options_GetValue($options, $OPTIONS_LastUpdateCheck)
 
 		$updateText = "Your version is: " & $thisVersion & @CRLF & _
-				"Latest version is: " & $currentVersion & @CRLF & @CRLF & _
+				"Latest version is: " & $scurrentVersion & @CRLF & @CRLF & _
 				"A newer version is available"
 		If $manualCheck Or _DateDiff('D', $dateLastCheck, $dateNow) >= 7 Or $dateLastCheck='' Then
-			_ShowUpdateDialog($thisVersion, $currentVersion, $isNew)
+			_ShowUpdateDialog($thisVersion, $scurrentVersion, $isNew)
 
 			Options_SetValue($options, $OPTIONS_LastUpdateCheck, $dateNow)
 			Local $LastUpdateCheckName = Options_GetName($options, $OPTIONS_LastUpdateCheck)
@@ -213,9 +226,9 @@ Func _checksSICUpdate($manualCheck = 0)
 		EndIf
 	Else
 		$updateText = "Your version is: " & $thisVersion & @CRLF & _
-				"Latest version is: " & $currentVersion & @CRLF & @CRLF & _
+				"Latest version is: " & $scurrentVersion & @CRLF & @CRLF & _
 				"You have the latest version."
-		If $manualCheck Then _ShowUpdateDialog($thisVersion, $currentVersion, $isNew)
+		If $manualCheck Then _ShowUpdateDialog($thisVersion, $scurrentVersion, $isNew)
 	EndIf
 
 EndFunc   ;==>_checksSICUpdate

@@ -43,7 +43,6 @@
 #requireadmin
 #NoTrayIcon	;prevent double icon when checking for already running instance
 
-
 #Region Global Variables
 Global $options
 Global $profiles
@@ -153,6 +152,7 @@ Global Enum $tb_settings = 2000, $tb_tray
 #include "libraries\StringSize.au3"
 #include "libraries\Toast.au3"
 #include "libraries\_NetworkStatistics.au3"
+#include "libraries\Json\json.au3"
 #include "functions.au3"
 #include "events.au3"
 #include "network.au3"
