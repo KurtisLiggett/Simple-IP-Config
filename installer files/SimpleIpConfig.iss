@@ -7,10 +7,11 @@
 [Setup]
 AppName={#MyAppName}
 AppVersion={#MyAppVer}
+AppVerName={#MyAppName} {#MyAppVer}
 VersionInfoVersion={#MyAppVer}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
-UninstallDisplayName={#MyAppName}
+UninstallDisplayName={#MyAppName} {#MyAppVer}
 UninstallDisplayIcon={app}\{#MyAppName}.exe
 ;DisableDirPage=no
 Compression=lzma2
@@ -37,5 +38,11 @@ SetupAppTitle = Setup {#MyAppName}
 SetupWindowTitle = Setup - {#MyAppName} v{#MyFriendlyVer}
 
 [CustomMessages]
-AppName={#MyAppName}
-LaunchProgram=Start {#MyAppName} after finishing installation?
+english.AppName={#MyAppName}
+
+english.Program=Start {#MyAppName} after finishing installation?
+italian.Program=Vuoi avviare {#MyAppName} al termine dell'installazione?
+
+[Languages]
+Name: "englisg"; MessagesFile: "compiler:default.isl"; 
+Name: "italian"; MessagesFile: "compiler:Languages\Italian.isl"; 
