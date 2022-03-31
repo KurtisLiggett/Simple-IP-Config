@@ -114,43 +114,22 @@ EndFunc   ;==>_CreateLink
 ; Title...........: _checksSICUpdate
 ; Description.....: Check for updates/ask to download
 ;
-; Parameters......: $manualCheck  -manually run check from menu item
+; Parameters......: $manualCheck  -manually run check from menu item and display errors on failure
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _checksSICUpdate($manualCheck = 0)
-	; This function checks if there are new releases on github and request the user to download it
+	Local $sGithubReleasesURL = "https://api.github.com/repos/KurtisLiggett/Simple-IP-Config/releases/latest"
 
-	$github_releases = "https://api.github.com/repos/KurtisLiggett/Simple-IP-Config/releases/latest"
-
-	Local $oHTTP = ObjCreate("WinHttp.WinHttpRequest.5.1")
-
-	$oHTTP.Open("GET", $github_releases, False)
+	Local $sResponseJSON = _INetGetSource($sGithubReleasesURL)
 	If (@error) Then
 		SetError(1001, 0, 0)
 		If $manualCheck Then
-			MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Please check your internet connection." & @CRLF & "Error code: " & @error)
+			MsgBox(16, "Check For Update Error", "An error was encountered while retrieving the update." & @CRLF & "Please check your internet connection." & @CRLF & "Error code: " & @error)
 		EndIf
 		Return
 	EndIf
 
-	$oHTTP.Send()
-	If (@error) Then
-		SetError(1002, 0, 0)
-		If $manualCheck Then
-			MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Please check your internet connection." & @CRLF & "Error code: " & @error)
-		EndIf
-		Return
-	EndIf
-
-	If ($oHTTP.Status <> 200) Then
-		SetError(1003, 0, 0)
-		If $manualCheck Then
-			MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Please check your internet connection." & @CRLF & "Error code: " & @error)
-		EndIf
-		Return
-	EndIf
-
-	Local $cleanedJSON = StringReplace($oHTTP.ResponseText, '"', "")
+	Local $cleanedJSON = StringReplace($sResponseJSON, '"', "")
 	Local $JSONinfo = StringRegExp($cleanedJSON, '(?:tag_name:)([^\{,}]+)', 3)
 
 	Local $currentVersion = $JSONinfo[0]
@@ -1554,6 +1533,8 @@ Func GetChangeLogData()
 			"     #43   Escape key will not close the program." & @CRLF & _
 			"     #99   Added ability to open, import, and export profiles." & @CRLF & _
 			"   #104   Bring to foreground if already running." & @CRLF & _
+			"MAINT:" & @CRLF & _
+			"           Updated check for updates functionality." & @CRLF & _
 			@CRLF & _
 			"v2.9.3" & @CRLF & _
 			"BUG FIXES:" & @CRLF & _
