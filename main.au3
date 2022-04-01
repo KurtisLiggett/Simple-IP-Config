@@ -1,4 +1,4 @@
-#AutoIt3Wrapper_Run_Au3Stripper=y
+;~ #AutoIt3Wrapper_Run_Au3Stripper=y
 
 #Region license
 ; -----------------------------------------------------------------------------
@@ -40,8 +40,8 @@
 ;==============================================================================
 
 
-#requireadmin
-#NoTrayIcon	;prevent double icon when checking for already running instance
+#RequireAdmin
+#NoTrayIcon    ;prevent double icon when checking for already running instance
 
 #Region Global Variables
 Global $options
@@ -54,7 +54,7 @@ Global $adapters
 Global Const $wbemFlagReturnImmediately = 0x10
 Global Const $wbemFlagForwardOnly = 0x20
 
-Global $screenshot=0
+Global $screenshot = 0
 Global $sProfileName = @ScriptDir & "\profiles.ini"
 
 ;GUI stuff
@@ -90,8 +90,10 @@ Global $statustext, $statuserror, $sStatusMessage
 Global $wgraphic, $showWarning
 
 ;Menu Items
-Global $toolsmenu, $disableitem, $refreshitem, $renameitem, $deleteitem, $clearitem
-Global $saveitem, $newitem, $pullitem, $send2trayitem, $helpitem, $debugmenuitem
+Global $filemenu, $applyitem, $renameitem, $newitem, $saveitem, $deleteitem, $clearitem, $createLinkItem, $profilesOpenItem, $profilesImportItem, $profilesExportItem, $exititem
+Global $viewmenu, $refreshitem, $send2trayitem, $blacklistitem
+Global $toolsmenu, $pullitem, $disableitem, $releaseitem, $renewitem, $cycleitem, $settingsitem
+Global $helpmenu, $helpitem, $changelogitem, $checkUpdatesItem, $debugmenuitem, $infoitem
 
 ;Settings window
 Global $ck_mintoTray, $ck_startinTray, $ck_saveAdapter, $ck_autoUpdate
@@ -99,7 +101,7 @@ Global $ck_mintoTray, $ck_startinTray, $ck_saveAdapter, $ck_autoUpdate
 Global $timerstart, $timervalue
 
 Global $movetosubnet
-Global $mdblTimerInit=0, $mdblTimerDiff=1000, $mdblClick = 0, $mDblClickTime=500
+Global $mdblTimerInit = 0, $mdblTimerDiff = 1000, $mdblClick = 0, $mDblClickTime = 500
 Global $dragging = False, $dragitem = 0, $contextSelect = 0
 Global $prevWinPos, $winPosTimer, $writePos
 Global $OpenFileFlag, $ImportFileFlag, $ExportFileFlag
@@ -125,29 +127,32 @@ Global $ToolbarIDs, $Toolbar2IDs
 Global Enum $tb_apply = 1000, $tb_refresh, $tb_add, $tb_save, $tb_delete, $tb_clear
 Global Enum $tb_settings = 2000, $tb_tray
 
-#EndRegion Global Variables
+; LANGUAGE VARIABLES
+Global $oLangStrings
 
 #Region includes
 #include <WindowsConstants.au3>
 #include <APIConstants.au3>
 #include <WinAPI.au3>
-#Include <WinAPIEx.au3>
+#include <WinAPIEx.au3>
 #include <GDIPlus.au3>
-#Include <GUIImageList.au3>
-#Include <GUIToolbar.au3>
+#include <GUIImageList.au3>
+#include <GUIToolbar.au3>
 #include <GuiListView.au3>
 #include <GuiIPAddress.au3>
 #include <GuiMenu.au3>
 #include <Misc.au3>
 #include <Color.au3>
-#Include <GUIEdit.au3>
+#include <GUIEdit.au3>
 #include <GuiComboBox.au3>
 #include <Array.au3>
 #include <Date.au3>
 #include <Inet.au3>
 
+#include "libraries\AutoItObject_Internal.au3"
 #include "model.au3"
 #include "hexIcons.au3"
+#include "languages.au3"
 #include "libraries\asyncRun.au3"
 #include "libraries\StringSize.au3"
 #include "libraries\Toast.au3"
@@ -162,13 +167,13 @@ Global Enum $tb_settings = 2000, $tb_tray
 
 #Region options
 Opt("TrayIconHide", 0)
-Opt("GUIOnEventMode",1)
-Opt("TrayAutoPause",0)
-Opt("TrayOnEventMode",1)
-Opt("TrayMenuMode",3)
+Opt("GUIOnEventMode", 1)
+Opt("TrayAutoPause", 0)
+Opt("TrayOnEventMode", 1)
+Opt("TrayMenuMode", 3)
 Opt("MouseCoordMode", 2)
 Opt("GUIResizeMode", $GUI_DOCKALL)
-Opt("WinSearchChildren",1)
+Opt("WinSearchChildren", 1)
 Opt("GUICloseOnESC", 0)
 TraySetClick(16)
 #EndRegion options
@@ -197,24 +202,30 @@ Global $iMsg = _WinAPI_RegisterWindowMessage('newinstance_message')
 ;instance to show a popup message then close this instance.
 If _Singleton("Simple IP Config", 1) = 0 Then
 	_WinAPI_PostMessage(0xffff, $iMsg, 0x101, 0)
-    Exit
+	Exit
 EndIf
 
 ;begin main program
 _main()
-#EndRegion
+#EndRegion PROGRAM CONTROL
 
 ;------------------------------------------------------------------------------
 ; Title........: _main
 ; Description..: initial program setup & main running loop
 ;------------------------------------------------------------------------------
 Func _main()
+	_initLang()
+
+	;set the language strings
+	_setLangEN()
+	ConsoleWrite($oLangStrings.menu.file.file & @CRLF)
+
 	; popuplate current adapter names and mac addresses
 	;_loadAdapters()
 
 	; get current DPI scale factor
-	$dScale = _GDIPlus_GraphicsGetDPIRatio()
-	$iDPI = $dScale * 96
+	$dscale = _GDIPlus_GraphicsGetDPIRatio()
+	$iDPI = $dscale * 96
 
 	;get profiles list
 	_loadProfiles()
@@ -229,10 +240,10 @@ Func _main()
 	GUIRegisterMsg($iMsg, '_NewInstance')
 
 	;Add adapters the the combobox
-	If NOT IsArray( $adapters ) Then
-		MsgBox( 16, "Error", "There was a problem retrieving the adapters." )
+	If Not IsArray($adapters) Then
+		MsgBox(16, "Error", "There was a problem retrieving the adapters.")
 	Else
-		Adapter_Sort($adapters)	; connections sort ascending
+		Adapter_Sort($adapters)    ; connections sort ascending
 		$defaultitem = Adapter_GetName($adapters, 0)
 		$sStartupAdapter = OPTIONS_GetValue($options, $OPTIONS_StartupAdapter)
 		If Adapter_Exists($adapters, $sStartupAdapter) Then
@@ -243,16 +254,16 @@ Func _main()
 		$aBlacklist = StringSplit($sAdapterBlacklist, "|")
 		If IsArray($aBlacklist) Then
 			Local $adapterNames = Adapter_GetNames($adapters)
-			For $i=0 to UBound($adapterNames)-1
+			For $i = 0 To UBound($adapterNames) - 1
 				$indexBlacklist = _ArraySearch($aBlacklist, $adapterNames[$i], 1)
-				if $indexBlacklist <> -1 Then ContinueLoop
-				GUICtrlSetData( $combo_adapters, $adapterNames[$i], $defaultitem )
+				If $indexBlacklist <> -1 Then ContinueLoop
+				GUICtrlSetData($combo_adapters, $adapterNames[$i], $defaultitem)
 			Next
 		EndIf
 	EndIf
 
 	_refresh(1)
-	ControlListView( $hgui, "", $list_profiles, "Select", 0 )
+	ControlListView($hgui, "", $list_profiles, "Select", 0)
 
 	;get system double-click time
 	$retval = DllCall('user32.dll', 'uint', 'GetDoubleClickTime')
@@ -265,7 +276,7 @@ Func _main()
 	GUICtrlSetData($domain, _DomainComputerBelongs())
 
 	$sAutoUpdate = OPTIONS_GetValue($options, $OPTIONS_AutoUpdate)
-	if($sAutoUpdate = "true" OR $sAutoUpdate = "1") Then
+	If ($sAutoUpdate = "true" Or $sAutoUpdate = "1") Then
 		$suppressComError = 1
 		_checksSICUpdate()
 		$suppressComError = 0
@@ -277,7 +288,7 @@ Func _main()
 			_onLvDoneEdit()
 		EndIf
 
-		If $lv_startEditing and Not $lv_editing Then
+		If $lv_startEditing And Not $lv_editing Then
 			_onRename()
 		EndIf
 
@@ -287,8 +298,8 @@ Func _main()
 
 		If $OpenFileFlag Then
 			$OpenFileFlag = 0
-			$filePath = FileOpenDialog ("Select File", @ScriptDir, "INI files (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
-			if Not @error Then
+			$filePath = FileOpenDialog("Select File", @ScriptDir, "INI files (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
+			If Not @error Then
 				$sProfileName = $filePath
 				$options = Options()
 				$profiles = Profiles()
@@ -299,8 +310,8 @@ Func _main()
 
 		If $ImportFileFlag Then
 			$ImportFileFlag = 0
-			$filePath = FileOpenDialog ("Select File", @ScriptDir, "INI files (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
-			if Not @error Then
+			$filePath = FileOpenDialog("Select File", @ScriptDir, "INI files (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
+			If Not @error Then
 				_ImportProfiles($filePath)
 				_refresh(1)
 				_setStatus("Done importing profiles", 0)
@@ -309,20 +320,20 @@ Func _main()
 
 		If $ExportFileFlag Then
 			$ExportFileFlag = 0
-			$filePath = FileSaveDialog ("Select File", @ScriptDir, "INI files (*.ini)", $FD_PROMPTOVERWRITE, "profiles.ini")
-			if Not @error Then
+			$filePath = FileSaveDialog("Select File", @ScriptDir, "INI files (*.ini)", $FD_PROMPTOVERWRITE, "profiles.ini")
+			If Not @error Then
 				ConsoleWrite("write" & @CRLF)
 				If StringRight($filePath, 4) <> ".ini" Then
 					$filePath &= ".ini"
 				EndIf
-				FileCopy($sProfileName, $filePath,  $FC_OVERWRITE )
+				FileCopy($sProfileName, $filePath, $FC_OVERWRITE)
 				_setStatus("File saved: " & $filePath, 0)
 			EndIf
 		EndIf
 
 		Sleep(100)
 	WEnd
-EndFunc ; main()
+EndFunc   ;==>_main
 
 ;------------------------------------------------------------------------------
 ; Title........: _NewInstance
@@ -330,7 +341,7 @@ EndFunc ; main()
 ;                Bring the running program instance to the foreground.
 ;------------------------------------------------------------------------------
 Func _NewInstance($hWnd, $iMsg, $iwParam, $ilParam)
-	if $iwParam == "0x00000101" Then
+	If $iwParam == "0x00000101" Then
 ;~ 		TrayTip("", "Simple IP Config is already running", 1)
 
 ;~ 		$sMsg  = 'Simple IP Config is already running'
@@ -339,4 +350,4 @@ Func _NewInstance($hWnd, $iMsg, $iwParam, $ilParam)
 
 		_maximize()
 	EndIf
-EndFunc
+EndFunc   ;==>_NewInstance

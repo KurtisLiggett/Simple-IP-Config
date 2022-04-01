@@ -870,12 +870,12 @@ EndFunc   ;==>_ctrlHasFocus
 ;------------------------------------------------------------------------------
 Func _disable()
 	$selected_adapter = GUICtrlRead($combo_adapters)
-	If _GUICtrlMenu_GetItemText(GUICtrlGetHandle($toolsmenu), $disableitem, 0) = "Disable adapter" Then
+	If _GUICtrlMenu_GetItemText(GUICtrlGetHandle($toolsmenu), $disableitem, 0) = $oLangStrings.menu.tools.disable Then
 		_AdapterMod($selected_adapter, 0)
-		GUICtrlSetData($disableitem, "En&able adapter")
+		GUICtrlSetData($disableitem, $oLangStrings.menu.tools.enable)
 	Else
 		_AdapterMod($selected_adapter, 1)
-		GUICtrlSetData($disableitem, "Dis&able adapter")
+		GUICtrlSetData($disableitem, $oLangStrings.menu.tools.disable)
 		_setStatus("Updating Adapter List...")
 		_loadAdapters()
 		_setStatus("Ready")
@@ -1404,9 +1404,9 @@ Func _updateCurrent($init = 0, $selected_adapter = "")
 	ControlSetText($hgui, "", $label_CurrentDhcp, $props[5])
 	ControlSetText($hgui, "", $label_CurrentAdapterState, $props[6])
 	If $props[6] = "Disabled" Then
-		GUICtrlSetData($disableitem, "En&able adapter")
+		GUICtrlSetData($disableitem, $oLangStrings.menu.tools.enable)
 	Else
-		GUICtrlSetData($disableitem, "Dis&able adapter")
+		GUICtrlSetData($disableitem, $oLangStrings.menu.tools.disable)
 	EndIf
 EndFunc   ;==>_updateCurrent
 
