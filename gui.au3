@@ -499,12 +499,12 @@ Func _makeToolbar()
 	_GUICtrlToolbar_SetImageList($hToolbar, $hImageList)
 
 	Local $aStringList[6]
-	$aStringList[0] = _GUICtrlToolbar_AddString($hToolbar, 'Apply')
-	$aStringList[1] = _GUICtrlToolbar_AddString($hToolbar, 'Refresh')
-	$aStringList[2] = _GUICtrlToolbar_AddString($hToolbar, 'New')
-	$aStringList[3] = _GUICtrlToolbar_AddString($hToolbar, 'Save')
-	$aStringList[4] = _GUICtrlToolbar_AddString($hToolbar, 'Delete')
-	$aStringList[5] = _GUICtrlToolbar_AddString($hToolbar, 'Clear')
+	$aStringList[0] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.apply)
+	$aStringList[1] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.refresh)
+	$aStringList[2] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.new)
+	$aStringList[3] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.save)
+	$aStringList[4] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.delete)
+	$aStringList[5] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.clear)
 
 	$bbutton = _GUICtrlToolbar_AddButton($hToolbar, $tb_apply, 0, $aStringList[0])
 	$bbutton = _GUICtrlToolbar_AddButton($hToolbar, $tb_refresh, 1, $aStringList[1])

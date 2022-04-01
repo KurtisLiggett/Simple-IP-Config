@@ -114,6 +114,13 @@ Func _updateLang()
 	GUICtrlSetData($lvcon_arrAz, $oLangStrings.lvmenu.sortAsc)
 	GUICtrlSetData($lvcon_arrZa, $oLangStrings.lvmenu.sortDesc)
 	GUICtrlSetData($lvcreateLinkItem, $oLangStrings.lvmenu.shortcut)
+
+	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_apply, $oLangStrings.toolbar.apply)
+	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_refresh, $oLangStrings.toolbar.refresh)
+	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_add, $oLangStrings.toolbar.new)
+	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_save, $oLangStrings.toolbar.save)
+	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_delete, $oLangStrings.toolbar.delete)
+	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_clear, $oLangStrings.toolbar.clear)
 EndFunc   ;==>_updateLang
 
 Func _setLangEnglish()
@@ -162,11 +169,27 @@ Func _setLangEnglish()
 	$oLangStrings.lvmenu.sortDesc = "Sort Z->A"
 	$oLangStrings.lvmenu.shortcut = "Create shortcut to profile"
 
+	$oLangStrings.toolbar.apply = "Apply"
+	$oLangStrings.toolbar.refresh = "Refresh"
+	$oLangStrings.toolbar.new = "New"
+	$oLangStrings.toolbar.save = "Save"
+	$oLangStrings.toolbar.delete = "Delete"
+	$oLangStrings.toolbar.clear = "Clear"
+
+	$oLangStrings.toolbar.apply_tip = "Apply"
+	$oLangStrings.toolbar.refresh_tip = "Refresh"
+	$oLangStrings.toolbar.new_tip = "Create new profile"
+	$oLangStrings.toolbar.save_tip = "Save profile"
+	$oLangStrings.toolbar.delete_tip = "Delete profile"
+	$oLangStrings.toolbar.clear_tip = "Clear entries"
+	$oLangStrings.toolbar.settings_tip = "Settings"
+	$oLangStrings.toolbar.tray_tip = "Send to tray"
+
 	ConsoleWrite("set english" & @CRLF)
 EndFunc   ;==>_setLangEN
 
 ; placeholder for IT language for testing
 Func _setLangItalian()
-
+	$oLangStrings.toolbar.apply = "test"
 	ConsoleWrite("set italian" & @CRLF)
 EndFunc   ;==>_setLangEN
