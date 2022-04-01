@@ -95,6 +95,8 @@ Global $viewmenu, $refreshitem, $send2trayitem, $blacklistitem
 Global $toolsmenu, $pullitem, $disableitem, $releaseitem, $renewitem, $cycleitem, $settingsitem
 Global $helpmenu, $helpitem, $changelogitem, $checkUpdatesItem, $debugmenuitem, $infoitem
 
+Global $lvcon_rename, $lvcon_delete, $lvcon_arrAz, $lvcon_arrZa, $lvcreateLinkItem
+
 ;Settings window
 Global $ck_mintoTray, $ck_startinTray, $ck_saveAdapter, $ck_autoUpdate, $cmb_langSelect
 

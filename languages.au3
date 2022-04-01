@@ -108,6 +108,12 @@ Func _updateLang()
 	GUICtrlSetData($RestoreItem, $oLangStrings.traymenu.hide)
 	GUICtrlSetData($aboutitem, $oLangStrings.traymenu.about)
 	GUICtrlSetData($exititem, $oLangStrings.traymenu.exit)
+
+	GUICtrlSetData($lvcon_rename, $oLangStrings.lvmenu.rename)
+	GUICtrlSetData($lvcon_delete, $oLangStrings.lvmenu.delete)
+	GUICtrlSetData($lvcon_arrAz, $oLangStrings.lvmenu.sortAsc)
+	GUICtrlSetData($lvcon_arrZa, $oLangStrings.lvmenu.sortDesc)
+	GUICtrlSetData($lvcreateLinkItem, $oLangStrings.lvmenu.shortcut)
 EndFunc   ;==>_updateLang
 
 Func _setLangEnglish()
@@ -149,6 +155,12 @@ Func _setLangEnglish()
 	$oLangStrings.traymenu.restore = "Restore"
 	$oLangStrings.traymenu.about = "About"
 	$oLangStrings.traymenu.exit = "Exit"
+
+	$oLangStrings.lvmenu.rename = "Rename"
+	$oLangStrings.lvmenu.delete = "Delete"
+	$oLangStrings.lvmenu.sortAsc = "Sort A->Z"
+	$oLangStrings.lvmenu.sortDesc = "Sort Z->A"
+	$oLangStrings.lvmenu.shortcut = "Create shortcut to profile"
 
 	ConsoleWrite("set english" & @CRLF)
 EndFunc   ;==>_setLangEN
