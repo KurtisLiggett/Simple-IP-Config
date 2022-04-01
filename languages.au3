@@ -16,17 +16,59 @@
 ; -----------------------------------------------------------------------------
 
 Func _initLang()
-	$oLangStrings = IDispatch()    ;create object for language strings
+	;create object for language strings
+	$oLangStrings = IDispatch()
+
+	;main menu
 	$oLangStrings.menu = IDispatch()
 	$oLangStrings.menu.file = IDispatch()
 	$oLangStrings.menu.view = IDispatch()
 	$oLangStrings.menu.tools = IDispatch()
 	$oLangStrings.menu.help = IDispatch()
+	$oLangStrings.traymenu = IDispatch()
+	$oLangStrings.lvmenu = IDispatch()	;listview menu
 	$oLangStrings.toolbar = IDispatch()
 	$oLangStrings.interface = IDispatch()
-	$oLangStrings.options = IDispatch()
+	$oLangStrings.settings = IDispatch()
 	$oLangStrings.about = IDispatch()
+	$oLangStrings.messages = IDispatch()
+
+	;format OS language
+	Switch @OSLang
+		Case "0409"
+			$oLangStrings.OSLang = "en-US"
+		Case "0410"
+			$oLangStrings.OSLang = "it-IT"
+		Case Else
+			$oLangStrings.OSLang = "en-US"
+	EndSwitch
 EndFunc   ;==>_initLang
+
+Func _getLangStringID($sLang)
+	Local $retVal = -1
+	Switch $sLang
+		Case "English"
+			$retVal = "en-US"
+		Case "Italiano"
+			$retVal = "it-IT"
+		Case Else
+			$retVal = -1
+	EndSwitch
+	return $retVal
+EndFunc
+
+func _setLangStrings($manualUpdate = False)
+	Switch $oLangStrings.OSLang
+		Case "en-US"
+			_setLangEnglish()
+		Case "it-IT"
+			_setLangItalian()
+		Case Else
+			_setLangEnglish()
+	EndSwitch
+
+	If $manualUpdate Then _updateLang()
+EndFunc
 
 Func _updateLang()
 	GUICtrlSetData($filemenu, $oLangStrings.menu.file.file)
@@ -64,7 +106,7 @@ Func _updateLang()
 	GUICtrlSetData($infoitem, $oLangStrings.menu.help.about)
 EndFunc   ;==>_updateLang
 
-Func _setLangEN($manualUpdate = False)
+Func _setLangEnglish()
 	$oLangStrings.menu.file.file = "&File"
 	$oLangStrings.menu.file.apply = "&Apply profile" & @TAB & "Enter"
 	$oLangStrings.menu.file.rename = "&Rename" & @TAB & "F2"
@@ -99,5 +141,13 @@ Func _setLangEN($manualUpdate = False)
 	$oLangStrings.menu.help.debug = "&Debug Information"
 	$oLangStrings.menu.help.about = "&About Simple IP Config"
 
-	If $manualUpdate Then _updateLang()
+	$oLangStrings.menu.help.about = "&About Simple IP Config"
+
+	ConsoleWrite("set english" & @CRLF)
+EndFunc   ;==>_setLangEN
+
+; placeholder for IT language for testing
+Func _setLangItalian()
+
+	ConsoleWrite("set italian" & @CRLF)
 EndFunc   ;==>_setLangEN

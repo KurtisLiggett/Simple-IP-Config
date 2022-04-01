@@ -96,7 +96,7 @@ Global $toolsmenu, $pullitem, $disableitem, $releaseitem, $renewitem, $cycleitem
 Global $helpmenu, $helpitem, $changelogitem, $checkUpdatesItem, $debugmenuitem, $infoitem
 
 ;Settings window
-Global $ck_mintoTray, $ck_startinTray, $ck_saveAdapter, $ck_autoUpdate
+Global $ck_mintoTray, $ck_startinTray, $ck_saveAdapter, $ck_autoUpdate, $cmb_langSelect
 
 Global $timerstart, $timervalue
 
@@ -216,10 +216,6 @@ _main()
 Func _main()
 	_initLang()
 
-	;set the language strings
-	_setLangEN()
-	ConsoleWrite($oLangStrings.menu.file.file & @CRLF)
-
 	; popuplate current adapter names and mac addresses
 	;_loadAdapters()
 
@@ -229,6 +225,18 @@ Func _main()
 
 	;get profiles list
 	_loadProfiles()
+
+	;get OS language OR selected language storage in profile
+	$selectedLang = OPTIONS_GetValue($options, $OPTIONS_Language)
+	If $selectedLang <> "" and $oLangStrings.OSLang <> $selectedLang Then
+		$oLangStrings.OSLang = $selectedLang
+	EndIf
+	If $selectedLang = "" Then
+		Options_SetValue($options, $OPTIONS_Language, $oLangStrings.OSLang)
+		Local $optionsLangName = Options_GetName($options, $OPTIONS_Language)
+		IniWrite($sProfileName, "options", $optionsLangName, $oLangStrings.OSLang)
+	EndIf
+	_setLangStrings()
 
 	;make the GUI
 	_makeGUI()

@@ -1160,6 +1160,13 @@ Func _saveOptions()
 	Options_SetValue($options, $OPTIONS_SaveAdapterToProfile, _StateToStr($ck_saveAdapter))
 	Options_SetValue($options, $OPTIONS_AutoUpdate, _StateToStr($ck_autoUpdate))
 
+	Local $langRet = _getLangStringID(GUICtrlRead($cmb_langSelect))
+	If $langRet <> -1 Then
+		$oLangStrings.OSLang = $langRet
+		Options_SetValue($options, $OPTIONS_Language, $oLangStrings.OSLang)
+		_setLangStrings(1)
+	EndIf
+
 	IniWriteSection($sProfileName, "options", $options, 0)
 	_ExitChild(@GUI_WinHandle)
 EndFunc   ;==>_saveOptions
