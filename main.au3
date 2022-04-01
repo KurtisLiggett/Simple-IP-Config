@@ -113,9 +113,7 @@ Global $combo_adapters, $combo_dummy, $selected_adapter, $lDescription, $lMac
 Global $list_profiles, $input_filter, $filter_dummy, $dummyUp, $dummyDown
 Global $lv_oldName, $lv_newName, $lv_editIndex, $lv_doneEditing, $lv_newItem, $lv_startEditing, $lv_editing, $lv_aboutEditing
 Global $radio_IpAuto, $radio_IpMan, $ip_Ip, $ip_Subnet, $ip_Gateway, $dummyTab
-Global $label_ip, $label_subnet, $label_gateway
-Global $radio_DnsAuto, $radio_DnsMan, $ip_DnsPri, $ip_DnsAlt, $ck_dnsReg
-Global $label_DnsPri, $label_DnsAlt
+Global $radio_DnsAuto, $radio_DnsMan, $ip_DnsPri, $ip_DnsAlt
 Global $label_CurrentIp, $label_CurrentSubnet, $label_CurrentGateway
 Global $label_CurrentDnsPri, $label_CurrentDnsAlt
 Global $label_CurrentDhcp, $label_CurrentAdapterState
@@ -123,6 +121,8 @@ Global $link, $computerName, $domainName
 Global $blacklistLV
 
 Global $label_CurrIp, $label_CurrSubnet, $label_CurrGateway, $label_CurrDnsPri, $label_CurrDnsAlt, $label_CurrDhcp, $label_CurrAdapterState
+Global $label_DnsPri, $label_DnsAlt, $ck_dnsReg, $label_ip, $label_subnet, $label_gateway
+
 
 ; TOOLBAR
 Global $hTool, $hTool2

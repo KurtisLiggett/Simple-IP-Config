@@ -29,7 +29,7 @@ Func _initLang()
 	$oLangStrings.lvmenu = IDispatch()	;listview menu
 	$oLangStrings.toolbar = IDispatch()
 	$oLangStrings.interface = IDispatch()
-	$oLangStrings.interface.current = IDispatch()
+	$oLangStrings.interface.props = IDispatch()
 	$oLangStrings.settings = IDispatch()
 	$oLangStrings.about = IDispatch()
 	$oLangStrings.messages = IDispatch()
@@ -126,15 +126,25 @@ Func _updateLang()
 	GUICtrlSetData($computerName, $oLangStrings.interface.computername & ": " & @ComputerName)
 	GUICtrlSetData($domainName, _DomainComputerBelongs())
 
+	GUICtrlSetData($label_CurrIp, $oLangStrings.interface.props.ip & ":")
+	GUICtrlSetData($label_CurrSubnet, $oLangStrings.interface.props.subnet & ":")
+	GUICtrlSetData($label_CurrGateway, $oLangStrings.interface.props.gateway & ":")
+	GUICtrlSetData($label_CurrDnsPri, $oLangStrings.interface.props.dnsPref & ":")
+	GUICtrlSetData($label_CurrDnsAlt, $oLangStrings.interface.props.dnsAlt & ":")
+	GUICtrlSetData($label_CurrDhcp, $oLangStrings.interface.props.dhcpServer & ":")
+	GUICtrlSetData($label_CurrAdapterState, $oLangStrings.interface.props.adapterState & ":")
 
-	GUICtrlSetData($label_CurrIp, $oLangStrings.interface.current.ip & ":")
-	GUICtrlSetData($label_CurrSubnet, $oLangStrings.interface.current.subnet & ":")
-	GUICtrlSetData($label_CurrGateway, $oLangStrings.interface.current.gateway & ":")
-	GUICtrlSetData($label_CurrDnsPri, $oLangStrings.interface.current.dnsPref & ":")
-	GUICtrlSetData($label_CurrDnsAlt, $oLangStrings.interface.current.dnsAlt & ":")
-	GUICtrlSetData($label_CurrDhcp, $oLangStrings.interface.current.dhcpServer & ":")
-	GUICtrlSetData($label_CurrAdapterState, $oLangStrings.interface.current.adapterState & ":")
+	GUICtrlSetData($radio_IpAuto, $oLangStrings.interface.props.ipauto)
+	GUICtrlSetData($radio_IpMan, $oLangStrings.interface.props.ipmanual)
+	GUICtrlSetData($radio_DnsAuto, $oLangStrings.interface.props.dnsauto)
+	GUICtrlSetData($radio_DnsMan, $oLangStrings.interface.props.dnsmanual)
 
+	GUICtrlSetData($label_ip, $oLangStrings.interface.props.ip & ":")
+	GUICtrlSetData($label_subnet, $oLangStrings.interface.props.subnet & ":")
+	GUICtrlSetData($label_gateway, $oLangStrings.interface.props.gateway & ":")
+	GUICtrlSetData($label_DnsPri, $oLangStrings.interface.props.dnsPref & ":")
+	GUICtrlSetData($label_DnsAlt, $oLangStrings.interface.props.dnsAlt & ":")
+	GUICtrlSetData($ck_dnsReg, $oLangStrings.interface.props.dnsreg)
 EndFunc   ;==>_updateLang
 
 Func _setLangEnglish()
@@ -203,13 +213,20 @@ Func _setLangEnglish()
 	$oLangStrings.interface.domain = "Domain"
 	$oLangStrings.interface.workgroup = "Workgroup"
 
-	$oLangStrings.interface.current.ip = "IP Address"
-	$oLangStrings.interface.current.subnet = "Subnet Mask"
-	$oLangStrings.interface.current.gateway = "Gateway"
-	$oLangStrings.interface.current.dnsPref = "Preferred DNS Server"
-	$oLangStrings.interface.current.dnsAlt = "Alternate"
-	$oLangStrings.interface.current.dhcpServer = "DHCP Server"
-	$oLangStrings.interface.current.adapterState = "Adapter State"
+	$oLangStrings.interface.props.ip = "IP Address"
+	$oLangStrings.interface.props.subnet = "Subnet Mask"
+	$oLangStrings.interface.props.gateway = "Gateway"
+	$oLangStrings.interface.props.dnsPref = "Preferred DNS Server"
+	$oLangStrings.interface.props.dnsAlt = "Alternate DNS Server"
+	$oLangStrings.interface.props.dhcpServer = "DHCP Server"
+	$oLangStrings.interface.props.adapterState = "Adapter State"
+
+	$oLangStrings.interface.props.ipauto = "Automatically Set IP Address"
+	$oLangStrings.interface.props.ipmanual = "Manually Set IP Address"
+	$oLangStrings.interface.props.dnsauto = "Automatically Set DNS Address"
+	$oLangStrings.interface.props.dnsmanual = "Manually Set DNS Address"
+	$oLangStrings.interface.props.dnsreg = "Register Addresses"
+
 
 	ConsoleWrite("set english" & @CRLF)
 EndFunc   ;==>_setLangEN
