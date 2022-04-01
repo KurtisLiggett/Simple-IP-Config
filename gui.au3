@@ -770,7 +770,7 @@ Func _about()
 		$y = @DesktopHeight / 2 - $h / 2
 	EndIf
 
-	$AboutChild = GUICreate("About Simple IP Config", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
+	$AboutChild = GUICreate($oLangStrings.about.title & " Simple IP Config", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
 	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 
@@ -789,11 +789,11 @@ Func _about()
 	GUICtrlCreateLabel("Simple IP Config", 75 * $dscale, 10 * $dscale, 200 * $dscale, -1, $SS_CENTER)
 	GUICtrlSetFont(-1, 13, 800)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlCreateLabel("Version:", 95 * $dscale, 38 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
+	GUICtrlCreateLabel($oLangStrings.about.version & ":", 95 * $dscale, 38 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlCreateLabel("Date:", 95 * $dscale, 53 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
+	GUICtrlCreateLabel($oLangStrings.about.date & ":", 95 * $dscale, 53 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlCreateLabel("Developer:", 95 * $dscale, 69 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
+	GUICtrlCreateLabel($oLangStrings.about.dev & ":", 95 * $dscale, 69 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlCreateLabel($winVersion, 174 * $dscale, 38 * $dscale, 75 * $dscale, -1)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
@@ -803,13 +803,13 @@ Func _about()
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
 
-	GUICtrlCreateLabel("License:", 95 * $dscale, 84 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
+	GUICtrlCreateLabel($oLangStrings.about.lic & ":", 95 * $dscale, 84 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlCreateLabel("GNU GPL v3", 174 * $dscale, 84 * $dscale, 75 * $dscale, -1)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
 
-	$desc = "The portable ip changer utility that allows a user to quickly and easily change the most common network settings for any connection."
+	$desc = $oLangStrings.about.desc
 	GUICtrlCreateLabel($desc, 8, 110 * $dscale, $w - 16, 50 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
@@ -825,13 +825,13 @@ Func _about()
 	GUICtrlSetTip(-1, 'Visit: aha-soft.com')
 	GUICtrlSetCursor(-1, 0)
 
-	$desc = "Program icons are from "
+	$desc = $oLangStrings.about.icons & " "
 	GUICtrlCreateLabel($desc, 45 * $dscale, 175 * $dscale, $w - 20, 20 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
 	; bottom section
 
-	$bt_AboutOk = GUICtrlCreateButton("OK", $w - 55 * $dScale, $h - 27 * $dScale, 50 * $dScale, 22 * $dScale)
+	$bt_AboutOk = GUICtrlCreateButton($oLangStrings.buttonOK, $w - 55 * $dScale, $h - 27 * $dScale, 50 * $dScale, 22 * $dScale)
 	GUICtrlSetOnEvent(-1, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hgui)
@@ -849,7 +849,7 @@ Func _changeLog()
 	$x = $currentWinPos[0] + $guiWidth*$dscale/2 - $w/2
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
-	$changeLogChild = GUICreate( "Change Log", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
+	$changeLogChild = GUICreate( $oLangStrings.changelog.changelog, $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
 	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
@@ -870,7 +870,7 @@ Func _changeLog()
 	GUICtrlSetBkColor ($edit, 0xFFFFFF)
 	GUICtrlSetFont(-1, 8.5)
 
-	$bt_Ok = GUICtrlCreateButton( "OK", $w-55*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
+	$bt_Ok = GUICtrlCreateButton( $oLangStrings.buttonOK, $w-55*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( -1, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hGUI)
@@ -935,7 +935,7 @@ Func _Settings()
 	$x = $currentWinPos[0] + $guiWidth*$dscale/2 - $w/2
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
-	$settingsChild = GUICreate( "Settings", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
+	$settingsChild = GUICreate( $oLangStrings.settings.title, $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
 	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
@@ -946,28 +946,28 @@ Func _Settings()
 	GUICtrlCreateLabel("", 0, $h-32*$dscale, $w, 1)
 	GUICtrlSetBkColor(-1, 0x000000)
 
-	$lb_language = GUICtrlCreateLabel( "Language", 10*$dScale, 10*$dScale)
+	$lb_language = GUICtrlCreateLabel( $oLangStrings.settings.lang, 10*$dScale, 10*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	$cmb_langSelect = GUICtrlCreateCombo( "English", 10*$dScale, 28*$dScale, $w-20*$dScale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
 	GUICtrlSetData(-1, "Italiano")
 
-	$ck_startinTray = GUICtrlCreateCheckbox( "Startup in the system tray", 10*$dScale, 60*$dScale, 230*$dScale, 20*$dScale)
+	$ck_startinTray = GUICtrlCreateCheckbox( $oLangStrings.settings.opt1, 10*$dScale, 60*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_startinTray, _StrToState(Options_GetValue($options, $OPTIONS_StartupMode)))
-	$ck_mintoTray = GUICtrlCreateCheckbox( "Minimize to the system tray", 10*$dScale, 80*$dScale, 230*$dScale, 20*$dScale)
+	$ck_mintoTray = GUICtrlCreateCheckbox( $oLangStrings.settings.opt2, 10*$dScale, 80*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_mintoTray, _StrToState(Options_GetValue($options, $OPTIONS_MinToTray)))
-	$ck_saveAdapter = GUICtrlCreateCheckbox( "Save adapter to profile", 10*$dScale, 100*$dScale, 230*$dScale, 20*$dScale)
+	$ck_saveAdapter = GUICtrlCreateCheckbox( $oLangStrings.settings.opt3, 10*$dScale, 100*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_saveAdapter, _StrToState(Options_GetValue($options, $OPTIONS_SaveAdapterToProfile)))
 
-	$ck_autoUpdate = GUICtrlCreateCheckbox( "Automatically check for updates", 10*$dScale, 120*$dScale, 230*$dScale, 20*$dScale)
+	$ck_autoUpdate = GUICtrlCreateCheckbox( $oLangStrings.settings.opt4, 10*$dScale, 120*$dScale, 230*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_autoUpdate, _StrToState(Options_GetValue($options, $OPTIONS_AutoUpdate)))
 
-	$bt_optSave = GUICtrlCreateButton( "Save", $w-25*$dScale-50*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
+	$bt_optSave = GUICtrlCreateButton( $oLangStrings.buttonSave, $w-25*$dScale-50*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( $bt_optSave, "_saveOptions")
-	$bt_optCancel = GUICtrlCreateButton( "Cancel", 25*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
+	$bt_optCancel = GUICtrlCreateButton( $oLangStrings.buttonCancel, 25*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( $bt_optCancel, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hGUI)
@@ -1029,7 +1029,7 @@ Func _blacklist()
 	$x = $currentWinPos[0] + $guiWidth*$dscale/2 - $w/2
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
-	$blacklistChild = GUICreate( "Adapter Blacklist", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
+	$blacklistChild = GUICreate( $oLangStrings.blacklist.title, $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
 	GUISetBkColor(0x888889)
 	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
@@ -1038,7 +1038,7 @@ Func _blacklist()
 	GUICtrlSetBkColor($bkLabel, 0xFFFFFF)
 	GUICtrlSetState($bkLabel, $GUI_DISABLE)
 
-	$labelTitle = GUICtrlCreateLabel("Select Adapters to Hide", 5, 5, $w-10, 20*$dscale)
+	$labelTitle = GUICtrlCreateLabel($oLangStrings.blacklist.heading, 5, 5, $w-10, 20*$dscale)
 ;~ 	GUICtrlSetColor(-1, 0x0000FF)
 	GUICtrlSetBkColor (-1, 0xFFFFFF)
 	GUICtrlSetFont(-1, 12)
@@ -1063,10 +1063,10 @@ Func _blacklist()
 	$labelBottomLine = GUICtrlCreateLabel("", 0, $h-35*$dscale+1, $w, 1)
 	GUICtrlSetBkColor (-1, 0x444444)
 
-	$bt_Cancel = GUICtrlCreateButton( "Cancel", $w-117*$dScale, $h - 30*$dScale, 52*$dScale, 25*$dScale)
+	$bt_Cancel = GUICtrlCreateButton( $oLangStrings.buttonCancel, $w-117*$dScale, $h - 30*$dScale, 52*$dScale, 25*$dScale)
 	GUICtrlSetOnEvent( -1, "_onExitChild")
 
-	$bt_Ok = GUICtrlCreateButton( "Save", $w-60*$dScale, $h - 30*$dScale, 50*$dScale, 25*$dScale)
+	$bt_Ok = GUICtrlCreateButton( $oLangStrings.buttonSave, $w-60*$dScale, $h - 30*$dScale, 50*$dScale, 25*$dScale)
 	GUICtrlSetOnEvent( -1, "_onExitBlacklistOk")
 
 	GUICtrlSetState($bt_Cancel, $GUI_FOCUS)
@@ -1094,7 +1094,7 @@ Func _ShowUpdateDialog($thisVersion, $currentVersion, $isNew=0)
 		$y = @DesktopHeight / 2 - $h / 2
 	EndIf
 
-	$UpdateChild = GUICreate("Check for Updates", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
+	$UpdateChild = GUICreate($oLangStrings.updates.title, $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
 	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 
@@ -1113,9 +1113,9 @@ Func _ShowUpdateDialog($thisVersion, $currentVersion, $isNew=0)
 	GUICtrlCreateLabel("Simple IP Config", 75 * $dscale, 10 * $dscale, 200 * $dscale, -1, $SS_CENTER)
 	GUICtrlSetFont(-1, 13, 800)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlCreateLabel("Your Version:", 80 * $dscale, 38 * $dscale, 120 * $dscale, -1, $SS_RIGHT)
+	GUICtrlCreateLabel($oLangStrings.updates.thisVersion & ":", 80 * $dscale, 38 * $dscale, 120 * $dscale, -1, $SS_RIGHT)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlCreateLabel("Latest Version:", 80 * $dscale, 53 * $dscale, 120 * $dscale, -1, $SS_RIGHT)
+	GUICtrlCreateLabel($oLangStrings.updates.latestVersion & ":", 80 * $dscale, 53 * $dscale, 120 * $dscale, -1, $SS_RIGHT)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlCreateLabel($thisVersion, 205 * $dscale, 38 * $dscale, 75 * $dscale, -1)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
@@ -1127,7 +1127,7 @@ Func _ShowUpdateDialog($thisVersion, $currentVersion, $isNew=0)
 
 	Local $descX
 	If $isNew Then
-		$desc = "A newer version is available"
+		$desc = $oLangStrings.updates.newMessage
 		$descX = 45
 
 		$link = GUICtrlCreateLabel("here", 199 * $dscale, 110 * $dscale, -1, 20 * $dscale)
@@ -1138,14 +1138,14 @@ Func _ShowUpdateDialog($thisVersion, $currentVersion, $isNew=0)
 		GUICtrlSetTip(-1, 'Visit: https://github.com/KurtisLiggett/Simple-IP-Config/releases/latest')
 		GUICtrlSetCursor(-1, 0)
 	Else
-		$desc = "You have the latest version."
+		$desc = $oLangStrings.updates.latestMessage
 		$descX = 60
 	EndIf
 	GUICtrlCreateLabel($desc, $descX * $dscale, 110 * $dscale, $w - 20, 20 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
 	; bottom section
-	$bt_UpdateOk = GUICtrlCreateButton("OK", $w - 55 * $dScale, $h - 27 * $dScale, 50 * $dScale, 22 * $dScale)
+	$bt_UpdateOk = GUICtrlCreateButton($oLangStrings.buttonOK, $w - 55 * $dScale, $h - 27 * $dScale, 50 * $dScale, 22 * $dScale)
 	GUICtrlSetOnEvent(-1, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hgui)

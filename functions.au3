@@ -1545,7 +1545,7 @@ EndFunc   ;==>_MoveToSubnet
 Func GetChangeLogData()
 	Local $sChangeLog[2]
 	;"v"&$winVersion & @CRLF & _
-	$sChangeLog[0] = "Changelog - " & $winVersion
+	$sChangeLog[0] = $oLangStrings.changelog.changelog & " - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
 			"   #103   COM Error 80020009 checking for updates." & @CRLF & _

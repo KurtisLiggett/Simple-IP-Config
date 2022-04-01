@@ -32,6 +32,9 @@ Func _initLang()
 	$oLangStrings.interface.props = IDispatch()
 	$oLangStrings.settings = IDispatch()
 	$oLangStrings.about = IDispatch()
+	$oLangStrings.updates = IDispatch()
+	$oLangStrings.changelog = IDispatch()
+	$oLangStrings.blacklist = IDispatch()
 	$oLangStrings.messages = IDispatch()
 
 	;format OS language
@@ -243,15 +246,41 @@ Func _setLangEnglish()
 	$oLangStrings.interface.profileprops = "Profile IP Properties"
 	$oLangStrings.interface.currentprops = "Current Adapter Properties"
 
+	$oLangStrings.updates.title = "Check for Updates"
+	$oLangStrings.updates.thisVersion = "This Version"
+	$oLangStrings.updates.latestVersion = "Latest Version"
+	$oLangStrings.updates.newMessage = "A newer version is available."
+	$oLangStrings.updates.latestMessage = "You have the latest version."
+
+	$oLangStrings.about.title = "About"
+	$oLangStrings.about.version = "Version"
+	$oLangStrings.about.date = "Date"
+	$oLangStrings.about.dev = "Developer"
+	$oLangStrings.about.lic = "License"
+	$oLangStrings.about.desc = "The portable ip changer utility that allows a user to quickly and easily change the most common network settings for any connection."
+	$oLangStrings.about.icons = "Program icons are from"
+
+	$oLangStrings.changelog.changelog = "Change Log"
+
+	$oLangStrings.blacklist.title = "Adapter Blacklist"
+	$oLangStrings.blacklist.heading = "Select Adapters to Hide"
+
+	$oLangStrings.settings.title = "Settings"
+	$oLangStrings.settings.lang = "Language"
+	$oLangStrings.settings.opt1 = "Startup in system tray"
+	$oLangStrings.settings.opt2 = "Minimize to the system tray"
+	$oLangStrings.settings.opt3 = "Save adapter to profile"
+	$oLangStrings.settings.opt4 = "Automatically check for updates"
+
+	$oLangStrings.buttonOK = "OK"
+	$oLangStrings.buttonCancel = "Cancel"
+	$oLangStrings.buttonSave = "Save"
+
 	ConsoleWrite("set english" & @CRLF)
 EndFunc   ;==>_setLangEN
 
 ; placeholder for IT language for testing
 Func _setLangItalian()
-	$oLangStrings.interface.select = "Select Adapter2"
-	$oLangStrings.interface.profiles = "Profiles2"
-	$oLangStrings.interface.profileprops = "Profile IP Properties2"
-	$oLangStrings.interface.currentprops = "Current Adapter Properties2"
 
 	ConsoleWrite("set italian" & @CRLF)
 EndFunc   ;==>_setLangEN
