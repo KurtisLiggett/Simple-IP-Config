@@ -72,15 +72,14 @@ Func _makeGUI()
 	Local $wLeft = 230*$dscale
 	Local $xRight = $xLeft + $wLeft
 	Local $wRight = $guiWidth*$dscale - $wLeft - 2*$guiSpacer
-	_makeComboSelect("Select Adapter", $xLeft, $tbarHeight*$dscale + $guiSpacer+$y, $wLeft, 88*$dscale)
+	_makeComboSelect($oLangStrings.interface.select, $xLeft, $tbarHeight*$dscale + $guiSpacer+$y, $wLeft, 88*$dscale)
 	$hLeft = $tbarHeight*$dscale + $guiSpacer + 88*$dscale+$y
-	_makeProfileSelect("Profiles", $xLeft, $tbarHeight*$dscale + $guiSpacer + 87*$dscale+$y, $wLeft, $guiHeight*$dscale-$hLeft-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
+	_makeProfileSelect($oLangStrings.interface.profiles, $xLeft, $tbarHeight*$dscale + $guiSpacer + 87*$dscale+$y, $wLeft, $guiHeight*$dscale-$hLeft-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
 
-
-	_makeIpProps("Profile IP Properties", $xRight, $tbarHeight*$dscale + $guiSpacer+$y, $wRight, 148*$dscale)
+	_makeIpProps($oLangStrings.interface.profileprops, $xRight, $tbarHeight*$dscale + $guiSpacer+$y, $wRight, 148*$dscale)
 	_makeDnsProps("", $xRight, $tbarHeight*$dscale + $guiSpacer + 147*$dscale+$y, $wRight, 130*$dscale)
 	$hRight = $tbarHeight*$dscale + $guiSpacer + 148*$dscale + 130*$dscale
-	_makeCurrentProps("Current Adapter Properties", $xRight, $tbarHeight*$dscale + $guiSpacer + 148*$dscale + 129*$dscale, $wRight, $guiHeight*$dscale-$hRight-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
+	_makeCurrentProps($oLangStrings.interface.currentprops, $xRight, $tbarHeight*$dscale + $guiSpacer + 148*$dscale + 129*$dscale, $wRight, $guiHeight*$dscale-$hRight-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
 	_makeFooter()
 
 ;~ 	$but = GUICtrlCreateButton("get", 10, 50, 100,25)
@@ -300,7 +299,9 @@ Func _makeMenu()
 EndFunc
 
 Func _makeCurrentProps($label, $x, $y, $w, $h)
-	Local $headingHeight = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	Local $aRet = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	$headingCurrent = $aRet[0]
+	Local $headingHeight = $aRet[1]
 	Local $bkcolor = 0xEEEEEE
 
 	$label_CurrIp = GUICtrlCreateLabel( $oLangStrings.interface.props.ip & ":", $x+8*$dscale, $y+$headingHeight+8*$dscale)
@@ -364,7 +365,8 @@ Func _makeCurrentProps($label, $x, $y, $w, $h)
 EndFunc
 
 Func _makeDnsProps($label, $x, $y, $w, $h)
-	Local $headingHeight = _makeHeading($label, $x+1, $y+1, $w-2, 5, 0x0782FD, 0.95)
+	Local $aRet = _makeHeading($label, $x+1, $y+1, $w-2, 5, 0x0782FD, 0.95)
+	Local $headingHeight = $aRet[1]
 	GUIStartGroup()
 	$radio_DnsAuto = GUICtrlCreateRadio( $oLangStrings.interface.props.dnsauto, $x+8*$dscale, $y+$headingHeight+4*$dscale, $w-16*$dscale, 20*$dscale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
@@ -392,7 +394,9 @@ Func _makeDnsProps($label, $x, $y, $w, $h)
 EndFunc
 
 Func _makeIpProps($label, $x, $y, $w, $h)
-	Local $headingHeight = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	Local $aRet = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	$headingIP = $aRet[0]
+	Local $headingHeight = $aRet[1]
 	GUIStartGroup()
 	$radio_IpAuto = GUICtrlCreateRadio( $oLangStrings.interface.props.ipauto, $x+8*$dscale, $y+$headingHeight+4*$dscale, $w-16*$dscale, 20*$dscale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
@@ -421,7 +425,9 @@ Func _makeIpProps($label, $x, $y, $w, $h)
 EndFunc
 
 Func _makeProfileSelect($label, $x, $y, $w, $h)
-	Local $headingHeight = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	Local $aRet = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	$headingProfiles = $aRet[0]
+	Local $headingHeight = $aRet[1]
 	$searchgraphic = GUICtrlCreatePic("", $x+5, $y+$headingHeight+3+2*$dscale, 16, 16)
 	;_ResourceSetImageToCtrl($hGUI, $searchgraphic, "search_png")
 	_memoryToPic($searchgraphic, GetIconData($pngSearch))
@@ -464,13 +470,16 @@ Func _makeProfileSelect($label, $x, $y, $w, $h)
 EndFunc
 
 Func _makeComboSelect($label, $x, $y, $w, $h)
-	Local $headingHeight = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	Local $aRet = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	$headingSelect = $aRet[0]
+	Local $headingHeight = $aRet[1]
+
 	$combo_adapters = GUICtrlCreateCombo( "", $x+8*$dscale, $y + $headingHeight + 8*$dscale, $w-16*$dscale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
 	GUICtrlSetOnEvent($combo_adapters, "_OnCombo")
 	_setFont($combo_adapters, $MyGlobalFontSize)
-	$lDescription = GUICtrlCreateLabel( "Description", $x+8*$dscale, $y + $headingHeight + 9*$dscale + 26*$dscale, $w-16*$dscale, -1, $SS_LEFTNOWORDWRAP	 )
+	$lDescription = GUICtrlCreateLabel( $oLangStrings.interface.adapterDesc, $x+8*$dscale, $y + $headingHeight + 9*$dscale + 26*$dscale, $w-16*$dscale, -1, $SS_LEFTNOWORDWRAP	 )
 	_setFont($lDescription, 8.5, $MyGlobalFontBKColor)
-	$lMac = GUICtrlCreateLabel( "MAC Address: ", $x+8*$dscale, $y + $headingHeight + 9*$dscale + 41*$dscale, $w-16*$dscale, -1, $SS_LEFTNOWORDWRAP	 )
+	$lMac = GUICtrlCreateLabel( $oLangStrings.interface.mac & ": ", $x+8*$dscale, $y + $headingHeight + 9*$dscale + 41*$dscale, $w-16*$dscale, -1, $SS_LEFTNOWORDWRAP	 )
 	_setFont($lMac, 8.5, $MyGlobalFontBKColor)
 
 	$combo_dummy = GUICtrlCreateDummy()
@@ -618,7 +627,10 @@ Func _makeHeading($sLabel, $x, $y, $w, $height=-1, $color=-1, $lightness=-1)
 		_WinAPI_DeleteObject($hBitmap)
 	EndIf
 
-	Return $h
+	Local $aRet[2]
+	$aRet[0] = $heading
+	$aRet[1] = $h
+	Return $aRet
 EndFunc
 
 ; Create Section Box

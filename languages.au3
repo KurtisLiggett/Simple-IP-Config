@@ -145,6 +145,14 @@ Func _updateLang()
 	GUICtrlSetData($label_DnsPri, $oLangStrings.interface.props.dnsPref & ":")
 	GUICtrlSetData($label_DnsAlt, $oLangStrings.interface.props.dnsAlt & ":")
 	GUICtrlSetData($ck_dnsReg, $oLangStrings.interface.props.dnsreg)
+
+	GUICtrlSetData($lDescription, $oLangStrings.interface.adapterDesc)
+	GUICtrlSetData($lMac, $oLangStrings.interface.mac & ": ")
+
+	GUICtrlSetData($headingSelect, $oLangStrings.interface.select)
+	GUICtrlSetData($headingProfiles, $oLangStrings.interface.profiles)
+	GUICtrlSetData($headingIP, $oLangStrings.interface.profileprops)
+	GUICtrlSetData($headingCurrent, $oLangStrings.interface.currentprops)
 EndFunc   ;==>_updateLang
 
 Func _setLangEnglish()
@@ -227,12 +235,23 @@ Func _setLangEnglish()
 	$oLangStrings.interface.props.dnsmanual = "Manually Set DNS Address"
 	$oLangStrings.interface.props.dnsreg = "Register Addresses"
 
+	$oLangStrings.interface.adapterDesc = "Description"
+	$oLangStrings.interface.mac = "MAC Address"
+
+	$oLangStrings.interface.select = "Select Adapter"
+	$oLangStrings.interface.profiles = "Profiles"
+	$oLangStrings.interface.profileprops = "Profile IP Properties"
+	$oLangStrings.interface.currentprops = "Current Adapter Properties"
 
 	ConsoleWrite("set english" & @CRLF)
 EndFunc   ;==>_setLangEN
 
 ; placeholder for IT language for testing
 Func _setLangItalian()
-	$oLangStrings.toolbar.apply = "test"
+	$oLangStrings.interface.select = "Select Adapter2"
+	$oLangStrings.interface.profiles = "Profiles2"
+	$oLangStrings.interface.profileprops = "Profile IP Properties2"
+	$oLangStrings.interface.currentprops = "Current Adapter Properties2"
+
 	ConsoleWrite("set italian" & @CRLF)
 EndFunc   ;==>_setLangEN

@@ -120,9 +120,9 @@ Global $label_CurrentDhcp, $label_CurrentAdapterState
 Global $link, $computerName, $domainName
 Global $blacklistLV
 
+Global $headingSelect, $headingProfiles, $headingIP, $headingCurrent
 Global $label_CurrIp, $label_CurrSubnet, $label_CurrGateway, $label_CurrDnsPri, $label_CurrDnsAlt, $label_CurrDhcp, $label_CurrAdapterState
 Global $label_DnsPri, $label_DnsAlt, $ck_dnsReg, $label_ip, $label_subnet, $label_gateway
-
 
 ; TOOLBAR
 Global $hTool, $hTool2
