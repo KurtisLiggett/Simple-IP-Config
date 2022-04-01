@@ -1515,9 +1515,9 @@ Func _DomainComputerBelongs($strComputer = "localhost")
 	If IsObj($colItems) Then
 		For $objItem In $colItems
 			If $objItem.PartOfDomain Then
-				$Domain = "Domain: " & $objItem.Domain
+				$Domain = $oLangStrings.interface.domain & ": " & $objItem.Domain
 			Else
-				$Domain = "Workgroup: " & $objItem.Domain
+				$Domain = $oLangStrings.interface.domain & ": " & $objItem.Domain
 			EndIf
 
 		Next

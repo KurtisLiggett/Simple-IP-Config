@@ -29,6 +29,7 @@ Func _initLang()
 	$oLangStrings.lvmenu = IDispatch()	;listview menu
 	$oLangStrings.toolbar = IDispatch()
 	$oLangStrings.interface = IDispatch()
+	$oLangStrings.interface.current = IDispatch()
 	$oLangStrings.settings = IDispatch()
 	$oLangStrings.about = IDispatch()
 	$oLangStrings.messages = IDispatch()
@@ -121,6 +122,19 @@ Func _updateLang()
 	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_save, $oLangStrings.toolbar.save)
 	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_delete, $oLangStrings.toolbar.delete)
 	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_clear, $oLangStrings.toolbar.clear)
+
+	GUICtrlSetData($computerName, $oLangStrings.interface.computername & ": " & @ComputerName)
+	GUICtrlSetData($domainName, _DomainComputerBelongs())
+
+
+	GUICtrlSetData($label_CurrIp, $oLangStrings.interface.current.ip & ":")
+	GUICtrlSetData($label_CurrSubnet, $oLangStrings.interface.current.subnet & ":")
+	GUICtrlSetData($label_CurrGateway, $oLangStrings.interface.current.gateway & ":")
+	GUICtrlSetData($label_CurrDnsPri, $oLangStrings.interface.current.dnsPref & ":")
+	GUICtrlSetData($label_CurrDnsAlt, $oLangStrings.interface.current.dnsAlt & ":")
+	GUICtrlSetData($label_CurrDhcp, $oLangStrings.interface.current.dhcpServer & ":")
+	GUICtrlSetData($label_CurrAdapterState, $oLangStrings.interface.current.adapterState & ":")
+
 EndFunc   ;==>_updateLang
 
 Func _setLangEnglish()
@@ -184,6 +198,18 @@ Func _setLangEnglish()
 	$oLangStrings.toolbar.clear_tip = "Clear entries"
 	$oLangStrings.toolbar.settings_tip = "Settings"
 	$oLangStrings.toolbar.tray_tip = "Send to tray"
+
+	$oLangStrings.interface.computername = "Computer name"
+	$oLangStrings.interface.domain = "Domain"
+	$oLangStrings.interface.workgroup = "Workgroup"
+
+	$oLangStrings.interface.current.ip = "IP Address"
+	$oLangStrings.interface.current.subnet = "Subnet Mask"
+	$oLangStrings.interface.current.gateway = "Gateway"
+	$oLangStrings.interface.current.dnsPref = "Preferred DNS Server"
+	$oLangStrings.interface.current.dnsAlt = "Alternate"
+	$oLangStrings.interface.current.dhcpServer = "DHCP Server"
+	$oLangStrings.interface.current.adapterState = "Adapter State"
 
 	ConsoleWrite("set english" & @CRLF)
 EndFunc   ;==>_setLangEN

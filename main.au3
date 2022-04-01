@@ -118,9 +118,11 @@ Global $radio_DnsAuto, $radio_DnsMan, $ip_DnsPri, $ip_DnsAlt, $ck_dnsReg
 Global $label_DnsPri, $label_DnsAlt
 Global $label_CurrentIp, $label_CurrentSubnet, $label_CurrentGateway
 Global $label_CurrentDnsPri, $label_CurrentDnsAlt
-Global $label_CurrentDhcp, $label_CurrentAdapterState, $domain
-Global $link
+Global $label_CurrentDhcp, $label_CurrentAdapterState
+Global $link, $computerName, $domainName
 Global $blacklistLV
+
+Global $label_CurrIp, $label_CurrSubnet, $label_CurrGateway, $label_CurrDnsPri, $label_CurrDnsAlt, $label_CurrDhcp, $label_CurrAdapterState
 
 ; TOOLBAR
 Global $hTool, $hTool2
@@ -283,7 +285,7 @@ Func _main()
 	_checkChangelog()
 
 	;get the domain
-	GUICtrlSetData($domain, _DomainComputerBelongs())
+	GUICtrlSetData($domainName, _DomainComputerBelongs())
 
 	$sAutoUpdate = OPTIONS_GetValue($options, $OPTIONS_AutoUpdate)
 	If ($sAutoUpdate = "true" Or $sAutoUpdate = "1") Then

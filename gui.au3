@@ -177,17 +177,17 @@ Func _makeFooter()
 	GUICtrlSetBkColor(-1, 0x404040)
 
 	If $screenshot Then
-		$computer = GUICtrlCreateLabel("Computer Name: ________", $x+3, $y+2, $w, $h)
+		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": ________", $x+3, $y+2, $w, $h)
 	Else
-		$computer = GUICtrlCreateLabel("Computer Name: " & @ComputerName, $x+3, $y+2, $w, $h)
+		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": " & @ComputerName, $x+3, $y+2, $w, $h)
 	EndIf
-	GUICtrlSetBkColor($computer, $GUI_BKCOLOR_TRANSPARENT)
-	_setFont($computer, 8, -1, 0xFFFFFF)
+	GUICtrlSetBkColor($computerName, $GUI_BKCOLOR_TRANSPARENT)
+	_setFont($computerName, 8, -1, 0xFFFFFF)
 
 	If @LogonDomain <> "" Then
-		$domain = GUICtrlCreateLabel("", $x, $y+2, $w-3, $h, $SS_RIGHT)
-		GUICtrlSetBkColor($domain, $GUI_BKCOLOR_TRANSPARENT)
-		_setFont($domain, 8, -1, 0xFFFFFF)
+		$domainName = GUICtrlCreateLabel("", $x, $y+2, $w-3, $h, $SS_RIGHT)
+		GUICtrlSetBkColor($domainName, $GUI_BKCOLOR_TRANSPARENT)
+		_setFont($domainName, 8, -1, 0xFFFFFF)
 	EndIf
 
 	;_makeHeading("", $x, $y, $w, $h, 0x0782FD, 0.95)
@@ -303,21 +303,21 @@ Func _makeCurrentProps($label, $x, $y, $w, $h)
 	Local $headingHeight = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
 	Local $bkcolor = 0xEEEEEE
 
-	$label_CurrIp = GUICtrlCreateLabel( "IP Address:", $x+8*$dscale, $y+$headingHeight+8*$dscale)
+	$label_CurrIp = GUICtrlCreateLabel( $oLangStrings.interface.current.ip & ":", $x+8*$dscale, $y+$headingHeight+8*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentIp = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+8*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
 	GUICtrlSetColor(-1, 0x444444)
 
-	$label_CurrSubnet = GUICtrlCreateLabel( "Subnet Mask:", $x+8*$dscale, $y+$headingHeight+25*$dscale)
+	$label_CurrSubnet = GUICtrlCreateLabel( $oLangStrings.interface.current.subnet & ":", $x+8*$dscale, $y+$headingHeight+25*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentSubnet = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+25*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
 	GUICtrlSetColor(-1, 0x444444)
 
-	$label_CurrGateway = GUICtrlCreateLabel( "Gateway:", $x+8*$dscale, $y+$headingHeight+42*$dscale)
+	$label_CurrGateway = GUICtrlCreateLabel( $oLangStrings.interface.current.gateway & ":", $x+8*$dscale, $y+$headingHeight+42*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentGateway = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+42*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
@@ -328,14 +328,14 @@ Func _makeCurrentProps($label, $x, $y, $w, $h)
 ;~ 	GUICtrlSetBkColor(-1, 0x0051FF)
 	GUICtrlSetBkColor(-1, 0x404040)
 
-	$label_CurrDnsPri = GUICtrlCreateLabel( "Preferred DNS Server:", $x+8*$dscale, $y+$headingHeight+67*$dscale)
+	$label_CurrDnsPri = GUICtrlCreateLabel( $oLangStrings.interface.current.dnsPref & ":", $x+8*$dscale, $y+$headingHeight+67*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentDnsPri = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+67*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
 	GUICtrlSetColor(-1, 0x444444)
 
-	$label_CurrDnsAlt = GUICtrlCreateLabel( "Alternate DNS Server:", $x+8*$dscale, $y+$headingHeight+84*$dscale)
+	$label_CurrDnsAlt = GUICtrlCreateLabel( $oLangStrings.interface.current.dnsAlt & ":", $x+8*$dscale, $y+$headingHeight+84*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentDnsAlt = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+84*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
@@ -346,14 +346,14 @@ Func _makeCurrentProps($label, $x, $y, $w, $h)
 ;~ 	GUICtrlSetBkColor(-1, 0x0051FF)
 	GUICtrlSetBkColor(-1, 0x404040)
 
-	$label_CurrDhcp = GUICtrlCreateLabel( "DHCP Server:", $x+8*$dscale, $y+$headingHeight+112*$dscale)
+	$label_CurrDhcp = GUICtrlCreateLabel( $oLangStrings.interface.current.dhcpServer & ":", $x+8*$dscale, $y+$headingHeight+112*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentDhcp = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+112*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
 	GUICtrlSetColor(-1, 0x444444)
 
-	$label_CurrAdapterState = GUICtrlCreateLabel( "Adapter State:", $x+8*$dscale, $y+$headingHeight+129*$dscale)
+	$label_CurrAdapterState = GUICtrlCreateLabel( $oLangStrings.interface.current.adapterState & ":", $x+8*$dscale, $y+$headingHeight+129*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentAdapterState = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+129*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
