@@ -3,12 +3,17 @@
 #define MyFriendlyVer "2.9.4"
 #define MyAppVer "2.9.4.0"
 #define MyPath ""
+#define MyAppCopyright ""
 
 [Setup]
 AppName={#MyAppName}
 AppVersion={#MyAppVer}
 AppVerName={#MyAppName} {#MyAppVer}
-VersionInfoVersion={#MyAppVer}
+VersionInfoDescription={#MyAppName} installer
+VersionInfoProductName={#MyAppName} {#MyAppVersion}
+VersionInfoVersion={#MyAppVer}.0
+SetupIconFile={app}\{#MyAppName}.exe
+AppCopyright={#MyAppCopyright}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 UninstallDisplayName={#MyAppName} {#MyAppVer}
@@ -44,5 +49,5 @@ english.Program=Start {#MyAppName} after finishing installation?
 italian.Program=Vuoi avviare {#MyAppName} al termine dell'installazione?
 
 [Languages]
-Name: "englisg"; MessagesFile: "compiler:default.isl"; 
+Name: "english"; MessagesFile: "compiler:default.isl"; 
 Name: "italian"; MessagesFile: "compiler:Languages\Italian.isl"; 
