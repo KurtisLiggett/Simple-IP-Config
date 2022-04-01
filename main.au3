@@ -71,7 +71,7 @@ Global $iDPI = 0
 
 Global $headingHeight = 20
 Global $menuHeight, $captionHeight
-Global $MinToTray, $RestoreItem
+Global $MinToTray, $RestoreItem, $aboutitem, $exititem
 
 Global $aAccelKeys[12][2]
 

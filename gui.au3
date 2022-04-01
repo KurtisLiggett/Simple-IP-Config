@@ -130,12 +130,12 @@ Func _makeGUI()
 
 	;WinWaitActive ( $hgui, "", 3 )
 	;~ Set up tray menu
-	$RestoreItem      = TrayCreateItem("Hide")
+	$RestoreItem      = TrayCreateItem($oLangStrings.traymenu.hide)
 	TrayItemSetOnEvent(-1, "_OnRestore")
-	$aboutitem      = TrayCreateItem("About")
+	$aboutitem      = TrayCreateItem($oLangStrings.traymenu.about)
 	TrayItemSetOnEvent(-1, "_onAbout")
 	TrayCreateItem("")
-	$exititem       = TrayCreateItem("Exit")
+	$exititem       = TrayCreateItem($oLangStrings.traymenu.exit)
 	TrayItemSetOnEvent(-1, "_onExit")
 	TraySetOnEvent($TRAY_EVENT_PRIMARYDOWN, "_OnTrayClick")
 	TraySetToolTip ( $winName )
@@ -162,7 +162,7 @@ Func _makeGUI()
 		GUISetState(@SW_SHOWNOACTIVATE, $hTool)
 		GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
 	Else
-		TrayItemSetText( $RestoreItem, "Restore" )
+		TrayItemSetText( $RestoreItem, $oLangStrings.traymenu.restore )
 	EndIf
 	$prevWinPos = WinGetPos($hgui)
 EndFunc

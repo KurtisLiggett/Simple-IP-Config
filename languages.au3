@@ -91,7 +91,7 @@ Func _updateLang()
 
 	GUICtrlSetData($toolsmenu, $oLangStrings.menu.tools.tools)
 	GUICtrlSetData($pullitem, $oLangStrings.menu.tools.pull)
-	;check disable/enable
+
 	GUICtrlSetData($disableitem, $oLangStrings.menu.tools.disable)
 	GUICtrlSetData($releaseitem, $oLangStrings.menu.tools.release)
 	GUICtrlSetData($renewitem, $oLangStrings.menu.tools.renew)
@@ -104,6 +104,10 @@ Func _updateLang()
 	GUICtrlSetData($checkUpdatesItem, $oLangStrings.menu.help.update)
 	GUICtrlSetData($debugmenuitem, $oLangStrings.menu.help.debug)
 	GUICtrlSetData($infoitem, $oLangStrings.menu.help.about)
+
+	GUICtrlSetData($RestoreItem, $oLangStrings.traymenu.hide)
+	GUICtrlSetData($aboutitem, $oLangStrings.traymenu.about)
+	GUICtrlSetData($exititem, $oLangStrings.traymenu.exit)
 EndFunc   ;==>_updateLang
 
 Func _setLangEnglish()
@@ -141,7 +145,10 @@ Func _setLangEnglish()
 	$oLangStrings.menu.help.debug = "&Debug Information"
 	$oLangStrings.menu.help.about = "&About Simple IP Config"
 
-	$oLangStrings.menu.help.about = "&About Simple IP Config"
+	$oLangStrings.traymenu.hide = "Hide"
+	$oLangStrings.traymenu.restore = "Restore"
+	$oLangStrings.traymenu.about = "About"
+	$oLangStrings.traymenu.exit = "Exit"
 
 	ConsoleWrite("set english" & @CRLF)
 EndFunc   ;==>_setLangEN

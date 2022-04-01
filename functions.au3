@@ -1450,7 +1450,7 @@ Func _SendToTray()
 
 	GUISetState(@SW_MINIMIZE, $hGUI)
 	GUISetState(@SW_HIDE, $hGUI)
-	TrayItemSetText($RestoreItem, "Restore")
+	TrayItemSetText($RestoreItem, $oLangStrings.traymenu.restore)
 	If $tray_tip = 0 Then
 		TrayTip("", "Simple IP Config is still running.", 1)
 		$tray_tip = 1
@@ -1473,7 +1473,7 @@ Func _maximize()
 
 	GUISetState(@SW_SHOWNOACTIVATE, $hTool)
 	GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
-	TrayItemSetText($RestoreItem, "Hide")
+	TrayItemSetText($RestoreItem, $oLangStrings.traymenu.hide)
 EndFunc   ;==>_maximize
 
 Func _setStatus($sMessage, $bError = 0, $bTiming = 0)

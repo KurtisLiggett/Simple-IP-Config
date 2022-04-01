@@ -91,7 +91,7 @@ EndFunc
 ; Events.......: single left-click on tray icon
 ;------------------------------------------------------------------------------
 Func _OnTrayClick()
-	If TrayItemGetText( $RestoreItem ) = "Restore" Then
+	If TrayItemGetText( $RestoreItem ) = $oLangStrings.traymenu.restore Then
 		_maximize()
 	Else
 		_SendToTray()
@@ -104,7 +104,7 @@ EndFunc
 ; Events.......: 'Restore' item in tray right-click menu
 ;------------------------------------------------------------------------------
 Func _OnRestore()
-	If TrayItemGetText( $RestoreItem ) = "Restore" Then
+	If TrayItemGetText( $RestoreItem ) = $oLangStrings.traymenu.restore Then
 		_maximize()
 	Else
 		_SendToTray()
