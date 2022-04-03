@@ -1,8 +1,5 @@
 #define MyAppName "Simple IP Config"
-#define MyFileVer "2.9.4"
-#define MyFriendlyVer "2.9.4"
-#define MyAppVer "2.9.4.0"
-#define MyPath ""
+#define MyAppVer "2.9.4"
 #define MyAppCopyright ""
 
 [Setup]
