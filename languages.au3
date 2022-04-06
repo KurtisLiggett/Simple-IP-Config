@@ -35,7 +35,7 @@ Func _initLang()
 	$oLangStrings.updates = IDispatch()
 	$oLangStrings.changelog = IDispatch()
 	$oLangStrings.blacklist = IDispatch()
-	$oLangStrings.messages = IDispatch()
+	$oLangStrings.message = IDispatch()
 
 	;format OS language
 	Switch @OSLang
@@ -275,6 +275,38 @@ Func _setLangEnglish()
 	$oLangStrings.buttonOK = "OK"
 	$oLangStrings.buttonCancel = "Cancel"
 	$oLangStrings.buttonSave = "Save"
+
+	$oLangStrings.message.ready = "Ready"
+	$oLangStrings.message.timedout = "Action timed out!  Command Aborted."
+	$oLangStrings.message.couldNotSave = "Could not save to the selected location!"
+	$oLangStrings.message.updatingList = "Updating Adapter List..."
+	$oLangStrings.message.selectAdapter = "Select an adapter and try again"
+	$oLangStrings.message.enterIP= "Enter an IP address"
+	$oLangStrings.message.enterSubnet = "Enter a subnet mask"
+	$oLangStrings.message.settingIP	 = "Setting static IP address..."
+	$oLangStrings.message.settingDnsDhcp = "Setting DNS DHCP..."
+	$oLangStrings.message.settingDnsPref = "Setting preferred DNS server..."
+	$oLangStrings.message.settingDnsAlt = "Setting alternate DNS server..."
+	$oLangStrings.message.errorOccurred = "An error occurred"
+	$oLangStrings.message.profileNameExists = "The profile name already exists!"
+	$oLangStrings.message.noProfileSel = "No profile is selected!"
+	$oLangStrings.message.profilesNotFound = "Profiles.ini file not found - A new file will be created"
+	$oLangStrings.message.errorReadingProf = "Error reading profiles.ini"
+	$oLangStrings.message.adapterNotFound = "Adapter not found"
+	$oLangStrings.message.error = "Error"
+	$oLangStrings.message.warning = "Warning"
+	$oLangStrings.message.newItem = "New Item"
+	$oLangStrings.message.applying = "Applying profile"
+	$oLangStrings.message.errorRetrieving = "There was a problem retrieving the adapters."
+	$oLangStrings.message.commandTimeout = "Command timeout"
+	$oLangStrings.message.updateCheckError = "An error was encountered while retrieving the update."
+	$oLangStrings.message.checkConnect = "Please check your internet connection."
+	$oLangStrings.message.errorCode = "Error code"
+	$oLangStrings.message.newVersion = "A newer version is available"
+	$oLangStrings.message.currentVersion = "You have the latest version."
+	$oLangStrings.message.yourVersion = "Your version is"
+	$oLangStrings.message.latestVersion = "Latest version is"
+
 
 	ConsoleWrite("set english" & @CRLF)
 EndFunc   ;==>_setLangEN

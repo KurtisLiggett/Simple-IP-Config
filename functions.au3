@@ -27,7 +27,7 @@ Func MyErrFunc($oError)
 	If Not $suppressComError Then
 		SetError(1)
 		; Do anything here.
-		MsgBox(1, "COM Error", "Simple IP Config COM Error!" & @CRLF & "Error Number: " & Hex($oError.number))
+		MsgBox(1, "COM " & $oLangStrings.message.error, "Simple IP Config COM " & $oLangStrings.message.error & @CRLF & "Error Number: " & Hex($oError.number))
 	EndIf
 EndFunc   ;==>MyErrFunc
 
@@ -45,8 +45,8 @@ EndFunc   ;==>MyErrFunc
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func RunCallback($sDescription, $sNextDescription, $sStdOut)
-	If $sStdOut = "Command timeout" Then
-		_setStatus("Action timed out!  Command Aborted.", 1)
+	If $sStdOut = $oLangStrings.message.commandTimeout Then
+		_setStatus($oLangStrings.message.timedout, 1)
 		If asyncRun_isIdle() Then
 			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
 		Else
@@ -68,7 +68,7 @@ Func RunCallback($sDescription, $sNextDescription, $sStdOut)
 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
 			ElseIf asyncRun_isIdle() Then
 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
-				If Not $showWarning Then _setStatus("Ready")
+				If Not $showWarning Then _setStatus($oLangStrings.message.ready)
 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
 			Else
 				If Not $showWarning Then _setStatus($sNextDescription)
@@ -107,7 +107,7 @@ Func _CreateLink()
 	If @error Then Return
 
 	$res = FileCreateShortcut(@ScriptFullPath, $dir, @ScriptDir, '/set-config "' & $iniName & '"', "desc", @ScriptFullPath)
-	If $res = -1 Then _setStatus("Could not save to the selected location!", 1)
+	If $res = -1 Then _setStatus($oLangStrings.message.couldNotSave, 1)
 EndFunc   ;==>_CreateLink
 
 ;------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ Func _checksSICUpdate($manualCheck = 0)
 	If (@error) Then
 		SetError(1001, 0, 0)
 		If $manualCheck Then
-			MsgBox(16, "Check For Update Error", "An error was encountered while retrieving the update." & @CRLF & "Please check your internet connection." & @CRLF & "Error code: " & @error)
+			MsgBox(16, $oLangStrings.message.error, $oLangStrings.message.updateCheckError & @CRLF & $oLangStrings.message.checkConnect & @CRLF & $oLangStrings.message.errorCode & ": " & @error)
 		EndIf
 		Return
 	EndIf
@@ -133,7 +133,7 @@ Func _checksSICUpdate($manualCheck = 0)
 	If (@error) Then
 		If $manualCheck Then
 			SetError(1001, 0, 0)
-			MsgBox(16, "JSON Error", "Error parsing JSON data." & @CRLF & "Error code: " & @error)
+			MsgBox(16, "JSON Error", "Error parsing JSON data." & @CRLF & $oLangStrings.message.errorCode & ": " & @error)
 		EndIf
 		Return
 	EndIf
@@ -141,7 +141,7 @@ Func _checksSICUpdate($manualCheck = 0)
 	If (@error) Then
 		If $manualCheck Then
 			SetError(1002, 0, 0)
-			MsgBox(16, "JSON Error", "Error parsing JSON data." & @CRLF & "Error code: " & @error)
+			MsgBox(16, "JSON Error", "Error parsing JSON data." & @CRLF & $oLangStrings.message.errorCode & ": " & @error)
 		EndIf
 		Return
 	EndIf
@@ -150,7 +150,7 @@ Func _checksSICUpdate($manualCheck = 0)
 	If (@error) Then
 		If $manualCheck Then
 			SetError(1004, 0, 0)
-			MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Invalid result string." & @CRLF & "Error code: " & @error)
+			MsgBox(16, $oLangStrings.message.error, $oLangStrings.message.updateCheckError & @CRLF & $oLangStrings.message.errorCode & ": " & @error)
 		EndIf
 		Return
 	EndIf
@@ -160,7 +160,7 @@ Func _checksSICUpdate($manualCheck = 0)
 	If (@error) Then
 		If $manualCheck Then
 			SetError(1004, 0, 0)
-			MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Invalid result string." & @CRLF & "Error code: " & @error)
+			MsgBox(16, $oLangStrings.message.error, $oLangStrings.message.updateCheckError & @CRLF & $oLangStrings.message.errorCode & ": " & @error)
 		EndIf
 		Return
 	EndIf
@@ -204,7 +204,7 @@ Func _checksSICUpdate($manualCheck = 0)
 	Else
 		If $manualCheck Then
 			SetError(1004, 0, 0)
-			MsgBox(16, "Automatic Update Error", "An error was encountered while retrieving the update." & @CRLF & "Invalid result string." & @CRLF & "Error code: " & @error)
+			MsgBox(16, $oLangStrings.message.error, $oLangStrings.message.updateCheckError & @CRLF & $oLangStrings.message.errorCode & ": " & @error)
 		EndIf
 	EndIf
 
@@ -214,9 +214,9 @@ Func _checksSICUpdate($manualCheck = 0)
 		$dateNow = _NowCalcDate()
 		$dateLastCheck = Options_GetValue($options, $OPTIONS_LastUpdateCheck)
 
-		$updateText = "Your version is: " & $thisVersion & @CRLF & _
-				"Latest version is: " & $scurrentVersion & @CRLF & @CRLF & _
-				"A newer version is available"
+		$updateText = $oLangStrings.message.yourVersion & ": " & $thisVersion & @CRLF & _
+				$oLangStrings.message.latestVersion & ": " & $scurrentVersion & @CRLF & @CRLF & _
+				$oLangStrings.message.newVersion
 		If $manualCheck Or _DateDiff('D', $dateLastCheck, $dateNow) >= 7 Or $dateLastCheck='' Then
 			_ShowUpdateDialog($thisVersion, $scurrentVersion, $isNew)
 
@@ -225,9 +225,9 @@ Func _checksSICUpdate($manualCheck = 0)
 			IniWrite($sProfileName, "options", $LastUpdateCheckName, $dateNow)
 		EndIf
 	Else
-		$updateText = "Your version is: " & $thisVersion & @CRLF & _
-				"Latest version is: " & $scurrentVersion & @CRLF & @CRLF & _
-				"You have the latest version."
+		$updateText = $oLangStrings.message.yourVersion & ": " & $thisVersion & @CRLF & _
+				$oLangStrings.message.latestVersion & ": " & $scurrentVersion & @CRLF & @CRLF & _
+				$oLangStrings.message.currentVersion
 		If $manualCheck Then _ShowUpdateDialog($thisVersion, $scurrentVersion, $isNew)
 	EndIf
 
@@ -254,13 +254,13 @@ EndFunc   ;==>_DoUpdate
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _updateCombo()
-	_setStatus("Updating Adapter List...")
+	_setStatus($oLangStrings.message.updatingList)
 	_loadAdapters()
 	Local $adapterNames = Adapter_GetNames($adapters)
 	_GUICtrlComboBox_ResetContent(GUICtrlGetHandle($combo_adapters))
 
 	If Not IsArray($adapters) Then
-		MsgBox(16, "Error", "There was a problem retrieving the adapters.")
+		MsgBox(16, $oLangStrings.message.error, $oLangStrings.message.errorRetrieving)
 	Else
 		Adapter_Sort($adapters) ; connections sort ascending
 		$defaultitem = $adapterNames[0]
@@ -278,7 +278,7 @@ Func _updateCombo()
 		Next
 	EndIf
 	ControlSend($hgui, "", $combo_adapters, "{END}")
-	_setStatus("Ready")
+	_setStatus($oLangStrings.message.ready)
 EndFunc   ;==>_updateCombo
 
 ;------------------------------------------------------------------------------
@@ -630,7 +630,7 @@ EndFunc   ;==>_apply_GUI
 ; MUST BE TESTED VERY CAREFULLY
 Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $adapter, $Callback)
 	If $adapter = "" Then
-		_setStatus("Please select an adapter and try again", 1)
+		_setStatus($oLangStrings.message.selectAdapter, 1)
 		Return 1
 	EndIf
 
@@ -643,10 +643,10 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 		$message = "Setting DHCP..."
 	Else
 		If $ip = "" Then
-			_setStatus("Please enter an IP address", 1)
+			_setStatus($oLangStrings.message.enterIP, 1)
 			Return 1
 		ElseIf $subnet = "" Then
-			_setStatus("Please enter a subnet mask", 1)
+			_setStatus($oLangStrings.message.enterSubnet, 1)
 			Return 1
 		Else
 			If $gateway = "" Then
@@ -654,7 +654,7 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 			Else
 				$cmd3 = " static " & $ip & " " & $subnet & " " & $gateway & " 1"
 			EndIf
-			$message = "Setting static IP address..."
+			$message = $oLangStrings.message.settingIP
 		EndIf
 	EndIf
 	;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
@@ -673,7 +673,7 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 	If ($dnsDhcp = "true") Then
 		$cmd1 = $cmd1_1
 		$cmd3 = " dhcp"
-		$message = "Setting DNS DHCP..."
+		$message = $oLangStrings.message.settingDnsDhcp
 		;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
 		;(cmd, callback, description)
 		asyncRun($cmd1 & $cmd2 & $cmd3, $Callback, $message)
@@ -686,7 +686,7 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 		If $dnsp <> "" Then
 			$cmd1 = $cmd1_1
 			$cmd3 = " static " & $dnsp
-			$message = "Setting preferred DNS server..."
+			$message = $oLangStrings.message.settingDnsPref
 			$cmdend = (_OSVersion() >= 6) ? " " & $cmdReg & " no" : "$cmdReg"
 			;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
 			;(cmd, callback, description)
@@ -694,7 +694,7 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 			If $dnsa <> "" Then
 				$cmd1 = $cmd1_2
 				$cmd3 = " " & $dnsa
-				$message = "Setting alternate DNS server..."
+				$message = $oLangStrings.message.settingDnsAlt
 				$cmdend = (_OSVersion() >= 6) ? " 2 no" : ""
 				;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
 				;(cmd, callback, description)
@@ -703,7 +703,7 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 		ElseIf $dnsa <> "" Then
 			$cmd1 = $cmd1_1
 			$cmd3 = " static " & $dnsp
-			$message = "Setting preferred DNS server..."
+			$message = $oLangStrings.message.settingDnsPref
 			$cmdend = (_OSVersion() >= 6) ? " " & $cmdReg & " no" : "$cmdReg"
 			;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
 			;(cmd, callback, description)
@@ -722,7 +722,7 @@ EndFunc   ;==>_apply
 ;Func _OLDapply()
 ;	$selected_adapter = GUICtrlRead($combo_adapters)
 ;	If $selected_adapter = "" Then
-;		_setStatus("Please select an adapter and try again", 1)
+;		_setStatus($oLangStrings.message.selectAdapter, 1)
 ;		Return 1
 ;	Endif
 ;
@@ -754,7 +754,7 @@ EndFunc   ;==>_apply
 ;			Else
 ;				$cmd3 = " static " & $ip & " " & $subnet & " " & $gateway & " 1"
 ;			EndIf
-;			$message = "Setting static IP address..."
+;			$message = $oLangStrings.message.settingIP
 ;		EndIf
 ;	EndIf
 ;	_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
@@ -876,9 +876,9 @@ Func _disable()
 	Else
 		_AdapterMod($selected_adapter, 1)
 		GUICtrlSetData($disableitem, $oLangStrings.menu.tools.disable)
-		_setStatus("Updating Adapter List...")
+		_setStatus($oLangStrings.message.updatingList)
 		_loadAdapters()
-		_setStatus("Ready")
+		_setStatus($oLangStrings.message.ready)
 	EndIf
 EndFunc   ;==>_disable
 
@@ -953,10 +953,10 @@ Func _rename()
 
 	$ret = _iniRename($sProfileName, $lv_oldName, $lv_newName)
 	If $ret = 2 Then
-		MsgBox($MB_ICONWARNING, "Warning!", "The profile name already exists!")
+		MsgBox($MB_ICONWARNING, $oLangStrings.message.warning & "!", $oLangStrings.message.profileNameExists)
 		_GUICtrlListView_SetItemText($list_profiles, $lv_editIndex, $lv_oldName)
 	ElseIf $ret = 1 Or $ret = 3 Then
-		_setStatus("An error occurred while saving the profile name", 1)
+		_setStatus($oLangStrings.message.errorOccurred, 1)
 	Else
 		Profiles_SetValue($profiles, $lv_oldName, $PROFILES_Name, $lv_newName)
 	EndIf
@@ -983,7 +983,7 @@ Func _delete($name = "")
 		$iniName = iniNameEncode($profileName)
 		$ret = IniDelete($sProfileName, $iniName)
 		If $ret = 0 Then
-			_setStatus("An error occurred while deleting the profile", 1)
+			_setStatus($oLangStrings.message.errorOccurred, 1)
 		EndIf
 
 		Profiles_Delete($profiles, $profileName)
@@ -1013,7 +1013,7 @@ Func _new()
 	$profileName = $text
 
 	If Not Profiles_isNewName($profiles, $profileName) Then
-		MsgBox($MB_ICONWARNING, "Warning!", "Profile name already exists!")
+		MsgBox($MB_ICONWARNING, "Warning!", $oLangStrings.message.profileNameExists)
 		$lv_startEditing = 1
 		Return
 	EndIf
@@ -1033,7 +1033,7 @@ Func _new()
 	$lv_newItem = 0
 	$ret = IniWriteSection($sProfileName, $iniName, $aSection, 0)
 	If $ret = 0 Then
-		_setStatus("An error occurred while saving the profile properties", 1)
+		_setStatus($oLangStrings.message.errorOccurred, 1)
 	EndIf
 
 	Profiles_AddSection($profiles, $profileName, $aSection)
@@ -1050,7 +1050,7 @@ EndFunc   ;==>_new
 Func _save()
 	;check to make sure a profile is selected
 	If ControlListView($hgui, "", $list_profiles, "GetSelectedCount") = 0 Then
-		_setStatus("No profile is selected!", 1)
+		_setStatus($oLangStrings.message.noProfileSel, 1)
 		Return 1
 	EndIf
 
@@ -1075,7 +1075,7 @@ Func _save()
 	$iniName = iniNameEncode($profileName)
 	$ret = IniWriteSection($sProfileName, $iniName, $aSection, 0)
 	If $ret = 0 Then
-		_setStatus("An error occurred while saving the profile properties", 1)
+		_setStatus($oLangStrings.message.errorOccurred, 1)
 	EndIf
 
 	Profiles_AddSection($profiles, $profileName, $aSection)
@@ -1098,7 +1098,7 @@ Func _refresh($init = 0)
 	_updateCurrent()
 	If $pIdle Then
 		If Not $init Or ($init And Not $showWarning) Then
-			_setStatus("Ready")
+			_setStatus($oLangStrings.message.ready)
 		EndIf
 		_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
 	EndIf
@@ -1148,7 +1148,7 @@ Func _setProperties($init = 0, $profileName = "")
 
 		_radios()
 	Else
-		_setStatus("An error occurred while setting the profile properties", 1)
+		_setStatus($oLangStrings.message.errorOccurred, 1)
 		Return 1
 	EndIf
 EndFunc   ;==>_setProperties
@@ -1213,13 +1213,13 @@ Func _loadProfiles()
 	Local $pname = $sProfileName
 
 	If Not FileExists($pname) Then
-		_setStatus("Profiles.ini file not found - A new file will be created", 1)
+		_setStatus($oLangStrings.message.profilesNotFound, 1)
 		Return 1
 	EndIf
 
 	$names = IniReadSectionNames($pname)
 	If @error Then
-		_setStatus("Error reading profiles.ini", 1)
+		_setStatus($oLangStrings.message.errorReadingProf, 1)
 		Return 1
 	EndIf
 
@@ -1294,13 +1294,13 @@ EndFunc   ;==>_loadProfiles
 
 Func _ImportProfiles($pname)
 	If Not FileExists($pname) Then
-		_setStatus("Profiles.ini file not found - A new file will be created", 1)
+		_setStatus($oLangStrings.message.profilesNotFound, 1)
 		Return 1
 	EndIf
 
 	$names = IniReadSectionNames($pname)
 	If @error Then
-		_setStatus("Error reading profiles.ini", 1)
+		_setStatus($oLangStrings.message.errorReadingProf, 1)
 		Return 1
 	EndIf
 
@@ -1372,7 +1372,7 @@ Func _updateProfileList()
 			GUICtrlSetOnEvent(-1, "_onSelect")
 		Next
 	Else
-		_setStatus("An error occurred while building the profile list", 1)
+		_setStatus($oLangStrings.message.errorOccurred, 1)
 		Return 1
 	EndIf
 	If $selItem < UBound($ap_names) Then
@@ -1397,7 +1397,7 @@ Func _updateCurrent($init = 0, $selected_adapter = "")
 			GUICtrlSetData($lMac, "MAC Address: " & Adapter_GetMAC($adapters, $selected_adapter))
 		EndIf
 	Else
-		GUICtrlSetData($lDescription, "! Adapter not found !")
+		GUICtrlSetData($lDescription, "! " & $oLangStrings.message.adapterNotFound & " !")
 		GUICtrlSetData($lMac, "")
 	EndIf
 
@@ -1452,7 +1452,7 @@ Func _SendToTray()
 	GUISetState(@SW_HIDE, $hGUI)
 	TrayItemSetText($RestoreItem, $oLangStrings.traymenu.restore)
 	If $tray_tip = 0 Then
-		TrayTip("", "Simple IP Config is still running.", 1)
+;~ 		TrayTip("", "Simple IP Config is still running.", 1)
 		$tray_tip = 1
 	EndIf
 EndFunc   ;==>_SendToTray
@@ -1503,7 +1503,7 @@ Func _DomainComputerBelongs($strComputer = "localhost")
 	$Domain = ''
 
 	If $screenshot Then
-		$Domain = "Domain: ________"
+		$Domain = $oLangStrings.interface.domain & ": ________"
 		Return $Domain
 	EndIf
 

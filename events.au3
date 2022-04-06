@@ -194,7 +194,7 @@ EndFunc
 ; Events.......: Toolbar button, File menu 'New' item
 ;------------------------------------------------------------------------------
 Func _onNewItem()
-	$newname = "New Item"
+	$newname = $oLangStrings.message.newItem
 	;Local $profileNames = _getNames()
 	Local $profileNames = Profiles_GetNames($profiles)
 	Local $i = 1

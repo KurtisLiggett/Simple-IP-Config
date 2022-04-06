@@ -204,7 +204,7 @@ Func _makeStatusbar()
 	GUICtrlSetState($wgraphic, $GUI_HIDE)
 	GUICtrlSetCursor($wgraphic, 0)
 
-	$statustext = GUICtrlCreateLabel ( "Ready", $x+3, $y+3, $w-2, $h-2)
+	$statustext = GUICtrlCreateLabel ( $oLangStrings.message.ready, $x+3, $y+3, $w-2, $h-2)
 	GUICtrlSetBkColor (-1, $GUI_BKCOLOR_TRANSPARENT)
 
 	$statuserror = GUICtrlCreateLabel ( "", $x+3, $y+3, $w-2, $h-2)

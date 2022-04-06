@@ -253,7 +253,7 @@ Func _main()
 
 	;Add adapters the the combobox
 	If Not IsArray($adapters) Then
-		MsgBox(16, "Error", "There was a problem retrieving the adapters.")
+		MsgBox(16, $oLangStrings.message.error, $oLangStrings.message.errorRetrieving)
 	Else
 		Adapter_Sort($adapters)    ; connections sort ascending
 		$defaultitem = Adapter_GetName($adapters, 0)
