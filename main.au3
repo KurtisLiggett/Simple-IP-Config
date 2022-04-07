@@ -71,7 +71,7 @@ Global $iDPI = 0
 
 Global $headingHeight = 20
 Global $menuHeight, $captionHeight
-Global $MinToTray, $RestoreItem, $aboutitem, $exititem
+Global $MinToTray, $RestoreItem, $aboutitem, $exititem, $exititemtray
 
 Global $aAccelKeys[12][2]
 
@@ -133,6 +133,7 @@ Global Enum $tb_settings = 2000, $tb_tray
 
 ; LANGUAGE VARIABLES
 Global $oLangStrings
+#EndRegion Global Variables
 
 #Region includes
 #include <WindowsConstants.au3>
@@ -233,7 +234,7 @@ Func _main()
 
 	;get OS language OR selected language storage in profile
 	$selectedLang = OPTIONS_GetValue($options, $OPTIONS_Language)
-	If $selectedLang <> "" and $oLangStrings.OSLang <> $selectedLang Then
+	If $selectedLang <> "" And $oLangStrings.OSLang <> $selectedLang Then
 		$oLangStrings.OSLang = $selectedLang
 	EndIf
 	If $selectedLang = "" Then

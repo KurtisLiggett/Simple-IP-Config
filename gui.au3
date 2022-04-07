@@ -134,7 +134,7 @@ Func _makeGUI()
 	$aboutitem      = TrayCreateItem($oLangStrings.traymenu.about)
 	TrayItemSetOnEvent(-1, "_onAbout")
 	TrayCreateItem("")
-	$exititem       = TrayCreateItem($oLangStrings.traymenu.exit)
+	$exititemtray       = TrayCreateItem($oLangStrings.traymenu.exit)
 	TrayItemSetOnEvent(-1, "_onExit")
 	TraySetOnEvent($TRAY_EVENT_PRIMARYDOWN, "_OnTrayClick")
 	TraySetToolTip ( $winName )
@@ -226,7 +226,7 @@ EndFunc
 
 Func _makeMenu()
 	$filemenu = GUICtrlCreateMenu($oLangStrings.menu.file.file)
-	$applyitem = GUICtrlCreateMenuItem($oLangStrings.menu.file.apply, $filemenu)
+	$applyitem = GUICtrlCreateMenuItem($oLangStrings.menu.file.apply & @TAB & $oLangStrings.menu.file.applyKey, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onApply")
 	GUICtrlCreateMenuItem("", $filemenu)
 	$renameitem = GUICtrlCreateMenuItem($oLangStrings.menu.file.rename, $filemenu)
@@ -953,7 +953,7 @@ Func _Settings()
 	Local $langNameStr
 	for $i = 0 to UBound($aLangsAvailable)-1
 		if $aLangsAvailable[$i] <> "" Then
-			if Not StringInStr( $langNameStr, $aLangsAvailable[$i] ) and $aLangsAvailable[$i] <> "English" Then
+			if Not StringInStr( $langNameStr, $aLangsAvailable[$i] ) and $aLangsAvailable[$i] <> "English   (en-US)" Then
 				$langNameStr &= $aLangsAvailable[$i] & "|"
 			EndIf
 		Else
@@ -961,7 +961,7 @@ Func _Settings()
 		EndIf
 	Next
 	ConsoleWrite($langNameStr & @CRLF)
-	$cmb_langSelect = GUICtrlCreateCombo( "English", 10*$dScale, 28*$dScale, $w-20*$dScale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
+	$cmb_langSelect = GUICtrlCreateCombo( "English   (en-US)", 10*$dScale, 28*$dScale, $w-20*$dScale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
 	GUICtrlSetData(-1, $langNameStr)
 
 	$ck_startinTray = GUICtrlCreateCheckbox( $oLangStrings.settings.opt1, 10*$dScale, 60*$dScale, $w-50*$dScale, 20*$dScale)
