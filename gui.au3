@@ -928,7 +928,7 @@ EndFunc
 #Region -- SETTINGS WINDOW --
 ; Settings WINDOW
 Func _Settings()
-	$w = 320*$dScale
+	$w = 335*$dScale
 	$h = 200*$dScale
 
 	$currentWinPos = WinGetPos($hgui)
@@ -949,10 +949,14 @@ Func _Settings()
 	$lb_language = GUICtrlCreateLabel( $oLangStrings.settings.lang, 10*$dScale, 10*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 
+	Local $strOptionsLang = Options_GetValue($options, $OPTIONS_Language)
 	Local $aLangsAvailable = _getLangsAvailable()
 	Local $langNameStr
 	for $i = 0 to UBound($aLangsAvailable)-1
 		if $aLangsAvailable[$i] <> "" Then
+			if StringInStr($aLangsAvailable[$i], $strOptionsLang) Then
+				$strOptionsLang = $aLangsAvailable[$i]
+			EndIf
 			if Not StringInStr( $langNameStr, $aLangsAvailable[$i] ) and $aLangsAvailable[$i] <> "English   (en-US)" Then
 				$langNameStr &= $aLangsAvailable[$i] & "|"
 			EndIf
@@ -963,6 +967,7 @@ Func _Settings()
 	ConsoleWrite($langNameStr & @CRLF)
 	$cmb_langSelect = GUICtrlCreateCombo( "English   (en-US)", 10*$dScale, 28*$dScale, $w-20*$dScale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
 	GUICtrlSetData(-1, $langNameStr)
+	ControlCommand($settingsChild, "", $cmb_langSelect, "SelectString", $strOptionsLang)
 
 	$ck_startinTray = GUICtrlCreateCheckbox( $oLangStrings.settings.opt1, 10*$dScale, 60*$dScale, $w-50*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)

@@ -44,25 +44,27 @@ Func _initLang()
 			$oLangStrings.OSLang = "en-US"
 		Case "0410"
 			$oLangStrings.OSLang = "it-IT"
+		Case "0419"
+			$oLangStrings.OSLang = "ru-RU"
 		Case Else
 			$oLangStrings.OSLang = "en-US"
 	EndSwitch
 EndFunc   ;==>_initLang
 
-Func _getLangStringID($sLang)
-	Local $retVal = -1
-	Switch $sLang
-		Case "English"
-			$retVal = "en-US"
-		Case "Italiano"
-			$retVal = "it-IT"
-		Case "русский"
-			$retVal = "ru-RU"
-		Case Else
-			$retVal = -1
-	EndSwitch
-	Return $retVal
-EndFunc   ;==>_getLangStringID
+;~ Func _getLangStringID($sLang)
+;~ 	Local $retVal = -1
+;~ 	Switch $sLang
+;~ 		Case "English"
+;~ 			$retVal = "en-US"
+;~ 		Case "Italiano"
+;~ 			$retVal = "it-IT"
+;~ 		Case "русский"
+;~ 			$retVal = "ru-RU"
+;~ 		Case Else
+;~ 			$retVal = -1
+;~ 	EndSwitch
+;~ 	Return $retVal
+;~ EndFunc   ;==>_getLangStringID
 
 ;~ func _setLangStrings($manualUpdate = False)
 ;~ 	_setLang($oLangStrings.OSLang)

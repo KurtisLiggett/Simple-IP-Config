@@ -1153,7 +1153,6 @@ Func _setProperties($init = 0, $profileName = "")
 	EndIf
 EndFunc   ;==>_setProperties
 
-
 Func _saveOptions()
 	Options_SetValue($options, $OPTIONS_StartupMode, _StateToStr($ck_startinTray))
 	Options_SetValue($options, $OPTIONS_MinToTray, _StateToStr($ck_mintoTray))
