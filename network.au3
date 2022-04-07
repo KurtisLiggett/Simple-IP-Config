@@ -83,7 +83,7 @@ Func _getIPs($adaptername)
 
 	Local $tadapters = _GetAdapters()
 
-	If $adapstate = "Disabled" Then
+	If $adapstate = $oLangStrings.interface.props.adapterStateDisabled Then
 		$props[6] = $adapstate
 
 		$DhcpEn = _doRegGetValue($adaptername, "EnableDHCP")
@@ -338,9 +338,9 @@ EndIf
     If $bEnable = 2 Then
 		$Res = _GetNicState($oLanConnection, $strEnableVerb, $strDisableVerb)
 		If $Res = 1 Then
-			Return "Enabled"
+			Return $oLangStrings.interface.props.adapterStateEnabled
 		Else
-			Return "Disabled"
+			Return $oLangStrings.interface.props.adapterStateDisabled
 		EndIf
     EndIf
 

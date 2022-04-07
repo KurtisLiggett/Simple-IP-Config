@@ -826,7 +826,7 @@ Func _about()
 	GUICtrlSetCursor(-1, 0)
 
 	$desc = $oLangStrings.about.icons & " "
-	GUICtrlCreateLabel($desc, 45 * $dscale, 175 * $dscale, $w - 20, 20 * $dscale)
+	GUICtrlCreateLabel($desc, 40 * $dscale, 175 * $dscale, $w - 20, 20 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
 	; bottom section
@@ -928,7 +928,7 @@ EndFunc
 #Region -- SETTINGS WINDOW --
 ; Settings WINDOW
 Func _Settings()
-	$w = 210*$dScale
+	$w = 320*$dScale
 	$h = 200*$dScale
 
 	$currentWinPos = WinGetPos($hgui)
@@ -948,26 +948,39 @@ Func _Settings()
 
 	$lb_language = GUICtrlCreateLabel( $oLangStrings.settings.lang, 10*$dScale, 10*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	$cmb_langSelect = GUICtrlCreateCombo( "English", 10*$dScale, 28*$dScale, $w-20*$dScale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
-	GUICtrlSetData(-1, "Italiano")
 
-	$ck_startinTray = GUICtrlCreateCheckbox( $oLangStrings.settings.opt1, 10*$dScale, 60*$dScale, 230*$dScale, 20*$dScale)
+	Local $aLangsAvailable = _getLangsAvailable()
+	Local $langNameStr
+	for $i = 0 to UBound($aLangsAvailable)-1
+		if $aLangsAvailable[$i] <> "" Then
+			if Not StringInStr( $langNameStr, $aLangsAvailable[$i] ) and $aLangsAvailable[$i] <> "English" Then
+				$langNameStr &= $aLangsAvailable[$i] & "|"
+			EndIf
+		Else
+			ExitLoop
+		EndIf
+	Next
+	ConsoleWrite($langNameStr & @CRLF)
+	$cmb_langSelect = GUICtrlCreateCombo( "English", 10*$dScale, 28*$dScale, $w-20*$dScale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
+	GUICtrlSetData(-1, $langNameStr)
+
+	$ck_startinTray = GUICtrlCreateCheckbox( $oLangStrings.settings.opt1, 10*$dScale, 60*$dScale, $w-50*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_startinTray, _StrToState(Options_GetValue($options, $OPTIONS_StartupMode)))
-	$ck_mintoTray = GUICtrlCreateCheckbox( $oLangStrings.settings.opt2, 10*$dScale, 80*$dScale, 230*$dScale, 20*$dScale)
+	$ck_mintoTray = GUICtrlCreateCheckbox( $oLangStrings.settings.opt2, 10*$dScale, 80*$dScale, $w-50*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_mintoTray, _StrToState(Options_GetValue($options, $OPTIONS_MinToTray)))
-	$ck_saveAdapter = GUICtrlCreateCheckbox( $oLangStrings.settings.opt3, 10*$dScale, 100*$dScale, 230*$dScale, 20*$dScale)
+	$ck_saveAdapter = GUICtrlCreateCheckbox( $oLangStrings.settings.opt3, 10*$dScale, 100*$dScale, $w-50*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_saveAdapter, _StrToState(Options_GetValue($options, $OPTIONS_SaveAdapterToProfile)))
 
-	$ck_autoUpdate = GUICtrlCreateCheckbox( $oLangStrings.settings.opt4, 10*$dScale, 120*$dScale, 230*$dScale, 20*$dScale)
+	$ck_autoUpdate = GUICtrlCreateCheckbox( $oLangStrings.settings.opt4, 10*$dScale, 120*$dScale, $w-50*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_autoUpdate, _StrToState(Options_GetValue($options, $OPTIONS_AutoUpdate)))
 
-	$bt_optSave = GUICtrlCreateButton( $oLangStrings.buttonSave, $w-25*$dScale-50*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
+	$bt_optSave = GUICtrlCreateButton( $oLangStrings.buttonSave, $w-20*$dScale-50*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( $bt_optSave, "_saveOptions")
-	$bt_optCancel = GUICtrlCreateButton( $oLangStrings.buttonCancel, 25*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
+	$bt_optCancel = GUICtrlCreateButton( $oLangStrings.buttonCancel, $w-20*$dScale-50*$dScale*2-5, $h - 27*$dScale, 50*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( $bt_optCancel, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hGUI)

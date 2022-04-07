@@ -60,7 +60,7 @@ Global $sProfileName = @ScriptDir & "\profiles.ini"
 ;GUI stuff
 Global $winName = "Simple IP Config"
 Global $winVersion = "2.9.4"
-Global $winDate = "03/31/2022"
+Global $winDate = "4/7/2022"
 Global $hgui
 Global $guiWidth = 550
 Global $guiHeight = 550
@@ -152,8 +152,10 @@ Global $oLangStrings
 #include <Array.au3>
 #include <Date.au3>
 #include <Inet.au3>
+#include <File.au3>
 
 #include "libraries\AutoItObject_Internal.au3"
+#include "libraries\Json\json.au3"
 #include "model.au3"
 #include "hexIcons.au3"
 #include "languages.au3"
@@ -161,7 +163,6 @@ Global $oLangStrings
 #include "libraries\StringSize.au3"
 #include "libraries\Toast.au3"
 #include "libraries\_NetworkStatistics.au3"
-#include "libraries\Json\json.au3"
 #include "functions.au3"
 #include "events.au3"
 #include "network.au3"
@@ -186,7 +187,7 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4.exe
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4-BETA.exe
 #AutoIt3Wrapper_Res_Fileversion=2.9.4.0
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
@@ -240,7 +241,7 @@ Func _main()
 		Local $optionsLangName = Options_GetName($options, $OPTIONS_Language)
 		IniWrite($sProfileName, "options", $optionsLangName, $oLangStrings.OSLang)
 	EndIf
-	_setLangStrings()
+	_setLangStrings($oLangStrings.OSLang)
 
 	;make the GUI
 	_makeGUI()
@@ -310,36 +311,36 @@ Func _main()
 
 		If $OpenFileFlag Then
 			$OpenFileFlag = 0
-			$filePath = FileOpenDialog("Select File", @ScriptDir, "INI files (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
+			$filePath = FileOpenDialog($oLangStrings.dialog.selectFile, @ScriptDir, $oLangStrings.dialog.ini & " (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
 			If Not @error Then
 				$sProfileName = $filePath
 				$options = Options()
 				$profiles = Profiles()
 				_refresh(1)
-				_setStatus("Loaded file " & $filePath, 0)
+				_setStatus($oLangStrings.message.loadedFile & " " & $filePath, 0)
 			EndIf
 		EndIf
 
 		If $ImportFileFlag Then
 			$ImportFileFlag = 0
-			$filePath = FileOpenDialog("Select File", @ScriptDir, "INI files (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
+			$filePath = FileOpenDialog($oLangStrings.dialog.selectFile, @ScriptDir, $oLangStrings.dialog.ini & " (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
 			If Not @error Then
 				_ImportProfiles($filePath)
 				_refresh(1)
-				_setStatus("Done importing profiles", 0)
+				_setStatus($oLangStrings.message.doneImporting, 0)
 			EndIf
 		EndIf
 
 		If $ExportFileFlag Then
 			$ExportFileFlag = 0
-			$filePath = FileSaveDialog("Select File", @ScriptDir, "INI files (*.ini)", $FD_PROMPTOVERWRITE, "profiles.ini")
+			$filePath = FileSaveDialog($oLangStrings.dialog.selectFile, @ScriptDir, $oLangStrings.dialog.ini & " (*.ini)", $FD_PROMPTOVERWRITE, "profiles.ini")
 			If Not @error Then
 				ConsoleWrite("write" & @CRLF)
 				If StringRight($filePath, 4) <> ".ini" Then
 					$filePath &= ".ini"
 				EndIf
 				FileCopy($sProfileName, $filePath, $FC_OVERWRITE)
-				_setStatus("File saved: " & $filePath, 0)
+				_setStatus($oLangStrings.message.fileSaved & ": " & $filePath, 0)
 			EndIf
 		EndIf
 

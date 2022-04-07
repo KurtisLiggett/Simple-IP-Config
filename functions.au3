@@ -1164,7 +1164,7 @@ Func _saveOptions()
 	If $langRet <> -1 Then
 		$oLangStrings.OSLang = $langRet
 		Options_SetValue($options, $OPTIONS_Language, $oLangStrings.OSLang)
-		_setLangStrings(1)
+		_setLangStrings($oLangStrings.OSLang, 1)
 	EndIf
 
 	IniWriteSection($sProfileName, "options", $options, 0)
@@ -1410,7 +1410,7 @@ Func _updateCurrent($init = 0, $selected_adapter = "")
 	ControlSetText($hgui, "", $label_CurrentDnsAlt, $props[4])
 	ControlSetText($hgui, "", $label_CurrentDhcp, $props[5])
 	ControlSetText($hgui, "", $label_CurrentAdapterState, $props[6])
-	If $props[6] = "Disabled" Then
+	If $props[6] = $oLangStrings.interface.props.adapterStateDisabled Then
 		GUICtrlSetData($disableitem, $oLangStrings.menu.tools.enable)
 	Else
 		GUICtrlSetData($disableitem, $oLangStrings.menu.tools.disable)

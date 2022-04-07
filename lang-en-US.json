@@ -1,0 +1,187 @@
+{
+   "language-info":{
+      "name":"English",
+      "code":"en-US"
+   },
+   "strings":{
+      "buttonOK":"OK",
+      "buttonCancel":"Cancel",
+      "buttonSave":"Save",
+      "menu":{
+         "file":{
+            "file":"&File",
+            "apply":"&Apply profile",
+            "applyKey":"Enter",
+            "rename":"&Rename",
+            "renameKey":"F2",
+            "new":"&New",
+            "newKey":"Ctrl+n",
+            "save":"&Save",
+            "saveKey":"Ctrl+s",
+            "delete":"&Delete",
+            "deleteKey":"Del",
+            "clear":"&Clear entries",
+            "clearKey":"Ctrl+c",
+            "shortcut":"Create shortcut to profile",
+            "open":"Open File",
+            "import":"Import profiles",
+            "export":"Export profiles",
+            "exit":"&Exit"
+         },
+         "view":{
+            "view":"&View",
+            "refresh":"&Refresh",
+            "refreshKey":"Ctrl+r",
+            "tray":"Send to &tray",
+            "trayKey":"Ctrl+t",
+            "hide":"Hide adapters"
+         },
+         "tools":{
+            "tools":"&Tools",
+            "pull":"&Pull from adapter",
+            "pullKey":"Ctrl+p",
+            "disable":"Disable adapter",
+            "enable":"Enable adapter",
+            "release":"&Release DHCP",
+            "renew":"Re&new DHCP",
+            "cycle":"Release/renew &cycle",
+            "settings":"&Settings"
+         },
+         "help":{
+            "help":"&Help",
+            "docs":"&Online Documentation",
+            "docsKey":"F1",
+            "changelog":"Show &Change Log",
+            "update":"Check for &Updates...",
+            "debug":"&Debug Information",
+            "about":"&About Simple IP Config"
+         }
+      },
+      "traymenu":{
+         "hide":"Hide",
+         "restore":"Restore",
+         "about":"About",
+         "exit":"Exit"
+      },
+      "lvmenu":{
+         "rename":"Rename",
+         "delete":"Delete",
+         "sortAsc":"Sort A->Z",
+         "sortDesc":"Sort Z->A",
+         "shortcut":"Create shortcut to profile"
+      },
+      "toolbar":{
+         "apply":"Apply",
+         "refresh":"Refresh",
+         "new":"New",
+         "save":"Save",
+         "delete":"Delete",
+         "clear":"Clear",
+         "apply_tip":"Apply",
+         "refresh_tip":"Refresh",
+         "new_tip":"Create new profile",
+         "save_tip":"Save profile",
+         "delete_tip":"Delete profile",
+         "clear_tip":"Clear entries",
+         "settings_tip":"Settings",
+         "tray_tip":"Send to tray"
+      },
+      "interface":{
+         "computername":"Computer name",
+         "domain":"Domain",
+         "workgroup":"Workgroup",
+         "adapterDesc":"Description",
+         "mac":"MAC Address",
+         "select":"Select Adapter",
+         "profiles":"Profiles",
+         "profileprops":"Profile IP Properties",
+         "currentprops":"Current Adapter Properties",
+         "props":{
+            "ip":"IP Address",
+            "subnet":"Subnet Mask",
+            "gateway":"Gateway",
+            "dnsPref":"Preferred DNS Server",
+            "dnsAlt":"Alternate DNS Server",
+            "dhcpServer":"DHCP Server",
+            "adapterState":"Adapter State",
+            "adapterStateEnabled":"Enabled",
+            "adapterStateDisabled":"Disabled",
+            "ipauto":"Automatically Set IP Address",
+            "ipmanual":"Manually Set IP Address",
+            "dnsauto":"Automatically Set DNS Address",
+            "dnsmanual":"Manually Set DNS Address",
+            "dnsreg":"Register Addresses"
+         }
+      },
+      "updates":{
+         "title":"Check for Updates",
+         "thisVersion":"This Version",
+         "latestVersion":"Latest Version",
+         "newMessage":"A newer version is available.",
+         "latestMessage":"You have the latest version."
+      },
+      "about":{
+         "title":"About",
+         "version":"Version",
+         "date":"Date",
+         "dev":"Developer",
+         "lic":"License",
+         "desc":"The portable ip changer utility that allows a user to quickly and easily change the most common network settings for any connection.",
+         "icons":"Program icons are from"
+      },
+      "changelog":{
+         "changelog":"Change Log"
+      },
+      "blacklist":{
+         "title":"Adapter Blacklist",
+         "heading":"Select Adapters to Hide"
+      },
+      "settings":{
+         "title":"Settings",
+         "lang":"Language",
+         "opt1":"Startup in system tray",
+         "opt2":"Minimize to the system tray",
+         "opt3":"Save adapter to profile",
+         "opt4":"Automatically check for updates"
+      },
+      "message":{
+         "ready":"Ready",
+         "timedout":"Action timed out!  Command Aborted.",
+         "couldNotSave":"Could not save to the selected location!",
+         "updatingList":"Updating Adapter List...",
+         "selectAdapter":"Select an adapter and try again",
+         "enterIP":"Enter an IP address",
+         "enterSubnet":"Enter a subnet mask",
+         "settingIP":"Setting static IP address...",
+         "settingDnsDhcp":"Setting DNS DHCP...",
+         "settingDnsPref":"Setting preferred DNS server...",
+         "settingDnsAlt":"Setting alternate DNS server...",
+         "errorOccurred":"An error occurred",
+         "profileNameExists":"The profile name already exists!",
+         "noProfileSel":"No profile is selected!",
+         "profilesNotFound":"Profiles.ini file not found - A new file will be created",
+         "errorReadingProf":"Error reading profiles.ini",
+         "adapterNotFound":"Adapter not found",
+         "error":"Error",
+         "warning":"Warning",
+         "newItem":"New Item",
+         "applying":"Applying profile",
+         "errorRetrieving":"There was a problem retrieving the adapters.",
+         "commandTimeout":"Command timeout",
+         "updateCheckError":"An error was encountered while retrieving the update.",
+         "checkConnect":"Please check your internet connection.",
+         "errorCode":"Error code",
+         "newVersion":"A newer version is available",
+         "currentVersion":"You have the latest version.",
+         "yourVersion":"Your version is",
+         "latestVersion":"Latest version is",
+         "loadedFile":"Loaded file",
+         "doneImporting":"Done importing profiles",
+         "fileSaved":"File saved"
+      },
+      "dialog":{
+         "selectFile":"Select File",
+         "ini":"INI Files"
+      }
+   }
+}
