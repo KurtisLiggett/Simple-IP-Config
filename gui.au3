@@ -526,11 +526,11 @@ Func _makeToolbar()
 	$bbutton = _GUICtrlToolbar_AddButtonSep($hToolbar, 5)
 	$bbutton = _GUICtrlToolbar_AddButton($hToolbar, $tb_clear, 5, $aStringList[5])
 
-	_GUICtrlToolbar_SetButtonWidth($hToolbar, 35*$dscale, 65*$dscale)
+	_GUICtrlToolbar_SetButtonWidth($hToolbar, 35*$dscale, 80*$dscale)
 	_GUICtrlToolbar_SetMetrics($hToolbar, 0, 0, 1, 0)
 	_GUICtrlToolbar_SetIndent($hToolbar, 1)
 
-	_GUICtrlToolbar_SetButtonSize($hToolbar, $tbarHeight*$dscale-4*$dscale, 50*$dscale)
+;~ 	_GUICtrlToolbar_SetButtonSize($hToolbar, $tbarHeight*$dscale-4*$dscale, 75*$dscale)
 	;_SendMessage($hToolbar, $TB_AUTOSIZE)
 
 	GUISwitch($hgui)
@@ -984,9 +984,9 @@ Func _Settings()
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_autoUpdate, _StrToState(Options_GetValue($options, $OPTIONS_AutoUpdate)))
 
-	$bt_optSave = GUICtrlCreateButton( $oLangStrings.buttonSave, $w-20*$dScale-50*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
+	$bt_optSave = GUICtrlCreateButton( $oLangStrings.buttonSave, $w-20*$dScale-75*$dScale, $h - 27*$dScale, 75*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( $bt_optSave, "_saveOptions")
-	$bt_optCancel = GUICtrlCreateButton( $oLangStrings.buttonCancel, $w-20*$dScale-50*$dScale*2-5, $h - 27*$dScale, 50*$dScale, 22*$dScale)
+	$bt_optCancel = GUICtrlCreateButton( $oLangStrings.buttonCancel, $w-20*$dScale-75*$dScale*2-5, $h - 27*$dScale, 75*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( $bt_optCancel, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hGUI)
@@ -1082,11 +1082,10 @@ Func _blacklist()
 	$labelBottomLine = GUICtrlCreateLabel("", 0, $h-35*$dscale+1, $w, 1)
 	GUICtrlSetBkColor (-1, 0x444444)
 
-	$bt_Cancel = GUICtrlCreateButton( $oLangStrings.buttonCancel, $w-117*$dScale, $h - 30*$dScale, 52*$dScale, 25*$dScale)
-	GUICtrlSetOnEvent( -1, "_onExitChild")
-
-	$bt_Ok = GUICtrlCreateButton( $oLangStrings.buttonSave, $w-60*$dScale, $h - 30*$dScale, 50*$dScale, 25*$dScale)
+	$bt_Ok = GUICtrlCreateButton( $oLangStrings.buttonSave, $w-20*$dScale-75*$dScale, $h - 27*$dScale, 75*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( -1, "_onExitBlacklistOk")
+	$bt_Cancel = GUICtrlCreateButton( $oLangStrings.buttonCancel, $w-20*$dScale-75*$dScale*2-5, $h - 27*$dScale, 75*$dScale, 22*$dScale)
+	GUICtrlSetOnEvent( -1, "_onExitChild")
 
 	GUICtrlSetState($bt_Cancel, $GUI_FOCUS)
 
