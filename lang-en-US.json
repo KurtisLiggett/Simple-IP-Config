@@ -38,6 +38,7 @@
          },
          "tools":{
             "tools":"&Tools",
+			"netConn":"Open Network Connections",
             "pull":"&Pull from adapter",
             "pullKey":"Ctrl+p",
             "disable":"Disable adapter",

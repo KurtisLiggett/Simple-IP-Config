@@ -141,6 +141,7 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.menu.view.hide = Json_Get($jsonData, ".strings.menu.view.hide")
 
 	$oLangStrings.menu.tools.tools = Json_Get($jsonData, ".strings.menu.tools.tools")
+	$oLangStrings.menu.tools.netConn = Json_Get($jsonData, ".strings.menu.tools.netConn")
 	$oLangStrings.menu.tools.pull = Json_Get($jsonData, ".strings.menu.tools.pull")
 	$oLangStrings.menu.tools.pullKey = Json_Get($jsonData, ".strings.menu.tools.pullKey")
 	$oLangStrings.menu.tools.disable = Json_Get($jsonData, ".strings.menu.tools.disable")
@@ -304,8 +305,8 @@ Func _updateLang()
 	GUICtrlSetData($blacklistitem, $oLangStrings.menu.view.hide)
 
 	GUICtrlSetData($toolsmenu, $oLangStrings.menu.tools.tools)
+	GUICtrlSetData($netConnItem, $oLangStrings.menu.tools.netConn)
 	GUICtrlSetData($pullitem, $oLangStrings.menu.tools.pull & @TAB & $oLangStrings.menu.tools.pullKey)
-
 	GUICtrlSetData($disableitem, $oLangStrings.menu.tools.disable)
 	GUICtrlSetData($releaseitem, $oLangStrings.menu.tools.release)
 	GUICtrlSetData($renewitem, $oLangStrings.menu.tools.renew)
@@ -411,6 +412,7 @@ Func _getEnglish()
 			'         },' & _
 			'         "tools":{' & _
 			'            "tools":"&Tools",' & _
+			'            "netConn":"Open Network Connections",' & _
 			'            "pull":"&Pull from adapter",' & _
 			'            "pullKey":"Ctrl+p",' & _
 			'            "disable":"Disable adapter",' & _

@@ -262,6 +262,8 @@ Func _makeMenu()
 	GUICtrlSetOnEvent(-1, "_onBlacklist")
 
 	$toolsmenu = GUICtrlCreateMenu($oLangStrings.menu.tools.tools)
+	$netConnItem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.netConn, $toolsmenu)
+	GUICtrlSetOnEvent(-1, "_onOpenNetConnections")
 	$pullitem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.pull & @TAB & $oLangStrings.menu.tools.pullKey, $toolsmenu)
 	GUICtrlSetOnEvent(-1, "_onPull")
 	$disableitem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.disable, $toolsmenu)
