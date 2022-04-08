@@ -1391,9 +1391,9 @@ Func _updateCurrent($init = 0, $selected_adapter = "")
 	If Adapter_Exists($adapters, $selected_adapter) Then
 		GUICtrlSetData($lDescription, Adapter_GetDescription($adapters, $selected_adapter))
 		If $screenshot Then
-			GUICtrlSetData($lMac, "MAC Address: " & "XX-XX-XX-XX-XX-XX")
+			GUICtrlSetData($lMac, $oLangStrings.interface.mac & ": " & "XX-XX-XX-XX-XX-XX")
 		Else
-			GUICtrlSetData($lMac, "MAC Address: " & Adapter_GetMAC($adapters, $selected_adapter))
+			GUICtrlSetData($lMac, $oLangStrings.interface.mac & ": " & Adapter_GetMAC($adapters, $selected_adapter))
 		EndIf
 	Else
 		GUICtrlSetData($lDescription, "! " & $oLangStrings.message.adapterNotFound & " !")
