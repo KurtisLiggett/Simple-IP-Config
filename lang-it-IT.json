@@ -38,7 +38,7 @@
          },
          "tools":{
             "tools":"&Strumenti",
-			"netConn":"Apri Connessioni di rete",
+            "netConn":"Apri Connessioni di rete",
             "pull":"&Ottieni impostazioni dalla scheda di rete",
             "pullKey":"Ctrl+p",
             "disable":"Disabilita scheda di rete",
