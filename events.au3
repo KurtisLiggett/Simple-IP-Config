@@ -538,6 +538,15 @@ Func _onExportProfiles()
 EndFunc
 
 ;------------------------------------------------------------------------------
+; Title........: _onOpenNetConnections
+; Description..: open the network connections dialog
+; Events.......: Tools menu
+;------------------------------------------------------------------------------
+Func _onOpenNetConnections()
+	ShellExecute ("ncpa.cpl")
+EndFunc
+
+;------------------------------------------------------------------------------
 ; Title........: WM_COMMAND
 ; Description..: Process WM_COMMAND messages
 ;                - Toolbar buttons

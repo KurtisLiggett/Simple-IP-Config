@@ -264,6 +264,8 @@ Func _makeMenu()
 	GUICtrlSetOnEvent(-1, "_onBlacklist")
 
 	$toolsmenu = GUICtrlCreateMenu("&Tools")
+	$netConnItem = GUICtrlCreateMenuItem("Open Network Connections", $toolsmenu)
+	GUICtrlSetOnEvent(-1, "_onOpenNetConnections")
 	$pullitem = GUICtrlCreateMenuItem("&Pull from adapter" & @TAB & "Ctrl+p", $toolsmenu)
 	GUICtrlSetOnEvent(-1, "_onPull")
 	$disableitem = GUICtrlCreateMenuItem("Dis&able adapter", $toolsmenu)

@@ -91,7 +91,7 @@ Global $wgraphic, $showWarning
 
 ;Menu Items
 Global $toolsmenu, $disableitem, $refreshitem, $renameitem, $deleteitem, $clearitem
-Global $saveitem, $newitem, $pullitem, $send2trayitem, $helpitem, $debugmenuitem
+Global $saveitem, $newitem, $pullitem, $send2trayitem, $helpitem, $debugmenuitem, $netConnItem
 
 ;Settings window
 Global $ck_mintoTray, $ck_startinTray, $ck_saveAdapter, $ck_autoUpdate
