@@ -1154,6 +1154,7 @@ Func _setProperties($init = 0, $profileName = "")
 EndFunc   ;==>_setProperties
 
 Func _saveOptions()
+	Local $updateGUI = 0
 	Options_SetValue($options, $OPTIONS_StartupMode, _StateToStr($ck_startinTray))
 	Options_SetValue($options, $OPTIONS_MinToTray, _StateToStr($ck_mintoTray))
 	Options_SetValue($options, $OPTIONS_SaveAdapterToProfile, _StateToStr($ck_saveAdapter))
@@ -1161,13 +1162,51 @@ Func _saveOptions()
 
 	Local $langRet = StringLeft( StringRight(GUICtrlRead($cmb_langSelect), 6), 5)
 	If $langRet <> -1 Then
-		$oLangStrings.OSLang = $langRet
-		Options_SetValue($options, $OPTIONS_Language, $oLangStrings.OSLang)
-		_setLangStrings($oLangStrings.OSLang, 1)
+		If $langRet <> $oLangStrings.OSLang Then
+			$updateGUI = 1
+			$oLangStrings.OSLang = $langRet
+			Options_SetValue($options, $OPTIONS_Language, $oLangStrings.OSLang)
+		EndIf
 	EndIf
 
 	IniWriteSection($sProfileName, "options", $options, 0)
 	_ExitChild(@GUI_WinHandle)
+
+	If $updateGUI Then
+		GUIDelete($hgui)
+		Local $restartGUI = _ShowRestart($oLangStrings.OSLang, Options_GetValue($options, $OPTIONS_PositionX), Options_GetValue($options, $OPTIONS_PositionY))
+		_setLangStrings($oLangStrings.OSLang)
+		_makeGUI()
+;~ 		_updateLang()
+		_loadAdapters()
+		GUIDelete($restartGUI)
+
+		;Add adapters the the combobox
+		If Not IsArray($adapters) Then
+			MsgBox(16, $oLangStrings.message.error, $oLangStrings.message.errorRetrieving)
+		Else
+			Adapter_Sort($adapters)    ; connections sort ascending
+			$defaultitem = Adapter_GetName($adapters, 0)
+			$sStartupAdapter = OPTIONS_GetValue($options, $OPTIONS_StartupAdapter)
+			If Adapter_Exists($adapters, $sStartupAdapter) Then
+				$defaultitem = $sStartupAdapter
+			EndIf
+
+			$sAdapterBlacklist = OPTIONS_GetValue($options, $OPTIONS_AdapterBlacklist)
+			$aBlacklist = StringSplit($sAdapterBlacklist, "|")
+			If IsArray($aBlacklist) Then
+				Local $adapterNames = Adapter_GetNames($adapters)
+				For $i = 0 To UBound($adapterNames) - 1
+					$indexBlacklist = _ArraySearch($aBlacklist, $adapterNames[$i], 1)
+					If $indexBlacklist <> -1 Then ContinueLoop
+					GUICtrlSetData($combo_adapters, $adapterNames[$i], $defaultitem)
+				Next
+			EndIf
+		EndIf
+
+		_refresh(1)
+		ControlListView($hgui, "", $list_profiles, "Select", 0)
+	EndIf
 EndFunc   ;==>_saveOptions
 
 ;helper
@@ -1735,13 +1774,17 @@ EndFunc   ;==>_iniRename
 ; Parameters......: $message -string to print
 ;------------------------------------------------------------------------------
 Func _print($message="")
-	Static $tTimer = TimerInit()
+	Static $tTimer = TimerInit(), $iPrev
 	Local $iTime = Floor(TimerDiff($tTimer))
 	Local $sTime = StringFormat("%d:%.2d:%06.3f", (Floor($iTime / 3600000)), (Floor(Mod($iTime,3600000) / 60000)), (Mod(Mod($iTime,3600000),60000) / 1000))
+	Local $iDiff = $iTime - $iPrev
+	Local $sDiff = StringFormat("%d:%.2d:%06.3f", (Floor($iDiff / 3600000)), (Floor(Mod($iDiff,3600000) / 60000)), (Mod(Mod($iDiff,3600000),60000) / 1000))
 
 	If $message == "" Then
 		ConsoleWrite(@CRLF)
 	Else
-		ConsoleWrite($sTime & ":  " & $message & @CRLF)
+		ConsoleWrite($sTime & "(" & $sDiff & "):  " & $message & @CRLF)
 	EndIf
+
+	$iPrev = $iTime
 EndFunc

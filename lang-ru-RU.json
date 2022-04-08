@@ -97,6 +97,7 @@
          "profiles":"Профили",
          "profileprops":"Свойства IP-адреса профиля",
          "currentprops":"Свойства текущего адаптера",
+         "restarting":"перезапуск",
          "props":{
             "ip":"IP-адрес",
             "subnet":"Маска сети",

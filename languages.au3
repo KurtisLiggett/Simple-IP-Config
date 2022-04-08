@@ -215,6 +215,8 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.interface.profileprops = Json_Get($jsonData, ".strings.interface.profileprops")
 	$oLangStrings.interface.currentprops = Json_Get($jsonData, ".strings.interface.currentprops")
 
+	$oLangStrings.interface.restarting = Json_Get($jsonData, ".strings.interface.restarting")
+
 	$oLangStrings.updates.title = Json_Get($jsonData, ".strings.updates.title")
 	$oLangStrings.updates.thisVersion = Json_Get($jsonData, ".strings.updates.thisVersion")
 	$oLangStrings.updates.latestVersion = Json_Get($jsonData, ".strings.updates.latestVersion")

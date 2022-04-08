@@ -97,6 +97,7 @@
          "profiles":"Profiles",
          "profileprops":"Profile IP Properties",
          "currentprops":"Current Adapter Properties",
+         "restarting":"Restarting",
          "props":{
             "ip":"IP Address",
             "subnet":"Subnet Mask",

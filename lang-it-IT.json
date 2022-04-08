@@ -97,6 +97,7 @@
          "profiles":"Profili",
          "profileprops":"Proprietà IP profilo",
          "currentprops":"Proprietà scheda di rete attuale",
+         "restarting":"Riavvio",
          "props":{
             "ip":"Indirizzo IP",
             "subnet":"Maschera sotto rete",
