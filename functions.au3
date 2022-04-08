@@ -1547,13 +1547,15 @@ Func GetChangeLogData()
 	$sChangeLog[0] = $oLangStrings.changelog.changelog & " - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
-			"   #103   COM Error 80020009 checking for updates." & @CRLF & _
+			"     #103   COM Error 80020009 checking for updates." & @CRLF & _
 			"NEW FEATURES:" & @CRLF & _
+			"     Added menu item to open network connections." & @CRLF & _
+			"     #117  Added multi-language support." & @CRLF & _
 			"     #43   Escape key will not close the program." & @CRLF & _
 			"     #99   Added ability to open, import, and export profiles." & @CRLF & _
-			"   #104   Bring to foreground if already running." & @CRLF & _
+			"     #104   Bring to foreground if already running." & @CRLF & _
 			"MAINT:" & @CRLF & _
-			"           Updated check for updates functionality." & @CRLF & _
+			"     Updated check for updates functionality." & @CRLF & _
 			@CRLF & _
 			"v2.9.3" & @CRLF & _
 			"BUG FIXES:" & @CRLF & _
