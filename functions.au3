@@ -1719,3 +1719,21 @@ Func _iniRename($file, $oldName, $newName)
 	Return 0
 EndFunc   ;==>_iniRename
 #EndRegion -- INI related --
+
+;------------------------------------------------------------------------------
+; Title...........: _print
+; Description.....: Print message to console with date and time formatting
+;
+; Parameters......: $message -string to print
+;------------------------------------------------------------------------------
+Func _print($message="")
+	Static $tTimer = TimerInit()
+	Local $iTime = Floor(TimerDiff($tTimer))
+	Local $sTime = StringFormat("%d:%.2d:%06.3f", (Floor($iTime / 3600000)), (Floor(Mod($iTime,3600000) / 60000)), (Mod(Mod($iTime,3600000),60000) / 1000))
+
+	If $message == "" Then
+		ConsoleWrite(@CRLF)
+	Else
+		ConsoleWrite($sTime & ":  " & $message & @CRLF)
+	EndIf
+EndFunc
