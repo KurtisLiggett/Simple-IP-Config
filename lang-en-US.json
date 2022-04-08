@@ -106,6 +106,7 @@
             "adapterState":"Adapter State",
             "adapterStateEnabled":"Enabled",
             "adapterStateDisabled":"Disabled",
+			"adapterStateUnplugged":"Unplugged",
             "ipauto":"Automatically Set IP Address",
             "ipmanual":"Manually Set IP Address",
             "dnsauto":"Automatically Set DNS Address",

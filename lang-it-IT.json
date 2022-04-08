@@ -106,6 +106,7 @@
             "adapterState":"Stato scheda di rete",
             "adapterStateEnabled":"Abilitata",
             "adapterStateDisabled":"Disabilitata",
+			"adapterStateUnplugged":"Scollegato",
             "ipauto":"Imposta automaticamente indirizzo IP",
             "ipmanual":"Imposta manualmente indirizzo IP",
             "dnsauto":"Imposta automaticamente indirizzo DNS",

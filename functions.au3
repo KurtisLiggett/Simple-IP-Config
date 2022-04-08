@@ -1160,7 +1160,6 @@ Func _saveOptions()
 	Options_SetValue($options, $OPTIONS_AutoUpdate, _StateToStr($ck_autoUpdate))
 
 	Local $langRet = StringLeft( StringRight(GUICtrlRead($cmb_langSelect), 6), 5)
-	ConsoleWrite($langRet & @CRLF)
 	If $langRet <> -1 Then
 		$oLangStrings.OSLang = $langRet
 		Options_SetValue($options, $OPTIONS_Language, $oLangStrings.OSLang)
