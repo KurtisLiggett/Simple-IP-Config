@@ -69,7 +69,7 @@ Func _makeGUI()
 	Local $guiSpacer = 0
 	Local $y = 0
 	Local $xLeft = $guiSpacer
-	Local $wLeft = 230*$dscale
+	Local $wLeft = 250*$dscale
 	Local $xRight = $xLeft + $wLeft
 	Local $wRight = $guiWidth*$dscale - $wLeft - 2*$guiSpacer
 	_makeComboSelect($oLangStrings.interface.select, $xLeft, $tbarHeight*$dscale + $guiSpacer+$y, $wLeft, 88*$dscale)

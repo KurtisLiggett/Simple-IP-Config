@@ -62,7 +62,7 @@ Global $winName = "Simple IP Config"
 Global $winVersion = "2.9.4"
 Global $winDate = "4/7/2022"
 Global $hgui
-Global $guiWidth = 550
+Global $guiWidth = 600
 Global $guiHeight = 550
 Global $footerHeight = 16
 Global $tbarHeight = 49
