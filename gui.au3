@@ -844,7 +844,7 @@ EndFunc
 #Region -- CHANGELOG WINDOW --
 ; Changelog WINDOW
 Func _changeLog()
-	$w = 330*$dScale
+	$w = 400*$dScale
 	$h = 410*$dScale
 
 	$currentWinPos = WinGetPos($hgui)
