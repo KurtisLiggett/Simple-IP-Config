@@ -73,7 +73,7 @@
       },
       "toolbar":{
          "apply":"Applica",
-         "refresh":"Aggiornamento",
+         "refresh":"Aggiorna",
          "new":"Nuovo",
          "save":"Salva",
          "delete":"Elimina",
@@ -107,7 +107,7 @@
             "adapterState":"Stato scheda di rete",
             "adapterStateEnabled":"Abilitata",
             "adapterStateDisabled":"Disabilitata",
-			"adapterStateUnplugged":"Scollegato",
+            "adapterStateUnplugged":"Non collegata",
             "ipauto":"Imposta automaticamente indirizzo IP",
             "ipmanual":"Imposta manualmente indirizzo IP",
             "dnsauto":"Imposta automaticamente indirizzo DNS",
