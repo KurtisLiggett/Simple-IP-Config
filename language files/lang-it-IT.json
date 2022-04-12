@@ -1,7 +1,8 @@
 {
    "language-info":{
       "name":"Italiano",
-      "code":"it-IT"
+      "code":"it-IT",
+      "contributors":["bovirus"]
    },
    "strings":{
       "buttonOK":"OK",

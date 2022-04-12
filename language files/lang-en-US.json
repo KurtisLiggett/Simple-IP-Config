@@ -1,7 +1,8 @@
 {
    "language-info":{
       "name":"English",
-      "code":"en-US"
+      "code":"en-US",
+      "contributors":["KurtisLiggett"]
    },
    "strings":{
       "buttonOK":"OK",

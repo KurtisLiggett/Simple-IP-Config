@@ -1,7 +1,8 @@
 {
    "language-info":{
       "name":"Русский",
-      "code":"ru-RU"
+      "code":"ru-RU",
+      "contributors":["mrkaban"]
    },
    "strings":{
       "buttonOK":"Ок",
