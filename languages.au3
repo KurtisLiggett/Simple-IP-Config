@@ -21,13 +21,17 @@ Func _getLangsAvailable()
 	Local $aFileList = _FileListToArray(@ScriptDir, "lang-*.json", $FLTA_FILES)
 	Local $aLangsRet[20]
 	Local $hFile, $fileData, $jsonData
-	For $i = 1 To $aFileList[0]
-		$hFile = FileOpen($aFileList[$i], $FO_READ)
-		$fileData = FileRead($hFile)
-		FileClose($hFile)
-		$jsonData = Json_Decode($fileData)
-		$aLangsRet[$i - 1] = Json_Get($jsonData, ".language-info.name") & "   (" & Json_Get($jsonData, ".language-info.code") & ")"
-	Next
+	If IsArray($aFileList) Then
+		For $i = 1 To $aFileList[0]
+			$hFile = FileOpen($aFileList[$i], $FO_READ)
+			$fileData = FileRead($hFile)
+			FileClose($hFile)
+			$jsonData = Json_Decode($fileData)
+			$aLangsRet[$i - 1] = Json_Get($jsonData, ".language-info.name") & "   (" & Json_Get($jsonData, ".language-info.code") & ")"
+		Next
+;~ 	Else
+;~ 		$aLangsRet[0] = "English   (en-US)"
+	EndIf
 
 	Return $aLangsRet
 EndFunc   ;==>_getLangsAvailable
@@ -270,9 +274,8 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	Local $fileData
 	Local $hFile = FileOpen("lang-" & $langCode & ".json", $FO_READ)
 	If $hFile = -1 Then
-		If $langCode = "en-US" Then
-			$fileData = _getEnglish()
-		Else
+		$fileData = _getEnglish()
+		If $langCode <> "en-US" Then
 			MsgBox(1, "Error", "Error reading language file")
 		EndIf
 	Else

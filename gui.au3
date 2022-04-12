@@ -967,7 +967,9 @@ Func _Settings()
 		EndIf
 	Next
 	$cmb_langSelect = GUICtrlCreateCombo( "English   (en-US)", 10*$dScale, 28*$dScale, $w-20*$dScale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
-	GUICtrlSetData(-1, $langNameStr)
+	If $langNameStr <> "" Then
+		GUICtrlSetData(-1, $langNameStr)
+	EndIf
 	ControlCommand($settingsChild, "", $cmb_langSelect, "SelectString", $strOptionsLang)
 
 	$ck_startinTray = GUICtrlCreateCheckbox( $oLangStrings.settings.opt1, 10*$dScale, 60*$dScale, $w-50*$dScale, 20*$dScale)
