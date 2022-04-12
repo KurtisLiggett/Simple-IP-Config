@@ -109,7 +109,7 @@
             "adapterState":"Состояние адаптера",
             "adapterStateEnabled":"Включено",
             "adapterStateDisabled":"Отключено",
-			"adapterStateUnplugged":"otklyuchen",
+            "adapterStateUnplugged":"otklyuchen",
             "ipauto":"Автоматическая установка IP-адреса",
             "ipmanual":"Ручная установка IP-адрес",
             "dnsauto":"Автоматическая установка DNS-адресов",
