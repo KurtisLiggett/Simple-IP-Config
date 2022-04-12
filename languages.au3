@@ -18,12 +18,12 @@ _AutoItObject_StartUp()
 
 
 Func _getLangsAvailable()
-	Local $aFileList = _FileListToArray(@ScriptDir, "lang-*.json", $FLTA_FILES)
+	Local $aFileList = _FileListToArray(@ScriptDir&"\lang", "lang-*.json", $FLTA_FILES)
 	Local $aLangsRet[20]
 	Local $hFile, $fileData, $jsonData
 	If IsArray($aFileList) Then
 		For $i = 1 To $aFileList[0]
-			$hFile = FileOpen($aFileList[$i], $FO_READ)
+			$hFile = FileOpen(@ScriptDir&"\lang\" & $aFileList[$i], $FO_READ)
 			$fileData = FileRead($hFile)
 			FileClose($hFile)
 			$jsonData = Json_Decode($fileData)
@@ -272,7 +272,7 @@ EndFunc
 
 Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	Local $fileData
-	Local $hFile = FileOpen("lang-" & $langCode & ".json", $FO_READ)
+	Local $hFile = FileOpen(@ScriptDir&"\lang\lang-" & $langCode & ".json", $FO_READ)
 	If $hFile = -1 Then
 		$fileData = _getEnglish()
 		If $langCode <> "en-US" Then

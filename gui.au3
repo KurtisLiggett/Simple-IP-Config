@@ -1190,7 +1190,7 @@ Func _ShowRestart($langCode, $x, $y)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 
 	Local $fileData
-	Local $hFile = FileOpen("lang-" & $langCode & ".json", $FO_READ)
+	Local $hFile = FileOpen(@ScriptDir&"\lang\lang-" & $langCode & ".json", $FO_READ)
 	If $hFile = -1 Then
 		If $langCode = "en-US" Then
 			$fileData = _getEnglish()
