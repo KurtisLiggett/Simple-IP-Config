@@ -14,72 +14,8 @@
 ; You should have received a copy of the GNU General Public License
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
+_AutoItObject_StartUp()
 
-Func _initLang()
-	;create object for language strings
-	$oLangStrings = IDispatch()
-
-	;main menu
-	$oLangStrings.menu = IDispatch()
-	$oLangStrings.menu.file = IDispatch()
-	$oLangStrings.menu.view = IDispatch()
-	$oLangStrings.menu.tools = IDispatch()
-	$oLangStrings.menu.help = IDispatch()
-	$oLangStrings.traymenu = IDispatch()
-	$oLangStrings.lvmenu = IDispatch()    ;listview menu
-	$oLangStrings.toolbar = IDispatch()
-	$oLangStrings.interface = IDispatch()
-	$oLangStrings.interface.props = IDispatch()
-	$oLangStrings.settings = IDispatch()
-	$oLangStrings.about = IDispatch()
-	$oLangStrings.updates = IDispatch()
-	$oLangStrings.changelog = IDispatch()
-	$oLangStrings.blacklist = IDispatch()
-	$oLangStrings.message = IDispatch()
-	$oLangStrings.dialog = IDispatch()
-
-	;format OS language
-	Switch @OSLang
-		Case "0409"
-			$oLangStrings.OSLang = "en-US"
-		Case "0410"
-			$oLangStrings.OSLang = "it-IT"
-		Case "0419"
-			$oLangStrings.OSLang = "ru-RU"
-		Case Else
-			$oLangStrings.OSLang = "en-US"
-	EndSwitch
-EndFunc   ;==>_initLang
-
-;~ Func _getLangStringID($sLang)
-;~ 	Local $retVal = -1
-;~ 	Switch $sLang
-;~ 		Case "English"
-;~ 			$retVal = "en-US"
-;~ 		Case "Italiano"
-;~ 			$retVal = "it-IT"
-;~ 		Case "русский"
-;~ 			$retVal = "ru-RU"
-;~ 		Case Else
-;~ 			$retVal = -1
-;~ 	EndSwitch
-;~ 	Return $retVal
-;~ EndFunc   ;==>_getLangStringID
-
-;~ func _setLangStrings($manualUpdate = False)
-;~ 	_setLang($oLangStrings.OSLang)
-
-;~ 	Switch $oLangStrings.OSLang
-;~ 		Case "en-US"
-;~ 			_setLangEnglish()
-;~ 		Case "it-IT"
-;~ 			_setLangItalian()
-;~ 		Case Else
-;~ 			_setLangEnglish()
-;~ 	EndSwitch
-
-;~ 	If $manualUpdate Then _updateLang()
-;~ EndFunc
 
 Func _getLangsAvailable()
 	Local $aFileList = _FileListToArray(@ScriptDir, "lang-*.json", $FLTA_FILES)
@@ -95,6 +31,240 @@ Func _getLangsAvailable()
 
 	Return $aLangsRet
 EndFunc   ;==>_getLangsAvailable
+
+Func _initLang()
+	;create object for language strings
+	$oLangStrings = _langStrings()
+
+	;format OS language
+	Switch @OSLang
+		Case "0409"
+			$oLangStrings.OSLang = "en-US"
+		Case "0410"
+			$oLangStrings.OSLang = "it-IT"
+		Case "0419"
+			$oLangStrings.OSLang = "ru-RU"
+		Case Else
+			$oLangStrings.OSLang = "en-US"
+	EndSwitch
+EndFunc   ;==>_initLang
+
+Func _langStrings()
+	Local $oMain = _AutoItObject_Create()
+	Local $oMenu = _AutoItObject_Create()
+	Local $oMenuFile = _AutoItObject_Create()
+	Local $oMenuView = _AutoItObject_Create()
+	Local $oMenuTools = _AutoItObject_Create()
+	Local $oMenuHelp = _AutoItObject_Create()
+	Local $oTraymenu = _AutoItObject_Create()
+	Local $oLvmenu = _AutoItObject_Create()
+	Local $oToolbar = _AutoItObject_Create()
+	Local $oInterface = _AutoItObject_Create()
+	Local $oInterfaceProps = _AutoItObject_Create()
+	Local $oSettings = _AutoItObject_Create()
+	Local $oAbout = _AutoItObject_Create()
+	Local $oUpdates = _AutoItObject_Create()
+	Local $oChangelog = _AutoItObject_Create()
+	Local $oBlacklist = _AutoItObject_Create()
+	Local $oMessage = _AutoItObject_Create()
+	Local $oDialog = _AutoItObject_Create()
+
+	;main object
+	_AutoItObject_AddProperty($oMain, "menu", $ELSCOPE_PUBLIC, $oMenu)
+	_AutoItObject_AddProperty($oMain, "traymenu", $ELSCOPE_PUBLIC, $oTraymenu)
+	_AutoItObject_AddProperty($oMain, "lvmenu", $ELSCOPE_PUBLIC, $oLvmenu)
+	_AutoItObject_AddProperty($oMain, "toolbar", $ELSCOPE_PUBLIC, $oToolbar)
+	_AutoItObject_AddProperty($oMain, "interface", $ELSCOPE_PUBLIC, $oInterface)
+	_AutoItObject_AddProperty($oMain, "settings", $ELSCOPE_PUBLIC, $oSettings)
+	_AutoItObject_AddProperty($oMain, "about", $ELSCOPE_PUBLIC, $oAbout)
+	_AutoItObject_AddProperty($oMain, "updates", $ELSCOPE_PUBLIC, $oUpdates)
+	_AutoItObject_AddProperty($oMain, "changelog", $ELSCOPE_PUBLIC, $oChangelog)
+	_AutoItObject_AddProperty($oMain, "blacklist", $ELSCOPE_PUBLIC, $oBlacklist)
+	_AutoItObject_AddProperty($oMain, "message", $ELSCOPE_PUBLIC, $oMessage)
+	_AutoItObject_AddProperty($oMain, "dialog", $ELSCOPE_PUBLIC, $oDialog)
+	_AutoItObject_AddProperty($oMain, "OSLang")
+	_AutoItObject_AddProperty($oMain, "buttonOK")
+	_AutoItObject_AddProperty($oMain, "buttonCancel")
+	_AutoItObject_AddProperty($oMain, "buttonSave")
+
+	;menu
+	_AutoItObject_AddProperty($oMenu, "file", $ELSCOPE_PUBLIC, $oMenuFile)
+	_AutoItObject_AddProperty($oMenu, "view", $ELSCOPE_PUBLIC, $oMenuView)
+	_AutoItObject_AddProperty($oMenu, "tools", $ELSCOPE_PUBLIC, $oMenuTools)
+	_AutoItObject_AddProperty($oMenu, "help", $ELSCOPE_PUBLIC, $oMenuHelp)
+
+	;interface
+	_AutoItObject_AddProperty($oInterface, "props", $ELSCOPE_PUBLIC, $oInterfaceProps)
+
+	;add the items
+	_AutoItObject_AddProperty($oMenufile, "file")
+	_AutoItObject_AddProperty($oMenufile, "apply")
+	_AutoItObject_AddProperty($oMenufile, "applyKey")
+	_AutoItObject_AddProperty($oMenufile, "rename")
+	_AutoItObject_AddProperty($oMenufile, "renameKey")
+	_AutoItObject_AddProperty($oMenufile, "new")
+	_AutoItObject_AddProperty($oMenufile, "newKey")
+	_AutoItObject_AddProperty($oMenufile, "save")
+	_AutoItObject_AddProperty($oMenufile, "saveKey")
+	_AutoItObject_AddProperty($oMenufile, "delete")
+	_AutoItObject_AddProperty($oMenufile, "deleteKey")
+	_AutoItObject_AddProperty($oMenufile, "clear")
+	_AutoItObject_AddProperty($oMenufile, "clearKey")
+	_AutoItObject_AddProperty($oMenufile, "shortcut")
+	_AutoItObject_AddProperty($oMenufile, "open")
+	_AutoItObject_AddProperty($oMenufile, "import")
+	_AutoItObject_AddProperty($oMenufile, "export")
+	_AutoItObject_AddProperty($oMenufile, "exit")
+
+	_AutoItObject_AddProperty($oMenuview, "view")
+	_AutoItObject_AddProperty($oMenuview, "refresh")
+	_AutoItObject_AddProperty($oMenuview, "refreshKey")
+	_AutoItObject_AddProperty($oMenuview, "tray")
+	_AutoItObject_AddProperty($oMenuview, "trayKey")
+	_AutoItObject_AddProperty($oMenuview, "hide")
+
+	_AutoItObject_AddProperty($oMenutools, "tools")
+	_AutoItObject_AddProperty($oMenutools, "netConn")
+	_AutoItObject_AddProperty($oMenutools, "pull")
+	_AutoItObject_AddProperty($oMenutools, "pullKey")
+	_AutoItObject_AddProperty($oMenutools, "disable")
+	_AutoItObject_AddProperty($oMenutools, "enable")
+	_AutoItObject_AddProperty($oMenutools, "release")
+	_AutoItObject_AddProperty($oMenutools, "renew")
+	_AutoItObject_AddProperty($oMenutools, "cycle")
+	_AutoItObject_AddProperty($oMenutools, "settings")
+
+	_AutoItObject_AddProperty($oMenuhelp, "help")
+	_AutoItObject_AddProperty($oMenuhelp, "docs")
+	_AutoItObject_AddProperty($oMenuhelp, "docsKey")
+	_AutoItObject_AddProperty($oMenuhelp, "changelog")
+	_AutoItObject_AddProperty($oMenuhelp, "update")
+	_AutoItObject_AddProperty($oMenuhelp, "debug")
+	_AutoItObject_AddProperty($oMenuhelp, "about")
+
+	_AutoItObject_AddProperty($otraymenu, "hide")
+	_AutoItObject_AddProperty($otraymenu, "restore")
+	_AutoItObject_AddProperty($otraymenu, "about")
+	_AutoItObject_AddProperty($otraymenu, "exit")
+
+	_AutoItObject_AddProperty($olvmenu, "rename")
+	_AutoItObject_AddProperty($olvmenu, "delete")
+	_AutoItObject_AddProperty($olvmenu, "sortAsc")
+	_AutoItObject_AddProperty($olvmenu, "sortDesc")
+	_AutoItObject_AddProperty($olvmenu, "shortcut")
+
+	_AutoItObject_AddProperty($otoolbar, "apply")
+	_AutoItObject_AddProperty($otoolbar, "refresh")
+	_AutoItObject_AddProperty($otoolbar, "new")
+	_AutoItObject_AddProperty($otoolbar, "save")
+	_AutoItObject_AddProperty($otoolbar, "delete")
+	_AutoItObject_AddProperty($otoolbar, "clear")
+
+	_AutoItObject_AddProperty($otoolbar, "apply_tip")
+	_AutoItObject_AddProperty($otoolbar, "refresh_tip")
+	_AutoItObject_AddProperty($otoolbar, "new_tip")
+	_AutoItObject_AddProperty($otoolbar, "save_tip")
+	_AutoItObject_AddProperty($otoolbar, "delete_tip")
+	_AutoItObject_AddProperty($otoolbar, "clear_tip")
+	_AutoItObject_AddProperty($otoolbar, "settings_tip")
+	_AutoItObject_AddProperty($otoolbar, "tray_tip")
+
+	_AutoItObject_AddProperty($ointerface, "computername")
+	_AutoItObject_AddProperty($ointerface, "domain")
+	_AutoItObject_AddProperty($ointerface, "workgroup")
+
+	_AutoItObject_AddProperty($ointerface, "adapterDesc")
+	_AutoItObject_AddProperty($ointerface, "mac")
+
+	_AutoItObject_AddProperty($ointerface, "select")
+	_AutoItObject_AddProperty($ointerface, "profiles")
+	_AutoItObject_AddProperty($ointerface, "profileprops")
+	_AutoItObject_AddProperty($ointerface, "currentprops")
+
+	_AutoItObject_AddProperty($ointerface, "restarting")
+
+	_AutoItObject_AddProperty($oInterfaceProps, "ip")
+	_AutoItObject_AddProperty($oInterfaceProps, "subnet")
+	_AutoItObject_AddProperty($oInterfaceProps, "gateway")
+	_AutoItObject_AddProperty($oInterfaceProps, "dnsPref")
+	_AutoItObject_AddProperty($oInterfaceProps, "dnsAlt")
+	_AutoItObject_AddProperty($oInterfaceProps, "dhcpServer")
+	_AutoItObject_AddProperty($oInterfaceProps, "adapterState")
+	_AutoItObject_AddProperty($oInterfaceProps, "adapterStateEnabled")
+	_AutoItObject_AddProperty($oInterfaceProps, "adapterStateDisabled")
+	_AutoItObject_AddProperty($oInterfaceProps, "adapterStateUnplugged")
+
+	_AutoItObject_AddProperty($oInterfaceProps, "ipauto")
+	_AutoItObject_AddProperty($oInterfaceProps, "ipmanual")
+	_AutoItObject_AddProperty($oInterfaceProps, "dnsauto")
+	_AutoItObject_AddProperty($oInterfaceProps, "dnsmanual")
+	_AutoItObject_AddProperty($oInterfaceProps, "dnsreg")
+
+	_AutoItObject_AddProperty($oupdates, "title")
+	_AutoItObject_AddProperty($oupdates, "thisVersion")
+	_AutoItObject_AddProperty($oupdates, "latestVersion")
+	_AutoItObject_AddProperty($oupdates, "newMessage")
+	_AutoItObject_AddProperty($oupdates, "latestMessage")
+
+	_AutoItObject_AddProperty($oabout, "title")
+	_AutoItObject_AddProperty($oabout, "version")
+	_AutoItObject_AddProperty($oabout, "date")
+	_AutoItObject_AddProperty($oabout, "dev")
+	_AutoItObject_AddProperty($oabout, "lic")
+	_AutoItObject_AddProperty($oabout, "desc")
+	_AutoItObject_AddProperty($oabout, "icons")
+
+	_AutoItObject_AddProperty($ochangelog, "changelog")
+
+	_AutoItObject_AddProperty($oblacklist, "title")
+	_AutoItObject_AddProperty($oblacklist, "heading")
+
+	_AutoItObject_AddProperty($osettings, "title")
+	_AutoItObject_AddProperty($osettings, "lang")
+	_AutoItObject_AddProperty($osettings, "opt1")
+	_AutoItObject_AddProperty($osettings, "opt2")
+	_AutoItObject_AddProperty($osettings, "opt3")
+	_AutoItObject_AddProperty($osettings, "opt4")
+
+	_AutoItObject_AddProperty($omessage, "ready")
+	_AutoItObject_AddProperty($omessage, "timedout")
+	_AutoItObject_AddProperty($omessage, "couldNotSave")
+	_AutoItObject_AddProperty($omessage, "updatingList")
+	_AutoItObject_AddProperty($omessage, "selectAdapter")
+	_AutoItObject_AddProperty($omessage, "enterIP")
+	_AutoItObject_AddProperty($omessage, "enterSubnet")
+	_AutoItObject_AddProperty($omessage, "settingIP")
+	_AutoItObject_AddProperty($omessage, "settingDnsDhcp")
+	_AutoItObject_AddProperty($omessage, "settingDnsPref")
+	_AutoItObject_AddProperty($omessage, "settingDnsAlt")
+	_AutoItObject_AddProperty($omessage, "errorOccurred")
+	_AutoItObject_AddProperty($omessage, "profileNameExists")
+	_AutoItObject_AddProperty($omessage, "noProfileSel")
+	_AutoItObject_AddProperty($omessage, "profilesNotFound")
+	_AutoItObject_AddProperty($omessage, "errorReadingProf")
+	_AutoItObject_AddProperty($omessage, "adapterNotFound")
+	_AutoItObject_AddProperty($omessage, "error")
+	_AutoItObject_AddProperty($omessage, "warning")
+	_AutoItObject_AddProperty($omessage, "newItem")
+	_AutoItObject_AddProperty($omessage, "applying")
+	_AutoItObject_AddProperty($omessage, "errorRetrieving")
+	_AutoItObject_AddProperty($omessage, "commandTimeout")
+	_AutoItObject_AddProperty($omessage, "updateCheckError")
+	_AutoItObject_AddProperty($omessage, "checkConnect")
+	_AutoItObject_AddProperty($omessage, "errorCode")
+	_AutoItObject_AddProperty($omessage, "newVersion")
+	_AutoItObject_AddProperty($omessage, "currentVersion")
+	_AutoItObject_AddProperty($omessage, "yourVersion")
+	_AutoItObject_AddProperty($omessage, "latestVersion")
+	_AutoItObject_AddProperty($omessage, "loadedFile")
+	_AutoItObject_AddProperty($omessage, "doneImporting")
+	_AutoItObject_AddProperty($omessage, "fileSaved")
+
+	_AutoItObject_AddProperty($odialog, "selectFile")
+	_AutoItObject_AddProperty($odialog, "ini")
+
+	Return $oMain
+EndFunc
 
 Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	Local $fileData
@@ -252,7 +422,7 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.message.couldNotSave = Json_Get($jsonData, ".strings.message.couldNotSave")
 	$oLangStrings.message.updatingList = Json_Get($jsonData, ".strings.message.updatingList")
 	$oLangStrings.message.selectAdapter = Json_Get($jsonData, ".strings.message.selectAdapter")
-	$oLangStrings.message.enterIP = "Enter an IP address"
+	$oLangStrings.message.enterIP = Json_Get($jsonData, ".strings.message.enterIP")
 	$oLangStrings.message.enterSubnet = Json_Get($jsonData, ".strings.message.enterSubnet")
 	$oLangStrings.message.settingIP = Json_Get($jsonData, ".strings.message.settingIP	")
 	$oLangStrings.message.settingDnsDhcp = Json_Get($jsonData, ".strings.message.settingDnsDhcp")
@@ -284,10 +454,11 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.dialog.selectFile = Json_Get($jsonData, ".strings.dialog.selectFile")
 	$oLangStrings.dialog.ini = Json_Get($jsonData, ".strings.dialog.ini")
 
-	If $manualUpdate Then _updateLang()
+	_print("done setting lang")
 EndFunc   ;==>_setLangStrings
 
-Func _updateLang()
+
+Func _updateLang2()
 	GUICtrlSetData($filemenu, $oLangStrings.menu.file.file)
 	GUICtrlSetData($applyitem, $oLangStrings.menu.file.apply & @TAB & $oLangStrings.menu.file.applyKey)
 	GUICtrlSetData($renameitem, $oLangStrings.menu.file.rename & @TAB & $oLangStrings.menu.file.renameKey)

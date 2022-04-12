@@ -59,8 +59,8 @@ Global $sProfileName = @ScriptDir & "\profiles.ini"
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.9.4"
-Global $winDate = "4/7/2022"
+Global $winVersion = "2.9.4-beta03"
+Global $winDate = "4/11/2022"
 Global $hgui
 Global $guiWidth = 600
 Global $guiHeight = 550
@@ -155,7 +155,8 @@ Global $oLangStrings
 #include <Inet.au3>
 #include <File.au3>
 
-#include "libraries\AutoItObject_Internal.au3"
+;~ #include "libraries\AutoItObject_Internal.au3"
+#include "libraries\AutoItObject.au3"
 #include "libraries\Json\json.au3"
 #include "model.au3"
 #include "hexIcons.au3"
@@ -188,7 +189,7 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4-BETA.exe
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4-BETA03.exe
 #AutoIt3Wrapper_Res_Fileversion=2.9.4.0
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
