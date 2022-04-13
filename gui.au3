@@ -1051,21 +1051,23 @@ Func _blacklist()
 	$y = $currentWinPos[1] + $guiHeight * $dscale / 2 - $h / 2
 
 	$blacklistChild = GUICreate($oLangStrings.blacklist.title, $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
-	GUISetBkColor(0x888889)
 	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 
-	$bkLabel = GUICtrlCreateLabel("", 0, 0, $w, $h - 35 * $dscale)
-	GUICtrlSetBkColor($bkLabel, 0xFFFFFF)
-	GUICtrlSetState($bkLabel, $GUI_DISABLE)
+	GUICtrlCreateLabel("", 0, 0, $w, $h - 32 * $dscale)
+	GUICtrlSetState(-1, $GUI_DISABLE)
+	GUICtrlSetBkColor(-1, 0xFFFFFF)
+
+	GUICtrlCreateLabel("", 0, $h - 32 * $dscale, $w, 1)
+	GUICtrlSetBkColor(-1, 0x000000)
 
 	$labelTitle = GUICtrlCreateLabel($oLangStrings.blacklist.heading, 5, 5, $w - 10, 20 * $dscale)
 ;~ 	GUICtrlSetColor(-1, 0x0000FF)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetFont(-1, 12)
 
-	$labelTitleLine = GUICtrlCreateLabel("", 2, 20 * $dscale + 5 + 3, $w - 4, 1)
-	GUICtrlSetBkColor(-1, 0x999999)
+;~ 	$labelTitleLine = GUICtrlCreateLabel("", 2, 20*$dscale+5+3, $w-4, 1)
+;~ 	GUICtrlSetBkColor (-1, 0x999999)
 
 	$blacklistLV = GUICtrlCreateListView("Adapter Name", 5, 35 * $dscale, $w - 10, $h - 35 * $dscale - 35 * $dscale, BitOR($GUI_SS_DEFAULT_LISTVIEW, $LVS_NOCOLUMNHEADER), $LVS_EX_CHECKBOXES)
 	GUICtrlSetBkColor($blacklistLV, 0xFFFFFF)
@@ -1080,9 +1082,6 @@ Func _blacklist()
 			EndIf
 		Next
 	EndIf
-
-	$labelBottomLine = GUICtrlCreateLabel("", 0, $h - 35 * $dscale + 1, $w, 1)
-	GUICtrlSetBkColor(-1, 0x444444)
 
 	$bt_Ok = GUICtrlCreateButton($oLangStrings.buttonSave, $w - 20 * $dScale - 75 * $dScale, $h - 27 * $dScale, 75 * $dScale, 22 * $dScale)
 	GUICtrlSetOnEvent(-1, "_onExitBlacklistOk")
