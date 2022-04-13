@@ -69,18 +69,17 @@ Func _makeGUI()
 	Local $guiSpacer = 0
 	Local $y = 0
 	Local $xLeft = $guiSpacer
-	Local $wLeft = 230*$dscale
+	Local $wLeft = 250*$dscale
 	Local $xRight = $xLeft + $wLeft
 	Local $wRight = $guiWidth*$dscale - $wLeft - 2*$guiSpacer
-	_makeComboSelect("Select Adapter", $xLeft, $tbarHeight*$dscale + $guiSpacer+$y, $wLeft, 88*$dscale)
+	_makeComboSelect($oLangStrings.interface.select, $xLeft, $tbarHeight*$dscale + $guiSpacer+$y, $wLeft, 88*$dscale)
 	$hLeft = $tbarHeight*$dscale + $guiSpacer + 88*$dscale+$y
-	_makeProfileSelect("Profiles", $xLeft, $tbarHeight*$dscale + $guiSpacer + 87*$dscale+$y, $wLeft, $guiHeight*$dscale-$hLeft-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
+	_makeProfileSelect($oLangStrings.interface.profiles, $xLeft, $tbarHeight*$dscale + $guiSpacer + 87*$dscale+$y, $wLeft, $guiHeight*$dscale-$hLeft-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
 
-
-	_makeIpProps("Profile IP Properties", $xRight, $tbarHeight*$dscale + $guiSpacer+$y, $wRight, 148*$dscale)
+	_makeIpProps($oLangStrings.interface.profileprops, $xRight, $tbarHeight*$dscale + $guiSpacer+$y, $wRight, 148*$dscale)
 	_makeDnsProps("", $xRight, $tbarHeight*$dscale + $guiSpacer + 147*$dscale+$y, $wRight, 130*$dscale)
 	$hRight = $tbarHeight*$dscale + $guiSpacer + 148*$dscale + 130*$dscale
-	_makeCurrentProps("Current Adapter Properties", $xRight, $tbarHeight*$dscale + $guiSpacer + 148*$dscale + 129*$dscale, $wRight, $guiHeight*$dscale-$hRight-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
+	_makeCurrentProps($oLangStrings.interface.currentprops, $xRight, $tbarHeight*$dscale + $guiSpacer + 148*$dscale + 129*$dscale, $wRight, $guiHeight*$dscale-$hRight-$menuHeight-$statusbarHeight*$dscale-$guiSpacer-$footerHeight*$dscale+1*$dscale)
 	_makeFooter()
 
 ;~ 	$but = GUICtrlCreateButton("get", 10, 50, 100,25)
@@ -130,12 +129,12 @@ Func _makeGUI()
 
 	;WinWaitActive ( $hgui, "", 3 )
 	;~ Set up tray menu
-	$RestoreItem      = TrayCreateItem("Hide")
+	$RestoreItem      = TrayCreateItem($oLangStrings.traymenu.hide)
 	TrayItemSetOnEvent(-1, "_OnRestore")
-	$aboutitem      = TrayCreateItem("About")
+	$aboutitem      = TrayCreateItem($oLangStrings.traymenu.about)
 	TrayItemSetOnEvent(-1, "_onAbout")
 	TrayCreateItem("")
-	$exititem       = TrayCreateItem("Exit")
+	$exititemtray       = TrayCreateItem($oLangStrings.traymenu.exit)
 	TrayItemSetOnEvent(-1, "_onExit")
 	TraySetOnEvent($TRAY_EVENT_PRIMARYDOWN, "_OnTrayClick")
 	TraySetToolTip ( $winName )
@@ -162,7 +161,7 @@ Func _makeGUI()
 		GUISetState(@SW_SHOWNOACTIVATE, $hTool)
 		GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
 	Else
-		TrayItemSetText( $RestoreItem, "Restore" )
+		TrayItemSetText( $RestoreItem, $oLangStrings.traymenu.restore )
 	EndIf
 	$prevWinPos = WinGetPos($hgui)
 EndFunc
@@ -177,17 +176,17 @@ Func _makeFooter()
 	GUICtrlSetBkColor(-1, 0x404040)
 
 	If $screenshot Then
-		$computer = GUICtrlCreateLabel("Computer Name: ________", $x+3, $y+2, $w, $h)
+		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": ________", $x+3, $y+2, $w, $h)
 	Else
-		$computer = GUICtrlCreateLabel("Computer Name: " & @ComputerName, $x+3, $y+2, $w, $h)
+		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": " & @ComputerName, $x+3, $y+2, $w, $h)
 	EndIf
-	GUICtrlSetBkColor($computer, $GUI_BKCOLOR_TRANSPARENT)
-	_setFont($computer, 8, -1, 0xFFFFFF)
+	GUICtrlSetBkColor($computerName, $GUI_BKCOLOR_TRANSPARENT)
+	_setFont($computerName, 8, -1, 0xFFFFFF)
 
 	If @LogonDomain <> "" Then
-		$domain = GUICtrlCreateLabel("", $x, $y+2, $w-3, $h, $SS_RIGHT)
-		GUICtrlSetBkColor($domain, $GUI_BKCOLOR_TRANSPARENT)
-		_setFont($domain, 8, -1, 0xFFFFFF)
+		$domainName = GUICtrlCreateLabel("", $x, $y+2, $w-3, $h, $SS_RIGHT)
+		GUICtrlSetBkColor($domainName, $GUI_BKCOLOR_TRANSPARENT)
+		_setFont($domainName, 8, -1, 0xFFFFFF)
 	EndIf
 
 	;_makeHeading("", $x, $y, $w, $h, 0x0782FD, 0.95)
@@ -205,7 +204,7 @@ Func _makeStatusbar()
 	GUICtrlSetState($wgraphic, $GUI_HIDE)
 	GUICtrlSetCursor($wgraphic, 0)
 
-	$statustext = GUICtrlCreateLabel ( "Ready", $x+3, $y+3, $w-2, $h-2)
+	$statustext = GUICtrlCreateLabel ( $oLangStrings.message.ready, $x+3, $y+3, $w-2, $h-2)
 	GUICtrlSetBkColor (-1, $GUI_BKCOLOR_TRANSPARENT)
 
 	$statuserror = GUICtrlCreateLabel ( "", $x+3, $y+3, $w-2, $h-2)
@@ -226,72 +225,71 @@ EndFunc
 
 
 Func _makeMenu()
-	$filemenu = GUICtrlCreateMenu("&File")
-
-	$saveitem = GUICtrlCreateMenuItem("&Apply profile" & @TAB & "Enter", $filemenu)
+	$filemenu = GUICtrlCreateMenu($oLangStrings.menu.file.file)
+	$applyitem = GUICtrlCreateMenuItem($oLangStrings.menu.file.apply & @TAB & $oLangStrings.menu.file.applyKey, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onApply")
 	GUICtrlCreateMenuItem("", $filemenu)
-	$renameitem = GUICtrlCreateMenuItem("&Rename" & @TAB & "F2", $filemenu)
+	$renameitem = GUICtrlCreateMenuItem($oLangStrings.menu.file.rename & @TAB & $oLangStrings.menu.file.renameKey, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onRename")
-	$newitem = GUICtrlCreateMenuItem("&New" & @TAB & "Ctrl+n", $filemenu)
+	$newitem = GUICtrlCreateMenuItem($oLangStrings.menu.file.new & @TAB & $oLangStrings.menu.file.newKey, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onNewItem")
-	$saveitem = GUICtrlCreateMenuItem("&Save" & @TAB & "Ctrl+s", $filemenu)
+	$saveitem = GUICtrlCreateMenuItem($oLangStrings.menu.file.save & @TAB & $oLangStrings.menu.file.saveKey, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onSave")
-	$deleteitem = GUICtrlCreateMenuItem("&Delete" & @TAB & "Del", $filemenu)
+	$deleteitem = GUICtrlCreateMenuItem($oLangStrings.menu.file.delete & @TAB & $oLangStrings.menu.file.deleteKey, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onDelete")
-	$clearitem = GUICtrlCreateMenuItem("&Clear entries" & @TAB & "Ctrl+c", $filemenu)
+	$clearitem = GUICtrlCreateMenuItem($oLangStrings.menu.file.clear & @TAB & $oLangStrings.menu.file.clearKey, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onClear")
-	$createLinkItem = GUICtrlCreateMenuItem("Create s&hortcut to profile", $filemenu)
+	$createLinkItem = GUICtrlCreateMenuItem($oLangStrings.menu.file.shortcut, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onCreateLink")
 	GUICtrlCreateMenuItem("", $filemenu) 	; create a separator line
-	$profilesOpenItem = GUICtrlCreateMenuItem("Open File", $filemenu)
+	$profilesOpenItem = GUICtrlCreateMenuItem($oLangStrings.menu.file.open, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onOpenProfiles")
-	$profilesImportItem = GUICtrlCreateMenuItem("Import profiles", $filemenu)
+	$profilesImportItem = GUICtrlCreateMenuItem($oLangStrings.menu.file.import, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onImportProfiles")
-	$profilesExportItem = GUICtrlCreateMenuItem("Export profiles", $filemenu)
+	$profilesExportItem = GUICtrlCreateMenuItem($oLangStrings.menu.file.export, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onExportProfiles")
 	GUICtrlCreateMenuItem("", $filemenu)
-	$exititem = GUICtrlCreateMenuItem("&Exit" & @TAB & "Esc", $filemenu)
+	$exititem = GUICtrlCreateMenuItem($oLangStrings.menu.file.exit, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onExit")
 
-	$viewmenu = GUICtrlCreateMenu("&View")
-	$refreshitem = GUICtrlCreateMenuItem("&Refresh" & @TAB & "Ctrl+r", $viewmenu)
+	$viewmenu = GUICtrlCreateMenu($oLangStrings.menu.view.view)
+	$refreshitem = GUICtrlCreateMenuItem($oLangStrings.menu.view.refresh & @TAB & $oLangStrings.menu.view.refreshKey, $viewmenu)
 	GUICtrlSetOnEvent(-1, "_onRefresh")
-	$send2trayitem = GUICtrlCreateMenuItem("Send to &tray" & @TAB & "Ctrl+t", $viewmenu)
+	$send2trayitem = GUICtrlCreateMenuItem($oLangStrings.menu.view.tray & @TAB & $oLangStrings.menu.view.trayKey, $viewmenu)
 	GUICtrlSetOnEvent(-1, "_onTray")
 	GUICtrlCreateMenuItem("", $viewmenu) 	; create a separator line
-	$blacklistitem = GUICtrlCreateMenuItem("&Hide adapters", $viewmenu)
+	$blacklistitem = GUICtrlCreateMenuItem($oLangStrings.menu.view.hide, $viewmenu)
 	GUICtrlSetOnEvent(-1, "_onBlacklist")
 
-	$toolsmenu = GUICtrlCreateMenu("&Tools")
-	$netConnItem = GUICtrlCreateMenuItem("Open Network Connections", $toolsmenu)
+	$toolsmenu = GUICtrlCreateMenu($oLangStrings.menu.tools.tools)
+	$netConnItem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.netConn, $toolsmenu)
 	GUICtrlSetOnEvent(-1, "_onOpenNetConnections")
-	$pullitem = GUICtrlCreateMenuItem("&Pull from adapter" & @TAB & "Ctrl+p", $toolsmenu)
+	$pullitem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.pull & @TAB & $oLangStrings.menu.tools.pullKey, $toolsmenu)
 	GUICtrlSetOnEvent(-1, "_onPull")
-	$disableitem = GUICtrlCreateMenuItem("Dis&able adapter", $toolsmenu)
+	$disableitem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.disable, $toolsmenu)
 	GUICtrlSetOnEvent(-1, "_onDisable")
 	GUICtrlCreateMenuItem("", $toolsmenu)
-	$releaseitem = GUICtrlCreateMenuItem("&Release DHCP", $toolsmenu)
+	$releaseitem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.release, $toolsmenu)
 	GUICtrlSetOnEvent(-1, "_onRelease")
-	$renewitem = GUICtrlCreateMenuItem("Re&new DHCP", $toolsmenu)
+	$renewitem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.renew, $toolsmenu)
 	GUICtrlSetOnEvent(-1, "_onRenew")
-	$cycleitem = GUICtrlCreateMenuItem("Release/renew &cycle", $toolsmenu)
+	$cycleitem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.cycle, $toolsmenu)
 	GUICtrlSetOnEvent(-1, "_onCycle")
 	GUICtrlCreateMenuItem("", $toolsmenu)
-	$settingsitem = GUICtrlCreateMenuItem("&Settings", $toolsmenu)
+	$settingsitem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.settings, $toolsmenu)
 	GUICtrlSetOnEvent(-1, "_onSettings")
 
-	$helpmenu = GUICtrlCreateMenu("&Help")
-	$helpitem = GUICtrlCreateMenuItem("&Online Documentation" & @TAB & "F1", $helpmenu)
+	$helpmenu = GUICtrlCreateMenu($oLangStrings.menu.help.help)
+	$helpitem = GUICtrlCreateMenuItem($oLangStrings.menu.help.docs & @TAB & $oLangStrings.menu.help.docsKey, $helpmenu)
 	GUICtrlSetOnEvent(-1, "_onHelp")
 	GUICtrlCreateMenuItem("", $helpmenu)
-	$changelogitem = GUICtrlCreateMenuItem("Show &Change Log", $helpmenu)
+	$changelogitem = GUICtrlCreateMenuItem($oLangStrings.menu.help.changelog, $helpmenu)
 	GUICtrlSetOnEvent(-1, "_onChangelog")
-	$checkUpdatesItem = GUICtrlCreateMenuItem("Check for &Updates...", $helpmenu)
+	$checkUpdatesItem = GUICtrlCreateMenuItem($oLangStrings.menu.help.update, $helpmenu)
 	GUICtrlSetOnEvent(-1, "_onUpdateCheckItem")
-	$debugmenuitem = GUICtrlCreateMenuItem("&Debug Information", $helpmenu)
+	$debugmenuitem = GUICtrlCreateMenuItem($oLangStrings.menu.help.debug, $helpmenu)
 	GUICtrlSetOnEvent(-1, "_onDebugItem")
-	$infoitem = GUICtrlCreateMenuItem("&About Simple IP Config", $helpmenu)
+	$infoitem = GUICtrlCreateMenuItem($oLangStrings.menu.help.about, $helpmenu)
 	GUICtrlSetOnEvent(-1, "_onAbout")
 
 	;$Lclientsize = WinGetClientSize( $hGUI )
@@ -303,24 +301,26 @@ Func _makeMenu()
 EndFunc
 
 Func _makeCurrentProps($label, $x, $y, $w, $h)
-	Local $headingHeight = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	Local $aRet = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	$headingCurrent = $aRet[0]
+	Local $headingHeight = $aRet[1]
 	Local $bkcolor = 0xEEEEEE
 
-	$label_CurrIp = GUICtrlCreateLabel( "IP Address:", $x+8*$dscale, $y+$headingHeight+8*$dscale)
+	$label_CurrIp = GUICtrlCreateLabel( $oLangStrings.interface.props.ip & ":", $x+8*$dscale, $y+$headingHeight+8*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentIp = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+8*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
 	GUICtrlSetColor(-1, 0x444444)
 
-	$label_CurrSubnet = GUICtrlCreateLabel( "Subnet Mask:", $x+8*$dscale, $y+$headingHeight+25*$dscale)
+	$label_CurrSubnet = GUICtrlCreateLabel( $oLangStrings.interface.props.subnet & ":", $x+8*$dscale, $y+$headingHeight+25*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentSubnet = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+25*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
 	GUICtrlSetColor(-1, 0x444444)
 
-	$label_CurrGateway = GUICtrlCreateLabel( "Gateway:", $x+8*$dscale, $y+$headingHeight+42*$dscale)
+	$label_CurrGateway = GUICtrlCreateLabel( $oLangStrings.interface.props.gateway & ":", $x+8*$dscale, $y+$headingHeight+42*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentGateway = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+42*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
@@ -331,14 +331,14 @@ Func _makeCurrentProps($label, $x, $y, $w, $h)
 ;~ 	GUICtrlSetBkColor(-1, 0x0051FF)
 	GUICtrlSetBkColor(-1, 0x404040)
 
-	$label_CurrDnsPri = GUICtrlCreateLabel( "Preferred DNS Server:", $x+8*$dscale, $y+$headingHeight+67*$dscale)
+	$label_CurrDnsPri = GUICtrlCreateLabel( $oLangStrings.interface.props.dnsPref & ":", $x+8*$dscale, $y+$headingHeight+67*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentDnsPri = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+67*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
 	GUICtrlSetColor(-1, 0x444444)
 
-	$label_CurrDnsAlt = GUICtrlCreateLabel( "Alternate DNS Server:", $x+8*$dscale, $y+$headingHeight+84*$dscale)
+	$label_CurrDnsAlt = GUICtrlCreateLabel( $oLangStrings.interface.props.dnsAlt & ":", $x+8*$dscale, $y+$headingHeight+84*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentDnsAlt = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+84*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
@@ -349,14 +349,14 @@ Func _makeCurrentProps($label, $x, $y, $w, $h)
 ;~ 	GUICtrlSetBkColor(-1, 0x0051FF)
 	GUICtrlSetBkColor(-1, 0x404040)
 
-	$label_CurrDhcp = GUICtrlCreateLabel( "DHCP Server:", $x+8*$dscale, $y+$headingHeight+112*$dscale)
+	$label_CurrDhcp = GUICtrlCreateLabel( $oLangStrings.interface.props.dhcpServer & ":", $x+8*$dscale, $y+$headingHeight+112*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentDhcp = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+112*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
 	GUICtrlSetColor(-1, 0x444444)
 
-	$label_CurrAdapterState = GUICtrlCreateLabel( "Adapter State:", $x+8*$dscale, $y+$headingHeight+129*$dscale)
+	$label_CurrAdapterState = GUICtrlCreateLabel( $oLangStrings.interface.props.adapterState & ":", $x+8*$dscale, $y+$headingHeight+129*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetColor(-1, 0x444444)
 	$label_CurrentAdapterState = GUICtrlCreateInput( "000.000.000.000", $x+$w-125*$dscale-8*$dscale, $y+$headingHeight+129*$dscale, 125*$dscale, 15*$dscale, BITOR($ES_READONLY,$SS_CENTER), $WS_EX_TOOLWINDOW)
@@ -367,27 +367,28 @@ Func _makeCurrentProps($label, $x, $y, $w, $h)
 EndFunc
 
 Func _makeDnsProps($label, $x, $y, $w, $h)
-	Local $headingHeight = _makeHeading($label, $x+1, $y+1, $w-2, 5, 0x0782FD, 0.95)
+	Local $aRet = _makeHeading($label, $x+1, $y+1, $w-2, 5, 0x0782FD, 0.95)
+	Local $headingHeight = $aRet[1]
 	GUIStartGroup()
-	$radio_DnsAuto = GUICtrlCreateRadio( "Automatically Set DNS Address", $x+8*$dscale, $y+$headingHeight+4*$dscale, $w-16*$dscale, 20*$dscale)
+	$radio_DnsAuto = GUICtrlCreateRadio( $oLangStrings.interface.props.dnsauto, $x+8*$dscale, $y+$headingHeight+4*$dscale, $w-16*$dscale, 20*$dscale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetOnEvent(-1, "_onRadio")
-	$radio_DnsMan = GUICtrlCreateRadio( "Manually Set DNS Address", $x+8*$dscale, $y+$headingHeight+23*$dscale, $w-16*$dscale, 20*$dscale)
+	$radio_DnsMan = GUICtrlCreateRadio( $oLangStrings.interface.props.dnsmanual, $x+8*$dscale, $y+$headingHeight+23*$dscale, $w-16*$dscale, 20*$dscale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetOnEvent(-1, "_onRadio")
 	GUICtrlSetState(-1, $GUI_CHECKED)
 
-	$label_DnsPri = GUICtrlCreateLabel( "Preferred DNS Server:", $x+8*$dscale, $y+$headingHeight+51*$dscale)
+	$label_DnsPri = GUICtrlCreateLabel( $oLangStrings.interface.props.dnsPref & ":", $x+8*$dscale, $y+$headingHeight+51*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	$ip_DnsPri = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+48*$dscale, 135*$dscale, 22*$dscale )
 	_GUICtrlIpAddress_SetFontByHeight( $ip_DnsPri, $MyGlobalFontName, $MyGlobalFontHeight)
 
-	$label_DnsAlt = GUICtrlCreateLabel( "Alternate DNS Server:", $x+8*$dscale, $y+$headingHeight+77*$dscale)
+	$label_DnsAlt = GUICtrlCreateLabel( $oLangStrings.interface.props.dnsAlt & ":", $x+8*$dscale, $y+$headingHeight+77*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	$ip_DnsAlt = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+74*$dscale, 135*$dscale, 22*$dscale )
 	_GUICtrlIpAddress_SetFontByHeight( $ip_DnsAlt, $MyGlobalFontName, $MyGlobalFontHeight)
 
-	$ck_dnsReg = GUICtrlCreateCheckbox("Register Addresses", $x+8*$dscale, $y+$h-19*$dscale, -1, 15*$dscale)
+	$ck_dnsReg = GUICtrlCreateCheckbox($oLangStrings.interface.props.dnsreg, $x+8*$dscale, $y+$h-19*$dscale, -1, 15*$dscale)
 	GUICtrlSetBkColor(-1,0xFFFFFF)
 	GUICtrlSetFont(-1, 8.5)
 
@@ -395,27 +396,29 @@ Func _makeDnsProps($label, $x, $y, $w, $h)
 EndFunc
 
 Func _makeIpProps($label, $x, $y, $w, $h)
-	Local $headingHeight = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	Local $aRet = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	$headingIP = $aRet[0]
+	Local $headingHeight = $aRet[1]
 	GUIStartGroup()
-	$radio_IpAuto = GUICtrlCreateRadio( "Automatically Set IP Address", $x+8*$dscale, $y+$headingHeight+4*$dscale, $w-16*$dscale, 20*$dscale)
+	$radio_IpAuto = GUICtrlCreateRadio( $oLangStrings.interface.props.ipauto, $x+8*$dscale, $y+$headingHeight+4*$dscale, $w-16*$dscale, 20*$dscale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetOnEvent(-1, "_onRadio")
-	$radio_IpMan = GUICtrlCreateRadio( "Manually Set IP Address", $x+8*$dscale, $y+$headingHeight+23*$dscale, $w-16*$dscale, 20*$dscale)
+	$radio_IpMan = GUICtrlCreateRadio( $oLangStrings.interface.props.ipmanual, $x+8*$dscale, $y+$headingHeight+23*$dscale, $w-16*$dscale, 20*$dscale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetOnEvent(-1, "_onRadio")
 	GUICtrlSetState(-1, $GUI_CHECKED)
 
-	$label_ip = GUICtrlCreateLabel( "IP Address:", $x+8*$dscale, $y+$headingHeight+51*$dscale)
+	$label_ip = GUICtrlCreateLabel( $oLangStrings.interface.props.ip & ":", $x+8*$dscale, $y+$headingHeight+51*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	$ip_Ip = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+48*$dscale, 135*$dscale, 22*$dscale )
 	_GUICtrlIpAddress_SetFontByHeight( $ip_Ip, $MyGlobalFontName, $MyGlobalFontHeight)
 
-	$label_subnet = GUICtrlCreateLabel( "Subnet Mask:", $x+8*$dscale, $y+$headingHeight+77*$dscale)
+	$label_subnet = GUICtrlCreateLabel( $oLangStrings.interface.props.subnet & ":", $x+8*$dscale, $y+$headingHeight+77*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	$ip_Subnet = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+74*$dscale, 135*$dscale, 22*$dscale )
 	_GUICtrlIpAddress_SetFontByHeight( $ip_Subnet, $MyGlobalFontName, $MyGlobalFontHeight)
 
-	$label_gateway = GUICtrlCreateLabel( "Gateway:", $x+8*$dscale, $y+$headingHeight+103*$dscale)
+	$label_gateway = GUICtrlCreateLabel( $oLangStrings.interface.props.gateway & ":", $x+8*$dscale, $y+$headingHeight+103*$dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	$ip_Gateway = _GUICtrlIpAddress_Create( $hGUI, $x+$w-135*$dscale-8*$dscale, $y+$headingHeight+100*$dscale, 135*$dscale, 22*$dscale	)
 	_GUICtrlIpAddress_SetFontByHeight( $ip_Gateway, $MyGlobalFontName, $MyGlobalFontHeight)
@@ -424,7 +427,9 @@ Func _makeIpProps($label, $x, $y, $w, $h)
 EndFunc
 
 Func _makeProfileSelect($label, $x, $y, $w, $h)
-	Local $headingHeight = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	Local $aRet = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	$headingProfiles = $aRet[0]
+	Local $headingHeight = $aRet[1]
 	$searchgraphic = GUICtrlCreatePic("", $x+5, $y+$headingHeight+3+2*$dscale, 16, 16)
 	;_ResourceSetImageToCtrl($hGUI, $searchgraphic, "search_png")
 	_memoryToPic($searchgraphic, GetIconData($pngSearch))
@@ -444,17 +449,17 @@ Func _makeProfileSelect($label, $x, $y, $w, $h)
 
 	; ListView Context Menu
 	$lvcontext = GUICtrlCreateContextMenu($list_profiles)
-	$lvcon_rename = GUICtrlCreateMenuItem("Rename", $lvcontext)
+	$lvcon_rename = GUICtrlCreateMenuItem($oLangStrings.lvmenu.rename, $lvcontext)
 	GUICtrlSetOnEvent( -1, "_onRename")
-	$lvcon_delete = GUICtrlCreateMenuItem("Delete", $lvcontext)
+	$lvcon_delete = GUICtrlCreateMenuItem($oLangStrings.lvmenu.delete, $lvcontext)
 	GUICtrlSetOnEvent( -1, "_onDelete")
 	GUICtrlCreateMenuItem("", $lvcontext)
-	$lvcon_arrAz = GUICtrlCreateMenuItem("Sort A->Z", $lvcontext)
+	$lvcon_arrAz = GUICtrlCreateMenuItem($oLangStrings.lvmenu.sortAsc, $lvcontext)
 	GUICtrlSetOnEvent( -1, "_onArrangeAz")
-	$lvcon_arrZa = GUICtrlCreateMenuItem("Sort Z->A", $lvcontext)
+	$lvcon_arrZa = GUICtrlCreateMenuItem($oLangStrings.lvmenu.sortDesc, $lvcontext)
 	GUICtrlSetOnEvent( -1, "_onArrangeZa")
 	GUICtrlCreateMenuItem("", $lvcontext)
-	$lvcreateLinkItem = GUICtrlCreateMenuItem("Create shortcut to profile", $lvcontext)
+	$lvcreateLinkItem = GUICtrlCreateMenuItem($oLangStrings.lvmenu.shortcut, $lvcontext)
 	GUICtrlSetOnEvent(-1, "_onCreateLink")
 
 	$dummyUp = GUICtrlCreateDummy()
@@ -467,13 +472,16 @@ Func _makeProfileSelect($label, $x, $y, $w, $h)
 EndFunc
 
 Func _makeComboSelect($label, $x, $y, $w, $h)
-	Local $headingHeight = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	Local $aRet = _makeHeading($label, $x+1, $y+1, $w-2, -1, 0x0782FD, 0.95)
+	$headingSelect = $aRet[0]
+	Local $headingHeight = $aRet[1]
+
 	$combo_adapters = GUICtrlCreateCombo( "", $x+8*$dscale, $y + $headingHeight + 8*$dscale, $w-16*$dscale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
 	GUICtrlSetOnEvent($combo_adapters, "_OnCombo")
 	_setFont($combo_adapters, $MyGlobalFontSize)
-	$lDescription = GUICtrlCreateLabel( "Description", $x+8*$dscale, $y + $headingHeight + 9*$dscale + 26*$dscale, $w-16*$dscale, -1, $SS_LEFTNOWORDWRAP	 )
+	$lDescription = GUICtrlCreateLabel( $oLangStrings.interface.adapterDesc, $x+8*$dscale, $y + $headingHeight + 9*$dscale + 26*$dscale, $w-16*$dscale, -1, $SS_LEFTNOWORDWRAP	 )
 	_setFont($lDescription, 8.5, $MyGlobalFontBKColor)
-	$lMac = GUICtrlCreateLabel( "MAC Address: ", $x+8*$dscale, $y + $headingHeight + 9*$dscale + 41*$dscale, $w-16*$dscale, -1, $SS_LEFTNOWORDWRAP	 )
+	$lMac = GUICtrlCreateLabel( $oLangStrings.interface.mac & ": ", $x+8*$dscale, $y + $headingHeight + 9*$dscale + 41*$dscale, $w-16*$dscale, -1, $SS_LEFTNOWORDWRAP	 )
 	_setFont($lMac, 8.5, $MyGlobalFontBKColor)
 
 	$combo_dummy = GUICtrlCreateDummy()
@@ -502,12 +510,12 @@ Func _makeToolbar()
 	_GUICtrlToolbar_SetImageList($hToolbar, $hImageList)
 
 	Local $aStringList[6]
-	$aStringList[0] = _GUICtrlToolbar_AddString($hToolbar, 'Apply')
-	$aStringList[1] = _GUICtrlToolbar_AddString($hToolbar, 'Refresh')
-	$aStringList[2] = _GUICtrlToolbar_AddString($hToolbar, 'New')
-	$aStringList[3] = _GUICtrlToolbar_AddString($hToolbar, 'Save')
-	$aStringList[4] = _GUICtrlToolbar_AddString($hToolbar, 'Delete')
-	$aStringList[5] = _GUICtrlToolbar_AddString($hToolbar, 'Clear')
+	$aStringList[0] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.apply)
+	$aStringList[1] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.refresh)
+	$aStringList[2] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.new)
+	$aStringList[3] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.save)
+	$aStringList[4] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.delete)
+	$aStringList[5] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.clear)
 
 	$bbutton = _GUICtrlToolbar_AddButton($hToolbar, $tb_apply, 0, $aStringList[0])
 	$bbutton = _GUICtrlToolbar_AddButton($hToolbar, $tb_refresh, 1, $aStringList[1])
@@ -518,11 +526,11 @@ Func _makeToolbar()
 	$bbutton = _GUICtrlToolbar_AddButtonSep($hToolbar, 5)
 	$bbutton = _GUICtrlToolbar_AddButton($hToolbar, $tb_clear, 5, $aStringList[5])
 
-	_GUICtrlToolbar_SetButtonWidth($hToolbar, 35*$dscale, 65*$dscale)
+	_GUICtrlToolbar_SetButtonWidth($hToolbar, 35*$dscale, 80*$dscale)
 	_GUICtrlToolbar_SetMetrics($hToolbar, 0, 0, 1, 0)
 	_GUICtrlToolbar_SetIndent($hToolbar, 1)
 
-	_GUICtrlToolbar_SetButtonSize($hToolbar, $tbarHeight*$dscale-4*$dscale, 50*$dscale)
+;~ 	_GUICtrlToolbar_SetButtonSize($hToolbar, $tbarHeight*$dscale-4*$dscale, 75*$dscale)
 	;_SendMessage($hToolbar, $TB_AUTOSIZE)
 
 	GUISwitch($hgui)
@@ -621,7 +629,10 @@ Func _makeHeading($sLabel, $x, $y, $w, $height=-1, $color=-1, $lightness=-1)
 		_WinAPI_DeleteObject($hBitmap)
 	EndIf
 
-	Return $h
+	Local $aRet[2]
+	$aRet[0] = $heading
+	$aRet[1] = $h
+	Return $aRet
 EndFunc
 
 ; Create Section Box
@@ -761,7 +772,7 @@ Func _about()
 		$y = @DesktopHeight / 2 - $h / 2
 	EndIf
 
-	$AboutChild = GUICreate("About Simple IP Config", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
+	$AboutChild = GUICreate($oLangStrings.about.title & " Simple IP Config", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
 	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 
@@ -780,11 +791,11 @@ Func _about()
 	GUICtrlCreateLabel("Simple IP Config", 75 * $dscale, 10 * $dscale, 200 * $dscale, -1, $SS_CENTER)
 	GUICtrlSetFont(-1, 13, 800)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlCreateLabel("Version:", 95 * $dscale, 38 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
+	GUICtrlCreateLabel($oLangStrings.about.version & ":", 95 * $dscale, 38 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlCreateLabel("Date:", 95 * $dscale, 53 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
+	GUICtrlCreateLabel($oLangStrings.about.date & ":", 95 * $dscale, 53 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlCreateLabel("Developer:", 95 * $dscale, 69 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
+	GUICtrlCreateLabel($oLangStrings.about.dev & ":", 95 * $dscale, 69 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlCreateLabel($winVersion, 174 * $dscale, 38 * $dscale, 75 * $dscale, -1)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
@@ -794,13 +805,13 @@ Func _about()
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
 
-	GUICtrlCreateLabel("License:", 95 * $dscale, 84 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
+	GUICtrlCreateLabel($oLangStrings.about.lic & ":", 95 * $dscale, 84 * $dscale, 75 * $dscale, -1, $SS_RIGHT)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlCreateLabel("GNU GPL v3", 174 * $dscale, 84 * $dscale, 75 * $dscale, -1)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
 
-	$desc = "The portable ip changer utility that allows a user to quickly and easily change the most common network settings for any connection."
+	$desc = $oLangStrings.about.desc
 	GUICtrlCreateLabel($desc, 8, 110 * $dscale, $w - 16, 50 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
@@ -816,13 +827,13 @@ Func _about()
 	GUICtrlSetTip(-1, 'Visit: aha-soft.com')
 	GUICtrlSetCursor(-1, 0)
 
-	$desc = "Program icons are from "
-	GUICtrlCreateLabel($desc, 45 * $dscale, 175 * $dscale, $w - 20, 20 * $dscale)
+	$desc = $oLangStrings.about.icons & " "
+	GUICtrlCreateLabel($desc, 40 * $dscale, 175 * $dscale, $w - 20, 20 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
 	; bottom section
 
-	$bt_AboutOk = GUICtrlCreateButton("OK", $w - 55 * $dScale, $h - 27 * $dScale, 50 * $dScale, 22 * $dScale)
+	$bt_AboutOk = GUICtrlCreateButton($oLangStrings.buttonOK, $w - 55 * $dScale, $h - 27 * $dScale, 50 * $dScale, 22 * $dScale)
 	GUICtrlSetOnEvent(-1, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hgui)
@@ -833,14 +844,14 @@ EndFunc
 #Region -- CHANGELOG WINDOW --
 ; Changelog WINDOW
 Func _changeLog()
-	$w = 305*$dScale
+	$w = 400*$dScale
 	$h = 410*$dScale
 
 	$currentWinPos = WinGetPos($hgui)
 	$x = $currentWinPos[0] + $guiWidth*$dscale/2 - $w/2
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
-	$changeLogChild = GUICreate( "Change Log", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
+	$changeLogChild = GUICreate( $oLangStrings.changelog.changelog, $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
 	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
@@ -861,7 +872,7 @@ Func _changeLog()
 	GUICtrlSetBkColor ($edit, 0xFFFFFF)
 	GUICtrlSetFont(-1, 8.5)
 
-	$bt_Ok = GUICtrlCreateButton( "OK", $w-55*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
+	$bt_Ok = GUICtrlCreateButton( $oLangStrings.buttonOK, $w-55*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( -1, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hGUI)
@@ -919,14 +930,14 @@ EndFunc
 #Region -- SETTINGS WINDOW --
 ; Settings WINDOW
 Func _Settings()
-	$w = 210*$dScale
-	$h = 150*$dScale
+	$w = 335*$dScale
+	$h = 200*$dScale
 
 	$currentWinPos = WinGetPos($hgui)
 	$x = $currentWinPos[0] + $guiWidth*$dscale/2 - $w/2
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
-	$settingsChild = GUICreate( "Settings", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
+	$settingsChild = GUICreate( $oLangStrings.settings.title, $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
 	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
 
@@ -937,23 +948,47 @@ Func _Settings()
 	GUICtrlCreateLabel("", 0, $h-32*$dscale, $w, 1)
 	GUICtrlSetBkColor(-1, 0x000000)
 
-	$ck_startinTray = GUICtrlCreateCheckbox( "Startup in the system tray", 10*$dScale, 10*$dScale, 230*$dScale, 20*$dScale)
+	$lb_language = GUICtrlCreateLabel( $oLangStrings.settings.lang, 10*$dScale, 10*$dScale)
+	GUICtrlSetBkColor(-1, 0xFFFFFF)
+
+	Local $strOptionsLang = Options_GetValue($options, $OPTIONS_Language)
+	Local $aLangsAvailable = _getLangsAvailable()
+	Local $langNameStr
+	for $i = 0 to UBound($aLangsAvailable)-1
+		if $aLangsAvailable[$i] <> "" Then
+			if StringInStr($aLangsAvailable[$i], $strOptionsLang) Then
+				$strOptionsLang = $aLangsAvailable[$i]
+			EndIf
+			if Not StringInStr( $langNameStr, $aLangsAvailable[$i] ) and $aLangsAvailable[$i] <> "English   (en-US)" Then
+				$langNameStr &= $aLangsAvailable[$i] & "|"
+			EndIf
+		Else
+			ExitLoop
+		EndIf
+	Next
+	$cmb_langSelect = GUICtrlCreateCombo( "English   (en-US)", 10*$dScale, 28*$dScale, $w-20*$dScale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
+	If $langNameStr <> "" Then
+		GUICtrlSetData(-1, $langNameStr)
+	EndIf
+	ControlCommand($settingsChild, "", $cmb_langSelect, "SelectString", $strOptionsLang)
+
+	$ck_startinTray = GUICtrlCreateCheckbox( $oLangStrings.settings.opt1, 10*$dScale, 60*$dScale, $w-50*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_startinTray, _StrToState(Options_GetValue($options, $OPTIONS_StartupMode)))
-	$ck_mintoTray = GUICtrlCreateCheckbox( "Minimize to the system tray", 10*$dScale, 30*$dScale, 230*$dScale, 20*$dScale)
+	$ck_mintoTray = GUICtrlCreateCheckbox( $oLangStrings.settings.opt2, 10*$dScale, 80*$dScale, $w-50*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_mintoTray, _StrToState(Options_GetValue($options, $OPTIONS_MinToTray)))
-	$ck_saveAdapter = GUICtrlCreateCheckbox( "Save adapter to profile", 10*$dScale, 50*$dScale, 230*$dScale, 20*$dScale)
+	$ck_saveAdapter = GUICtrlCreateCheckbox( $oLangStrings.settings.opt3, 10*$dScale, 100*$dScale, $w-50*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_saveAdapter, _StrToState(Options_GetValue($options, $OPTIONS_SaveAdapterToProfile)))
 
-	$ck_autoUpdate = GUICtrlCreateCheckbox( "Automatically check for updates", 10*$dScale, 70*$dScale, 230*$dScale, 20*$dScale)
+	$ck_autoUpdate = GUICtrlCreateCheckbox( $oLangStrings.settings.opt4, 10*$dScale, 120*$dScale, $w-50*$dScale, 20*$dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetState($ck_autoUpdate, _StrToState(Options_GetValue($options, $OPTIONS_AutoUpdate)))
 
-	$bt_optSave = GUICtrlCreateButton( "Save", $w-25*$dScale-50*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
+	$bt_optSave = GUICtrlCreateButton( $oLangStrings.buttonSave, $w-20*$dScale-75*$dScale, $h - 27*$dScale, 75*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( $bt_optSave, "_saveOptions")
-	$bt_optCancel = GUICtrlCreateButton( "Cancel", 25*$dScale, $h - 27*$dScale, 50*$dScale, 22*$dScale)
+	$bt_optCancel = GUICtrlCreateButton( $oLangStrings.buttonCancel, $w-20*$dScale-75*$dScale*2-5, $h - 27*$dScale, 75*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( $bt_optCancel, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hGUI)
@@ -1015,7 +1050,7 @@ Func _blacklist()
 	$x = $currentWinPos[0] + $guiWidth*$dscale/2 - $w/2
 	$y = $currentWinPos[1] + $guiHeight*$dscale/2 - $h/2
 
-	$blacklistChild = GUICreate( "Adapter Blacklist", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
+	$blacklistChild = GUICreate( $oLangStrings.blacklist.title, $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
 	GUISetBkColor(0x888889)
 	GUISetOnEvent( $GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont ( $MyGlobalFontSize, -1, -1, $MyGlobalFontName )
@@ -1024,7 +1059,7 @@ Func _blacklist()
 	GUICtrlSetBkColor($bkLabel, 0xFFFFFF)
 	GUICtrlSetState($bkLabel, $GUI_DISABLE)
 
-	$labelTitle = GUICtrlCreateLabel("Select Adapters to Hide", 5, 5, $w-10, 20*$dscale)
+	$labelTitle = GUICtrlCreateLabel($oLangStrings.blacklist.heading, 5, 5, $w-10, 20*$dscale)
 ;~ 	GUICtrlSetColor(-1, 0x0000FF)
 	GUICtrlSetBkColor (-1, 0xFFFFFF)
 	GUICtrlSetFont(-1, 12)
@@ -1049,11 +1084,10 @@ Func _blacklist()
 	$labelBottomLine = GUICtrlCreateLabel("", 0, $h-35*$dscale+1, $w, 1)
 	GUICtrlSetBkColor (-1, 0x444444)
 
-	$bt_Cancel = GUICtrlCreateButton( "Cancel", $w-117*$dScale, $h - 30*$dScale, 52*$dScale, 25*$dScale)
-	GUICtrlSetOnEvent( -1, "_onExitChild")
-
-	$bt_Ok = GUICtrlCreateButton( "Save", $w-60*$dScale, $h - 30*$dScale, 50*$dScale, 25*$dScale)
+	$bt_Ok = GUICtrlCreateButton( $oLangStrings.buttonSave, $w-20*$dScale-75*$dScale, $h - 27*$dScale, 75*$dScale, 22*$dScale)
 	GUICtrlSetOnEvent( -1, "_onExitBlacklistOk")
+	$bt_Cancel = GUICtrlCreateButton( $oLangStrings.buttonCancel, $w-20*$dScale-75*$dScale*2-5, $h - 27*$dScale, 75*$dScale, 22*$dScale)
+	GUICtrlSetOnEvent( -1, "_onExitChild")
 
 	GUICtrlSetState($bt_Cancel, $GUI_FOCUS)
 
@@ -1080,7 +1114,7 @@ Func _ShowUpdateDialog($thisVersion, $currentVersion, $isNew=0)
 		$y = @DesktopHeight / 2 - $h / 2
 	EndIf
 
-	$UpdateChild = GUICreate("Check for Updates", $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
+	$UpdateChild = GUICreate($oLangStrings.updates.title, $w, $h, $x, $y, $WS_CAPTION, -1, $hgui)
 	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExitChild")
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 
@@ -1099,9 +1133,9 @@ Func _ShowUpdateDialog($thisVersion, $currentVersion, $isNew=0)
 	GUICtrlCreateLabel("Simple IP Config", 75 * $dscale, 10 * $dscale, 200 * $dscale, -1, $SS_CENTER)
 	GUICtrlSetFont(-1, 13, 800)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlCreateLabel("Your Version:", 80 * $dscale, 38 * $dscale, 120 * $dscale, -1, $SS_RIGHT)
+	GUICtrlCreateLabel($oLangStrings.updates.thisVersion & ":", 80 * $dscale, 38 * $dscale, 120 * $dscale, -1, $SS_RIGHT)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlCreateLabel("Latest Version:", 80 * $dscale, 53 * $dscale, 120 * $dscale, -1, $SS_RIGHT)
+	GUICtrlCreateLabel($oLangStrings.updates.latestVersion & ":", 80 * $dscale, 53 * $dscale, 120 * $dscale, -1, $SS_RIGHT)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlCreateLabel($thisVersion, 205 * $dscale, 38 * $dscale, 75 * $dscale, -1)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
@@ -1113,7 +1147,7 @@ Func _ShowUpdateDialog($thisVersion, $currentVersion, $isNew=0)
 
 	Local $descX
 	If $isNew Then
-		$desc = "A newer version is available"
+		$desc = $oLangStrings.updates.newMessage
 		$descX = 45
 
 		$link = GUICtrlCreateLabel("here", 199 * $dscale, 110 * $dscale, -1, 20 * $dscale)
@@ -1124,17 +1158,58 @@ Func _ShowUpdateDialog($thisVersion, $currentVersion, $isNew=0)
 		GUICtrlSetTip(-1, 'Visit: https://github.com/KurtisLiggett/Simple-IP-Config/releases/latest')
 		GUICtrlSetCursor(-1, 0)
 	Else
-		$desc = "You have the latest version."
+		$desc = $oLangStrings.updates.latestMessage
 		$descX = 60
 	EndIf
 	GUICtrlCreateLabel($desc, $descX * $dscale, 110 * $dscale, $w - 20, 20 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
 	; bottom section
-	$bt_UpdateOk = GUICtrlCreateButton("OK", $w - 55 * $dScale, $h - 27 * $dScale, 50 * $dScale, 22 * $dScale)
+	$bt_UpdateOk = GUICtrlCreateButton($oLangStrings.buttonOK, $w - 55 * $dScale, $h - 27 * $dScale, 50 * $dScale, 22 * $dScale)
 	GUICtrlSetOnEvent(-1, "_onExitChild")
 
 	GUISetState(@SW_DISABLE, $hgui)
 	GUISetState(@SW_SHOW, $UpdateChild)
 EndFunc
 #EndRegion
+
+Func _ShowRestart($langCode, $x, $y)
+	$w = 275 * $dScale
+	$h = 170 * $dScale
+	$x = $x + $guiWidth/2 - $w/2
+	$y = $y + $guiHeight/2 - $h/2
+
+	$RestartChild = GUICreate("", $w, $h, $x, $y, $WS_CAPTION)
+	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExitChild")
+	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
+
+	; top section
+
+	GUICtrlCreateLabel("", 0, 0, $w, $h)
+	GUICtrlSetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetState(-1, $GUI_DISABLE)
+
+	Local $fileData
+	Local $hFile = FileOpen(@ScriptDir&"\lang\lang-" & $langCode & ".json", $FO_READ)
+	If $hFile = -1 Then
+		If $langCode = "en-US" Then
+			$fileData = _getEnglish()
+		Else
+			MsgBox(1, "Error", "Error reading language file")
+		EndIf
+	Else
+		If $hFile = -1 Then
+			MsgBox(1, "Error", "Error reading language file")
+		EndIf
+		$fileData = FileRead($hFile)
+		FileClose($hFile)
+	EndIf
+	Local $jsonData = Json_Decode($fileData)
+
+	GUICtrlCreateLabel(Json_Get($jsonData, ".strings.interface.restarting") & " Simple IP Config", 0, 0, $w, $h, BitOR($SS_CENTER, $SS_CENTERIMAGE))
+	GUICtrlSetFont(-1, 13, 800)
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+
+	GUISetState(@SW_SHOW, $RestartChild)
+	Return $RestartChild
+EndFunc

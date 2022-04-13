@@ -21,7 +21,6 @@
 ;				- get/set IP, renew/release, get adapter names
 ;==============================================================================
 
-
 Func _loadAdapters()
 
 	Local $aIPAllAddrTable = _Network_IPAllAddressTable(0, 0, 1)	; get info about all adapters
@@ -83,7 +82,7 @@ Func _getIPs($adaptername)
 
 	Local $tadapters = _GetAdapters()
 
-	If $adapstate = "Disabled" Then
+	If $adapstate = $oLangStrings.interface.props.adapterStateDisabled Then
 		$props[6] = $adapstate
 
 		$DhcpEn = _doRegGetValue($adaptername, "EnableDHCP")
@@ -140,7 +139,7 @@ Func _getIPs($adaptername)
 				Next
 
 				if $ip = "" Then
-					$props[6] = "Unplugged"
+					$props[6] = $oLangStrings.interface.props.adapterStateUnplugged
 					$DhcpEn = _doRegGetValue($adaptername, "EnableDHCP")
 					$DhcpDis = _doRegGetValue($adaptername, "DisableDhcpOnConnect")
 					if $DhcpEn = 0 Or $DhcpDis = 1 Then
@@ -338,9 +337,9 @@ EndIf
     If $bEnable = 2 Then
 		$Res = _GetNicState($oLanConnection, $strEnableVerb, $strDisableVerb)
 		If $Res = 1 Then
-			Return "Enabled"
+			Return $oLangStrings.interface.props.adapterStateEnabled
 		Else
-			Return "Disabled"
+			Return $oLangStrings.interface.props.adapterStateDisabled
 		EndIf
     EndIf
 

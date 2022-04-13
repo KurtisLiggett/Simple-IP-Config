@@ -91,7 +91,7 @@ EndFunc
 ; Events.......: single left-click on tray icon
 ;------------------------------------------------------------------------------
 Func _OnTrayClick()
-	If TrayItemGetText( $RestoreItem ) = "Restore" Then
+	If TrayItemGetText( $RestoreItem ) = $oLangStrings.traymenu.restore Then
 		_maximize()
 	Else
 		_SendToTray()
@@ -104,7 +104,7 @@ EndFunc
 ; Events.......: 'Restore' item in tray right-click menu
 ;------------------------------------------------------------------------------
 Func _OnRestore()
-	If TrayItemGetText( $RestoreItem ) = "Restore" Then
+	If TrayItemGetText( $RestoreItem ) = $oLangStrings.traymenu.restore Then
 		_maximize()
 	Else
 		_SendToTray()
@@ -194,7 +194,7 @@ EndFunc
 ; Events.......: Toolbar button, File menu 'New' item
 ;------------------------------------------------------------------------------
 Func _onNewItem()
-	$newname = "New Item"
+	$newname = $oLangStrings.message.newItem
 	;Local $profileNames = _getNames()
 	Local $profileNames = Profiles_GetNames($profiles)
 	Local $i = 1
@@ -628,17 +628,17 @@ Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 
                             Switch $Item
                                 Case $tb_apply ; Button 1
-                                    $Text = 'Apply'
+                                    $Text = $oLangStrings.toolbar.apply_tip
                                 Case $tb_refresh ; Button 2
-                                    $Text = 'Refresh'
+                                    $Text = $oLangStrings.toolbar.refresh_tip
                                 Case $tb_add ; Button 3
-                                    $Text = 'Create new profile'
+                                    $Text = $oLangStrings.toolbar.new_tip
                                 Case $tb_save ; Button 4
-                                    $Text = 'Save profile'
+                                    $Text = $oLangStrings.toolbar.save_tip
                                 Case $tb_delete ; Button 5
-                                    $Text = 'Delete profile'
+                                    $Text = $oLangStrings.toolbar.delete_tip
                                 Case $tb_clear ; Button 6
-                                    $Text = 'Clear entries'
+                                    $Text = $oLangStrings.toolbar.clear_tip
                                 Case Else
 
                             EndSwitch
@@ -660,9 +660,9 @@ Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 
                             Switch $Item
                                 Case $tb_settings ; Button 1
-                                    $Text = 'Settings'
+                                    $Text = $oLangStrings.toolbar.settings_tip
                                 Case $tb_tray ; Button 2
-                                    $Text = 'Send to tray'
+                                    $Text = $oLangStrings.toolbar.tray_tip
                                 Case Else
 
                             EndSwitch
