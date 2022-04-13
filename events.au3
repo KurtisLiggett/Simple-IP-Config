@@ -36,9 +36,9 @@ Func _onExit()
 	; save window position in ini file
 	If Not BitAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
 		$currentWinPos = WinGetPos($hgui)
-		Options_SetValue($options, $OPTIONS_PositionX, $currentWinPos[0])
-		Options_SetValue($options, $OPTIONS_PositionY, $currentWinPos[1])
-		IniWriteSection($sProfileName, "options", $options, 0)
+		$options.PositionX = $currentWinPos[0]
+		$options.PositionY = $currentWinPos[1]
+		IniWriteSection($sProfileName, "options", $options.getSection, 0)
 	EndIf
 
 	Exit
@@ -76,10 +76,8 @@ Func _onExitBlacklistOk()
 	$newBlacklist = StringLeft($newBlacklist, StringLen($newBlacklist) - 1)
 
 	$newBlacklist = iniNameEncode($newBlacklist)
-	Options_SetValue($options, $OPTIONS_AdapterBlacklist, $newBlacklist)
-	$keyname = Options_GetName($options, $OPTIONS_AdapterBlacklist)
-	$keyvalue = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
-	IniWrite($sProfileName, "options", $keyname, $keyvalue)
+	$options.AdapterBlacklist = $newBlacklist
+	IniWrite($sProfileName, "options", "AdapterBlacklist", $options.AdapterBlacklist)
 
 	_ExitChild(@GUI_WinHandle)
 	_updateCombo()
@@ -438,12 +436,11 @@ Func _OnCombo()
 	_updateCurrent()
 	$adap = GUICtrlRead($combo_adapters)
 	$iniAdap = iniNameEncode($adap)
-	$keyname = Options_GetName($options, $OPTIONS_StartupAdapter)
-	$ret = IniWrite($sProfileName, "options", $keyname, $iniAdap)
+	$ret = IniWrite($sProfileName, "options", "StartupAdapter", $iniAdap)
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the selected adapter", 1)
 	Else
-		Options_SetValue($options, $OPTIONS_StartupAdapter, $adap)
+		$options.StartupAdapter = $adap
 	EndIf
 EndFunc   ;==>_OnCombo
 

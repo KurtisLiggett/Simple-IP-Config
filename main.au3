@@ -156,8 +156,10 @@ Global $oLangStrings
 #include <File.au3>
 
 #include "libraries\AutoItObject.au3"
+_AutoItObject_StartUp()
 #include "libraries\Json\json.au3"
 #include "model.au3"
+#include "options.au3"
 #include "hexIcons.au3"
 #include "languages.au3"
 #include "libraries\asyncRun.au3"
@@ -194,7 +196,7 @@ TraySetClick(16)
 
 #Region PROGRAM CONTROL
 ;create the main 'objects'
-$options = Options()
+$options = _Options()
 $profiles = Profiles()
 $adapters = Adapter()
 
@@ -233,14 +235,13 @@ Func _main()
 	_loadProfiles()
 
 	;get OS language OR selected language storage in profile
-	$selectedLang = OPTIONS_GetValue($options, $OPTIONS_Language)
+	$selectedLang = $options.Language
 	If $selectedLang <> "" And $oLangStrings.OSLang <> $selectedLang Then
 		$oLangStrings.OSLang = $selectedLang
 	EndIf
 	If $selectedLang = "" Then
-		Options_SetValue($options, $OPTIONS_Language, $oLangStrings.OSLang)
-		Local $optionsLangName = Options_GetName($options, $OPTIONS_Language)
-		IniWrite($sProfileName, "options", $optionsLangName, $oLangStrings.OSLang)
+		$options.Language = $oLangStrings.OSLang
+		IniWrite($sProfileName, "options", "Language", $oLangStrings.OSLang)
 	EndIf
 
 	_setLangStrings($oLangStrings.OSLang)
@@ -260,12 +261,12 @@ Func _main()
 	Else
 		Adapter_Sort($adapters)    ; connections sort ascending
 		$defaultitem = Adapter_GetName($adapters, 0)
-		$sStartupAdapter = OPTIONS_GetValue($options, $OPTIONS_StartupAdapter)
+		$sStartupAdapter = $options.StartupAdapter
 		If Adapter_Exists($adapters, $sStartupAdapter) Then
 			$defaultitem = $sStartupAdapter
 		EndIf
 
-		$sAdapterBlacklist = OPTIONS_GetValue($options, $OPTIONS_AdapterBlacklist)
+		$sAdapterBlacklist = $options.AdapterBlacklist
 		$aBlacklist = StringSplit($sAdapterBlacklist, "|")
 		If IsArray($aBlacklist) Then
 			Local $adapterNames = Adapter_GetNames($adapters)
@@ -290,7 +291,7 @@ Func _main()
 	;get the domain
 	GUICtrlSetData($domainName, _DomainComputerBelongs())
 
-	$sAutoUpdate = OPTIONS_GetValue($options, $OPTIONS_AutoUpdate)
+	$sAutoUpdate = $options.AutoUpdate
 	If ($sAutoUpdate = "true" Or $sAutoUpdate = "1") Then
 		$suppressComError = 1
 		_checksSICUpdate()
@@ -316,7 +317,7 @@ Func _main()
 			$filePath = FileOpenDialog($oLangStrings.dialog.selectFile, @ScriptDir, $oLangStrings.dialog.ini & " (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
 			If Not @error Then
 				$sProfileName = $filePath
-				$options = Options()
+				$options = _Options()
 				$profiles = Profiles()
 				_refresh(1)
 				_setStatus($oLangStrings.message.loadedFile & " " & $filePath, 0)

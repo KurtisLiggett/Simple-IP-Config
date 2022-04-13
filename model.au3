@@ -27,56 +27,6 @@
 
 #include-once
 
-#Region -- options --
-Global Enum $OPTIONS_Version, $OPTIONS_MinToTray, $OPTIONS_StartupMode, $OPTIONS_Language, _
-		$OPTIONS_StartupAdapter, $OPTIONS_Theme, $OPTIONS_SaveAdapterToProfile, $OPTIONS_AdapterBlacklist, _
-		$OPTIONS_PositionX, $OPTIONS_PositionY, $OPTIONS_AutoUpdate, $OPTIONS_LastUpdateCheck, $OPTIONS_MAX
-
-; Constructor
-Func Options()
-	Local $hObject[$OPTIONS_MAX][2]
-	$hObject[$OPTIONS_Version][0] = "Version"
-	$hObject[$OPTIONS_MinToTray][0] = "MinToTray"
-	$hObject[$OPTIONS_StartupMode][0] = "StartupMode"
-	$hObject[$OPTIONS_Language][0] = "Language"
-	$hObject[$OPTIONS_StartupAdapter][0] = "StartupAdapter"
-	$hObject[$OPTIONS_Theme][0] = "Theme"
-	$hObject[$OPTIONS_SaveAdapterToProfile][0] = "SaveAdapterToProfile"
-	$hObject[$OPTIONS_AdapterBlacklist][0] = "AdapterBlacklist"
-	$hObject[$OPTIONS_PositionX][0] = "PositionX"
-	$hObject[$OPTIONS_PositionY][0] = "PositionY"
-	$hObject[$OPTIONS_AutoUpdate][0] = "AutoUpdate"
-	$hObject[$OPTIONS_LastUpdateCheck][0] = "LastUpdateCheck"
-
-	; Return the 'object'
-	Return $hObject
-EndFunc   ;==>Options
-
-; property Getter
-Func Options_GetValue(ByRef $hObject, $iproperty)
-	Return _Options_IsObject($hObject) ? $hObject[$iproperty][1] : Null
-EndFunc   ;==>Options_GetValue
-
-; property name Getter
-Func Options_GetName(ByRef $hObject, $iproperty)
-	Return _Options_IsObject($hObject) ? $hObject[$iproperty][0] : Null
-EndFunc   ;==>Options_GetName
-
-; property Setter
-Func Options_SetValue(ByRef $hObject, $iproperty, $sData)
-	; If not a valid 'object' then return
-	If Not _Options_IsObject($hObject) Then Return
-
-	$hObject[$iproperty][1] = $sData    ;set the property
-EndFunc   ;==>Options_SetValue
-
-; Check if it's a valid 'object'. INTERNAL ONLY!
-Func _Options_IsObject(ByRef $hObject)
-	Return UBound($hObject) = $OPTIONS_MAX
-EndFunc   ;==>_Options_IsObject
-
-#EndRegion -- options --
-
 #Region -- profiles --
 Global Enum $PROFILES_Name, $PROFILES_AdapterName, $PROFILES_IpAuto, $PROFILES_IpAddress, $PROFILES_IpSubnet, $PROFILES_IpGateway, _
 		$PROFILES_DnsAuto, $PROFILES_DnsPref, $PROFILES_DnsAlt, $PROFILES_RegisterDns, $PROFILES_MAX

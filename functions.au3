@@ -212,7 +212,7 @@ Func _checksSICUpdate($manualCheck = 0)
 	If $result == 1 Then
 		$isNew = 1
 		$dateNow = _NowCalcDate()
-		$dateLastCheck = Options_GetValue($options, $OPTIONS_LastUpdateCheck)
+		$dateLastCheck = $options.LastUpdateCheck
 
 		$updateText = $oLangStrings.message.yourVersion & ": " & $thisVersion & @CRLF & _
 				$oLangStrings.message.latestVersion & ": " & $scurrentVersion & @CRLF & @CRLF & _
@@ -220,9 +220,8 @@ Func _checksSICUpdate($manualCheck = 0)
 		If $manualCheck Or _DateDiff('D', $dateLastCheck, $dateNow) >= 7 Or $dateLastCheck = '' Then
 			_ShowUpdateDialog($thisVersion, $scurrentVersion, $isNew)
 
-			Options_SetValue($options, $OPTIONS_LastUpdateCheck, $dateNow)
-			Local $LastUpdateCheckName = Options_GetName($options, $OPTIONS_LastUpdateCheck)
-			IniWrite($sProfileName, "options", $LastUpdateCheckName, $dateNow)
+			$options.LastUpdateCheck = $dateNow
+			IniWrite($sProfileName, "options", "LastUpdateCheck", $dateNow)
 		EndIf
 	Else
 		$updateText = $oLangStrings.message.yourVersion & ": " & $thisVersion & @CRLF & _
@@ -264,12 +263,12 @@ Func _updateCombo()
 	Else
 		Adapter_Sort($adapters) ; connections sort ascending
 		$defaultitem = $adapterNames[0]
-		$sStartupAdapter = Options_GetValue($options, $OPTIONS_StartupAdapter)
+		$sStartupAdapter = $options.StartupAdapter
 		$index = _ArraySearch($adapters, $sStartupAdapter, 1)
 		If ($index <> -1) Then
 			$defaultitem = $sStartupAdapter
 		EndIf
-		$sBlacklist = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
+		$sBlacklist = $options.AdapterBlacklist
 		$aBlacklist = StringSplit($sBlacklist, "|")
 		For $i = 0 To UBound($adapterNames) - 1
 			$indexBlacklist = _ArraySearch($aBlacklist, $adapterNames[$i], 1)
@@ -318,17 +317,17 @@ Func _arrange($desc = 0)
 
 	Local $newfile = ""
 	$newfile &= "[Options]" & @CRLF
-	$newfile &= Options_GetName($options, $OPTIONS_Version) & "=" & Options_GetValue($options, $OPTIONS_Version) & @CRLF
-	$newfile &= Options_GetName($options, $OPTIONS_MinToTray) & "=" & Options_GetValue($options, $OPTIONS_MinToTray) & @CRLF
-	$newfile &= Options_GetName($options, $OPTIONS_StartupMode) & "=" & Options_GetValue($options, $OPTIONS_StartupMode) & @CRLF
-	$newfile &= Options_GetName($options, $OPTIONS_Language) & "=" & Options_GetValue($options, $OPTIONS_Language) & @CRLF
-	$newfile &= Options_GetName($options, $OPTIONS_StartupAdapter) & "=" & Options_GetValue($options, $OPTIONS_StartupAdapter) & @CRLF
-	$newfile &= Options_GetName($options, $OPTIONS_Theme) & "=" & Options_GetValue($options, $OPTIONS_Theme) & @CRLF
-	$newfile &= Options_GetName($options, $OPTIONS_SaveAdapterToProfile) & "=" & Options_GetValue($options, $OPTIONS_SaveAdapterToProfile) & @CRLF
-	$newfile &= Options_GetName($options, $OPTIONS_AdapterBlacklist) & "=" & Options_GetValue($options, $OPTIONS_AdapterBlacklist) & @CRLF
-	$newfile &= Options_GetName($options, $OPTIONS_PositionX) & "=" & Options_GetValue($options, $OPTIONS_PositionX) & @CRLF
-	$newfile &= Options_GetName($options, $OPTIONS_PositionY) & "=" & Options_GetValue($options, $OPTIONS_PositionY) & @CRLF
-	$newfile &= Options_GetName($options, $OPTIONS_AutoUpdate) & "=" & Options_GetValue($options, $OPTIONS_AutoUpdate) & @CRLF
+	$newfile &= "Version=" & $options.Version & @CRLF
+	$newfile &= "MinToTray=" & $options.MinToTray & @CRLF
+	$newfile &= "StartupMode=" & $options.StartupMode & @CRLF
+	$newfile &= "Language=" & $options.Language & @CRLF
+	$newfile &= "StartupAdapter=" & $options.StartupAdapter & @CRLF
+	$newfile &= "Theme=" & $options.Theme & @CRLF
+	$newfile &= "SaveAdapterToProfile=" & $options.SaveAdapterToProfile & @CRLF
+	$newfile &= "AdapterBlacklist=" & $options.AdapterBlacklist & @CRLF
+	$newfile &= "PositionX=" & $options.PositionX & @CRLF
+	$newfile &= "PositionY=" & $options.PositionY & @CRLF
+	$newfile &= "AutoUpdate=" & $options.AutoUpdate & @CRLF
 
 	Profiles_Sort($profiles, $desc)
 	For $i = 0 To Profiles_GetSize($profiles) - 1
@@ -929,13 +928,12 @@ EndFunc   ;==>_clear
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _checkChangelog()
-	$sVersion = Options_GetValue($options, $OPTIONS_Version)
+	$sVersion = $options.Version
 	If $sVersion <> $winVersion Then
 		_changeLog()
 		$sVersion = $winVersion
-		Options_SetValue($options, $OPTIONS_Version, $sVersion)
-		$sVersionName = Options_GetName($options, $OPTIONS_Version)
-		IniWrite($sProfileName, "options", $sVersionName, $sVersion)
+		$options.Version = $sVersion
+		IniWrite($sProfileName, "options", "Version", $sVersion)
 	EndIf
 EndFunc   ;==>_checkChangelog
 
@@ -1138,7 +1136,7 @@ Func _setProperties($init = 0, $profileName = "")
 		_ctrlSetIP($ip_DnsAlt, $dnsAlt)
 		GUICtrlSetState($ck_dnsReg, _StrToState($dnsreg))
 
-		$sSaveAdapter = Options_GetValue($options, $OPTIONS_SaveAdapterToProfile)
+		$sSaveAdapter = $options.SaveAdapterToProfile
 		$profileAdapter = Profiles_GetValue($profiles, $profileName, $PROFILES_AdapterName)
 		If $profileAdapter <> "" And ($sSaveAdapter = 1 Or $sSaveAdapter = "true") Then
 			If Not Profiles_isNewName($profiles, $profileAdapter) Then
@@ -1155,26 +1153,26 @@ EndFunc   ;==>_setProperties
 
 Func _saveOptions()
 	Local $updateGUI = 0
-	Options_SetValue($options, $OPTIONS_StartupMode, _StateToStr($ck_startinTray))
-	Options_SetValue($options, $OPTIONS_MinToTray, _StateToStr($ck_mintoTray))
-	Options_SetValue($options, $OPTIONS_SaveAdapterToProfile, _StateToStr($ck_saveAdapter))
-	Options_SetValue($options, $OPTIONS_AutoUpdate, _StateToStr($ck_autoUpdate))
+	$options.StartupMode = _StateToStr($ck_startinTray)
+	$options.MinToTray = _StateToStr($ck_mintoTray)
+	$options.SaveAdapterToProfile = _StateToStr($ck_saveAdapter)
+	$options.AutoUpdate = _StateToStr($ck_autoUpdate)
 
 	Local $langRet = StringLeft(StringRight(GUICtrlRead($cmb_langSelect), 6), 5)
 	If $langRet <> -1 Then
 		If $langRet <> $oLangStrings.OSLang Then
 			$updateGUI = 1
 			$oLangStrings.OSLang = $langRet
-			Options_SetValue($options, $OPTIONS_Language, $oLangStrings.OSLang)
+			$options.Language = $oLangStrings.OSLang
 		EndIf
 	EndIf
 
-	IniWriteSection($sProfileName, "options", $options, 0)
+	IniWriteSection($sProfileName, "options", $options.getSection(), 0)
 	_ExitChild(@GUI_WinHandle)
 
 	If $updateGUI Then
 		GUIDelete($hgui)
-		Local $restartGUI = _ShowRestart($oLangStrings.OSLang, Options_GetValue($options, $OPTIONS_PositionX), Options_GetValue($options, $OPTIONS_PositionY))
+		Local $restartGUI = _ShowRestart($oLangStrings.OSLang, $options.PositionX, $options.PositionY)
 		_setLangStrings($oLangStrings.OSLang)
 		_makeGUI()
 ;~ 		_updateLang()
@@ -1187,12 +1185,12 @@ Func _saveOptions()
 		Else
 			Adapter_Sort($adapters)    ; connections sort ascending
 			$defaultitem = Adapter_GetName($adapters, 0)
-			$sStartupAdapter = OPTIONS_GetValue($options, $OPTIONS_StartupAdapter)
+			$sStartupAdapter = $options.StartupAdapter
 			If Adapter_Exists($adapters, $sStartupAdapter) Then
 				$defaultitem = $sStartupAdapter
 			EndIf
 
-			$sAdapterBlacklist = OPTIONS_GetValue($options, $OPTIONS_AdapterBlacklist)
+			$sAdapterBlacklist = $options.AdapterBlacklist
 			$aBlacklist = StringSplit($sAdapterBlacklist, "|")
 			If IsArray($aBlacklist) Then
 				Local $adapterNames = Adapter_GetNames($adapters)
@@ -1252,6 +1250,7 @@ Func _loadProfiles()
 
 	If Not FileExists($pname) Then
 		_setStatus($oLangStrings.message.profilesNotFound, 1)
+		_print("oops")
 		Return 1
 	EndIf
 
@@ -1273,31 +1272,31 @@ Func _loadProfiles()
 		For $j = 1 To $thisSection[0][0]
 			If $thisName = "Options" Or $thisName = "options" Then
 				Switch $thisSection[$j][0]
-					Case Options_GetName($options, $OPTIONS_Version)
-						Options_SetValue($options, $OPTIONS_Version, $thisSection[$j][1])
-					Case Options_GetName($options, $OPTIONS_MinToTray)
-						Options_SetValue($options, $OPTIONS_MinToTray, $thisSection[$j][1])
-					Case Options_GetName($options, $OPTIONS_StartupMode)
-						Options_SetValue($options, $OPTIONS_StartupMode, $thisSection[$j][1])
-					Case Options_GetName($options, $OPTIONS_Language)
-						Options_SetValue($options, $OPTIONS_Language, $thisSection[$j][1])
-					Case Options_GetName($options, $OPTIONS_StartupAdapter)
+					Case "Version"
+						$options.Version = $thisSection[$j][1]
+					Case "MinToTray"
+						$options.MinToTray = $thisSection[$j][1]
+					Case "StartupMode"
+						$options.StartupMode = $thisSection[$j][1]
+					Case "Language"
+						$options.Language = $thisSection[$j][1]
+					Case "StartupAdapter"
 						$newName = iniNameDecode($thisSection[$j][1])
-						Options_SetValue($options, $OPTIONS_StartupAdapter, $newName)
-					Case Options_GetName($options, $OPTIONS_Theme)
-						Options_SetValue($options, $OPTIONS_Theme, $thisSection[$j][1])
-					Case Options_GetName($options, $OPTIONS_SaveAdapterToProfile)
-						Options_SetValue($options, $OPTIONS_SaveAdapterToProfile, $thisSection[$j][1])
-					Case Options_GetName($options, $OPTIONS_AdapterBlacklist)
-						Options_SetValue($options, $OPTIONS_AdapterBlacklist, $thisSection[$j][1])
-					Case Options_GetName($options, $OPTIONS_PositionX)
-						Options_SetValue($options, $OPTIONS_PositionX, $thisSection[$j][1])
-					Case Options_GetName($options, $OPTIONS_PositionY)
-						Options_SetValue($options, $OPTIONS_PositionY, $thisSection[$j][1])
-					Case Options_GetName($options, $OPTIONS_AutoUpdate)
-						Options_SetValue($options, $OPTIONS_AutoUpdate, $thisSection[$j][1])
-					Case Options_GetName($options, $OPTIONS_LastUpdateCheck)
-						Options_SetValue($options, $OPTIONS_LastUpdateCheck, $thisSection[$j][1])
+						$options.StartupAdapter = $newName
+					Case "Theme"
+						$options.Theme = $thisSection[$j][1]
+					Case "SaveAdapterToProfile"
+						$options.SaveAdapterToProfile = $thisSection[$j][1]
+					Case "AdapterBlacklist"
+						$options.AdapterBlacklist = $thisSection[$j][1]
+					Case "PositionX"
+						$options.PositionX = $thisSection[$j][1]
+					Case "PositionY"
+						$options.PositionY = $thisSection[$j][1]
+					Case "AutoUpdate"
+						$options.AutoUpdate = $thisSection[$j][1]
+					Case "LastUpdateCheck"
+						$options.LastUpdateCheck = $thisSection[$j][1]
 				EndSwitch
 			Else
 				Switch $thisSection[$j][0]
@@ -1496,7 +1495,7 @@ Func _SendToTray()
 EndFunc   ;==>_SendToTray
 
 Func _minimize()
-	$sMinToTray = Options_GetValue($options, $OPTIONS_MinToTray)
+	$sMinToTray = $options.MinToTray
 	If $sMinToTray = 1 Or $sMinToTray = "true" Then
 		_SendToTray()
 	Else

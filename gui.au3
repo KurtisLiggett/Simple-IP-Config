@@ -30,7 +30,7 @@ Func _makeGUI()
 	$iyCoordMin = _WinAPI_GetSystemMetrics(77)
 	$iFullDesktopWidth = _WinAPI_GetSystemMetrics(78)
 	$iFullDesktopHeight = _WinAPI_GetSystemMetrics(79)
-	$sPositionX = Options_GetValue($options, $OPTIONS_PositionX)
+	$sPositionX = $options.PositionX
 	If $sPositionX <> "" Then
 		$xpos = $sPositionX
 		If $xpos > ($ixCoordMin + $iFullDesktopWidth) Then
@@ -41,7 +41,7 @@ Func _makeGUI()
 	Else
 		$xpos = @DesktopWidth / 2 - $guiWidth * $dscale / 2
 	EndIf
-	$sPositionY = Options_GetValue($options, $OPTIONS_PositionY)
+	$sPositionY = $options.PositionY
 	If $sPositionY <> "" Then
 		$ypos = $sPositionY
 		If $ypos > ($iyCoordMin + $iFullDesktopHeight) Then
@@ -151,7 +151,7 @@ Func _makeGUI()
 		EndIf
 	EndIf
 
-	$sStartupMode = Options_GetValue($options, $OPTIONS_StartupMode)
+	$sStartupMode = $options.StartupMode
 	If $sStartupMode <> "1" And $sStartupMode <> "true" Then
 		GUISetState(@SW_SHOW, $hgui)
 		GUISetState(@SW_SHOWNOACTIVATE, $hTool)
@@ -951,7 +951,7 @@ Func _Settings()
 	$lb_language = GUICtrlCreateLabel($oLangStrings.settings.lang, 10 * $dScale, 10 * $dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 
-	Local $strOptionsLang = Options_GetValue($options, $OPTIONS_Language)
+	Local $strOptionsLang = $options.Language
 	Local $aLangsAvailable = _getLangsAvailable()
 	Local $langNameStr
 	For $i = 0 To UBound($aLangsAvailable) - 1
@@ -974,17 +974,17 @@ Func _Settings()
 
 	$ck_startinTray = GUICtrlCreateCheckbox($oLangStrings.settings.opt1, 10 * $dScale, 60 * $dScale, $w - 50 * $dScale, 20 * $dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetState($ck_startinTray, _StrToState(Options_GetValue($options, $OPTIONS_StartupMode)))
+	GUICtrlSetState($ck_startinTray, _StrToState($options.StartupMode))
 	$ck_mintoTray = GUICtrlCreateCheckbox($oLangStrings.settings.opt2, 10 * $dScale, 80 * $dScale, $w - 50 * $dScale, 20 * $dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetState($ck_mintoTray, _StrToState(Options_GetValue($options, $OPTIONS_MinToTray)))
+	GUICtrlSetState($ck_mintoTray, _StrToState($options.MinToTray))
 	$ck_saveAdapter = GUICtrlCreateCheckbox($oLangStrings.settings.opt3, 10 * $dScale, 100 * $dScale, $w - 50 * $dScale, 20 * $dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetState($ck_saveAdapter, _StrToState(Options_GetValue($options, $OPTIONS_SaveAdapterToProfile)))
+	GUICtrlSetState($ck_saveAdapter, _StrToState($options.SaveAdapterToProfile))
 
 	$ck_autoUpdate = GUICtrlCreateCheckbox($oLangStrings.settings.opt4, 10 * $dScale, 120 * $dScale, $w - 50 * $dScale, 20 * $dScale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetState($ck_autoUpdate, _StrToState(Options_GetValue($options, $OPTIONS_AutoUpdate)))
+	GUICtrlSetState($ck_autoUpdate, _StrToState($options.AutoUpdate))
 
 	$bt_optSave = GUICtrlCreateButton($oLangStrings.buttonSave, $w - 20 * $dScale - 75 * $dScale, $h - 27 * $dScale, 75 * $dScale, 22 * $dScale)
 	GUICtrlSetOnEvent($bt_optSave, "_saveOptions")
@@ -1040,7 +1040,7 @@ EndFunc   ;==>_statusPopup
 
 #Region -- BLACKLIST WINDOW --
 Func _blacklist()
-	$sBlacklist = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
+	$sBlacklist = $options.AdapterBlacklist
 	Local $aBlacklist = StringSplit($sBlacklist, "|", 2)
 
 	$w = 275 * $dScale

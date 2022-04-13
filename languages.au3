@@ -14,8 +14,6 @@
 ; You should have received a copy of the GNU General Public License
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
-_AutoItObject_StartUp()
-
 
 Func _getLangsAvailable()
 	Local $aFileList = _FileListToArray(@ScriptDir & "\lang", "lang-*.json", $FLTA_FILES)
