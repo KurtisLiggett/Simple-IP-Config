@@ -23,53 +23,53 @@
 
 Global $cmdLine
 Func CheckCmdLine()
-	If $CMDLINE[0] Then
-	  If (UBound($CMDLINE) = 3) Then
-		Switch $CMDLINE[1]
-			Case '/set-config'
-				$profileName = $CMDLINE[2]
-				; Code for configuration
-				_loadProfiles()
-				; Let's check if the profile name exists
-				If NOT Profiles_isNewName($profiles, $profileName) Then
-					$cmdLine = 1
-					$sMsg  = 'Applying profile "' & $profileName & '"...'
-					_Toast_Set(0, 0xAAAAAA, 0x000000, 0xFFFFFF, 0x000000, 10, "", 250, 250)
-					$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, 0, False) ; Delay can be set here because script continues
+	If $cmdLine[0] Then
+		If (UBound($cmdLine) = 3) Then
+			Switch $cmdLine[1]
+				Case '/set-config'
+					$profileName = $cmdLine[2]
+					; Code for configuration
+					_loadProfiles()
+					; Let's check if the profile name exists
+					If Not Profiles_isNewName($profiles, $profileName) Then
+						$cmdLine = 1
+						$sMsg = 'Applying profile "' & $profileName & '"...'
+						_Toast_Set(0, 0xAAAAAA, 0x000000, 0xFFFFFF, 0x000000, 10, "", 250, 250)
+						$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, 0, False) ; Delay can be set here because script continues
 
-					$ipAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAuto)
-					$ipAddress = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAddress)
-					$ipSubnet = Profiles_GetValue($profiles, $profileName, $PROFILES_IpSubnet)
-					$ipGateway = Profiles_GetValue($profiles, $profileName, $PROFILES_IpGateway)
-					$dnsAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsAuto)
-					$dnsPref = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsPref)
-					$dnsAlt = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsAlt)
-					$dnsReg = Profiles_GetValue($profiles, $profileName, $PROFILES_RegisterDns)
-					$adapterName = Profiles_GetValue($profiles, $profileName, $PROFILES_AdapterName)
+						$ipAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAuto)
+						$ipAddress = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAddress)
+						$ipSubnet = Profiles_GetValue($profiles, $profileName, $PROFILES_IpSubnet)
+						$ipGateway = Profiles_GetValue($profiles, $profileName, $PROFILES_IpGateway)
+						$dnsAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsAuto)
+						$dnsPref = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsPref)
+						$dnsAlt = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsAlt)
+						$dnsReg = Profiles_GetValue($profiles, $profileName, $PROFILES_RegisterDns)
+						$adapterName = Profiles_GetValue($profiles, $profileName, $PROFILES_AdapterName)
 
-					_apply($ipAuto, $ipAddress, $ipSubnet, $ipGateway, $dnsAuto, $dnsPref, $dnsAlt, $dnsReg, $adapterName, RunCallback_cli)
-					_cmdLineMain($profileName)
-				EndIf
-				$sMsg  = 'The profile "' & $profileName & '" could not be found.'
-				_Toast_Set(0, 0xFF0000, 0xFFFFFF, 0xFFFFFF, 0x000000, 10, "", 250, 250)
-				$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, -3, True) ; Delay can be set here because script continues
+						_apply($ipAuto, $ipAddress, $ipSubnet, $ipGateway, $dnsAuto, $dnsPref, $dnsAlt, $dnsReg, $adapterName, RunCallback_cli)
+						_cmdLineMain($profileName)
+					EndIf
+					$sMsg = 'The profile "' & $profileName & '" could not be found.'
+					_Toast_Set(0, 0xFF0000, 0xFFFFFF, 0xFFFFFF, 0x000000, 10, "", 250, 250)
+					$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, -3, True) ; Delay can be set here because script continues
 
-			Case Else
-				Exit
-		EndSwitch
-		Exit
-	  Else
-		$sMsg  = "Incorrect number of parameters."
-		_Toast_Set(0, 0xFF0000, 0xFFFFFF, 0xFFFFFF, 0x000000, 10, "", 250, 250)
-		$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, -3, True) ; Delay can be set here because script continues
-		Exit
-	  EndIf
+				Case Else
+					Exit
+			EndSwitch
+			Exit
+		Else
+			$sMsg = "Incorrect number of parameters."
+			_Toast_Set(0, 0xFF0000, 0xFFFFFF, 0xFFFFFF, 0x000000, 10, "", 250, 250)
+			$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, -3, True) ; Delay can be set here because script continues
+			Exit
+		EndIf
 	EndIf
-EndFunc
+EndFunc   ;==>CheckCmdLine
 
 Func RunCallback_cli($sDescription, $sNextDescription, $sStdOut)
 	Return 0
-EndFunc
+EndFunc   ;==>RunCallback_cli
 
 ;main loop when called from CLI
 ;Loop and do nothing until the profile has been set
@@ -78,11 +78,11 @@ Func _cmdLineMain($profileName)
 		If asyncRun_isIdle() Then
 			_Toast_Hide()
 			If StringInStr($sStdOut, "failed") Then
-				$sMsg  = 'An error occurred while applying the profile "' & $profileName & '".' &@CRLF&@CRLF&$sStdOut
+				$sMsg = 'An error occurred while applying the profile "' & $profileName & '".' & @CRLF & @CRLF & $sStdOut
 				_Toast_Set(0, 0xFF0000, 0xFFFFFF, 0xFFFFFF, 0x000000, 10, "", 250, 250)
 				$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, -7, True) ; Delay can be set here because script continues
 			Else
-				$sMsg  = 'Profile "' & $profileName & '" applied successfully.'
+				$sMsg = 'Profile "' & $profileName & '" applied successfully.'
 				_Toast_Set(0, 0xAAAAAA, 0x000000, 0xFFFFFF, 0x000000, 10, "", 250, 250)
 				$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, 2, True) ; Delay can be set here because script continues
 			EndIf
@@ -92,4 +92,4 @@ Func _cmdLineMain($profileName)
 
 		Sleep(100)
 	WEnd
-EndFunc
+EndFunc   ;==>_cmdLineMain
