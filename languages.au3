@@ -456,8 +456,6 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 
 	$oLangStrings.dialog.selectFile = Json_Get($jsonData, ".strings.dialog.selectFile")
 	$oLangStrings.dialog.ini = Json_Get($jsonData, ".strings.dialog.ini")
-
-	_print("done setting lang")
 EndFunc   ;==>_setLangStrings
 
 

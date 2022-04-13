@@ -221,8 +221,6 @@ _main()
 ; Description..: initial program setup & main running loop
 ;------------------------------------------------------------------------------
 Func _main()
-	_print("starting main")
-	_print("_initLang()")
 	_initLang()
 
 	; popuplate current adapter names and mac addresses
@@ -232,11 +230,9 @@ Func _main()
 	$dscale = _GDIPlus_GraphicsGetDPIRatio()
 	$iDPI = $dscale * 96
 
-	_print("_loadProfiles()")
 	;get profiles list
 	_loadProfiles()
 
-	_print("check language")
 	;get OS language OR selected language storage in profile
 	$selectedLang = OPTIONS_GetValue($options, $OPTIONS_Language)
 	If $selectedLang <> "" And $oLangStrings.OSLang <> $selectedLang Then
@@ -248,14 +244,11 @@ Func _main()
 		IniWrite($sProfileName, "options", $optionsLangName, $oLangStrings.OSLang)
 	EndIf
 
-	_print("set language strings")
 	_setLangStrings($oLangStrings.OSLang)
 
-	_print("_makeGUI()")
 	;make the GUI
 	_makeGUI()
 
-	_print("_loadAdapters()")
 	;get list of adapters and current IP info
 	_loadAdapters()
 
@@ -306,7 +299,6 @@ Func _main()
 	EndIf
 
 	Local $filePath
-	_print("running...")
 	While 1
 		If $lv_doneEditing Then
 			_onLvDoneEdit()
