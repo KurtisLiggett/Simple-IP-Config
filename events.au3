@@ -15,7 +15,7 @@
 ; You should have received a copy of the GNU General Public License
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
-#EndRegion
+#EndRegion license
 
 ;==============================================================================
 ; Filename:		events.au3
@@ -34,7 +34,7 @@ Func _onExit()
 	_GDIPlus_Shutdown()
 
 	; save window position in ini file
-	If NOT BITAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
+	If Not BitAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
 		$currentWinPos = WinGetPos($hgui)
 		Options_SetValue($options, $OPTIONS_PositionX, $currentWinPos[0])
 		Options_SetValue($options, $OPTIONS_PositionY, $currentWinPos[1])
@@ -42,11 +42,11 @@ Func _onExit()
 	EndIf
 
 	Exit
-EndFunc
+EndFunc   ;==>_onExit
 
 Func _onCreateLink()
 	_CreateLink()
-EndFunc
+EndFunc   ;==>_onCreateLink
 
 ;------------------------------------------------------------------------------
 ; Title........: _onExitChild
@@ -55,7 +55,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onExitChild()
 	_ExitChild(@GUI_WinHandle)
-EndFunc
+EndFunc   ;==>_onExitChild
 
 ;------------------------------------------------------------------------------
 ; Title........: _onExitBlacklistOk
@@ -64,16 +64,16 @@ EndFunc
 ; Events.......: Blacklist window 'Save' button
 ;------------------------------------------------------------------------------
 Func _onExitBlacklistOk()
-	$guiState = WinGetState( $hgui )
+	$guiState = WinGetState($hgui)
 	$newBlacklist = ""
 	$itemCount = _GUICtrlListView_GetItemCount($blacklistLV)
 
-	For $i = 0 To $itemCount-1
+	For $i = 0 To $itemCount - 1
 		If _GUICtrlListView_GetItemChecked($blacklistLV, $i) Then
 			$newBlacklist &= _GUICtrlListView_GetItemTextString($blacklistLV, $i) & "|"
 		EndIf
 	Next
-	$newBlacklist = StringLeft($newBlacklist, StringLen($newBlacklist)-1)
+	$newBlacklist = StringLeft($newBlacklist, StringLen($newBlacklist) - 1)
 
 	$newBlacklist = iniNameEncode($newBlacklist)
 	Options_SetValue($options, $OPTIONS_AdapterBlacklist, $newBlacklist)
@@ -83,7 +83,7 @@ Func _onExitBlacklistOk()
 
 	_ExitChild(@GUI_WinHandle)
 	_updateCombo()
-EndFunc
+EndFunc   ;==>_onExitBlacklistOk
 
 ;------------------------------------------------------------------------------
 ; Title........: _OnTrayClick
@@ -91,12 +91,12 @@ EndFunc
 ; Events.......: single left-click on tray icon
 ;------------------------------------------------------------------------------
 Func _OnTrayClick()
-	If TrayItemGetText( $RestoreItem ) = $oLangStrings.traymenu.restore Then
+	If TrayItemGetText($RestoreItem) = $oLangStrings.traymenu.restore Then
 		_maximize()
 	Else
 		_SendToTray()
 	EndIf
-EndFunc
+EndFunc   ;==>_OnTrayClick
 
 ;------------------------------------------------------------------------------
 ; Title........: _OnRestore
@@ -104,12 +104,12 @@ EndFunc
 ; Events.......: 'Restore' item in tray right-click menu
 ;------------------------------------------------------------------------------
 Func _OnRestore()
-	If TrayItemGetText( $RestoreItem ) = $oLangStrings.traymenu.restore Then
+	If TrayItemGetText($RestoreItem) = $oLangStrings.traymenu.restore Then
 		_maximize()
 	Else
 		_SendToTray()
 	EndIf
-EndFunc
+EndFunc   ;==>_OnRestore
 
 ;------------------------------------------------------------------------------
 ; Title........: _onBlacklist
@@ -118,7 +118,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onBlacklist()
 	_blacklist()
-EndFunc
+EndFunc   ;==>_onBlacklist
 
 ;------------------------------------------------------------------------------
 ; Title........: _onBlacklistAdd
@@ -136,7 +136,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onRadio()
 	_radios()
-EndFunc
+EndFunc   ;==>_onRadio
 
 ;------------------------------------------------------------------------------
 ; Title........: _onSelect
@@ -145,7 +145,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onSelect()
 	_setProperties()
-EndFunc
+EndFunc   ;==>_onSelect
 
 ;------------------------------------------------------------------------------
 ; Title........: _onApply
@@ -154,7 +154,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onApply()
 	_apply_GUI()
-EndFunc
+EndFunc   ;==>_onApply
 
 ;------------------------------------------------------------------------------
 ; Title........: _onArrangeAz
@@ -163,7 +163,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onArrangeAz()
 	_arrange()
-EndFunc
+EndFunc   ;==>_onArrangeAz
 
 ;------------------------------------------------------------------------------
 ; Title........: _onArrangeZa
@@ -172,7 +172,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onArrangeZa()
 	_arrange(1)
-EndFunc
+EndFunc   ;==>_onArrangeZa
 
 ;------------------------------------------------------------------------------
 ; Title........: _onRename
@@ -181,12 +181,12 @@ EndFunc
 ;                File menu 'Rename' item
 ;------------------------------------------------------------------------------
 Func _onRename()
-	If NOT _ctrlHasFocus($list_profiles) Then
+	If Not _ctrlHasFocus($list_profiles) Then
 		Return
 	EndIf
-	$Index = _GUICtrlListView_GetSelectedIndices ($list_profiles)
-	_GUICtrlListView_EditLabel( ControlGetHandle($hgui, "", $list_profiles), $Index )
-EndFunc
+	$Index = _GUICtrlListView_GetSelectedIndices($list_profiles)
+	_GUICtrlListView_EditLabel(ControlGetHandle($hgui, "", $list_profiles), $Index)
+EndFunc   ;==>_onRename
 
 ;------------------------------------------------------------------------------
 ; Title........: _onNewItem
@@ -198,19 +198,19 @@ Func _onNewItem()
 	;Local $profileNames = _getNames()
 	Local $profileNames = Profiles_GetNames($profiles)
 	Local $i = 1
-	while _ArraySearch($profileNames, $newname) <> -1
+	While _ArraySearch($profileNames, $newname) <> -1
 		$newname = "New Item " & $i
 		$i = $i + 1
 	WEnd
 
-	ControlFocus( $hgui, "", $list_profiles)
-	GUICtrlCreateListViewItem( $newname, $list_profiles )
-	GUICtrlSetOnEvent( -1, "_onSelect" )
+	ControlFocus($hgui, "", $list_profiles)
+	GUICtrlCreateListViewItem($newname, $list_profiles)
+	GUICtrlSetOnEvent(-1, "_onSelect")
 	$lv_newItem = 1
-	$index = ControlListView($hgui, "", $list_profiles, "GetItemCount")
-	ControlListView ( $hgui, "", $list_profiles, "Select", $index-1 )
-	_GUICtrlListView_EditLabel( ControlGetHandle($hgui, "", $list_profiles), $index-1 )
-EndFunc
+	$Index = ControlListView($hgui, "", $list_profiles, "GetItemCount")
+	ControlListView($hgui, "", $list_profiles, "Select", $Index - 1)
+	_GUICtrlListView_EditLabel(ControlGetHandle($hgui, "", $list_profiles), $Index - 1)
+EndFunc   ;==>_onNewItem
 
 ;------------------------------------------------------------------------------
 ; Title........: _onSave
@@ -219,7 +219,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onSave()
 	_save()
-EndFunc
+EndFunc   ;==>_onSave
 
 ;------------------------------------------------------------------------------
 ; Title........: _onDelete
@@ -228,7 +228,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onDelete()
 	_delete()
-EndFunc
+EndFunc   ;==>_onDelete
 
 ;------------------------------------------------------------------------------
 ; Title........: _onClear
@@ -237,7 +237,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onClear()
 	_clear()
-EndFunc
+EndFunc   ;==>_onClear
 
 ;------------------------------------------------------------------------------
 ; Title........: _onRefresh
@@ -246,10 +246,10 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onRefresh()
 	$showWarning = 0
-	$index = ControlListView($hgui, "", $list_profiles, "GetSelected")
+	$Index = ControlListView($hgui, "", $list_profiles, "GetSelected")
 	_refresh()
-	ControlListView($hgui, "", $list_profiles, "Select", $index)
-EndFunc
+	ControlListView($hgui, "", $list_profiles, "Select", $Index)
+EndFunc   ;==>_onRefresh
 
 ;------------------------------------------------------------------------------
 ; Title........: _onLvDel
@@ -257,14 +257,14 @@ EndFunc
 ; Events.......: File menu Delete item, listview context menu Delete item
 ;------------------------------------------------------------------------------
 Func _onLvDel()
-	if _ctrlHasFocus($list_profiles) Then
+	If _ctrlHasFocus($list_profiles) Then
 		_delete()
 	Else
 		GUISetAccelerators(0)
 		Send("{DEL}")
 		GUISetAccelerators($aAccelKeys)
 	EndIf
-EndFunc
+EndFunc   ;==>_onLvDel
 
 ;------------------------------------------------------------------------------
 ; Title........: _onLvUp
@@ -272,16 +272,16 @@ EndFunc
 ; Events.......: UP key accelerator
 ;------------------------------------------------------------------------------
 Func _onLvUp()
-	if _ctrlHasFocus($list_profiles) Then
-		$index = ControlListView($hgui, "", $list_profiles, "GetSelected")
-		ControlListView($hgui, "", $list_profiles, "Select", $index-1)
+	If _ctrlHasFocus($list_profiles) Then
+		$Index = ControlListView($hgui, "", $list_profiles, "GetSelected")
+		ControlListView($hgui, "", $list_profiles, "Select", $Index - 1)
 		_setProperties()
 	Else
 		GUISetAccelerators(0)
 		Send("{Up}")
 		GUISetAccelerators($aAccelKeys)
 	EndIf
-EndFunc
+EndFunc   ;==>_onLvUp
 
 ;------------------------------------------------------------------------------
 ; Title........: _onLvDown
@@ -289,16 +289,16 @@ EndFunc
 ; Events.......: DOWN key accelerator
 ;------------------------------------------------------------------------------
 Func _onLvDown()
-	if _ctrlHasFocus($list_profiles) Then
-		$index = ControlListView($hgui, "", $list_profiles, "GetSelected")
-		ControlListView($hgui, "", $list_profiles, "Select", $index+1)
+	If _ctrlHasFocus($list_profiles) Then
+		$Index = ControlListView($hgui, "", $list_profiles, "GetSelected")
+		ControlListView($hgui, "", $list_profiles, "Select", $Index + 1)
 		_setProperties()
 	Else
 		GUISetAccelerators(0)
 		Send("{Down}")
 		GUISetAccelerators($aAccelKeys)
 	EndIf
-EndFunc
+EndFunc   ;==>_onLvDown
 
 ;------------------------------------------------------------------------------
 ; Title........: _onLvEnter
@@ -313,7 +313,7 @@ Func _onLvEnter()
 		Send("{ENTER}")
 		GUISetAccelerators($aAccelKeys)
 	EndIf
-EndFunc
+EndFunc   ;==>_onLvEnter
 
 ;------------------------------------------------------------------------------
 ; Title........: _onTray
@@ -322,7 +322,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onTray()
 	_SendToTray()
-EndFunc
+EndFunc   ;==>_onTray
 
 ;------------------------------------------------------------------------------
 ; Title........: _onPull
@@ -331,7 +331,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onPull()
 	_Pull()
-EndFunc
+EndFunc   ;==>_onPull
 
 ;------------------------------------------------------------------------------
 ; Title........: _onDisable
@@ -340,7 +340,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onDisable()
 	_disable()
-EndFunc
+EndFunc   ;==>_onDisable
 
 ;------------------------------------------------------------------------------
 ; Title........: _onRelease
@@ -349,7 +349,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onRelease()
 	_releaseDhcp()
-EndFunc
+EndFunc   ;==>_onRelease
 
 ;------------------------------------------------------------------------------
 ; Title........: _onRenew
@@ -358,7 +358,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onRenew()
 	_renewDhcp()
-EndFunc
+EndFunc   ;==>_onRenew
 
 ;------------------------------------------------------------------------------
 ; Title........: _onCycle
@@ -367,7 +367,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onCycle()
 	_cycleDhcp()
-EndFunc
+EndFunc   ;==>_onCycle
 
 ;------------------------------------------------------------------------------
 ; Title........: _onSettings
@@ -376,7 +376,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onSettings()
 	_settings()
-EndFunc
+EndFunc   ;==>_onSettings
 
 ;------------------------------------------------------------------------------
 ; Title........: _onHelp
@@ -385,13 +385,13 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onHelp()
 	ShellExecute('https://github.com/KurtisLiggett/Simple-IP-Config/wiki')
-EndFunc
+EndFunc   ;==>_onHelp
 
 Func _onUpdateCheckItem()
 	$suppressComError = 1
 	_checksSICUpdate(1)
 	$suppressComError = 0
-EndFunc
+EndFunc   ;==>_onUpdateCheckItem
 
 ;------------------------------------------------------------------------------
 ; Title........: _onDebugItem
@@ -400,7 +400,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onDebugItem()
 	_debugWindow()
-EndFunc
+EndFunc   ;==>_onDebugItem
 
 ;------------------------------------------------------------------------------
 ; Title........: _onChangelog
@@ -409,7 +409,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onChangelog()
 	_changeLog()
-EndFunc
+EndFunc   ;==>_onChangelog
 
 ;------------------------------------------------------------------------------
 ; Title........: _onAbout
@@ -418,7 +418,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onAbout()
 	_about()
-EndFunc
+EndFunc   ;==>_onAbout
 
 ;------------------------------------------------------------------------------
 ; Title........: _onFilter
@@ -427,7 +427,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onFilter()
 	_filterProfiles()
-EndFunc
+EndFunc   ;==>_onFilter
 
 ;------------------------------------------------------------------------------
 ; Title........: _OnCombo
@@ -439,13 +439,13 @@ Func _OnCombo()
 	$adap = GUICtrlRead($combo_adapters)
 	$iniAdap = iniNameEncode($adap)
 	$keyname = Options_GetName($options, $OPTIONS_StartupAdapter)
-	$ret = IniWrite( $sProfileName, "options", $keyname, $iniAdap )
+	$ret = IniWrite($sProfileName, "options", $keyname, $iniAdap)
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the selected adapter", 1)
 	Else
 		Options_SetValue($options, $OPTIONS_StartupAdapter, $adap)
 	EndIf
-EndFunc
+EndFunc   ;==>_OnCombo
 
 ;------------------------------------------------------------------------------
 ; Title........: _OnToolbarButton
@@ -470,7 +470,7 @@ Func _OnToolbarButton()
 		Case Else
 
 	EndSwitch
-EndFunc
+EndFunc   ;==>_OnToolbarButton
 
 ;------------------------------------------------------------------------------
 ; Title........: _OnToolbar2Button
@@ -487,7 +487,7 @@ Func _OnToolbar2Button()
 		Case Else
 
 	EndSwitch
-EndFunc
+EndFunc   ;==>_OnToolbar2Button
 
 ;------------------------------------------------------------------------------
 ; Title........: _iconLink
@@ -496,8 +496,8 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _iconLink()
 	ShellExecute('http://www.aha-soft.com/')
-	GUICtrlSetColor(@GUI_CtrlId,0x551A8B)
-EndFunc
+	GUICtrlSetColor(@GUI_CtrlId, 0x551A8B)
+EndFunc   ;==>_iconLink
 
 ;------------------------------------------------------------------------------
 ; Title........: _updateLink
@@ -507,8 +507,8 @@ EndFunc
 Func _updateLink()
 	$sURL = "https://github.com/KurtisLiggett/Simple-IP-Config/releases/latest"
 	ShellExecute($sURL)
-	GUICtrlSetColor(@GUI_CtrlId,0x551A8B)
-EndFunc
+	GUICtrlSetColor(@GUI_CtrlId, 0x551A8B)
+EndFunc   ;==>_updateLink
 
 ;------------------------------------------------------------------------------
 ; Title........: _onOpenProfiles
@@ -517,7 +517,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onOpenProfiles()
 	$OpenFileFlag = 1
-EndFunc
+EndFunc   ;==>_onOpenProfiles
 
 ;------------------------------------------------------------------------------
 ; Title........: _onImportProfiles
@@ -526,7 +526,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onImportProfiles()
 	$ImportFileFlag = 1
-EndFunc
+EndFunc   ;==>_onImportProfiles
 
 ;------------------------------------------------------------------------------
 ; Title........: _onExportProfiles
@@ -535,7 +535,7 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func _onExportProfiles()
 	$ExportFileFlag = 1
-EndFunc
+EndFunc   ;==>_onExportProfiles
 
 ;------------------------------------------------------------------------------
 ; Title........: _onOpenNetConnections
@@ -543,8 +543,8 @@ EndFunc
 ; Events.......: Tools menu
 ;------------------------------------------------------------------------------
 Func _onOpenNetConnections()
-	ShellExecute ("ncpa.cpl")
-EndFunc
+	ShellExecute("ncpa.cpl")
+EndFunc   ;==>_onOpenNetConnections
 
 ;------------------------------------------------------------------------------
 ; Title........: WM_COMMAND
@@ -555,41 +555,41 @@ EndFunc
 ;------------------------------------------------------------------------------
 Func WM_COMMAND($hWnd, $iMsg, $wParam, $lParam)
 
-    Local $ID = BitAND($wParam, 0xFFFF)
+	Local $ID = BitAND($wParam, 0xFFFF)
 
-    Local $iIDFrom = BitAND($wParam, 0x0000FFFF) ; LoWord - this gives the control which sent the message
-    Local $iCode = BitShift($wParam, 16)     ; HiWord - this gives the message that was sent
+	Local $iIDFrom = BitAND($wParam, 0x0000FFFF) ; LoWord - this gives the control which sent the message
+	Local $iCode = BitShift($wParam, 16)     ; HiWord - this gives the message that was sent
 	Local $tempstring, $iDot1Pos, $iDot2Pos, $iDot3Pos, $SplitString, $temp, $tip
 
-    Switch $hWnd
-        Case $hTool
-            Switch $ID
-                Case $tb_apply To $tb_clear ; Button 1 - Button 8
-                    GUICtrlSendToDummy($ToolbarIDs, $ID)
-                Case Else
+	Switch $hWnd
+		Case $hTool
+			Switch $ID
+				Case $tb_apply To $tb_clear ; Button 1 - Button 8
+					GUICtrlSendToDummy($ToolbarIDs, $ID)
+				Case Else
 
-            EndSwitch
-        Case $hTool2
+			EndSwitch
+		Case $hTool2
 			Switch $ID
 				Case $tb_settings To $tb_tray ; Button 1 - Button 8
-                    GUICtrlSendToDummy($Toolbar2IDs, $ID)
-                Case Else
+					GUICtrlSendToDummy($Toolbar2IDs, $ID)
+				Case Else
 
-            EndSwitch
+			EndSwitch
 		Case Else
 			If $iCode = $EN_CHANGE Then
 				Switch $iIDFrom
 					Case $input_filter
 						GUICtrlSendToDummy($filter_dummy)
 				EndSwitch
-			ElseIf $iCode = $CBN_CLOSEUP Then	; check if combo was closed
+			ElseIf $iCode = $CBN_CLOSEUP Then    ; check if combo was closed
 				Switch $iIDFrom
 					Case $combo_adapters
 						GUICtrlSendToDummy($combo_dummy)
 				EndSwitch
 			EndIf
-    EndSwitch
-    Return $GUI_RUNDEFMSG
+	EndSwitch
+	Return $GUI_RUNDEFMSG
 EndFunc   ;==>WM_COMMAND
 
 ;------------------------------------------------------------------------------
@@ -601,83 +601,83 @@ EndFunc   ;==>WM_COMMAND
 ;------------------------------------------------------------------------------
 Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 
-    Local $tNMIA = DllStructCreate($tagNMITEMACTIVATE, $lParam)
-    Local $hTarget = DllStructGetData($tNMIA, 'hWndFrom')
-    Local $ID = DllStructGetData($tNMIA, 'Code')
+	Local $tNMIA = DllStructCreate($tagNMITEMACTIVATE, $lParam)
+	Local $hTarget = DllStructGetData($tNMIA, 'hWndFrom')
+	Local $ID = DllStructGetData($tNMIA, 'Code')
 
-    $hWndListView = $list_profiles
-    If Not IsHWnd($list_profiles) Then $hWndListView = GUICtrlGetHandle($list_profiles)
+	$hWndListView = $list_profiles
+	If Not IsHWnd($list_profiles) Then $hWndListView = GUICtrlGetHandle($list_profiles)
 
-    $tNMHDR = DllStructCreate($tagNMHDR, $lParam)
-    $hWndFrom = HWnd(DllStructGetData($tNMHDR, "hWndFrom"))
-    $iIDFrom = DllStructGetData($tNMHDR, "IDFrom")
-    $iCode = DllStructGetData($tNMHDR, "Code")
+	$tNMHDR = DllStructCreate($tagNMHDR, $lParam)
+	$hWndFrom = HWnd(DllStructGetData($tNMHDR, "hWndFrom"))
+	$iIDFrom = DllStructGetData($tNMHDR, "IDFrom")
+	$iCode = DllStructGetData($tNMHDR, "Code")
 
 
-    Switch $hWnd
-        Case $hTool
-            Switch $hTarget
-                Case $hToolbar
-                    Switch $ID
-                        Case $TBN_GETINFOTIPW
+	Switch $hWnd
+		Case $hTool
+			Switch $hTarget
+				Case $hToolbar
+					Switch $ID
+						Case $TBN_GETINFOTIPW
 
 ;~                          Local $tNMTBGIT = DllStructCreate($tagNMTBGETINFOTIP, $lParam)
-                            Local $tNMTBGIT = DllStructCreate($tagNMHDR & ';ptr Text;int TextMax;int Item;lparam lParam;', $lParam)
-                            Local $Item = DllStructGetData($tNMTBGIT, 'Item')
-                            Local $Text = ''
+							Local $tNMTBGIT = DllStructCreate($tagNMHDR & ';ptr Text;int TextMax;int Item;lparam lParam;', $lParam)
+							Local $Item = DllStructGetData($tNMTBGIT, 'Item')
+							Local $Text = ''
 
-                            Switch $Item
-                                Case $tb_apply ; Button 1
-                                    $Text = $oLangStrings.toolbar.apply_tip
-                                Case $tb_refresh ; Button 2
-                                    $Text = $oLangStrings.toolbar.refresh_tip
-                                Case $tb_add ; Button 3
-                                    $Text = $oLangStrings.toolbar.new_tip
-                                Case $tb_save ; Button 4
-                                    $Text = $oLangStrings.toolbar.save_tip
-                                Case $tb_delete ; Button 5
-                                    $Text = $oLangStrings.toolbar.delete_tip
-                                Case $tb_clear ; Button 6
-                                    $Text = $oLangStrings.toolbar.clear_tip
-                                Case Else
+							Switch $Item
+								Case $tb_apply ; Button 1
+									$Text = $oLangStrings.toolbar.apply_tip
+								Case $tb_refresh ; Button 2
+									$Text = $oLangStrings.toolbar.refresh_tip
+								Case $tb_add ; Button 3
+									$Text = $oLangStrings.toolbar.new_tip
+								Case $tb_save ; Button 4
+									$Text = $oLangStrings.toolbar.save_tip
+								Case $tb_delete ; Button 5
+									$Text = $oLangStrings.toolbar.delete_tip
+								Case $tb_clear ; Button 6
+									$Text = $oLangStrings.toolbar.clear_tip
+								Case Else
 
-                            EndSwitch
-                            If $Text Then
-                                DllStructSetData(DllStructCreate('wchar[' & DllStructGetData($tNMTBGIT, 'TextMax') & ']', DllStructGetData($tNMTBGIT, 'Text')), 1, $Text)
-                            EndIf
-                    EndSwitch
+							EndSwitch
+							If $Text Then
+								DllStructSetData(DllStructCreate('wchar[' & DllStructGetData($tNMTBGIT, 'TextMax') & ']', DllStructGetData($tNMTBGIT, 'Text')), 1, $Text)
+							EndIf
+					EndSwitch
 			EndSwitch
-        Case $hTool2
-            Switch $hTarget
-                Case $hToolbar2
-                    Switch $ID
-                        Case $TBN_GETINFOTIPW
+		Case $hTool2
+			Switch $hTarget
+				Case $hToolbar2
+					Switch $ID
+						Case $TBN_GETINFOTIPW
 
 ;~                          Local $tNMTBGIT = DllStructCreate($tagNMTBGETINFOTIP, $lParam)
-                            Local $tNMTBGIT = DllStructCreate($tagNMHDR & ';ptr Text;int TextMax;int Item;lparam lParam;', $lParam)
-                            Local $Item = DllStructGetData($tNMTBGIT, 'Item')
-                            Local $Text = ''
+							Local $tNMTBGIT = DllStructCreate($tagNMHDR & ';ptr Text;int TextMax;int Item;lparam lParam;', $lParam)
+							Local $Item = DllStructGetData($tNMTBGIT, 'Item')
+							Local $Text = ''
 
-                            Switch $Item
-                                Case $tb_settings ; Button 1
-                                    $Text = $oLangStrings.toolbar.settings_tip
-                                Case $tb_tray ; Button 2
-                                    $Text = $oLangStrings.toolbar.tray_tip
-                                Case Else
+							Switch $Item
+								Case $tb_settings ; Button 1
+									$Text = $oLangStrings.toolbar.settings_tip
+								Case $tb_tray ; Button 2
+									$Text = $oLangStrings.toolbar.tray_tip
+								Case Else
 
-                            EndSwitch
-                            If $Text Then
-                                DllStructSetData(DllStructCreate('wchar[' & DllStructGetData($tNMTBGIT, 'TextMax') & ']', DllStructGetData($tNMTBGIT, 'Text')), 1, $Text)
-                            EndIf
-                    EndSwitch
+							EndSwitch
+							If $Text Then
+								DllStructSetData(DllStructCreate('wchar[' & DllStructGetData($tNMTBGIT, 'TextMax') & ']', DllStructGetData($tNMTBGIT, 'Text')), 1, $Text)
+							EndIf
+					EndSwitch
 			EndSwitch
 		Case Else
 			Switch $hWndFrom
 				Case $hWndListView
 					Switch $iCode
 						Case $LVN_BEGINLABELEDITA, $LVN_BEGINLABELEDITW ; Start of label editing for an item
-							$lv_editIndex = _GUICtrlListView_GetSelectedIndices ($list_profiles)
-							$lv_oldName = ControlListView ( $hgui, "", $list_profiles, "GetText", $lv_editIndex )
+							$lv_editIndex = _GUICtrlListView_GetSelectedIndices($list_profiles)
+							$lv_oldName = ControlListView($hgui, "", $list_profiles, "GetText", $lv_editIndex)
 							$lv_editing = 1
 							$lv_startEditing = 0
 							$lv_aboutEditing = 0
@@ -686,19 +686,19 @@ Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 							$lv_doneEditing = 1
 							$lv_editing = 0
 							$tInfo = DllStructCreate($tagNMLVDISPINFO, $lParam)
-							If _WinAPI_GetAsyncKeyState($VK_RETURN) == 1 Then	;enter key was pressed
+							If _WinAPI_GetAsyncKeyState($VK_RETURN) == 1 Then    ;enter key was pressed
 								Local $tBuffer = DllStructCreate("char Text[" & DllStructGetData($tInfo, "TextMax") & "]", DllStructGetData($tInfo, "Text"))
-									If StringLen(DllStructGetData($tBuffer, "Text")) Then
+								If StringLen(DllStructGetData($tBuffer, "Text")) Then
 									Return True
 								Else
-									if $lv_newItem = 1 Then
+									If $lv_newItem = 1 Then
 										_GUICtrlListView_DeleteItem(ControlGetHandle($hgui, "", $list_profiles), $lv_editIndex)
 										$lv_newItem = 0
 									EndIf
 									$lv_aboutEditing = 1
 								EndIf
 							Else
-								if $lv_newItem = 1 Then
+								If $lv_newItem = 1 Then
 									_GUICtrlListView_DeleteItem(ControlGetHandle($hgui, "", $list_profiles), $lv_editIndex)
 									$lv_newItem = 0
 								EndIf
@@ -713,6 +713,6 @@ Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 							$movetosubnet = 1
 					EndSwitch
 			EndSwitch
-    EndSwitch
-    Return $GUI_RUNDEFMSG
+	EndSwitch
+	Return $GUI_RUNDEFMSG
 EndFunc   ;==>WM_NOTIFY

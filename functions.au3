@@ -175,7 +175,7 @@ Func _checksSICUpdate($manualCheck = 0)
 				$result = 1
 			ElseIf Int($currentVersiontokens[2]) == Int($thisVersiontokens[2]) Then ;same minor
 				If $currentVersiontokens[0] > 2 And $thisVersiontokens[0] > 2 Then
-					If StringLeft( $thisVersiontokens[3], 1 ) == 'b' Then
+					If StringLeft($thisVersiontokens[3], 1) == 'b' Then
 						$result = 1
 					Else
 						If Int($currentVersiontokens[3]) > Int($thisVersiontokens[3]) Then ;newer revision
@@ -187,7 +187,7 @@ Func _checksSICUpdate($manualCheck = 0)
 				ElseIf $currentVersiontokens[0] > 2 And $thisVersiontokens[0] == 2 Then
 					$result = 1
 				ElseIf $currentVersiontokens[0] == 2 And $thisVersiontokens[0] > 2 Then
-					If StringLeft( $thisVersiontokens[3], 1 ) == 'b' Then
+					If StringLeft($thisVersiontokens[3], 1) == 'b' Then
 						$result = 1
 					Else
 						$result = -1
@@ -217,7 +217,7 @@ Func _checksSICUpdate($manualCheck = 0)
 		$updateText = $oLangStrings.message.yourVersion & ": " & $thisVersion & @CRLF & _
 				$oLangStrings.message.latestVersion & ": " & $scurrentVersion & @CRLF & @CRLF & _
 				$oLangStrings.message.newVersion
-		If $manualCheck Or _DateDiff('D', $dateLastCheck, $dateNow) >= 7 Or $dateLastCheck='' Then
+		If $manualCheck Or _DateDiff('D', $dateLastCheck, $dateNow) >= 7 Or $dateLastCheck = '' Then
 			_ShowUpdateDialog($thisVersion, $scurrentVersion, $isNew)
 
 			Options_SetValue($options, $OPTIONS_LastUpdateCheck, $dateNow)
@@ -235,7 +235,7 @@ EndFunc   ;==>_checksSICUpdate
 
 Func _DoUpdate($newFilename)
 	$fileStr = '@echo off' & @CRLF & _
-			'taskkill /pid ' & WinGetProcess($hgui) & @CRLF & _	 ; kill running instance
+			'taskkill /pid ' & WinGetProcess($hgui) & @CRLF & _     ; kill running instance
 			'del /Q "' & @ScriptFullPath & '"' & @CRLF & _ ; delete old version
 			'start "" "' & $newFilename & '"' ; start new version
 	$filename = 'simple_ip_config_updater.cmd'
@@ -1160,7 +1160,7 @@ Func _saveOptions()
 	Options_SetValue($options, $OPTIONS_SaveAdapterToProfile, _StateToStr($ck_saveAdapter))
 	Options_SetValue($options, $OPTIONS_AutoUpdate, _StateToStr($ck_autoUpdate))
 
-	Local $langRet = StringLeft( StringRight(GUICtrlRead($cmb_langSelect), 6), 5)
+	Local $langRet = StringLeft(StringRight(GUICtrlRead($cmb_langSelect), 6), 5)
 	If $langRet <> -1 Then
 		If $langRet <> $oLangStrings.OSLang Then
 			$updateGUI = 1
@@ -1773,12 +1773,12 @@ EndFunc   ;==>_iniRename
 ;
 ; Parameters......: $message -string to print
 ;------------------------------------------------------------------------------
-Func _print($message="")
+Func _print($message = "")
 	Static $tTimer = TimerInit(), $iPrev
 	Local $iTime = Floor(TimerDiff($tTimer))
-	Local $sTime = StringFormat("%d:%.2d:%06.3f", (Floor($iTime / 3600000)), (Floor(Mod($iTime,3600000) / 60000)), (Mod(Mod($iTime,3600000),60000) / 1000))
+	Local $sTime = StringFormat("%d:%.2d:%06.3f", (Floor($iTime / 3600000)), (Floor(Mod($iTime, 3600000) / 60000)), (Mod(Mod($iTime, 3600000), 60000) / 1000))
 	Local $iDiff = $iTime - $iPrev
-	Local $sDiff = StringFormat("%d:%.2d:%06.3f", (Floor($iDiff / 3600000)), (Floor(Mod($iDiff,3600000) / 60000)), (Mod(Mod($iDiff,3600000),60000) / 1000))
+	Local $sDiff = StringFormat("%d:%.2d:%06.3f", (Floor($iDiff / 3600000)), (Floor(Mod($iDiff, 3600000) / 60000)), (Mod(Mod($iDiff, 3600000), 60000) / 1000))
 
 	If $message == "" Then
 		ConsoleWrite(@CRLF)
@@ -1787,4 +1787,4 @@ Func _print($message="")
 	EndIf
 
 	$iPrev = $iTime
-EndFunc
+EndFunc   ;==>_print

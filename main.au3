@@ -155,7 +155,6 @@ Global $oLangStrings
 #include <Inet.au3>
 #include <File.au3>
 
-;~ #include "libraries\AutoItObject_Internal.au3"
 #include "libraries\AutoItObject.au3"
 #include "libraries\Json\json.au3"
 #include "model.au3"
