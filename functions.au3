@@ -27,7 +27,7 @@ Func MyErrFunc($oError)
 	If Not $suppressComError Then
 		SetError(1)
 		; Do anything here.
-		MsgBox(1, "COM " & $oLangStrings.message.error, "Simple IP Config COM " & $oLangStrings.message.error & @CRLF & "Error Number: " & Hex($oError.number))
+		MsgBox(1, "COM " & $oLangStrings.message.error, "Simple IP Config COM " & $oLangStrings.message.error & @CRLF & "Error Number: " & Hex($oError.number) & @CRLF & $oError.windescription)
 	EndIf
 EndFunc   ;==>MyErrFunc
 
@@ -315,34 +315,13 @@ EndFunc   ;==>_updateCombo
 Func _arrange($desc = 0)
 	_loadProfiles()
 
-	Local $newfile = ""
-	$newfile &= "[Options]" & @CRLF
-	$newfile &= "Version=" & $options.Version & @CRLF
-	$newfile &= "MinToTray=" & $options.MinToTray & @CRLF
-	$newfile &= "StartupMode=" & $options.StartupMode & @CRLF
-	$newfile &= "Language=" & $options.Language & @CRLF
-	$newfile &= "StartupAdapter=" & $options.StartupAdapter & @CRLF
-	$newfile &= "Theme=" & $options.Theme & @CRLF
-	$newfile &= "SaveAdapterToProfile=" & $options.SaveAdapterToProfile & @CRLF
-	$newfile &= "AdapterBlacklist=" & $options.AdapterBlacklist & @CRLF
-	$newfile &= "PositionX=" & $options.PositionX & @CRLF
-	$newfile &= "PositionY=" & $options.PositionY & @CRLF
-	$newfile &= "AutoUpdate=" & $options.AutoUpdate & @CRLF
+	$profiles.sort($desc)
 
-	Profiles_Sort($profiles, $desc)
-	For $i = 0 To Profiles_GetSize($profiles) - 1
-		$sProfileName = Profiles_GetValueByIndex($profiles, $i, $PROFILES_Name)
-		$iniName = iniNameEncode($sProfileName)
-		$newfile &= "[" & $iniName & "]" & @CRLF
-		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpAuto) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpAuto) & @CRLF
-		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpAddress) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpAddress) & @CRLF
-		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpSubnet) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpSubnet) & @CRLF
-		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_IpGateway) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_IpGateway) & @CRLF
-		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_DnsAuto) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_DnsAuto) & @CRLF
-		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_DnsPref) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_DnsPref) & @CRLF
-		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_DnsAlt) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_DnsAlt) & @CRLF
-		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_RegisterDns) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_RegisterDns) & @CRLF
-		$newfile &= Profiles_GetKeyName($profiles, $PROFILES_AdapterName) & "=" & Profiles_GetValueByIndex($profiles, $i, $PROFILES_AdapterName) & @CRLF
+	Local $newfile = ""
+	$newfile &= $options.getSectionStr()
+
+	For $oProfile In $profiles.Profiles
+		$newfile &= $oProfile.getSectionStr()
 	Next
 
 	Local $hFileOpen = FileOpen($sProfileName, 2)
@@ -443,9 +422,7 @@ Func _clickUp()
 				If $newitem <> "" And $dragtext <> $newtext Then
 					$ret = _iniMove($sProfileName, $dragtext, $newtext)
 					If Not $ret Then
-						$dragProfile = Profiles_GetProfile($profiles, $dragtext)
-						Profiles_Delete($profiles, $dragtext)
-						Profiles_InsertProfile($profiles, $newitem, $dragtext, $dragProfile)
+						$profiles.move($dragtext, $newitem)
 						_updateProfileList()
 					EndIf
 				EndIf
@@ -956,7 +933,8 @@ Func _rename()
 	ElseIf $ret = 1 Or $ret = 3 Then
 		_setStatus($oLangStrings.message.errorOccurred, 1)
 	Else
-		Profiles_SetValue($profiles, $lv_oldName, $PROFILES_Name, $lv_newName)
+		Local $oProfile = $profiles.get($lv_oldName)
+		$oProfile.ProfileName = $lv_newName
 	EndIf
 EndFunc   ;==>_rename
 
@@ -984,7 +962,7 @@ Func _delete($name = "")
 			_setStatus($oLangStrings.message.errorOccurred, 1)
 		EndIf
 
-		Profiles_Delete($profiles, $profileName)
+		$profiles.remove($profileName)
 	Else
 		_GUICtrlListView_CancelEditLabel(ControlGetHandle($hgui, "", $list_profiles))
 	EndIf
@@ -1010,31 +988,34 @@ Func _new()
 	$text = ControlListView($hgui, "", $list_profiles, "GetText", $index)
 	$profileName = $text
 
-	If Not Profiles_isNewName($profiles, $profileName) Then
+	If $profiles.exists($profileName) Then
 		MsgBox($MB_ICONWARNING, "Warning!", $oLangStrings.message.profileNameExists)
 		$lv_startEditing = 1
 		Return
 	EndIf
 
-	Local $aSection = Profiles_CreateSection()
-	Profiles_SectionSetValue($aSection, $PROFILES_IpAuto, _StateToStr($radio_IpAuto))
-	Profiles_SectionSetValue($aSection, $PROFILES_IpAddress, _ctrlGetIP($ip_Ip))
-	Profiles_SectionSetValue($aSection, $PROFILES_IpSubnet, _ctrlGetIP($ip_Subnet))
-	Profiles_SectionSetValue($aSection, $PROFILES_IpGateway, _ctrlGetIP($ip_Gateway))
-	Profiles_SectionSetValue($aSection, $PROFILES_DnsAuto, _StateToStr($radio_DnsAuto))
-	Profiles_SectionSetValue($aSection, $PROFILES_DnsPref, _ctrlGetIP($ip_DnsPri))
-	Profiles_SectionSetValue($aSection, $PROFILES_DnsAlt, _ctrlGetIP($ip_DnsAlt))
-	Profiles_SectionSetValue($aSection, $PROFILES_RegisterDns, _StateToStr($ck_dnsReg))
-	$adapName = iniNameEncode(GUICtrlRead($combo_adapters))
-	Profiles_SectionSetValue($aSection, $PROFILES_AdapterName, $adapName)
+	Local $oNewProfile = $profiles.create($profileName)
+	Local $adapName = iniNameEncode(GUICtrlRead($combo_adapters))
+
+	$oNewProfile.IpAuto = _StateToStr($radio_IpAuto)
+	$oNewProfile.IpAddress = _ctrlGetIP($ip_Ip)
+	$oNewProfile.IpSubnet = _ctrlGetIP($ip_Subnet)
+	$oNewProfile.IpGateway = _ctrlGetIP($ip_Gateway)
+	$oNewProfile.DnsAuto = _StateToStr($radio_DnsAuto)
+	$oNewProfile.IpDnsPref = _ctrlGetIP($ip_DnsPri)
+	$oNewProfile.IpDnsAlt = _ctrlGetIP($ip_DnsAlt)
+	$oNewProfile.RegisterDns = _StateToStr($ck_dnsReg)
+	$oNewProfile.AdapterName = $adapName
+
 	$iniName = iniNameEncode($profileName)
 	$lv_newItem = 0
-	$ret = IniWriteSection($sProfileName, $iniName, $aSection, 0)
+	$ret = IniWriteSection($sProfileName, $iniName, $oNewProfile.getSection(), 0)
 	If $ret = 0 Then
 		_setStatus($oLangStrings.message.errorOccurred, 1)
 	EndIf
 
-	Profiles_AddSection($profiles, $profileName, $aSection)
+	$profiles.add($oNewProfile)
+
 	_updateProfileList()
 EndFunc   ;==>_new
 
@@ -1059,24 +1040,24 @@ Func _save()
 
 	$profileName = StringReplace(GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 
-	Local $aSection = Profiles_CreateSection()
-	Profiles_SectionSetValue($aSection, $PROFILES_IpAuto, _StateToStr($radio_IpAuto))
-	Profiles_SectionSetValue($aSection, $PROFILES_IpAddress, _ctrlGetIP($ip_Ip))
-	Profiles_SectionSetValue($aSection, $PROFILES_IpSubnet, _ctrlGetIP($ip_Subnet))
-	Profiles_SectionSetValue($aSection, $PROFILES_IpGateway, _ctrlGetIP($ip_Gateway))
-	Profiles_SectionSetValue($aSection, $PROFILES_DnsAuto, _StateToStr($radio_DnsAuto))
-	Profiles_SectionSetValue($aSection, $PROFILES_DnsPref, _ctrlGetIP($ip_DnsPri))
-	Profiles_SectionSetValue($aSection, $PROFILES_DnsAlt, _ctrlGetIP($ip_DnsAlt))
-	Profiles_SectionSetValue($aSection, $PROFILES_RegisterDns, _StateToStr($ck_dnsReg))
-	$adapName = iniNameEncode(GUICtrlRead($combo_adapters))
-	Profiles_SectionSetValue($aSection, $PROFILES_AdapterName, $adapName)
+	Local $oProfile = $profiles.get($profileName)
+	Local $adapName = iniNameEncode(GUICtrlRead($combo_adapters))
+
+	$oProfile.IpAuto = _StateToStr($radio_IpAuto)
+	$oProfile.IpAddress = _ctrlGetIP($ip_Ip)
+	$oProfile.IpSubnet = _ctrlGetIP($ip_Subnet)
+	$oProfile.IpGateway = _ctrlGetIP($ip_Gateway)
+	$oProfile.DnsAuto = _StateToStr($radio_DnsAuto)
+	$oProfile.IpDnsPref = _ctrlGetIP($ip_DnsPri)
+	$oProfile.IpDnsAlt = _ctrlGetIP($ip_DnsAlt)
+	$oProfile.RegisterDns = _StateToStr($ck_dnsReg)
+	$oProfile.AdapterName = $adapName
+
 	$iniName = iniNameEncode($profileName)
-	$ret = IniWriteSection($sProfileName, $iniName, $aSection, 0)
+	$ret = IniWriteSection($sProfileName, $iniName, $oProfile.getSection(), 0)
 	If $ret = 0 Then
 		_setStatus($oLangStrings.message.errorOccurred, 1)
 	EndIf
-
-	Profiles_AddSection($profiles, $profileName, $aSection)
 EndFunc   ;==>_save
 
 ;------------------------------------------------------------------------------
@@ -1114,22 +1095,23 @@ Func _setProperties($init = 0, $profileName = "")
 		$profileName = StringReplace(GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 	EndIf
 
-;~ 	_ArrayDisplay($profiles)
-	If Not Profiles_isNewName($profiles, $profileName) Then
-		$ipAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAuto)
-		$ipAddress = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAddress)
-		$ipSubnet = Profiles_GetValue($profiles, $profileName, $PROFILES_IpSubnet)
-		$ipGateway = Profiles_GetValue($profiles, $profileName, $PROFILES_IpGateway)
+
+	If $profiles.exists($profileName) Then
+		Local $oProfile = $profiles.get($profileName)
+		$ipAuto = $oProfile.IpAuto
+		$ipAddress = $oProfile.IpAddress
+		$ipSubnet = $oProfile.IpSubnet
+		$ipGateway = $oProfile.IpGateway
 		GUICtrlSetState($radio_IpMan, $GUI_CHECKED)
 		GUICtrlSetState($radio_IpAuto, _StrToState($ipAuto))
 		_ctrlSetIP($ip_Ip, $ipAddress)
 		_ctrlSetIP($ip_Subnet, $ipSubnet)
 		_ctrlSetIP($ip_Gateway, $ipGateway)
 
-		$dnsAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsAuto)
-		$dnsPref = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsPref)
-		$dnsAlt = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsAlt)
-		$dnsreg = Profiles_GetValue($profiles, $profileName, $PROFILES_RegisterDns)
+		$dnsAuto = $oProfile.DnsAuto
+		$dnsPref = $oProfile.IpDnsPref
+		$dnsAlt = $oProfile.IpDnsAlt
+		$dnsreg = $oProfile.RegisterDns
 		GUICtrlSetState($radio_DnsMan, $GUI_CHECKED)
 		GUICtrlSetState($radio_DnsAuto, _StrToState($dnsAuto))
 		_ctrlSetIP($ip_DnsPri, $dnsPref)
@@ -1137,11 +1119,9 @@ Func _setProperties($init = 0, $profileName = "")
 		GUICtrlSetState($ck_dnsReg, _StrToState($dnsreg))
 
 		$sSaveAdapter = $options.SaveAdapterToProfile
-		$profileAdapter = Profiles_GetValue($profiles, $profileName, $PROFILES_AdapterName)
+		$profileAdapter = $oProfile.AdapterName
 		If $profileAdapter <> "" And ($sSaveAdapter = 1 Or $sSaveAdapter = "true") Then
-			If Not Profiles_isNewName($profiles, $profileAdapter) Then
-				ControlCommand($hgui, "", $combo_adapters, "SelectString", $profileAdapter)
-			EndIf
+			ControlCommand($hgui, "", $combo_adapters, "SelectString", $profileAdapter)
 		EndIf
 
 		_radios()
@@ -1250,7 +1230,6 @@ Func _loadProfiles()
 
 	If Not FileExists($pname) Then
 		_setStatus($oLangStrings.message.profilesNotFound, 1)
-		_print("oops")
 		Return 1
 	EndIf
 
@@ -1260,7 +1239,8 @@ Func _loadProfiles()
 		Return 1
 	EndIf
 
-	Profiles_DeleteAll($profiles)
+	$profiles.removeAll()
+	Local $oNewProfile = 0
 	For $i = 1 To $names[0]
 		$thisName = iniNameDecode($names[$i])
 		$thisSection = IniReadSection($pname, $names[$i])
@@ -1268,7 +1248,7 @@ Func _loadProfiles()
 			ContinueLoop
 		EndIf
 
-		Local $aSection = Profiles_CreateSection()
+		$oNewProfile = $profiles.create($thisName)
 		For $j = 1 To $thisSection[0][0]
 			If $thisName = "Options" Or $thisName = "options" Then
 				Switch $thisSection[$j][0]
@@ -1300,30 +1280,30 @@ Func _loadProfiles()
 				EndSwitch
 			Else
 				Switch $thisSection[$j][0]
-					Case Profiles_GetKeyName($profiles, $PROFILES_IpAuto)
-						Profiles_SectionSetValue($aSection, $PROFILES_IpAuto, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_IpAddress)
-						Profiles_SectionSetValue($aSection, $PROFILES_IpAddress, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_IpSubnet)
-						Profiles_SectionSetValue($aSection, $PROFILES_IpSubnet, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_IpGateway)
-						Profiles_SectionSetValue($aSection, $PROFILES_IpGateway, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_DnsAuto)
-						Profiles_SectionSetValue($aSection, $PROFILES_DnsAuto, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_DnsPref)
-						Profiles_SectionSetValue($aSection, $PROFILES_DnsPref, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_DnsAlt)
-						Profiles_SectionSetValue($aSection, $PROFILES_DnsAlt, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_RegisterDns)
-						Profiles_SectionSetValue($aSection, $PROFILES_RegisterDns, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_AdapterName)
+					Case "IpAuto"
+						$oNewProfile.IpAuto = $thisSection[$j][1]
+					Case "IpAddress"
+						$oNewProfile.IpAddress = $thisSection[$j][1]
+					Case "IpSubnet"
+						$oNewProfile.IpSubnet = $thisSection[$j][1]
+					Case "IpGateway"
+						$oNewProfile.IpGateway = $thisSection[$j][1]
+					Case "DnsAuto"
+						$oNewProfile.DnsAuto = $thisSection[$j][1]
+					Case "IpDnsPref"
+						$oNewProfile.IpDnsPref = $thisSection[$j][1]
+					Case "IpDnsAlt"
+						$oNewProfile.IpDnsAlt = $thisSection[$j][1]
+					Case "RegisterDns"
+						$oNewProfile.RegisterDns = $thisSection[$j][1]
+					Case "AdapterName"
 						$adapName = iniNameEncode($thisSection[$j][1])
-						Profiles_SectionSetValue($aSection, $PROFILES_AdapterName, $adapName)
+						$oNewProfile.AdapterName = $adapName
 				EndSwitch
 			EndIf
 		Next
 		If $thisName <> "Options" Then
-			Profiles_AddSection($profiles, $thisName, $aSection)
+			$profiles.add($oNewProfile)
 		EndIf
 	Next
 
@@ -1341,6 +1321,7 @@ Func _ImportProfiles($pname)
 		Return 1
 	EndIf
 
+	Local $oNewProfile = 0
 	For $i = 1 To $names[0]
 		$thisName = iniNameDecode($names[$i])
 		$thisSection = IniReadSection($pname, $names[$i])
@@ -1348,42 +1329,46 @@ Func _ImportProfiles($pname)
 			ContinueLoop
 		EndIf
 
-		Local $aSection = Profiles_CreateSection()
+		$oNewProfile = $profiles.create($thisName)
 		For $j = 1 To $thisSection[0][0]
 			If $thisName <> "Options" And $thisName <> "options" Then
 				Switch $thisSection[$j][0]
-					Case Profiles_GetKeyName($profiles, $PROFILES_IpAuto)
-						Profiles_SectionSetValue($aSection, $PROFILES_IpAuto, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_IpAddress)
-						Profiles_SectionSetValue($aSection, $PROFILES_IpAddress, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_IpSubnet)
-						Profiles_SectionSetValue($aSection, $PROFILES_IpSubnet, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_IpGateway)
-						Profiles_SectionSetValue($aSection, $PROFILES_IpGateway, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_DnsAuto)
-						Profiles_SectionSetValue($aSection, $PROFILES_DnsAuto, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_DnsPref)
-						Profiles_SectionSetValue($aSection, $PROFILES_DnsPref, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_DnsAlt)
-						Profiles_SectionSetValue($aSection, $PROFILES_DnsAlt, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_RegisterDns)
-						Profiles_SectionSetValue($aSection, $PROFILES_RegisterDns, $thisSection[$j][1])
-					Case Profiles_GetKeyName($profiles, $PROFILES_AdapterName)
+					Case "IpAuto"
+						$oNewProfile.IpAuto = $thisSection[$j][1]
+					Case "IpAddress"
+						$oNewProfile.IpAddress = $thisSection[$j][1]
+					Case "IpSubnet"
+						$oNewProfile.IpSubnet = $thisSection[$j][1]
+					Case "IpGateway"
+						$oNewProfile.IpGateway = $thisSection[$j][1]
+					Case "DnsAuto"
+						$oNewProfile.DnsAuto = $thisSection[$j][1]
+					Case "IpDnsPref"
+						$oNewProfile.IpDnsPref = $thisSection[$j][1]
+					Case "IpDnsAlt"
+						$oNewProfile.IpDnsAlt = $thisSection[$j][1]
+					Case "RegisterDns"
+						$oNewProfile.RegisterDns = $thisSection[$j][1]
+					Case "AdapterName"
 						$adapName = iniNameEncode($thisSection[$j][1])
-						Profiles_SectionSetValue($aSection, $PROFILES_AdapterName, $adapName)
+						$oNewProfile.AdapterName = $adapName
 				EndSwitch
 			EndIf
 		Next
 		If $thisName <> "Options" Then
-			Profiles_AddSection($profiles, $thisName, $aSection)
-			$ret = IniWriteSection($sProfileName, $thisName, $aSection, 0)
+			If $profiles.exists($thisName) Then
+				$profiles.set($thisName, $oNewProfile)
+			Else
+				$profiles.add($oNewProfile)
+			EndIf
+			$ret = IniWriteSection($sProfileName, $thisName, $oNewProfile.getSection(), 0)
 		EndIf
 	Next
 
 EndFunc   ;==>_ImportProfiles
 
 Func _updateProfileList()
-	$ap_names = Profiles_GetNames($profiles)
+	$ap_names = $profiles.getNames()
 	$lv_count = ControlListView($hgui, "", $list_profiles, "GetItemCount")
 
 	Local $diff = 0
@@ -1461,7 +1446,7 @@ Func _filterProfiles()
 	$strPattern = GUICtrlRead($input_filter)
 	_GUICtrlListView_DeleteAllItems($list_profiles)
 
-	$aNames = Profiles_GetNames($profiles)
+	$aNames = $profiles.getNames()
 	If $strPattern <> "" Then
 		$pattern = '(?i)(?U)' & StringReplace($strPattern, "*", ".*")
 		;MsgBox(0,"",$pattern)
@@ -1586,6 +1571,7 @@ Func GetChangeLogData()
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
 			"     #103   COM Error 80020009 checking for updates." & @CRLF & _
+			"     Bug creating new profiles from scratch." & @CRLF & _
 			"NEW FEATURES:" & @CRLF & _
 			"     Added menu item to open network connections." & @CRLF & _
 			"     #117  Added multi-language support." & @CRLF & _
@@ -1594,6 +1580,7 @@ Func GetChangeLogData()
 			"     #104   Bring to foreground if already running." & @CRLF & _
 			"MAINT:" & @CRLF & _
 			"     Updated check for updates functionality." & @CRLF & _
+			"     Code redesigned." & @CRLF & _
 			@CRLF & _
 			"v2.9.3" & @CRLF & _
 			"BUG FIXES:" & @CRLF & _

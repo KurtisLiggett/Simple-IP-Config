@@ -35,12 +35,30 @@ Func _Options()
 
 	;object methods
 	_AutoItObject_AddMethod($oObject, "getSection", "_Options_getSection")
+	_AutoItObject_AddMethod($oObject, "getSectionStr", "_Options_getSectionStr")
 
 	Return $oObject
 EndFunc   ;==>_Options
 
+Func _Options_getSectionStr($oSelf)
+	Local $sSection = "[Options]" & @CRLF
+	$sSection &= "Version=" & $oSelf.Version & @CRLF
+	$sSection &= "MinToTray=" & $oSelf.MinToTray & @CRLF
+	$sSection &= "StartupMode=" & $oSelf.StartupMode & @CRLF
+	$sSection &= "Language=" & $oSelf.Language & @CRLF
+	$sSection &= "StartupAdapter=" & $oSelf.StartupAdapter & @CRLF
+	$sSection &= "Theme=" & $oSelf.Theme & @CRLF
+	$sSection &= "SaveAdapterToProfile=" & $oSelf.SaveAdapterToProfile & @CRLF
+	$sSection &= "AdapterBlacklist=" & $oSelf.AdapterBlacklist & @CRLF
+	$sSection &= "PositionX=" & $oSelf.PositionX & @CRLF
+	$sSection &= "PositionY=" & $oSelf.PositionY & @CRLF
+	$sSection &= "AutoUpdate=" & $oSelf.AutoUpdate & @CRLF
+	$sSection &= "LastUpdateCheck=" & $oSelf.LastUpdateCheck & @CRLF
+	Return $sSection
+EndFunc   ;==>_Options_getSectionStr
+
 Func _Options_getSection($oSelf)
-    #forceref $oSelf
+	#forceref $oSelf
 	Local $aObject[$oSelf.count][2]
 	$aObject[0][0] = "Version"
 	$aObject[0][1] = $oSelf.Version
@@ -67,4 +85,4 @@ Func _Options_getSection($oSelf)
 	$aObject[11][0] = "LastUpdateCheck"
 	$aObject[11][1] = $oSelf.LastUpdateCheck
 	Return $aObject
-EndFunc
+EndFunc   ;==>_Options_getSection

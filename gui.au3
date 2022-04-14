@@ -143,9 +143,9 @@ Func _makeGUI()
 	;GUICtrlSetBkColor(-1,0xC9C9C9)
 	GUICtrlSetBkColor(-1, 0x666666)
 
-	If IsArray($profiles) Then
-		If Profiles_GetSize($profiles) > 0 Then
-			Local $profileNames = Profiles_GetNames($profiles)
+	If IsObj($profiles) Then
+		If $profiles.count > 0 Then
+			Local $profileNames = $profiles.getNames()
 			$profileName = $profileNames[0]
 			_setProperties(1, $profileName)
 		EndIf

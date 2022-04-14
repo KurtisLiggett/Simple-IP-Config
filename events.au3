@@ -194,13 +194,14 @@ EndFunc   ;==>_onRename
 Func _onNewItem()
 	$newname = $oLangStrings.message.newItem
 	;Local $profileNames = _getNames()
-	Local $profileNames = Profiles_GetNames($profiles)
+	Local $profileNames = $profiles.getNames()
 	Local $i = 1
 	While _ArraySearch($profileNames, $newname) <> -1
 		$newname = "New Item " & $i
 		$i = $i + 1
 	WEnd
 
+	GUISwitch($hgui)
 	ControlFocus($hgui, "", $list_profiles)
 	GUICtrlCreateListViewItem($newname, $list_profiles)
 	GUICtrlSetOnEvent(-1, "_onSelect")

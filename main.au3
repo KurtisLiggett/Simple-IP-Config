@@ -59,8 +59,8 @@ Global $sProfileName = @ScriptDir & "\profiles.ini"
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.9.4-beta03"
-Global $winDate = "4/11/2022"
+Global $winVersion = "2.9.4-beta04"
+Global $winDate = "4/14/2022"
 Global $hgui
 Global $guiWidth = 600
 Global $guiHeight = 550
@@ -156,10 +156,12 @@ Global $oLangStrings
 #include <File.au3>
 
 #include "libraries\AutoItObject.au3"
+#include "libraries\oLinkedList.au3"
 _AutoItObject_StartUp()
 #include "libraries\Json\json.au3"
 #include "model.au3"
 #include "options.au3"
+#include "profiles.au3"
 #include "hexIcons.au3"
 #include "languages.au3"
 #include "libraries\asyncRun.au3"
@@ -197,7 +199,7 @@ TraySetClick(16)
 #Region PROGRAM CONTROL
 ;create the main 'objects'
 $options = _Options()
-$profiles = Profiles()
+$profiles = _Profiles()
 $adapters = Adapter()
 
 ;check to see if called with command line arguments
@@ -222,6 +224,43 @@ _main()
 ; Description..: initial program setup & main running loop
 ;------------------------------------------------------------------------------
 Func _main()
+;~ 	Local $oObject = _AutoItObject_Create()
+;~ 	ConsoleWrite(IsObj($oObject.test) & @CRLF)
+;~ 	Local $oProfiles = _Profiles()
+;~ 	Local $oProfile = $oProfiles.new("test1")
+;~ 	$oProfiles.add($oProfile)
+;~ 	$oProfile = $oProfiles.new("test3")
+;~ 	$oProfiles.add($oProfile)
+;~ 	$oProfile = $oProfiles.new("test2")
+;~ 	$oProfile.AdapterName = "Harold"
+;~ 	$oProfiles.add($oProfile)
+;~ 	$oProfile = $oProfiles.new("rest4")
+;~ 	$oProfiles.add($oProfile)
+;~ 	Local $aNames = $oProfiles.getNames()
+;~ 	if IsArray($aNames) Then
+;~ 		_ArrayDisplay($aNames)
+;~ 	Else
+;~ 		ConsoleWrite("no names" & @CRLF)
+;~ 	EndIf
+
+;~ 	$oProfiles.removeAll()
+;~ 	$aNames = $oProfiles.getNames()
+;~ 	if IsArray($aNames) Then
+;~ 		_ArrayDisplay($aNames)
+;~ 	Else
+;~ 		ConsoleWrite("no names" & @CRLF)
+;~ 	EndIf
+
+;~ 	Local $sSection = $oProfiles.getAsSectionStr("test1")
+;~ 	ConsoleWrite($oProfiles.get("test2").AdapterName & @CRLF)
+
+;~ 	Local $oProf2 = $oProfiles.get("test2")
+;~ 	$oProf2.AdapterName = "Kurtis"
+;~ 	$oProfiles.set("test2", $oProf2)
+
+;~ 	ConsoleWrite($oProfiles.get("test2").AdapterName & @CRLF)
+
+;~ 	Exit
 	_initLang()
 
 	; popuplate current adapter names and mac addresses
