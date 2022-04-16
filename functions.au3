@@ -88,7 +88,7 @@ EndFunc   ;==>RunCallback
 ; Return value....:
 ;------------------------------------------------------------------------------
 Func _ExitChild($childwin)
-	$guiState = WinGetState($hgui)
+	Local $guiState = WinGetState($hgui)
 	GUISetState(@SW_ENABLE, $hGUI)
 	Local $a_ret = DllCall("user32.dll", "int", "DestroyWindow", "hwnd", $childwin)
 	;GUIDelete( $childwin )
@@ -99,14 +99,14 @@ Func _ExitChild($childwin)
 EndFunc   ;==>_ExitChild
 
 Func _CreateLink()
-	$profileName = StringReplace(GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
-	$iniName = StringReplace($profileName, "[", "{lb}")
+	Local $profileName = StringReplace(GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
+	Local $iniName = StringReplace($profileName, "[", "{lb}")
 	$iniName = StringReplace($iniName, "]", "{rb}")
 
-	$dir = FileSaveDialog("Choose a filename", @ScriptDir, "Shortcuts (*.lnk)", 0, "Simple IP Config - " & $profileName)
+	Local $dir = FileSaveDialog("Choose a filename", @ScriptDir, "Shortcuts (*.lnk)", 0, "Simple IP Config - " & $profileName)
 	If @error Then Return
 
-	$res = FileCreateShortcut(@ScriptFullPath, $dir, @ScriptDir, '/set-config "' & $iniName & '"', "desc", @ScriptFullPath)
+	Local $res = FileCreateShortcut(@ScriptFullPath, $dir, @ScriptDir, '/set-config "' & $iniName & '"', "desc", @ScriptFullPath)
 	If $res = -1 Then _setStatus($oLangStrings.message.couldNotSave, 1)
 EndFunc   ;==>_CreateLink
 
@@ -208,7 +208,7 @@ Func _checksSICUpdate($manualCheck = 0)
 		EndIf
 	EndIf
 
-	Local $isNew = 0
+	Local $dateNow, $updateText, $isNew = 0
 	If $result == 1 Then
 		$isNew = 1
 		$dateNow = _NowCalcDate()

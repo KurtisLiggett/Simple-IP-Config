@@ -67,7 +67,7 @@ EndFunc   ;==>Profiles_GetSize
 Func Profiles_isNewName(ByRef $hObject, $sName)
 	If Not _Profiles_IsObject($hObject) Then Return Null
 
-	$profIndex = _ArraySearch($hObject, $sName)
+	Local $profIndex = _ArraySearch($hObject, $sName)
 	Return $profIndex = -1 ? 1 : 0
 EndFunc   ;==>Profiles_isNewName
 
@@ -82,7 +82,7 @@ EndFunc   ;==>Profiles_GetValueByIndex
 Func Profiles_GetValue(ByRef $hObject, $sName, $iproperty)
 	If Not _Profiles_IsObject($hObject) Then Return Null
 
-	$profIndex = _ArraySearch($hObject, $sName)
+	Local $profIndex = _ArraySearch($hObject, $sName)
 	Return $profIndex <> -1 ? $hObject[$profIndex][$iproperty] : Null
 EndFunc   ;==>Profiles_GetValue
 
@@ -96,7 +96,7 @@ Func Profiles_SetValue(ByRef $hObject, $sName, $iproperty, $sData)
 	; If not a valid 'object' then return
 	If Not _Profiles_IsObject($hObject) Then Return
 
-	$profIndex = _ArraySearch($hObject, $sName)
+	Local $profIndex = _ArraySearch($hObject, $sName)
 	If $profIndex = -1 Then Return
 
 	$hObject[$profIndex][$iproperty] = $sData    ;set the property
@@ -141,7 +141,7 @@ EndFunc   ;==>Profiles_Add
 Func Profiles_Delete(ByRef $hObject, $sName)
 	If Not _Profiles_IsObject($hObject) Then Return
 
-	$profIndex = _ArraySearch($hObject, $sName)
+	Local $profIndex = _ArraySearch($hObject, $sName)
 	If $profIndex = -1 Then Return
 
 	_ArrayDelete($hObject, $profIndex)
@@ -191,7 +191,7 @@ EndFunc   ;==>Profiles_AddSection
 Func Profiles_GetNames(ByRef $hObject)
 	If Not _Profiles_IsObject($hObject) Then Return
 
-	$size = UBound($hObject) - 1
+	Local $size = UBound($hObject) - 1
 	Local $aNames[$size]
 	For $i = 0 To $size - 1
 		$aNames[$i] = $hObject[$i + 1][0]
@@ -216,7 +216,7 @@ EndFunc   ;==>Adapter
 Func Adapter_Exists(ByRef $hObject, $sName)
 	If Not _Adapter_IsObject($hObject) Then Return Null
 
-	$iIndex = _ArraySearch($hObject, $sName)
+	Local $iIndex = _ArraySearch($hObject, $sName)
 	Return $iIndex = -1 ? 0 : 1
 EndFunc   ;==>Adapter_Exists
 
@@ -244,14 +244,14 @@ EndFunc   ;==>Adapter_GetName
 Func Adapter_GetMAC(ByRef $hObject, $sName)
 	If Not _Adapter_IsObject($hObject) Then Return Null
 
-	$iIndex = _ArraySearch($hObject, $sName)
+	Local $iIndex = _ArraySearch($hObject, $sName)
 	Return $iIndex <> -1 ? $hObject[$iIndex][1] : Null
 EndFunc   ;==>Adapter_GetMAC
 
 Func Adapter_GetDescription(ByRef $hObject, $sName)
 	If Not _Adapter_IsObject($hObject) Then Return Null
 
-	$iIndex = _ArraySearch($hObject, $sName)
+	Local $iIndex = _ArraySearch($hObject, $sName)
 	Return $iIndex <> -1 ? $hObject[$iIndex][2] : Null
 EndFunc   ;==>Adapter_GetDescription
 
@@ -272,7 +272,7 @@ EndFunc   ;==>Adapter_Add
 Func Adapter_Delete(ByRef $hObject, $sName)
 	If Not _Adapter_IsObject($hObject) Then Return
 
-	$profIndex = _ArraySearch($hObject, $sName)
+	Local $profIndex = _ArraySearch($hObject, $sName)
 	If $profIndex = -1 Then Return
 
 	_ArrayDelete($hObject, $profIndex)
@@ -294,7 +294,7 @@ EndFunc   ;==>_Adapter_IsObject
 Func Adapter_GetNames(ByRef $hObject)
 	If Not _Adapter_IsObject($hObject) Then Return
 
-	$size = UBound($hObject)
+	Local $size = UBound($hObject)
 	Local $aNames[$size]
 	For $i = 0 To $size - 1
 		$aNames[$i] = $hObject[$i][0]

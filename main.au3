@@ -43,6 +43,51 @@
 #RequireAdmin
 #NoTrayIcon    ;prevent double icon when checking for already running instance
 
+#include <WindowsConstants.au3>
+#include <APIConstants.au3>
+#include <WinAPI.au3>
+#include <WinAPIEx.au3>
+#include <GDIPlus.au3>
+#include <GUIImageList.au3>
+#include <GUIToolbar.au3>
+#include <GuiListView.au3>
+#include <GuiIPAddress.au3>
+#include <GuiMenu.au3>
+#include <Misc.au3>
+#include <Color.au3>
+#include <GUIEdit.au3>
+#include <GuiComboBox.au3>
+#include <Array.au3>
+#include <Date.au3>
+#include <Inet.au3>
+#include <File.au3>
+
+#include "libraries\AutoItObject.au3"
+#include "libraries\oLinkedList.au3"
+_AutoItObject_StartUp()
+
+#Region options
+Opt("TrayIconHide", 0)
+Opt("GUIOnEventMode", 1)
+Opt("TrayAutoPause", 0)
+Opt("TrayOnEventMode", 1)
+Opt("TrayMenuMode", 3)
+Opt("MouseCoordMode", 2)
+Opt("GUIResizeMode", $GUI_DOCKALL)
+Opt("WinSearchChildren", 1)
+Opt("GUICloseOnESC", 0)
+;~ Opt("MustDeclareVars", 1)
+TraySetClick(16)
+#EndRegion options
+
+; autoit wrapper options
+#AutoIt3Wrapper_Res_HiDpi=y
+#AutoIt3Wrapper_UseX64=N
+#AutoIt3Wrapper_Icon=icon.ico
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4-BETA03.exe
+#AutoIt3Wrapper_Res_Fileversion=2.9.4.0
+#AutoIt3Wrapper_Res_Description=Simple IP Config
+
 #Region Global Variables
 Global $options
 Global $profiles
@@ -135,29 +180,6 @@ Global Enum $tb_settings = 2000, $tb_tray
 Global $oLangStrings
 #EndRegion Global Variables
 
-#Region includes
-#include <WindowsConstants.au3>
-#include <APIConstants.au3>
-#include <WinAPI.au3>
-#include <WinAPIEx.au3>
-#include <GDIPlus.au3>
-#include <GUIImageList.au3>
-#include <GUIToolbar.au3>
-#include <GuiListView.au3>
-#include <GuiIPAddress.au3>
-#include <GuiMenu.au3>
-#include <Misc.au3>
-#include <Color.au3>
-#include <GUIEdit.au3>
-#include <GuiComboBox.au3>
-#include <Array.au3>
-#include <Date.au3>
-#include <Inet.au3>
-#include <File.au3>
-
-#include "libraries\AutoItObject.au3"
-#include "libraries\oLinkedList.au3"
-_AutoItObject_StartUp()
 #include "libraries\Json\json.au3"
 #include "model.au3"
 #include "options.au3"
@@ -180,28 +202,6 @@ _AutoItObject_StartUp()
 #include "forms\_form_settings.au3"
 #include "forms\_form_update.au3"
 #include "forms\_form_restart.au3"
-#EndRegion includes
-
-#Region options
-Opt("TrayIconHide", 0)
-Opt("GUIOnEventMode", 1)
-Opt("TrayAutoPause", 0)
-Opt("TrayOnEventMode", 1)
-Opt("TrayMenuMode", 3)
-Opt("MouseCoordMode", 2)
-Opt("GUIResizeMode", $GUI_DOCKALL)
-Opt("WinSearchChildren", 1)
-Opt("GUICloseOnESC", 0)
-TraySetClick(16)
-#EndRegion options
-
-; autoit wrapper options
-#AutoIt3Wrapper_Res_HiDpi=y
-#AutoIt3Wrapper_UseX64=N
-#AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4-BETA03.exe
-#AutoIt3Wrapper_Res_Fileversion=2.9.4.0
-#AutoIt3Wrapper_Res_Description=Simple IP Config
 
 #Region PROGRAM CONTROL
 ;create the main 'objects'
