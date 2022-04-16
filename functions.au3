@@ -218,7 +218,7 @@ Func _checksSICUpdate($manualCheck = 0)
 				$oLangStrings.message.latestVersion & ": " & $scurrentVersion & @CRLF & @CRLF & _
 				$oLangStrings.message.newVersion
 		If $manualCheck Or _DateDiff('D', $dateLastCheck, $dateNow) >= 7 Or $dateLastCheck = '' Then
-			_ShowUpdateDialog($thisVersion, $scurrentVersion, $isNew)
+			_form_update($thisVersion, $scurrentVersion, $isNew)
 
 			$options.LastUpdateCheck = $dateNow
 			IniWrite($sProfileName, "options", "LastUpdateCheck", $dateNow)
@@ -227,7 +227,7 @@ Func _checksSICUpdate($manualCheck = 0)
 		$updateText = $oLangStrings.message.yourVersion & ": " & $thisVersion & @CRLF & _
 				$oLangStrings.message.latestVersion & ": " & $scurrentVersion & @CRLF & @CRLF & _
 				$oLangStrings.message.currentVersion
-		If $manualCheck Then _ShowUpdateDialog($thisVersion, $scurrentVersion, $isNew)
+		If $manualCheck Then _form_update($thisVersion, $scurrentVersion, $isNew)
 	EndIf
 
 EndFunc   ;==>_checksSICUpdate
@@ -279,29 +279,6 @@ Func _updateCombo()
 	ControlSend($hgui, "", $combo_adapters, "{END}")
 	_setStatus($oLangStrings.message.ready)
 EndFunc   ;==>_updateCombo
-
-;------------------------------------------------------------------------------
-; Title...........: _blacklistAdd
-; Description.....: Add selected adapter to the edit box in the
-;				    hide adapters window
-;
-; Parameters......:
-; Return value....:
-;------------------------------------------------------------------------------
-;~ Func _blacklistAdd()
-;~ 	$selected_adapter = GUICtrlRead($combo_adapters)
-;~ 	$list = GUICtrlRead($blacklistEdit)
-;~ 	If $list = "" OR StringRight($list, 1) = @CR OR StringRight($list, 1) = @LF Then
-;~ 		$newString = $selected_adapter
-;~ 	Else
-;~ 		$newString = @CRLF&$selected_adapter
-;~ 	EndIf
-
-;~ 	$iEnd = StringLen($list & $newString)
-;~ 	_GUICtrlEdit_SetSel($blacklistEdit, $iEnd, $iEnd)
-;~ 	_GUICtrlEdit_Scroll($blacklistEdit, 4)
-;~ 	GUICtrlSetData($blacklistEdit, $newString, 1)
-;~ EndFunc
 
 ;------------------------------------------------------------------------------
 ; Title...........: _arrange
@@ -907,7 +884,7 @@ EndFunc   ;==>_clear
 Func _checkChangelog()
 	$sVersion = $options.Version
 	If $sVersion <> $winVersion Then
-		_changeLog()
+		_form_changelog()
 		$sVersion = $winVersion
 		$options.Version = $sVersion
 		IniWrite($sProfileName, "options", "Version", $sVersion)
@@ -1131,61 +1108,6 @@ Func _setProperties($init = 0, $profileName = "")
 	EndIf
 EndFunc   ;==>_setProperties
 
-Func _saveOptions()
-	Local $updateGUI = 0
-	$options.StartupMode = _StateToStr($ck_startinTray)
-	$options.MinToTray = _StateToStr($ck_mintoTray)
-	$options.SaveAdapterToProfile = _StateToStr($ck_saveAdapter)
-	$options.AutoUpdate = _StateToStr($ck_autoUpdate)
-
-	Local $langRet = StringLeft(StringRight(GUICtrlRead($cmb_langSelect), 6), 5)
-	If $langRet <> -1 Then
-		If $langRet <> $oLangStrings.OSLang Then
-			$updateGUI = 1
-			$oLangStrings.OSLang = $langRet
-			$options.Language = $oLangStrings.OSLang
-		EndIf
-	EndIf
-
-	IniWriteSection($sProfileName, "options", $options.getSection(), 0)
-	_ExitChild(@GUI_WinHandle)
-
-	If $updateGUI Then
-		GUIDelete($hgui)
-		Local $restartGUI = _ShowRestart($oLangStrings.OSLang, $options.PositionX, $options.PositionY)
-		_setLangStrings($oLangStrings.OSLang)
-		_makeGUI()
-;~ 		_updateLang()
-		_loadAdapters()
-		GUIDelete($restartGUI)
-
-		;Add adapters the the combobox
-		If Not IsArray($adapters) Then
-			MsgBox(16, $oLangStrings.message.error, $oLangStrings.message.errorRetrieving)
-		Else
-			Adapter_Sort($adapters)    ; connections sort ascending
-			$defaultitem = Adapter_GetName($adapters, 0)
-			$sStartupAdapter = $options.StartupAdapter
-			If Adapter_Exists($adapters, $sStartupAdapter) Then
-				$defaultitem = $sStartupAdapter
-			EndIf
-
-			$sAdapterBlacklist = $options.AdapterBlacklist
-			$aBlacklist = StringSplit($sAdapterBlacklist, "|")
-			If IsArray($aBlacklist) Then
-				Local $adapterNames = Adapter_GetNames($adapters)
-				For $i = 0 To UBound($adapterNames) - 1
-					$indexBlacklist = _ArraySearch($aBlacklist, $adapterNames[$i], 1)
-					If $indexBlacklist <> -1 Then ContinueLoop
-					GUICtrlSetData($combo_adapters, $adapterNames[$i], $defaultitem)
-				Next
-			EndIf
-		EndIf
-
-		_refresh(1)
-		ControlListView($hgui, "", $list_profiles, "Select", 0)
-	EndIf
-EndFunc   ;==>_saveOptions
 
 ;helper
 Func _ctrlGetIP($Id)

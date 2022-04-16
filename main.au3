@@ -173,6 +173,13 @@ _AutoItObject_StartUp()
 #include "network.au3"
 #include "gui.au3"
 #include "cli.au3"
+#include "forms\_form_about.au3"
+#include "forms\_form_changelog.au3"
+#include "forms\_form_debug.au3"
+#include "forms\_form_blacklist.au3"
+#include "forms\_form_settings.au3"
+#include "forms\_form_update.au3"
+#include "forms\_form_restart.au3"
 #EndRegion includes
 
 #Region options
@@ -224,45 +231,10 @@ _main()
 ; Description..: initial program setup & main running loop
 ;------------------------------------------------------------------------------
 Func _main()
-;~ 	Local $oObject = _AutoItObject_Create()
-;~ 	ConsoleWrite(IsObj($oObject.test) & @CRLF)
-;~ 	Local $oProfiles = _Profiles()
-;~ 	Local $oProfile = $oProfiles.new("test1")
-;~ 	$oProfiles.add($oProfile)
-;~ 	$oProfile = $oProfiles.new("test3")
-;~ 	$oProfiles.add($oProfile)
-;~ 	$oProfile = $oProfiles.new("test2")
-;~ 	$oProfile.AdapterName = "Harold"
-;~ 	$oProfiles.add($oProfile)
-;~ 	$oProfile = $oProfiles.new("rest4")
-;~ 	$oProfiles.add($oProfile)
-;~ 	Local $aNames = $oProfiles.getNames()
-;~ 	if IsArray($aNames) Then
-;~ 		_ArrayDisplay($aNames)
-;~ 	Else
-;~ 		ConsoleWrite("no names" & @CRLF)
-;~ 	EndIf
-
-;~ 	$oProfiles.removeAll()
-;~ 	$aNames = $oProfiles.getNames()
-;~ 	if IsArray($aNames) Then
-;~ 		_ArrayDisplay($aNames)
-;~ 	Else
-;~ 		ConsoleWrite("no names" & @CRLF)
-;~ 	EndIf
-
-;~ 	Local $sSection = $oProfiles.getAsSectionStr("test1")
-;~ 	ConsoleWrite($oProfiles.get("test2").AdapterName & @CRLF)
-
-;~ 	Local $oProf2 = $oProfiles.get("test2")
-;~ 	$oProf2.AdapterName = "Kurtis"
-;~ 	$oProfiles.set("test2", $oProf2)
-
-;~ 	ConsoleWrite($oProfiles.get("test2").AdapterName & @CRLF)
-
-;~ 	Exit
+	_print("starting")
 	_initLang()
 
+	_print("init lang")
 	; popuplate current adapter names and mac addresses
 	;_loadAdapters()
 
@@ -272,6 +244,7 @@ Func _main()
 
 	;get profiles list
 	_loadProfiles()
+	_print("load profiles")
 
 	;get OS language OR selected language storage in profile
 	$selectedLang = $options.Language
@@ -284,12 +257,15 @@ Func _main()
 	EndIf
 
 	_setLangStrings($oLangStrings.OSLang)
+	_print("set lang")
 
 	;make the GUI
 	_makeGUI()
+	_print("make GUI")
 
 	;get list of adapters and current IP info
 	_loadAdapters()
+	_print("load adapters")
 
 	;watch for new program instances
 	GUIRegisterMsg($iMsg, '_NewInstance')
@@ -338,6 +314,7 @@ Func _main()
 	EndIf
 
 	Local $filePath
+	_print("Running")
 	While 1
 		If $lv_doneEditing Then
 			_onLvDoneEdit()

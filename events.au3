@@ -58,32 +58,6 @@ Func _onExitChild()
 EndFunc   ;==>_onExitChild
 
 ;------------------------------------------------------------------------------
-; Title........: _onExitBlacklistOk
-; Description..: save the the Blacklist child window data,
-;                then call the exit function
-; Events.......: Blacklist window 'Save' button
-;------------------------------------------------------------------------------
-Func _onExitBlacklistOk()
-	$guiState = WinGetState($hgui)
-	$newBlacklist = ""
-	$itemCount = _GUICtrlListView_GetItemCount($blacklistLV)
-
-	For $i = 0 To $itemCount - 1
-		If _GUICtrlListView_GetItemChecked($blacklistLV, $i) Then
-			$newBlacklist &= _GUICtrlListView_GetItemTextString($blacklistLV, $i) & "|"
-		EndIf
-	Next
-	$newBlacklist = StringLeft($newBlacklist, StringLen($newBlacklist) - 1)
-
-	$newBlacklist = iniNameEncode($newBlacklist)
-	$options.AdapterBlacklist = $newBlacklist
-	IniWrite($sProfileName, "options", "AdapterBlacklist", $options.AdapterBlacklist)
-
-	_ExitChild(@GUI_WinHandle)
-	_updateCombo()
-EndFunc   ;==>_onExitBlacklistOk
-
-;------------------------------------------------------------------------------
 ; Title........: _OnTrayClick
 ; Description..: Restore or hide program to system tray
 ; Events.......: single left-click on tray icon
@@ -115,17 +89,8 @@ EndFunc   ;==>_OnRestore
 ; Events.......: 'Hide adapters' item in the 'View' menu
 ;------------------------------------------------------------------------------
 Func _onBlacklist()
-	_blacklist()
+	_form_blacklist()
 EndFunc   ;==>_onBlacklist
-
-;------------------------------------------------------------------------------
-; Title........: _onBlacklistAdd
-; Description..: Add selected adapter to the hide adapters list
-; Events.......: 'Add Selected Adapter' button
-;------------------------------------------------------------------------------
-;~ Func _onBlacklistAdd()
-;~ 	_blacklistAdd()
-;~ EndFunc
 
 ;------------------------------------------------------------------------------
 ; Title........: _onRadio
@@ -374,7 +339,7 @@ EndFunc   ;==>_onCycle
 ; Events.......: Tools menu "Settings" item
 ;------------------------------------------------------------------------------
 Func _onSettings()
-	_settings()
+	_formm_settings()
 EndFunc   ;==>_onSettings
 
 ;------------------------------------------------------------------------------
@@ -398,7 +363,7 @@ EndFunc   ;==>_onUpdateCheckItem
 ; Events.......: Help menu "Debug Information" item
 ;------------------------------------------------------------------------------
 Func _onDebugItem()
-	_debugWindow()
+	_form_debug()
 EndFunc   ;==>_onDebugItem
 
 ;------------------------------------------------------------------------------
@@ -407,7 +372,7 @@ EndFunc   ;==>_onDebugItem
 ; Events.......: Help menu "Show Change Log" item
 ;------------------------------------------------------------------------------
 Func _onChangelog()
-	_changeLog()
+	_form_changelog()
 EndFunc   ;==>_onChangelog
 
 ;------------------------------------------------------------------------------
@@ -416,7 +381,7 @@ EndFunc   ;==>_onChangelog
 ; Events.......: Help menu "About Simple IP Config" item, tray right-click menu
 ;------------------------------------------------------------------------------
 Func _onAbout()
-	_about()
+	_form_about()
 EndFunc   ;==>_onAbout
 
 ;------------------------------------------------------------------------------
