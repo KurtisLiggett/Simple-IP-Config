@@ -181,9 +181,9 @@ Global $oLangStrings
 #EndRegion Global Variables
 
 #include "libraries\Json\json.au3"
-#include "model.au3"
-#include "options.au3"
-#include "profiles.au3"
+#include "data\adapters.au3"
+#include "data\options.au3"
+#include "data\profiles.au3"
 #include "hexIcons.au3"
 #include "languages.au3"
 #include "libraries\asyncRun.au3"
@@ -193,8 +193,7 @@ Global $oLangStrings
 #include "functions.au3"
 #include "events.au3"
 #include "network.au3"
-#include "gui.au3"
-#include "cli.au3"
+#include "forms\_form_main.au3"
 #include "forms\_form_about.au3"
 #include "forms\_form_changelog.au3"
 #include "forms\_form_debug.au3"
@@ -202,6 +201,7 @@ Global $oLangStrings
 #include "forms\_form_settings.au3"
 #include "forms\_form_update.au3"
 #include "forms\_form_restart.au3"
+#include "cli.au3"
 
 #Region PROGRAM CONTROL
 ;create the main 'objects'
@@ -260,7 +260,7 @@ Func _main()
 	_print("set lang")
 
 	;make the GUI
-	_makeGUI()
+	_form_main()
 	_print("make GUI")
 
 	;get list of adapters and current IP info
@@ -334,7 +334,7 @@ Func _main()
 			If Not @error Then
 				$sProfileName = $filePath
 				$options = _Options()
-				$profiles = Profiles()
+				$profiles = _Profiles()
 				_refresh(1)
 				_setStatus($oLangStrings.message.loadedFile & " " & $filePath, 0)
 			EndIf
