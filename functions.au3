@@ -1696,3 +1696,15 @@ Func _print($message = "")
 
 	$iPrev = $iTime
 EndFunc   ;==>_print
+
+Func _regex_stringLiteralEncode($sString)
+	Local $sNewString = StringReplace($sString, "\E", "\E\\E\Q", 0, 1)
+	Return $sNewString
+EndFunc
+
+Func _regex_stringLiteralDecode($sString)
+	Local $sNewString = StringReplace($sString, "\E\\E\Q", "\E", 0, 1)
+;~ 	$sNewString = StringLeft($sNewString, StringLen($sNewString)-2)
+;~ 	$sNewString = StringRight($sNewString, StringLen($sNewString)-2)
+	Return $sNewString
+EndFunc

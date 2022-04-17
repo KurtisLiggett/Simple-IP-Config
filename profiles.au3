@@ -68,11 +68,12 @@ Func _Profiles_addProfile($oSelf, $oProfile)
 	#forceref $oSelf
 
 	$oSelf.Profiles.add($oProfile)
-	$oSelf.names &= $oSelf.tokenStart & $oProfile.ProfileName & $oSelf.tokenEnd
+	$oSelf.names &= $oSelf.tokenStart & _regex_stringLiteralEncode($oProfile.ProfileName) & $oSelf.tokenEnd
 	$oSelf.count += 1
 EndFunc   ;==>_Profiles_addProfile
 
 Func _Profiles_insertProfile($oSelf, $index, $sName)
+	$sName = _regex_stringLiteralEncode($sName)
 	Local $aNames = $oSelf.getNames()
 	If Not IsArray($aNames) Then Return 1
 
@@ -92,6 +93,8 @@ Func _Profiles_insertProfile($oSelf, $index, $sName)
 EndFunc   ;==>_Profiles_insertProfile
 
 Func _Profiles_moveProfile($oSelf, $sName, $indexTo)
+	$sName = _regex_stringLiteralEncode($sName)
+
 	;remove from profile name list
 	$oSelf.names = StringReplace($oSelf.names, $oSelf.tokenStart & $sName & $oSelf.tokenEnd, "")
 
@@ -120,6 +123,9 @@ Func _Profiles_getNames($oSelf)
 	If @error Then
 		Return 1
 	Else
+		For $i=0 to UBound($aNames)-1
+			$aNames[$i] = _regex_stringLiteralDecode($aNames[$i])
+		Next
 		Return $aNames
 	EndIf
 EndFunc   ;==>_Profiles_getNames
@@ -127,7 +133,8 @@ EndFunc   ;==>_Profiles_getNames
 Func _Profiles_exists($oSelf, $sName)
 	#forceref $oSelf
 
-	Local $bMatch = StringRegExp($oSelf.names, "(?<=\(\?)" & $sName & "(?=\?\))", $STR_REGEXPMATCH)
+	$sName = _regex_stringLiteralEncode($sName)
+	Local $bMatch = StringRegExp($oSelf.names, "(?<=\(\?)\Q" & $sName & "\E(?=\?\))", $STR_REGEXPMATCH)
 	Return $bMatch
 EndFunc   ;==>_Profiles_exists
 
@@ -141,7 +148,7 @@ Func _Profiles_removeProfile($oSelf, $sName)
 		$index += 1
 	Next
 
-	$oSelf.names = StringReplace($oSelf.names, $oSelf.tokenStart & $sName & $oSelf.tokenEnd, "")
+	$oSelf.names = StringReplace($oSelf.names, $oSelf.tokenStart & _regex_stringLiteralEncode($sName) & $oSelf.tokenEnd, "")
 	$oSelf.count -= 1
 EndFunc   ;==>_Profiles_removeProfile
 
@@ -180,7 +187,7 @@ Func _Profiles_sort($oSelf, $iDescending = 0)
 	_ArraySort($aNames, $iDescending)
 	$oSelf.names = ""
 	For $sName In $aNames
-		$oSelf.names &= $oSelf.tokenStart & $sName & $oSelf.tokenEnd
+		$oSelf.names &= $oSelf.tokenStart & _regex_stringLiteralEncode($sName) & $oSelf.tokenEnd
 	Next
 
 	Return 0
