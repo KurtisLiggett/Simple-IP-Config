@@ -23,14 +23,14 @@
 
 Func _loadAdapters()
 
-	Local $aIPAllAddrTable = _Network_IPAllAddressTable(0, 0, 1)	; get info about all adapters
-    Local $nInterfaces = @extended
+	Local $aIPAllAddrTable = _Network_IPAllAddressTable(0, 0, 1)    ; get info about all adapters
+	Local $nInterfaces = @extended
 
-	Local $tadapters = _GetAdapters()	; get list of adapter names from 'network connections'
-	Local $ladapters[1][3] = [[0,0,0]]
+	Local $tadapters = _GetAdapters()    ; get list of adapter names from 'network connections'
+	Local $ladapters[1][3] = [[0, 0, 0]]
 	Adapter_DeleteAll($adapters)
-	for $i=0 to UBound($tadapters)-1
-		$index = _ArraySearch( $aIPAllAddrTable, $tadapters[$i], 0 )
+	For $i = 0 To UBound($tadapters) - 1
+		$index = _ArraySearch($aIPAllAddrTable, $tadapters[$i], 0)
 		$mac = ""
 		$desc = ""
 		If ($index <> -1) Then
@@ -41,7 +41,7 @@ Func _loadAdapters()
 	Next
 	Return $ladapters
 
-EndFunc
+EndFunc   ;==>_loadAdapters
 
 Func _releaseDhcp()
 	$adaptername = GUICtrlRead($combo_adapters)
@@ -49,7 +49,7 @@ Func _releaseDhcp()
 	;_asyncNewCmd($cmd, "Releasing DHCP...")
 	;(cmd, callback, description)
 	asyncRun($cmd, RunCallback, "Releasing DHCP...")
-EndFunc
+EndFunc   ;==>_releaseDhcp
 
 Func _renewDhcp()
 	$adaptername = GUICtrlRead($combo_adapters)
@@ -57,7 +57,7 @@ Func _renewDhcp()
 	;_asyncNewCmd($cmd, "Renewing DHCP...")
 	;(cmd, callback, description)
 	asyncRun($cmd, RunCallback, "Renewing DHCP...")
-EndFunc
+EndFunc   ;==>_renewDhcp
 
 Func _cycleDhcp()
 	$adaptername = GUICtrlRead($combo_adapters)
@@ -67,16 +67,16 @@ Func _cycleDhcp()
 	$cmd = 'ipconfig /renew "' & $adaptername & '"'
 	;_asyncNewCmd($cmd, "Renewing DHCP...", 1) ; run renew command. Add to queue if not ready
 	asyncRun($cmd, RunCallback, "Renewing DHCP...")
-EndFunc
+EndFunc   ;==>_cycleDhcp
 
 Func _getIPs($adaptername)
 	Local $props[7]
 	Local $colItems, $thismac
 	Local $ip, $subnet, $gateway, $dnspri, $dnsalt, $dnsServer, $dhcpServer, $dhcpEnabled, $sDNS
 
-	Local $aIPAllAddrTable = _Network_IPAllAddressTable(1, 0, 1)	; get info about all adapters (Vista+)
+	Local $aIPAllAddrTable = _Network_IPAllAddressTable(1, 0, 1)    ; get info about all adapters (Vista+)
 	Local $nInterfaces = @extended
-	Local $aIPv4AdaptersInfoEx = _Network_IPv4AdaptersInfoEx()	; get info about all adapters (XP)
+	Local $aIPv4AdaptersInfoEx = _Network_IPv4AdaptersInfoEx()    ; get info about all adapters (XP)
 	Local $nAdapters = @extended
 	Local $adapstate = _AdapterMod($adaptername, 2)
 
@@ -87,7 +87,7 @@ Func _getIPs($adaptername)
 
 		$DhcpEn = _doRegGetValue($adaptername, "EnableDHCP")
 		$DhcpDis = _doRegGetValue($adaptername, "DisableDhcpOnConnect")
-		if $DhcpEn = 0 Or $DhcpDis = 1 Then
+		If $DhcpEn = 0 Or $DhcpDis = 1 Then
 			$ip = _doRegGetValue($adaptername, "IPAddress")
 			$subnet = _doRegGetValue($adaptername, "SubnetMask")
 			$gateway = _doRegGetValue($adaptername, "DefaultGateway")
@@ -106,7 +106,7 @@ Func _getIPs($adaptername)
 			$sDNS = StringReplace(_doRegGetValue($adaptername, "DhcpNameServer"), " ", "|")
 		EndIf
 
-		$aDNS = StringSplit($sDNS,"|")
+		$aDNS = StringSplit($sDNS, "|")
 		If $sDNS = "0.0.0.0" Then
 			$dnspri = ""
 			$dnsalt = ""
@@ -125,24 +125,24 @@ Func _getIPs($adaptername)
 		$props[4] = $dnsalt
 		$props[5] = $dhcpServer
 	Else
-		for $i=0 to $nInterfaces-1
+		For $i = 0 To $nInterfaces - 1
 			If $aIPAllAddrTable[$i][7] = $adaptername Then
 				For $j = 0 To $nAdapters - 1
 					If $aIPv4AdaptersInfoEx[$j][4] = $aIPAllAddrTable[$i][4] Then
-						$ip = ($aIPv4AdaptersInfoEx[$j][11]="0.0.0.0") ? ("") : ($aIPv4AdaptersInfoEx[$j][11])
-						$subnet = ($aIPv4AdaptersInfoEx[$j][12]="0.0.0.0") ? ("") : ($aIPv4AdaptersInfoEx[$j][12])
-						$gateway = ($aIPv4AdaptersInfoEx[$j][13]="0.0.0.0") ? ("") : ($aIPv4AdaptersInfoEx[$j][13])
-						$sDNS = ($aIPAllAddrTable[$i][13]="0.0.0.0") ? ("") : ($aIPAllAddrTable[$i][13])
-						$dhcpServer = ($aIPv4AdaptersInfoEx[$j][15]="0.0.0.0") ? ("") : ($aIPv4AdaptersInfoEx[$j][15])
+						$ip = ($aIPv4AdaptersInfoEx[$j][11] = "0.0.0.0") ? ("") : ($aIPv4AdaptersInfoEx[$j][11])
+						$subnet = ($aIPv4AdaptersInfoEx[$j][12] = "0.0.0.0") ? ("") : ($aIPv4AdaptersInfoEx[$j][12])
+						$gateway = ($aIPv4AdaptersInfoEx[$j][13] = "0.0.0.0") ? ("") : ($aIPv4AdaptersInfoEx[$j][13])
+						$sDNS = ($aIPAllAddrTable[$i][13] = "0.0.0.0") ? ("") : ($aIPAllAddrTable[$i][13])
+						$dhcpServer = ($aIPv4AdaptersInfoEx[$j][15] = "0.0.0.0") ? ("") : ($aIPv4AdaptersInfoEx[$j][15])
 						ExitLoop
 					EndIf
 				Next
 
-				if $ip = "" Then
+				If $ip = "" Then
 					$props[6] = $oLangStrings.interface.props.adapterStateUnplugged
 					$DhcpEn = _doRegGetValue($adaptername, "EnableDHCP")
 					$DhcpDis = _doRegGetValue($adaptername, "DisableDhcpOnConnect")
-					if $DhcpEn = 0 Or $DhcpDis = 1 Then
+					If $DhcpEn = 0 Or $DhcpDis = 1 Then
 						$ip = _doRegGetValue($adaptername, "IPAddress")
 						$subnet = _doRegGetValue($adaptername, "SubnetMask")
 						$gateway = _doRegGetValue($adaptername, "DefaultGateway")
@@ -164,7 +164,7 @@ Func _getIPs($adaptername)
 					$props[6] = $adapstate
 				EndIf
 
-				$aDNS = StringSplit($sDNS,"|")
+				$aDNS = StringSplit($sDNS, "|")
 				If $sDNS = "0.0.0.0" Then
 					$dnspri = ""
 					$dnsalt = ""
@@ -188,48 +188,48 @@ Func _getIPs($adaptername)
 	EndIf
 
 	Return $props
-EndFunc
+EndFunc   ;==>_getIPs
 
 Func _doRegGetValue($adaptername, $ItemName)
 	; Get IP Information if adapter is unplugged
 
 	Local $adapGUID = _doRegGetGUID($adaptername)
 ;~ 	ConsoleWrite($adapGUID&@CRLF)
-	$keyname = "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\Tcpip\Parameters\Interfaces";
-	Local $sSubKey, $sSubKeyName, $sGuids, $i=0
+	$keyname = "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\Tcpip\Parameters\Interfaces" ;
+	Local $sSubKey, $sSubKeyName, $sGuids, $i = 0
 
-	while 1
-	  $i += 1
-	  $sSubKey=RegEnumKey($keyname,$i)
-	  If @error <> 0 then ExitLoop
+	While 1
+		$i += 1
+		$sSubKey = RegEnumKey($keyname, $i)
+		If @error <> 0 Then ExitLoop
 ;~ 	  ConsoleWrite($adapGUID&@CRLF)
-	  If $sSubKey <> $adapGUID Then ContinueLoop
+		If $sSubKey <> $adapGUID Then ContinueLoop
 
-	  $sSubKeyValue=RegRead($keyname &"\"& $sSubKey,$ItemName)
+		$sSubKeyValue = RegRead($keyname & "\" & $sSubKey, $ItemName)
 ;~ 	  ConsoleWrite($sSubKeyValue & @CRLF)
-	  return $sSubKeyValue
-	Wend
+		Return $sSubKeyValue
+	WEnd
 
-EndFunc
+EndFunc   ;==>_doRegGetValue
 
 Func _doRegGetGUID($adaptername)
 	; Get IP Information if adapter is unplugged
 
-	$keyname = "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Network\{4D36E972-E325-11CE-BFC1-08002BE10318}";
-	Local $sSubKey, $sSubKeyName, $sGuids, $i=0
+	$keyname = "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Network\{4D36E972-E325-11CE-BFC1-08002BE10318}" ;
+	Local $sSubKey, $sSubKeyName, $sGuids, $i = 0
 
-	while 1
-	  $i += 1
-	  $sSubKey=RegEnumKey($keyname,$i)
-	  If @error <> 0 then ExitLoop
-	  $sSubKeyName=RegRead($keyname &"\"& $sSubKey & "\Connection","Name")
-	  If $sSubKeyName = $adaptername Then
-		  Return $sSubKey
-	  EndIf
-	Wend
-	return ""
+	While 1
+		$i += 1
+		$sSubKey = RegEnumKey($keyname, $i)
+		If @error <> 0 Then ExitLoop
+		$sSubKeyName = RegRead($keyname & "\" & $sSubKey & "\Connection", "Name")
+		If $sSubKeyName = $adaptername Then
+			Return $sSubKey
+		EndIf
+	WEnd
+	Return ""
 
-EndFunc
+EndFunc   ;==>_doRegGetGUID
 
 
 ;===================================================================================================
@@ -263,121 +263,121 @@ EndFunc
 Func _AdapterMod($oLanConnection, $bEnable = 1)
 	Local $strEnableVerb, $strDisableVerb, $ShellApp, $oNetConnections, $oEnableVerb, $oDisableVerb
 	Local $begin, $dif, $Res, $temp
-; Langage selection.
-    Select
+	; Langage selection.
+	Select
 		; English (United States)
-        Case StringInStr("0409,0809,0c09,1009,1409,1809,1c09,2009,2409,2809,2c09,3009,3409", @OSLang)
-            $strEnableVerb = "En&able"
-            $strDisableVerb = "Disa&ble"
+		Case StringInStr("0409,0809,0c09,1009,1409,1809,1c09,2009,2409,2809,2c09,3009,3409", @OSLang)
+			$strEnableVerb = "En&able"
+			$strDisableVerb = "Disa&ble"
 
-        ; Français (France)
-        Case StringInStr("040c,080c,0c0c,100c,140c,180c", @OSLang)
-            $strEnableVerb = "&Activer"
-            $strDisableVerb = "&Désactiver"
-    EndSelect
+			; Français (France)
+		Case StringInStr("040c,080c,0c0c,100c,140c,180c", @OSLang)
+			$strEnableVerb = "&Activer"
+			$strDisableVerb = "&Désactiver"
+	EndSelect
 
-; Create virtual folder for Network Connections
-    Const $ssfCONTROLS = 49
-    $ShellApp = ObjCreate("Shell.Application")				; create shell object
-    $oNetConnections = $ShellApp.Namespace($ssfCONTROLS)	; get Network Connections Namespace object
+	; Create virtual folder for Network Connections
+	Const $ssfCONTROLS = 49
+	$ShellApp = ObjCreate("Shell.Application")                ; create shell object
+	$oNetConnections = $ShellApp.Namespace($ssfCONTROLS)    ; get Network Connections Namespace object
 
-; If no 'Network connections' folder then return error.
-    If Not IsObj($oNetConnections) Then
+	; If no 'Network connections' folder then return error.
+	If Not IsObj($oNetConnections) Then
 ;~         MsgBox( 48, "Error", "Network Connections not found.")
-        Return 1
-    EndIf
-
-; Find the collection of the network connection name.
-    For $FolderItem In $oNetConnections.Items
-        If StringLower($FolderItem.Name) = StringLower($oLanConnection) Then
-            $oLanConnection = $FolderItem
-            ExitLoop
-        EndIf
-    Next
-
-; If no network connection name then return error.
-    If Not IsObj($oLanConnection) Then
-;~         MsgBox( 48, "Error", "Could not find " & $oLanConnection)
-        Return 2
-    EndIf
-
-    $oEnableVerb  = ""
-    $oDisableVerb = ""
-
-; Find the state of the network connection.
-    For $Verb In $oLanConnection.Verbs
-        If $Verb.Name = $strEnableVerb Then
-            $oEnableVerb = $Verb
-        EndIf
-        If $Verb.Name = $strDisableVerb Then
-            $oDisableVerb = $Verb
-        EndIf
-        If $Verb.Name = "p$roperties" Then
-            $temp = $Verb
-        EndIf
-;~         MsgBox(0,"",$Verb.Name)
-    Next
-
-If IsObj($temp) Then
-	$temp = $temp.DoIt
-	$ShellApp.explore($temp)
-EndIf
-
-; Enable NIC
-    If $bEnable = 1 Then
-        If IsObj($oEnableVerb) Then $oEnableVerb.DoIt
-    EndIf
-
-; Disable NIC
-    If $bEnable = 0 Then
-        If IsObj($oDisableVerb) Then $oDisableVerb.DoIt
+		Return 1
 	EndIf
 
-; Get State
-    If $bEnable = 2 Then
+	; Find the collection of the network connection name.
+	For $FolderItem In $oNetConnections.Items
+		If StringLower($FolderItem.Name) = StringLower($oLanConnection) Then
+			$oLanConnection = $FolderItem
+			ExitLoop
+		EndIf
+	Next
+
+	; If no network connection name then return error.
+	If Not IsObj($oLanConnection) Then
+;~         MsgBox( 48, "Error", "Could not find " & $oLanConnection)
+		Return 2
+	EndIf
+
+	$oEnableVerb = ""
+	$oDisableVerb = ""
+
+	; Find the state of the network connection.
+	For $Verb In $oLanConnection.Verbs
+		If $Verb.Name = $strEnableVerb Then
+			$oEnableVerb = $Verb
+		EndIf
+		If $Verb.Name = $strDisableVerb Then
+			$oDisableVerb = $Verb
+		EndIf
+		If $Verb.Name = "p$roperties" Then
+			$temp = $Verb
+		EndIf
+;~         MsgBox(0,"",$Verb.Name)
+	Next
+
+	If IsObj($temp) Then
+		$temp = $temp.DoIt
+		$ShellApp.explore($temp)
+	EndIf
+
+	; Enable NIC
+	If $bEnable = 1 Then
+		If IsObj($oEnableVerb) Then $oEnableVerb.DoIt
+	EndIf
+
+	; Disable NIC
+	If $bEnable = 0 Then
+		If IsObj($oDisableVerb) Then $oDisableVerb.DoIt
+	EndIf
+
+	; Get State
+	If $bEnable = 2 Then
 		$Res = _GetNicState($oLanConnection, $strEnableVerb, $strDisableVerb)
 		If $Res = 1 Then
 			Return $oLangStrings.interface.props.adapterStateEnabled
 		Else
 			Return $oLangStrings.interface.props.adapterStateDisabled
 		EndIf
-    EndIf
+	EndIf
 
-    $begin = TimerInit()
-    While 1
-        $dif = Int(TimerDiff($begin) / 1000)
-        If $dif > 10 Then
-			MsgBox( 0, "", "Timeout Error:" & @CRLF & "The command was issued, but the adapter took too long to check the state.")
-			ExitLoop	; 10 second maximum waiting time
+	$begin = TimerInit()
+	While 1
+		$dif = Int(TimerDiff($begin) / 1000)
+		If $dif > 10 Then
+			MsgBox(0, "", "Timeout Error:" & @CRLF & "The command was issued, but the adapter took too long to check the state.")
+			ExitLoop    ; 10 second maximum waiting time
 		EndIf
 		; Control the state of the NIC to exit before the end of waiting time.
-        If $bEnable = 1 And _GetNicState($oLanConnection, $strEnableVerb, $strDisableVerb) = 1 Then ExitLoop
-        If $bEnable = 0 And _GetNicState($oLanConnection, $strEnableVerb, $strDisableVerb) = 0 Then ExitLoop
-        Sleep(100)
-    WEnd
+		If $bEnable = 1 And _GetNicState($oLanConnection, $strEnableVerb, $strDisableVerb) = 1 Then ExitLoop
+		If $bEnable = 0 And _GetNicState($oLanConnection, $strEnableVerb, $strDisableVerb) = 0 Then ExitLoop
+		Sleep(100)
+	WEnd
 
-; Set the return value of the function.
-    $Res = _GetNicState($oLanConnection, $strEnableVerb, $strDisableVerb)
-    If $bEnable = 1 And $Res = 0 Then
-        Return 3
-    ElseIf $bEnable = 0 And $Res = 1 Then
-        Return 4
-    Else
-        Return 0
-    EndIf
-EndFunc
+	; Set the return value of the function.
+	$Res = _GetNicState($oLanConnection, $strEnableVerb, $strDisableVerb)
+	If $bEnable = 1 And $Res = 0 Then
+		Return 3
+	ElseIf $bEnable = 0 And $Res = 1 Then
+		Return 4
+	Else
+		Return 0
+	EndIf
+EndFunc   ;==>_AdapterMod
 
 ; Helper Function that give the state of the lan connection (1 = Active  0 = Not Active).
-Func _GetNicState($oLanConnection, $strEnableVerb="En&able", $strDisableVerb="Disa&ble")
+Func _GetNicState($oLanConnection, $strEnableVerb = "En&able", $strDisableVerb = "Disa&ble")
 	Local $Verb
-    For $Verb In $oLanConnection.Verbs
-        If $Verb.Name = $strEnableVerb Then
-            Return 0
-        Else
-            Return 1
-        EndIf
-    Next
-EndFunc
+	For $Verb In $oLanConnection.Verbs
+		If $Verb.Name = $strEnableVerb Then
+			Return 0
+		Else
+			Return 1
+		EndIf
+	Next
+EndFunc   ;==>_GetNicState
 
 
 ;===================================================================================================
@@ -400,28 +400,28 @@ Func _GetAdapters()
 	Local $ShellApp, $oNetConnections, $FolderItem
 	Local $myadapters[1] = [0], $iPlaceHolder = 0
 
-; Create virtual folder for Network Connections
-    Const $ssfCONTROLS = 49
-    $ShellApp = ObjCreate("Shell.Application")				; create shell object
-    $oNetConnections = $ShellApp.Namespace($ssfCONTROLS)	; get Network Connections Namespace object
+	; Create virtual folder for Network Connections
+	Const $ssfCONTROLS = 49
+	$ShellApp = ObjCreate("Shell.Application")                ; create shell object
+	$oNetConnections = $ShellApp.Namespace($ssfCONTROLS)    ; get Network Connections Namespace object
 
-; If no 'Network connections' folder then return error.
-    If Not IsObj($oNetConnections) Then
+	; If no 'Network connections' folder then return error.
+	If Not IsObj($oNetConnections) Then
 ;~         MsgBox( 48, "Error", "Network Connections not found.")
-        Return 1
-    EndIf
+		Return 1
+	EndIf
 
-; Find the network adapters
-    For $FolderItem In $oNetConnections.Items
-		If $iPlaceHolder=0 Then
+	; Find the network adapters
+	For $FolderItem In $oNetConnections.Items
+		If $iPlaceHolder = 0 Then
 			$myadapters[$iPlaceHolder] = $FolderItem.name
 			$iPlaceHolder += 1
 		Else
-			ReDim $myadapters[$iPlaceHolder+1]				; expand the array
+			ReDim $myadapters[$iPlaceHolder + 1]              ; expand the array
 			$myadapters[$iPlaceHolder] = $FolderItem.name
 			$iPlaceHolder += 1
 		EndIf
-    Next
+	Next
 
 	Return $myadapters
-EndFunc
+EndFunc   ;==>_GetAdapters

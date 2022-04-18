@@ -31,21 +31,22 @@ Func CheckCmdLine()
 					; Code for configuration
 					_loadProfiles()
 					; Let's check if the profile name exists
-					If Not Profiles_isNewName($profiles, $profileName) Then
+					If $profiles.exists($profileName) Then
 						$cmdLine = 1
 						$sMsg = 'Applying profile "' & $profileName & '"...'
 						_Toast_Set(0, 0xAAAAAA, 0x000000, 0xFFFFFF, 0x000000, 10, "", 250, 250)
 						$aRet = _Toast_Show(0, "Simple IP Config", $sMsg, 0, False) ; Delay can be set here because script continues
 
-						$ipAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAuto)
-						$ipAddress = Profiles_GetValue($profiles, $profileName, $PROFILES_IpAddress)
-						$ipSubnet = Profiles_GetValue($profiles, $profileName, $PROFILES_IpSubnet)
-						$ipGateway = Profiles_GetValue($profiles, $profileName, $PROFILES_IpGateway)
-						$dnsAuto = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsAuto)
-						$dnsPref = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsPref)
-						$dnsAlt = Profiles_GetValue($profiles, $profileName, $PROFILES_DnsAlt)
-						$dnsReg = Profiles_GetValue($profiles, $profileName, $PROFILES_RegisterDns)
-						$adapterName = Profiles_GetValue($profiles, $profileName, $PROFILES_AdapterName)
+						Local $oProfile = $profiles.get($profileName)
+						$ipAuto = $oProfile.IpAuto
+						$ipAddress = $oProfile.IpAddress
+						$ipSubnet = $oProfile.IpSubnet
+						$ipGateway = $oProfile.IpGateway
+						$dnsAuto = $oProfile.DnsAuto
+						$dnsPref = $oProfile.DnsPref
+						$dnsAlt = $oProfile.DnsAlt
+						$dnsReg = $oProfile.RegisterDns
+						$adapterName = $oProfile.AdapterName
 
 						_apply($ipAuto, $ipAddress, $ipSubnet, $ipGateway, $dnsAuto, $dnsPref, $dnsAlt, $dnsReg, $adapterName, RunCallback_cli)
 						_cmdLineMain($profileName)

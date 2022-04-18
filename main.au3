@@ -43,6 +43,51 @@
 #RequireAdmin
 #NoTrayIcon    ;prevent double icon when checking for already running instance
 
+#include <WindowsConstants.au3>
+#include <APIConstants.au3>
+#include <WinAPI.au3>
+#include <WinAPIEx.au3>
+#include <GDIPlus.au3>
+#include <GUIImageList.au3>
+#include <GUIToolbar.au3>
+#include <GuiListView.au3>
+#include <GuiIPAddress.au3>
+#include <GuiMenu.au3>
+#include <Misc.au3>
+#include <Color.au3>
+#include <GUIEdit.au3>
+#include <GuiComboBox.au3>
+#include <Array.au3>
+#include <Date.au3>
+#include <Inet.au3>
+#include <File.au3>
+
+#include "libraries\AutoItObject.au3"
+#include "libraries\oLinkedList.au3"
+_AutoItObject_StartUp()
+
+#Region options
+Opt("TrayIconHide", 0)
+Opt("GUIOnEventMode", 1)
+Opt("TrayAutoPause", 0)
+Opt("TrayOnEventMode", 1)
+Opt("TrayMenuMode", 3)
+Opt("MouseCoordMode", 2)
+Opt("GUIResizeMode", $GUI_DOCKALL)
+Opt("WinSearchChildren", 1)
+Opt("GUICloseOnESC", 0)
+;~ Opt("MustDeclareVars", 1)
+TraySetClick(16)
+#EndRegion options
+
+; autoit wrapper options
+#AutoIt3Wrapper_Res_HiDpi=y
+#AutoIt3Wrapper_UseX64=N
+#AutoIt3Wrapper_Icon=icon.ico
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4-BETA03.exe
+#AutoIt3Wrapper_Res_Fileversion=2.9.4.0
+#AutoIt3Wrapper_Res_Description=Simple IP Config
+
 #Region Global Variables
 Global $options
 Global $profiles
@@ -59,8 +104,8 @@ Global $sProfileName = @ScriptDir & "\profiles.ini"
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.9.4-beta03"
-Global $winDate = "4/11/2022"
+Global $winVersion = "2.9.4-beta04"
+Global $winDate = "4/18/2022"
 Global $hgui
 Global $guiWidth = 600
 Global $guiHeight = 550
@@ -135,29 +180,10 @@ Global Enum $tb_settings = 2000, $tb_tray
 Global $oLangStrings
 #EndRegion Global Variables
 
-#Region includes
-#include <WindowsConstants.au3>
-#include <APIConstants.au3>
-#include <WinAPI.au3>
-#include <WinAPIEx.au3>
-#include <GDIPlus.au3>
-#include <GUIImageList.au3>
-#include <GUIToolbar.au3>
-#include <GuiListView.au3>
-#include <GuiIPAddress.au3>
-#include <GuiMenu.au3>
-#include <Misc.au3>
-#include <Color.au3>
-#include <GUIEdit.au3>
-#include <GuiComboBox.au3>
-#include <Array.au3>
-#include <Date.au3>
-#include <Inet.au3>
-#include <File.au3>
-
-#include "libraries\AutoItObject.au3"
 #include "libraries\Json\json.au3"
-#include "model.au3"
+#include "data\adapters.au3"
+#include "data\options.au3"
+#include "data\profiles.au3"
 #include "hexIcons.au3"
 #include "languages.au3"
 #include "libraries\asyncRun.au3"
@@ -167,35 +193,20 @@ Global $oLangStrings
 #include "functions.au3"
 #include "events.au3"
 #include "network.au3"
-#include "gui.au3"
+#include "forms\_form_main.au3"
+#include "forms\_form_about.au3"
+#include "forms\_form_changelog.au3"
+#include "forms\_form_debug.au3"
+#include "forms\_form_blacklist.au3"
+#include "forms\_form_settings.au3"
+#include "forms\_form_update.au3"
+#include "forms\_form_restart.au3"
 #include "cli.au3"
-#EndRegion includes
-
-#Region options
-Opt("TrayIconHide", 0)
-Opt("GUIOnEventMode", 1)
-Opt("TrayAutoPause", 0)
-Opt("TrayOnEventMode", 1)
-Opt("TrayMenuMode", 3)
-Opt("MouseCoordMode", 2)
-Opt("GUIResizeMode", $GUI_DOCKALL)
-Opt("WinSearchChildren", 1)
-Opt("GUICloseOnESC", 0)
-TraySetClick(16)
-#EndRegion options
-
-; autoit wrapper options
-#AutoIt3Wrapper_Res_HiDpi=y
-#AutoIt3Wrapper_UseX64=N
-#AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4-BETA03.exe
-#AutoIt3Wrapper_Res_Fileversion=2.9.4.0
-#AutoIt3Wrapper_Res_Description=Simple IP Config
 
 #Region PROGRAM CONTROL
 ;create the main 'objects'
-$options = Options()
-$profiles = Profiles()
+$options = _Options()
+$profiles = _Profiles()
 $adapters = Adapter()
 
 ;check to see if called with command line arguments
@@ -220,8 +231,10 @@ _main()
 ; Description..: initial program setup & main running loop
 ;------------------------------------------------------------------------------
 Func _main()
+	_print("starting")
 	_initLang()
 
+	_print("init lang")
 	; popuplate current adapter names and mac addresses
 	;_loadAdapters()
 
@@ -231,25 +244,28 @@ Func _main()
 
 	;get profiles list
 	_loadProfiles()
+	_print("load profiles")
 
 	;get OS language OR selected language storage in profile
-	$selectedLang = OPTIONS_GetValue($options, $OPTIONS_Language)
+	$selectedLang = $options.Language
 	If $selectedLang <> "" And $oLangStrings.OSLang <> $selectedLang Then
 		$oLangStrings.OSLang = $selectedLang
 	EndIf
 	If $selectedLang = "" Then
-		Options_SetValue($options, $OPTIONS_Language, $oLangStrings.OSLang)
-		Local $optionsLangName = Options_GetName($options, $OPTIONS_Language)
-		IniWrite($sProfileName, "options", $optionsLangName, $oLangStrings.OSLang)
+		$options.Language = $oLangStrings.OSLang
+		IniWrite($sProfileName, "options", "Language", $oLangStrings.OSLang)
 	EndIf
 
 	_setLangStrings($oLangStrings.OSLang)
+	_print("set lang")
 
 	;make the GUI
-	_makeGUI()
+	_form_main()
+	_print("make GUI")
 
 	;get list of adapters and current IP info
 	_loadAdapters()
+	_print("load adapters")
 
 	;watch for new program instances
 	GUIRegisterMsg($iMsg, '_NewInstance')
@@ -260,12 +276,12 @@ Func _main()
 	Else
 		Adapter_Sort($adapters)    ; connections sort ascending
 		$defaultitem = Adapter_GetName($adapters, 0)
-		$sStartupAdapter = OPTIONS_GetValue($options, $OPTIONS_StartupAdapter)
+		$sStartupAdapter = $options.StartupAdapter
 		If Adapter_Exists($adapters, $sStartupAdapter) Then
 			$defaultitem = $sStartupAdapter
 		EndIf
 
-		$sAdapterBlacklist = OPTIONS_GetValue($options, $OPTIONS_AdapterBlacklist)
+		$sAdapterBlacklist = $options.AdapterBlacklist
 		$aBlacklist = StringSplit($sAdapterBlacklist, "|")
 		If IsArray($aBlacklist) Then
 			Local $adapterNames = Adapter_GetNames($adapters)
@@ -290,7 +306,7 @@ Func _main()
 	;get the domain
 	GUICtrlSetData($domainName, _DomainComputerBelongs())
 
-	$sAutoUpdate = OPTIONS_GetValue($options, $OPTIONS_AutoUpdate)
+	$sAutoUpdate = $options.AutoUpdate
 	If ($sAutoUpdate = "true" Or $sAutoUpdate = "1") Then
 		$suppressComError = 1
 		_checksSICUpdate()
@@ -298,6 +314,7 @@ Func _main()
 	EndIf
 
 	Local $filePath
+	_print("Running")
 	While 1
 		If $lv_doneEditing Then
 			_onLvDoneEdit()
@@ -316,8 +333,8 @@ Func _main()
 			$filePath = FileOpenDialog($oLangStrings.dialog.selectFile, @ScriptDir, $oLangStrings.dialog.ini & " (*.ini)", $FD_FILEMUSTEXIST, "profiles.ini")
 			If Not @error Then
 				$sProfileName = $filePath
-				$options = Options()
-				$profiles = Profiles()
+				$options = _Options()
+				$profiles = _Profiles()
 				_refresh(1)
 				_setStatus($oLangStrings.message.loadedFile & " " & $filePath, 0)
 			EndIf
@@ -337,7 +354,6 @@ Func _main()
 			$ExportFileFlag = 0
 			$filePath = FileSaveDialog($oLangStrings.dialog.selectFile, @ScriptDir, $oLangStrings.dialog.ini & " (*.ini)", $FD_PROMPTOVERWRITE, "profiles.ini")
 			If Not @error Then
-				ConsoleWrite("write" & @CRLF)
 				If StringRight($filePath, 4) <> ".ini" Then
 					$filePath &= ".ini"
 				EndIf

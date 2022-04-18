@@ -36,9 +36,9 @@ Func _onExit()
 	; save window position in ini file
 	If Not BitAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
 		$currentWinPos = WinGetPos($hgui)
-		Options_SetValue($options, $OPTIONS_PositionX, $currentWinPos[0])
-		Options_SetValue($options, $OPTIONS_PositionY, $currentWinPos[1])
-		IniWriteSection($sProfileName, "options", $options, 0)
+		$options.PositionX = $currentWinPos[0]
+		$options.PositionY = $currentWinPos[1]
+		IniWriteSection($sProfileName, "options", $options.getSection, 0)
 	EndIf
 
 	Exit
@@ -56,34 +56,6 @@ EndFunc   ;==>_onCreateLink
 Func _onExitChild()
 	_ExitChild(@GUI_WinHandle)
 EndFunc   ;==>_onExitChild
-
-;------------------------------------------------------------------------------
-; Title........: _onExitBlacklistOk
-; Description..: save the the Blacklist child window data,
-;                then call the exit function
-; Events.......: Blacklist window 'Save' button
-;------------------------------------------------------------------------------
-Func _onExitBlacklistOk()
-	$guiState = WinGetState($hgui)
-	$newBlacklist = ""
-	$itemCount = _GUICtrlListView_GetItemCount($blacklistLV)
-
-	For $i = 0 To $itemCount - 1
-		If _GUICtrlListView_GetItemChecked($blacklistLV, $i) Then
-			$newBlacklist &= _GUICtrlListView_GetItemTextString($blacklistLV, $i) & "|"
-		EndIf
-	Next
-	$newBlacklist = StringLeft($newBlacklist, StringLen($newBlacklist) - 1)
-
-	$newBlacklist = iniNameEncode($newBlacklist)
-	Options_SetValue($options, $OPTIONS_AdapterBlacklist, $newBlacklist)
-	$keyname = Options_GetName($options, $OPTIONS_AdapterBlacklist)
-	$keyvalue = Options_GetValue($options, $OPTIONS_AdapterBlacklist)
-	IniWrite($sProfileName, "options", $keyname, $keyvalue)
-
-	_ExitChild(@GUI_WinHandle)
-	_updateCombo()
-EndFunc   ;==>_onExitBlacklistOk
 
 ;------------------------------------------------------------------------------
 ; Title........: _OnTrayClick
@@ -117,17 +89,8 @@ EndFunc   ;==>_OnRestore
 ; Events.......: 'Hide adapters' item in the 'View' menu
 ;------------------------------------------------------------------------------
 Func _onBlacklist()
-	_blacklist()
+	_form_blacklist()
 EndFunc   ;==>_onBlacklist
-
-;------------------------------------------------------------------------------
-; Title........: _onBlacklistAdd
-; Description..: Add selected adapter to the hide adapters list
-; Events.......: 'Add Selected Adapter' button
-;------------------------------------------------------------------------------
-;~ Func _onBlacklistAdd()
-;~ 	_blacklistAdd()
-;~ EndFunc
 
 ;------------------------------------------------------------------------------
 ; Title........: _onRadio
@@ -196,13 +159,14 @@ EndFunc   ;==>_onRename
 Func _onNewItem()
 	$newname = $oLangStrings.message.newItem
 	;Local $profileNames = _getNames()
-	Local $profileNames = Profiles_GetNames($profiles)
+	Local $profileNames = $profiles.getNames()
 	Local $i = 1
 	While _ArraySearch($profileNames, $newname) <> -1
 		$newname = "New Item " & $i
 		$i = $i + 1
 	WEnd
 
+	GUISwitch($hgui)
 	ControlFocus($hgui, "", $list_profiles)
 	GUICtrlCreateListViewItem($newname, $list_profiles)
 	GUICtrlSetOnEvent(-1, "_onSelect")
@@ -375,7 +339,7 @@ EndFunc   ;==>_onCycle
 ; Events.......: Tools menu "Settings" item
 ;------------------------------------------------------------------------------
 Func _onSettings()
-	_settings()
+	_formm_settings()
 EndFunc   ;==>_onSettings
 
 ;------------------------------------------------------------------------------
@@ -399,7 +363,7 @@ EndFunc   ;==>_onUpdateCheckItem
 ; Events.......: Help menu "Debug Information" item
 ;------------------------------------------------------------------------------
 Func _onDebugItem()
-	_debugWindow()
+	_form_debug()
 EndFunc   ;==>_onDebugItem
 
 ;------------------------------------------------------------------------------
@@ -408,7 +372,7 @@ EndFunc   ;==>_onDebugItem
 ; Events.......: Help menu "Show Change Log" item
 ;------------------------------------------------------------------------------
 Func _onChangelog()
-	_changeLog()
+	_form_changelog()
 EndFunc   ;==>_onChangelog
 
 ;------------------------------------------------------------------------------
@@ -417,7 +381,7 @@ EndFunc   ;==>_onChangelog
 ; Events.......: Help menu "About Simple IP Config" item, tray right-click menu
 ;------------------------------------------------------------------------------
 Func _onAbout()
-	_about()
+	_form_about()
 EndFunc   ;==>_onAbout
 
 ;------------------------------------------------------------------------------
@@ -438,12 +402,11 @@ Func _OnCombo()
 	_updateCurrent()
 	$adap = GUICtrlRead($combo_adapters)
 	$iniAdap = iniNameEncode($adap)
-	$keyname = Options_GetName($options, $OPTIONS_StartupAdapter)
-	$ret = IniWrite($sProfileName, "options", $keyname, $iniAdap)
+	$ret = IniWrite($sProfileName, "options", "StartupAdapter", $iniAdap)
 	If $ret = 0 Then
 		_setStatus("An error occurred while saving the selected adapter", 1)
 	Else
-		Options_SetValue($options, $OPTIONS_StartupAdapter, $adap)
+		$options.StartupAdapter = $adap
 	EndIf
 EndFunc   ;==>_OnCombo
 
@@ -535,6 +498,17 @@ EndFunc   ;==>_onImportProfiles
 ;------------------------------------------------------------------------------
 Func _onExportProfiles()
 	$ExportFileFlag = 1
+EndFunc   ;==>_onExportProfiles
+
+;------------------------------------------------------------------------------
+; Title........: _onOpenProfLoc
+; Description..: open folder containing profiles.ini file
+; Events.......: Tools menu
+;------------------------------------------------------------------------------
+Func _onOpenProfLoc()
+;~ 	Local $path = StringRegExp($sProfileName, "(.*)\\", $STR_REGEXPARRAYGLOBALMATCH)
+	Local $path = $sProfileName
+	Run("explorer.exe /n,/e,/select," & $path)
 EndFunc   ;==>_onExportProfiles
 
 ;------------------------------------------------------------------------------

@@ -14,8 +14,6 @@
 ; You should have received a copy of the GNU General Public License
 ; along with Simple IP Config.  If not, see <http://www.gnu.org/licenses/>.
 ; -----------------------------------------------------------------------------
-_AutoItObject_StartUp()
-
 
 Func _getLangsAvailable()
 	Local $aFileList = _FileListToArray(@ScriptDir & "\lang", "lang-*.json", $FLTA_FILES)
@@ -40,17 +38,7 @@ Func _initLang()
 	;create object for language strings
 	$oLangStrings = _langStrings()
 
-	;format OS language
-	Switch @OSLang
-		Case "0409"
-			$oLangStrings.OSLang = "en-US"
-		Case "0410"
-			$oLangStrings.OSLang = "it-IT"
-		Case "0419"
-			$oLangStrings.OSLang = "ru-RU"
-		Case Else
-			$oLangStrings.OSLang = "en-US"
-	EndSwitch
+	$oLangStrings.OSLang = _getLangID(@OSLang)
 EndFunc   ;==>_initLang
 
 Func _langStrings()
@@ -136,6 +124,7 @@ Func _langStrings()
 	_AutoItObject_AddProperty($oMenuTools, "release")
 	_AutoItObject_AddProperty($oMenuTools, "renew")
 	_AutoItObject_AddProperty($oMenuTools, "cycle")
+	_AutoItObject_AddProperty($oMenuTools, "openprofloc")
 	_AutoItObject_AddProperty($oMenuTools, "settings")
 
 	_AutoItObject_AddProperty($oMenuHelp, "help")
@@ -322,6 +311,7 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.menu.tools.release = Json_Get($jsonData, ".strings.menu.tools.release")
 	$oLangStrings.menu.tools.renew = Json_Get($jsonData, ".strings.menu.tools.renew")
 	$oLangStrings.menu.tools.cycle = Json_Get($jsonData, ".strings.menu.tools.cycle")
+	$oLangStrings.menu.tools.openprofloc = Json_Get($jsonData, ".strings.menu.tools.openprofloc")
 	$oLangStrings.menu.tools.settings = Json_Get($jsonData, ".strings.menu.tools.settings")
 
 	$oLangStrings.menu.help.help = Json_Get($jsonData, ".strings.menu.help.help")
@@ -458,92 +448,6 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.dialog.ini = Json_Get($jsonData, ".strings.dialog.ini")
 EndFunc   ;==>_setLangStrings
 
-
-Func _updateLang2()
-	GUICtrlSetData($filemenu, $oLangStrings.menu.file.file)
-	GUICtrlSetData($applyitem, $oLangStrings.menu.file.apply & @TAB & $oLangStrings.menu.file.applyKey)
-	GUICtrlSetData($renameitem, $oLangStrings.menu.file.rename & @TAB & $oLangStrings.menu.file.renameKey)
-	GUICtrlSetData($newitem, $oLangStrings.menu.file.new & @TAB & $oLangStrings.menu.file.newKey)
-	GUICtrlSetData($saveitem, $oLangStrings.menu.file.save & @TAB & $oLangStrings.menu.file.saveKey)
-	GUICtrlSetData($deleteitem, $oLangStrings.menu.file.delete & @TAB & $oLangStrings.menu.file.deleteKey)
-	GUICtrlSetData($clearitem, $oLangStrings.menu.file.clear & @TAB & $oLangStrings.menu.file.clearKey)
-	GUICtrlSetData($createLinkItem, $oLangStrings.menu.file.shortcut)
-	GUICtrlSetData($profilesOpenItem, $oLangStrings.menu.file.open)
-	GUICtrlSetData($profilesImportItem, $oLangStrings.menu.file.import)
-	GUICtrlSetData($profilesExportItem, $oLangStrings.menu.file.export)
-	GUICtrlSetData($exititem, $oLangStrings.menu.file.Exit)
-
-	GUICtrlSetData($viewmenu, $oLangStrings.menu.view.view)
-	GUICtrlSetData($refreshitem, $oLangStrings.menu.view.refresh & @TAB & $oLangStrings.menu.view.refreshKey)
-	GUICtrlSetData($send2trayitem, $oLangStrings.menu.view.tray & @TAB & $oLangStrings.menu.view.trayKey)
-	GUICtrlSetData($blacklistitem, $oLangStrings.menu.view.hide)
-
-	GUICtrlSetData($toolsmenu, $oLangStrings.menu.tools.tools)
-	GUICtrlSetData($netConnItem, $oLangStrings.menu.tools.netConn)
-	GUICtrlSetData($pullitem, $oLangStrings.menu.tools.pull & @TAB & $oLangStrings.menu.tools.pullKey)
-	GUICtrlSetData($disableitem, $oLangStrings.menu.tools.disable)
-	GUICtrlSetData($releaseitem, $oLangStrings.menu.tools.release)
-	GUICtrlSetData($renewitem, $oLangStrings.menu.tools.renew)
-	GUICtrlSetData($cycleitem, $oLangStrings.menu.tools.cycle)
-	GUICtrlSetData($settingsitem, $oLangStrings.menu.tools.settings)
-
-	GUICtrlSetData($helpmenu, $oLangStrings.menu.help.help)
-	GUICtrlSetData($helpitem, $oLangStrings.menu.help.docs & @TAB & $oLangStrings.menu.help.docsKey)
-	GUICtrlSetData($changelogitem, $oLangStrings.menu.help.changelog)
-	GUICtrlSetData($checkUpdatesItem, $oLangStrings.menu.help.update)
-	GUICtrlSetData($debugmenuitem, $oLangStrings.menu.help.debug)
-	GUICtrlSetData($infoitem, $oLangStrings.menu.help.about)
-
-	GUICtrlSetData($RestoreItem, $oLangStrings.traymenu.hide)
-	GUICtrlSetData($aboutitem, $oLangStrings.traymenu.about)
-	GUICtrlSetData($exititemtray, $oLangStrings.traymenu.Exit)
-
-	GUICtrlSetData($lvcon_rename, $oLangStrings.lvmenu.rename)
-	GUICtrlSetData($lvcon_delete, $oLangStrings.lvmenu.delete)
-	GUICtrlSetData($lvcon_arrAz, $oLangStrings.lvmenu.sortAsc)
-	GUICtrlSetData($lvcon_arrZa, $oLangStrings.lvmenu.sortDesc)
-	GUICtrlSetData($lvcreateLinkItem, $oLangStrings.lvmenu.shortcut)
-
-	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_apply, $oLangStrings.toolbar.apply)
-	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_refresh, $oLangStrings.toolbar.refresh)
-	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_add, $oLangStrings.toolbar.new)
-	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_save, $oLangStrings.toolbar.save)
-	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_delete, $oLangStrings.toolbar.delete)
-	_GUICtrlToolbar_SetButtonText($hToolbar, $tb_clear, $oLangStrings.toolbar.clear)
-
-	GUICtrlSetData($computerName, $oLangStrings.interface.computername & ": " & @ComputerName)
-	GUICtrlSetData($domainName, _DomainComputerBelongs())
-
-	GUICtrlSetData($label_CurrIp, $oLangStrings.interface.props.ip & ":")
-	GUICtrlSetData($label_CurrSubnet, $oLangStrings.interface.props.subnet & ":")
-	GUICtrlSetData($label_CurrGateway, $oLangStrings.interface.props.gateway & ":")
-	GUICtrlSetData($label_CurrDnsPri, $oLangStrings.interface.props.dnsPref & ":")
-	GUICtrlSetData($label_CurrDnsAlt, $oLangStrings.interface.props.dnsAlt & ":")
-	GUICtrlSetData($label_CurrDhcp, $oLangStrings.interface.props.dhcpServer & ":")
-	GUICtrlSetData($label_CurrAdapterState, $oLangStrings.interface.props.adapterState & ":")
-	GUICtrlSetData($label_CurrentAdapterState, "")
-
-	GUICtrlSetData($radio_IpAuto, $oLangStrings.interface.props.ipauto)
-	GUICtrlSetData($radio_IpMan, $oLangStrings.interface.props.ipmanual)
-	GUICtrlSetData($radio_DnsAuto, $oLangStrings.interface.props.dnsauto)
-	GUICtrlSetData($radio_DnsMan, $oLangStrings.interface.props.dnsmanual)
-
-	GUICtrlSetData($label_ip, $oLangStrings.interface.props.ip & ":")
-	GUICtrlSetData($label_subnet, $oLangStrings.interface.props.subnet & ":")
-	GUICtrlSetData($label_gateway, $oLangStrings.interface.props.gateway & ":")
-	GUICtrlSetData($label_DnsPri, $oLangStrings.interface.props.dnsPref & ":")
-	GUICtrlSetData($label_DnsAlt, $oLangStrings.interface.props.dnsAlt & ":")
-	GUICtrlSetData($ck_dnsReg, $oLangStrings.interface.props.dnsreg)
-
-	GUICtrlSetData($lDescription, $oLangStrings.interface.adapterDesc)
-	GUICtrlSetData($lMac, $oLangStrings.interface.mac & ": ")
-
-	GUICtrlSetData($headingSelect, $oLangStrings.interface.Select)
-	GUICtrlSetData($headingProfiles, $oLangStrings.interface.profiles)
-	GUICtrlSetData($headingIP, $oLangStrings.interface.profileprops)
-	GUICtrlSetData($headingCurrent, $oLangStrings.interface.currentprops)
-EndFunc   ;==>_updateLang2
-
 Func _getEnglish()
 	Return '' & _
 			'{' & _
@@ -594,6 +498,7 @@ Func _getEnglish()
 			'            "release":"&Release DHCP",' & _
 			'            "renew":"Re&new DHCP",' & _
 			'            "cycle":"Release/renew &cycle",' & _
+			'            "openprofloc":"Go to profiles.ini folder,"' & _
 			'            "settings":"&Settings"' & _
 			'         },' & _
 			'         "help":{' & _
@@ -736,3 +641,471 @@ Func _getEnglish()
 			'   }' & _
 			'}'
 EndFunc   ;==>_getEnglish
+
+Func _getLangID($code)
+	Local $langID
+
+	;format OS language
+	Switch $code
+		Case "0004"
+			$langID = "zh-CHS"
+		Case "0401"
+			$langID = "ar-SA"
+		Case "0402"
+			$langID = "bg-BG"
+		Case "0403"
+			$langID = "ca-ES"
+		Case "0404"
+			$langID = "zh-TW"
+		Case "0405"
+			$langID = "cs-CZ"
+		Case "0406"
+			$langID = "da-DK"
+		Case "0407"
+			$langID = "de-DE"
+		Case "0408"
+			$langID = "el-GR"
+		Case "0409"
+			$langID = "en-US"
+		Case "040A"
+			$langID = "es-ES_tradnl"
+		Case "040B"
+			$langID = "fi-FI"
+		Case "040C"
+			$langID = "fr-FR"
+		Case "040D"
+			$langID = "he-IL"
+		Case "040E"
+			$langID = "hu-HU"
+		Case "040F"
+			$langID = "is-IS"
+		Case "0410"
+			$langID = "it-IT"
+		Case "0411"
+			$langID = "ja-JP"
+		Case "0412"
+			$langID = "ko-KR"
+		Case "0413"
+			$langID = "nl-NL"
+		Case "0414"
+			$langID = "nb-NO"
+		Case "0415"
+			$langID = "pl-PL"
+		Case "0416"
+			$langID = "pt-BR"
+		Case "0417"
+			$langID = "rm-CH"
+		Case "0418"
+			$langID = "ro-RO"
+		Case "0419"
+			$langID = "ru-RU"
+		Case "041A"
+			$langID = "hr-HR"
+		Case "041B"
+			$langID = "sk-SK"
+		Case "041C"
+			$langID = "sq-AL"
+		Case "041D"
+			$langID = "sv-SE"
+		Case "041E"
+			$langID = "th-TH"
+		Case "041F"
+			$langID = "tr-TR"
+		Case "0420"
+			$langID = "ur-PK"
+		Case "0421"
+			$langID = "id-ID"
+		Case "0422"
+			$langID = "uk-UA"
+		Case "0423"
+			$langID = "be-BY"
+		Case "0424"
+			$langID = "sl-SI"
+		Case "0425"
+			$langID = "et-EE"
+		Case "0426"
+			$langID = "lv-LV"
+		Case "0427"
+			$langID = "lt-LT"
+		Case "0428"
+			$langID = "tg-Cyrl-TJ"
+		Case "0429"
+			$langID = "fa-IR"
+		Case "042A"
+			$langID = "vi-VN"
+		Case "042B"
+			$langID = "hy-AM"
+		Case "042C"
+			$langID = "az-Latn-AZ"
+		Case "042D"
+			$langID = "eu-ES"
+		Case "042E"
+			$langID = "hsb-DE"
+		Case "042F"
+			$langID = "mk-MK"
+		Case "0432"
+			$langID = "tn-ZA"
+		Case "0434"
+			$langID = "xh-ZA"
+		Case "0435"
+			$langID = "zu-ZA"
+		Case "0436"
+			$langID = "af-ZA"
+		Case "0437"
+			$langID = "ka-GE"
+		Case "0438"
+			$langID = "fo-FO"
+		Case "0439"
+			$langID = "hi-IN"
+		Case "043A"
+			$langID = "mt-MT"
+		Case "043B"
+			$langID = "se-NO"
+		Case "043e"
+			$langID = "ms-MY"
+		Case "043F"
+			$langID = "kk-KZ"
+		Case "0440"
+			$langID = "ky-KG"
+		Case "0441"
+			$langID = "sw-KE"
+		Case "0442"
+			$langID = "tk-TM"
+		Case "0443"
+			$langID = "uz-Latn-UZ"
+		Case "0444"
+			$langID = "tt-RU"
+		Case "0445"
+			$langID = "bn-IN"
+		Case "0446"
+			$langID = "pa-IN"
+		Case "0447"
+			$langID = "gu-IN"
+		Case "0448"
+			$langID = "or-IN"
+		Case "0449"
+			$langID = "ta-IN"
+		Case "044A"
+			$langID = "te-IN"
+		Case "044B"
+			$langID = "kn-IN"
+		Case "044C"
+			$langID = "ml-IN"
+		Case "044D"
+			$langID = "as-IN"
+		Case "044E"
+			$langID = "mr-IN"
+		Case "044F"
+			$langID = "sa-IN"
+		Case "0450"
+			$langID = "mn-MN"
+		Case "0451"
+			$langID = "bo-CN"
+		Case "0452"
+			$langID = "cy-GB"
+		Case "0453"
+			$langID = "km-KH"
+		Case "0454"
+			$langID = "lo-LA"
+		Case "0456"
+			$langID = "gl-ES"
+		Case "0457"
+			$langID = "kok-IN"
+		Case "0459"
+			$langID = "sd-Deva-IN"
+		Case "045A"
+			$langID = "syr-SY"
+		Case "045B"
+			$langID = "si-LK"
+		Case "045C"
+			$langID = "chr-Cher-US"
+		Case "045D"
+			$langID = "iu-Cans-CA"
+		Case "045E"
+			$langID = "am-ET"
+		Case "0461"
+			$langID = "ne-NP"
+		Case "0462"
+			$langID = "fy-NL"
+		Case "0463"
+			$langID = "ps-AF"
+		Case "0464"
+			$langID = "fil-PH"
+		Case "0465"
+			$langID = "dv-MV"
+		Case "0468"
+			$langID = "ha-Latn-NG"
+		Case "046A"
+			$langID = "yo-NG"
+		Case "046B"
+			$langID = "quz-BO"
+		Case "046C"
+			$langID = "nso-ZA"
+		Case "046D"
+			$langID = "ba-RU"
+		Case "046E"
+			$langID = "lb-LU"
+		Case "046F"
+			$langID = "kl-GL"
+		Case "0470"
+			$langID = "ig-NG"
+		Case "0473"
+			$langID = "ti-ET"
+		Case "0475"
+			$langID = "haw-US"
+		Case "0478"
+			$langID = "ii-CN"
+		Case "047A"
+			$langID = "arn-CL"
+		Case "047C"
+			$langID = "moh-CA"
+		Case "047E"
+			$langID = "br-FR"
+		Case "0480"
+			$langID = "ug-CN"
+		Case "0481"
+			$langID = "mi-NZ"
+		Case "0482"
+			$langID = "oc-FR"
+		Case "0483"
+			$langID = "co-FR"
+		Case "0484"
+			$langID = "gsw-FR"
+		Case "0485"
+			$langID = "sah-RU"
+		Case "0486"
+			$langID = "quc-Latn-GT"
+		Case "0487"
+			$langID = "rw-RW"
+		Case "0488"
+			$langID = "wo-SN"
+		Case "048C"
+			$langID = "prs-AF"
+		Case "0491"
+			$langID = "gd-GB"
+		Case "0492"
+			$langID = "ku-Arab-IQ"
+		Case "0801"
+			$langID = "ar-IQ"
+		Case "0803"
+			$langID = "ca-ES-valencia"
+		Case "0804"
+			$langID = "zh-CN"
+		Case "0807"
+			$langID = "de-CH"
+		Case "0809"
+			$langID = "en-GB"
+		Case "080A"
+			$langID = "es-MX"
+		Case "080C"
+			$langID = "fr-BE"
+		Case "0810"
+			$langID = "it-CH"
+		Case "0813"
+			$langID = "nl-BE"
+		Case "0814"
+			$langID = "nn-NO"
+		Case "0816"
+			$langID = "pt-PT"
+		Case "081A"
+			$langID = "sr-Latn-CS"
+		Case "081D"
+			$langID = "sv-FI"
+		Case "0820"
+			$langID = "ur-IN"
+		Case "082C"
+			$langID = "az-Cyrl-AZ"
+		Case "082E"
+			$langID = "dsb-DE"
+		Case "0832"
+			$langID = "tn-BW"
+		Case "083B"
+			$langID = "se-SE"
+		Case "083C"
+			$langID = "ga-IE"
+		Case "083E"
+			$langID = "ms-BN"
+		Case "0843"
+			$langID = "uz-Cyrl-UZ"
+		Case "0845"
+			$langID = "bn-BD"
+		Case "0846"
+			$langID = "pa-Arab-PK"
+		Case "0849"
+			$langID = "ta-LK"
+		Case "0850"
+			$langID = "mn-Mong-CN"
+		Case "0859"
+			$langID = "sd-Arab-PK"
+		Case "085D"
+			$langID = "iu-Latn-CA"
+		Case "085F"
+			$langID = "tzm-Latn-DZ"
+		Case "0867"
+			$langID = "ff-Latn-SN"
+		Case "086B"
+			$langID = "quz-EC"
+		Case "0873"
+			$langID = "ti-ER"
+		Case "0873"
+			$langID = "ti-ER"
+		Case "0C01"
+			$langID = "ar-EG"
+		Case "0C04"
+			$langID = "zh-HK"
+		Case "0C07"
+			$langID = "de-AT"
+		Case "0C09"
+			$langID = "en-AU"
+		Case "0C0A"
+			$langID = "es-ES"
+		Case "0C0C"
+			$langID = "fr-CA"
+		Case "0C1A"
+			$langID = "sr-Cyrl-CS"
+		Case "0C3B"
+			$langID = "se-FI"
+		Case "0C6B"
+			$langID = "quz-PE"
+		Case "1001"
+			$langID = "ar-LY"
+		Case "1004"
+			$langID = "zh-SG"
+		Case "1007"
+			$langID = "de-LU"
+		Case "1009"
+			$langID = "en-CA"
+		Case "100A"
+			$langID = "es-GT"
+		Case "100C"
+			$langID = "fr-CH"
+		Case "101A"
+			$langID = "hr-BA"
+		Case "103B"
+			$langID = "smj-NO"
+		Case "105F"
+			$langID = "tzm-Tfng-MA"
+		Case "1401"
+			$langID = "ar-DZ"
+		Case "1404"
+			$langID = "zh-MO"
+		Case "1407"
+			$langID = "de-LI"
+		Case "1409"
+			$langID = "en-NZ"
+		Case "140A"
+			$langID = "es-CR"
+		Case "140C"
+			$langID = "fr-LU"
+		Case "141A"
+			$langID = "bs-Latn-BA"
+		Case "143B"
+			$langID = "smj-SE"
+		Case "1801"
+			$langID = "ar-MA"
+		Case "1809"
+			$langID = "en-IE"
+		Case "180A"
+			$langID = "es-PA"
+		Case "180C"
+			$langID = "fr-MC"
+		Case "181A"
+			$langID = "sr-Latn-BA"
+		Case "183B"
+			$langID = "sma-NO"
+		Case "1C01"
+			$langID = "ar-TN"
+		Case "1c09"
+			$langID = "en-ZA"
+		Case "1C0A"
+			$langID = "es-DO"
+		Case "1C1A"
+			$langID = "sr-Cyrl-BA"
+		Case "1C3B"
+			$langID = "sma-SE"
+		Case "2001"
+			$langID = "ar-OM"
+		Case "2009"
+			$langID = "en-JM"
+		Case "200A"
+			$langID = "es-VE"
+		Case "201A"
+			$langID = "bs-Cyrl-BA"
+		Case "203B"
+			$langID = "sms-FI"
+		Case "2401"
+			$langID = "ar-YE"
+		Case "2409"
+			$langID = "en-029"
+		Case "240A"
+			$langID = "es-CO"
+		Case "241A"
+			$langID = "sr-Latn-RS"
+		Case "243B"
+			$langID = "smn-FI"
+		Case "2801"
+			$langID = "ar-SY"
+		Case "2809"
+			$langID = "en-BZ"
+		Case "280A"
+			$langID = "es-PE"
+		Case "281A"
+			$langID = "sr-Cyrl-RS"
+		Case "2C01"
+			$langID = "ar-JO"
+		Case "2C09"
+			$langID = "en-TT"
+		Case "2C0A"
+			$langID = "es-AR"
+		Case "2C1A"
+			$langID = "sr-Latn-ME"
+		Case "3001"
+			$langID = "ar-LB"
+		Case "3009"
+			$langID = "en-ZW"
+		Case "300A"
+			$langID = "es-EC"
+		Case "301A"
+			$langID = "sr-Cyrl-ME"
+		Case "3401"
+			$langID = "ar-KW"
+		Case "3409"
+			$langID = "en-PH"
+		Case "340A"
+			$langID = "es-CL"
+		Case "3801"
+			$langID = "ar-AE"
+		Case "380A"
+			$langID = "es-UY"
+		Case "3C01"
+			$langID = "ar-BH"
+		Case "3C0A"
+			$langID = "es-PY"
+		Case "4001"
+			$langID = "ar-QA"
+		Case "4009"
+			$langID = "en-IN"
+		Case "400A"
+			$langID = "es-BO"
+		Case "4409"
+			$langID = "en-MY"
+		Case "440A"
+			$langID = "es-SV"
+		Case "4809"
+			$langID = "en-SG"
+		Case "480A"
+			$langID = "es-HN"
+		Case "4C0A"
+			$langID = "es-NI"
+		Case "500A"
+			$langID = "es-PR"
+		Case "540A"
+			$langID = "es-US"
+		Case "7C04"
+			$langID = "zh-CHT"
+		Case Else
+			$langID = "en-US"
+	EndSwitch
+
+	Return $langID
+EndFunc   ;==>_getLangID
