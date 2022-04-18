@@ -354,7 +354,6 @@ Func _main()
 			$ExportFileFlag = 0
 			$filePath = FileSaveDialog($oLangStrings.dialog.selectFile, @ScriptDir, $oLangStrings.dialog.ini & " (*.ini)", $FD_PROMPTOVERWRITE, "profiles.ini")
 			If Not @error Then
-				ConsoleWrite("write" & @CRLF)
 				If StringRight($filePath, 4) <> ".ini" Then
 					$filePath &= ".ini"
 				EndIf
