@@ -105,7 +105,7 @@ Global $sProfileName = @ScriptDir & "\profiles.ini"
 ;GUI stuff
 Global $winName = "Simple IP Config"
 Global $winVersion = "2.9.4-beta04"
-Global $winDate = "4/14/2022"
+Global $winDate = "4/18/2022"
 Global $hgui
 Global $guiWidth = 600
 Global $guiHeight = 550

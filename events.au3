@@ -501,6 +501,17 @@ Func _onExportProfiles()
 EndFunc   ;==>_onExportProfiles
 
 ;------------------------------------------------------------------------------
+; Title........: _onOpenProfLoc
+; Description..: open folder containing profiles.ini file
+; Events.......: Tools menu
+;------------------------------------------------------------------------------
+Func _onOpenProfLoc()
+;~ 	Local $path = StringRegExp($sProfileName, "(.*)\\", $STR_REGEXPARRAYGLOBALMATCH)
+	Local $path = $sProfileName
+	Run("explorer.exe /n,/e,/select," & $path)
+EndFunc   ;==>_onExportProfiles
+
+;------------------------------------------------------------------------------
 ; Title........: _onOpenNetConnections
 ; Description..: open the network connections dialog
 ; Events.......: Tools menu

@@ -124,6 +124,7 @@ Func _langStrings()
 	_AutoItObject_AddProperty($oMenuTools, "release")
 	_AutoItObject_AddProperty($oMenuTools, "renew")
 	_AutoItObject_AddProperty($oMenuTools, "cycle")
+	_AutoItObject_AddProperty($oMenuTools, "openprofloc")
 	_AutoItObject_AddProperty($oMenuTools, "settings")
 
 	_AutoItObject_AddProperty($oMenuHelp, "help")
@@ -310,6 +311,7 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.menu.tools.release = Json_Get($jsonData, ".strings.menu.tools.release")
 	$oLangStrings.menu.tools.renew = Json_Get($jsonData, ".strings.menu.tools.renew")
 	$oLangStrings.menu.tools.cycle = Json_Get($jsonData, ".strings.menu.tools.cycle")
+	$oLangStrings.menu.tools.openprofloc = Json_Get($jsonData, ".strings.menu.tools.openprofloc")
 	$oLangStrings.menu.tools.settings = Json_Get($jsonData, ".strings.menu.tools.settings")
 
 	$oLangStrings.menu.help.help = Json_Get($jsonData, ".strings.menu.help.help")
@@ -496,6 +498,7 @@ Func _getEnglish()
 			'            "release":"&Release DHCP",' & _
 			'            "renew":"Re&new DHCP",' & _
 			'            "cycle":"Release/renew &cycle",' & _
+			'            "openprofloc":"Go to profiles.ini folder,"' & _
 			'            "settings":"&Settings"' & _
 			'         },' & _
 			'         "help":{' & _

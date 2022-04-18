@@ -274,6 +274,8 @@ Func _makeMenu()
 	$cycleitem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.cycle, $toolsmenu)
 	GUICtrlSetOnEvent(-1, "_onCycle")
 	GUICtrlCreateMenuItem("", $toolsmenu)
+	Local $openProfLocItem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.openprofloc, $toolsmenu)
+	GUICtrlSetOnEvent(-1, "_onOpenProfLoc")
 	$settingsitem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.settings, $toolsmenu)
 	GUICtrlSetOnEvent(-1, "_onSettings")
 
