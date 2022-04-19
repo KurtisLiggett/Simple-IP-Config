@@ -1473,6 +1473,7 @@ Func _MoveToSubnet()
 	If WinActive($hgui) And _WinAPI_GetAncestor(_WinAPI_GetFocus(), $GA_PARENT) = ControlGetHandle($hgui, "", $ip_Subnet) Then
 		If _GUICtrlIpAddress_Get($ip_Subnet) = "0.0.0.0" Then
 			_GUICtrlIpAddress_Set($ip_Subnet, "255.255.255.0")
+			_GUICtrlIpAddress_SetFocus($ip_Subnet, 0)
 		EndIf
 	EndIf
 	$movetosubnet = 0
@@ -1495,13 +1496,16 @@ Func GetChangeLogData()
 			"     #103   COM Error 80020009 checking for updates." & @CRLF & _
 			"     Bug creating new profiles from scratch." & @CRLF & _
 			"NEW FEATURES:" & @CRLF & _
-			"     Added menu item to open network connections." & @CRLF & _
 			"     #117  Added multi-language support." & @CRLF & _
-			"     #43   Escape key will not close the program." & @CRLF & _
 			"     #99   Added ability to open, import, and export profiles." & @CRLF & _
+			"     Added menu item to open network connections." & @CRLF & _
+			"     Added menu item to go to profiles.ini location." & @CRLF & _
+			"     Select subnet when tabbing from IP." & @CRLF & _
+			"     #43   Escape key will not close the program." & @CRLF & _
 			"     #104   Bring to foreground if already running." & @CRLF & _
 			"MAINT:" & @CRLF & _
 			"     Updated check for updates functionality." & @CRLF & _
+			"     Moved profiles.ini to local AppData" & @CRLF & _
 			"     Code redesigned." & @CRLF & _
 			@CRLF & _
 			"v2.9.3" & @CRLF & _
