@@ -100,7 +100,15 @@ Global Const $wbemFlagReturnImmediately = 0x10
 Global Const $wbemFlagForwardOnly = 0x20
 
 Global $screenshot = 0
-Global $sProfileName = @ScriptDir & "\profiles.ini"
+Global $sProfileName
+If FileExists(@ScriptDir & "\profiles.ini") Then
+	$sProfileName = @ScriptDir & "\profiles.ini"
+Else
+	If Not FileExists(@LocalAppDataDir & "\Simple IP Config") Then
+		DirCreate(@LocalAppDataDir & "\Simple IP Config")
+	EndIf
+	$sProfileName = @LocalAppDataDir & "\Simple IP Config\profiles.ini"
+EndIf
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
