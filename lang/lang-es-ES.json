@@ -1,0 +1,191 @@
+{
+   "language-info":{
+      "name":"Español",
+      "code":"es-ES"
+   },
+   "strings":{
+      "buttonOK":"OK",
+      "buttonCancel":"Cancelar",
+      "buttonSave":"Guardar",
+      "menu":{
+         "file":{
+            "file":"&Archivo",
+            "apply":"&Aplicar perfil",
+            "applyKey":"Enter",
+            "rename":"&Renombrar",
+            "renameKey":"F2",
+            "new":"&Nuevo",
+            "newKey":"Ctrl+n",
+            "save":"&Guardar",
+            "saveKey":"Ctrl+s",
+            "delete":"&Eliminar",
+            "deleteKey":"Del",
+            "clear":"&Limpiar Entradas",
+            "clearKey":"Ctrl+c",
+            "shortcut":"Crear Acceso directo a perfil",
+            "open":"Abrir Archivo",
+            "import":"Importar Perfil",
+            "export":"Exportar Perfil",
+            "exit":"&Salir"
+         },
+         "view":{
+            "view":"&Ver",
+            "refresh":"&Actualizar",
+            "refreshKey":"Ctrl+r",
+            "tray":"Ocultar en barra de tareas",
+            "trayKey":"Ctrl+t",
+            "hide":"Ocultar adaptadores"
+         },
+         "tools":{
+            "tools":"&Herramientas",
+            "netConn":"Abrir Conexiones de Red",
+            "pull":"&Pull from adapter",
+            "pullKey":"Ctrl+p",
+            "disable":"Deshabilitar Adaptador",
+            "enable":"Habilitar Adaptador",
+            "release":"&Liberar DHCP (release)",
+            "renew":"Re&novar DHCP (renew)",
+            "cycle":"Release/renew &ciclo",
+            "openprofloc":"Ir a carpeta profiles.ini",
+            "settings":"&Opciones"
+         },
+         "help":{
+            "help":"&Ayuda",
+            "docs":"&Documentacion Online",
+            "docsKey":"F1",
+            "changelog":"Mostrar &Registro de cambios",
+            "update":"Verificar &Actualizaciones...",
+            "debug":"&depurar informacion",
+            "about":"&Acerca de Simple IP Config"
+         }
+      },
+      "traymenu":{
+         "hide":"Ocultar",
+         "restore":"Restaurar",
+         "about":"Acerca de",
+         "exit":"Salir"
+      },
+      "lvmenu":{
+         "rename":"Renombrar",
+         "delete":"Eliminar",
+         "sortAsc":"Ordenar A->Z",
+         "sortDesc":"Ordenar Z->A",
+         "shortcut":"Crear acceso directo a perfil"
+      },
+      "toolbar":{
+         "apply":"Aplicar",
+         "refresh":"Refrescar",
+         "new":"Nuevo",
+         "save":"Guardar",
+         "delete":"Eliminar",
+         "clear":"Clear",
+         "apply_tip":"Aplicar",
+         "refresh_tip":"Actualizar",
+         "new_tip":"Crear nuevo perfil",
+         "save_tip":"Guardar Perfil",
+         "delete_tip":"Eliminar Perfil",
+         "clear_tip":"Limpiar Entrdas",
+         "settings_tip":"Opciones",
+         "tray_tip":"Ocultar en  barra de escritorio"
+      },
+      "interface":{
+         "computername":"Nombre Equipo",
+         "domain":"Dominio",
+         "workgroup":"Grupo de trabajo",
+         "adapterDesc":"Descripcion",
+         "mac":"Direccion MAC",
+         "select":"Seleccionar Adaptador",
+         "profiles":"Perfil",
+         "profileprops":"Propiedades Perfil IP ",
+         "currentprops":"Propiedades del adaptador actual",
+         "restarting":"Reiniciando",
+         "props":{
+            "ip":"Dirección IP",
+            "subnet":"Máscara Subnet",
+            "gateway":"Puerta de Enlace",
+            "dnsPref":"Servidor DNS Preferido",
+            "dnsAlt":"Servidor DNS Alternativo",
+            "dhcpServer":"Servidor DHCP",
+            "adapterState":"Estado de Adaptador",
+            "adapterStateEnabled":"Habilitado",
+            "adapterStateDisabled":"Deshabilitado",
+			"adapterStateUnplugged":"Desconectado",
+            "ipauto":"Establecer automáticamente la dirección IP",
+            "ipmanual":"Establecer manualmente la dirección IP",
+            "dnsauto":"Establecer automáticamente la dirección DNS",
+            "dnsmanual":"Establecer manualmente la dirección DNS",
+            "dnsreg":"Registrar Direcciones"
+         }
+      },
+      "updates":{
+         "title":"Buscar actualizaciones",
+         "thisVersion":"Esta Versión",
+         "latestVersion":"Ultima versión",
+         "newMessage":"Una nueva versión está disponible.",
+         "latestMessage":"Tienes la última versión."
+      },
+      "about":{
+         "title":"Acerda de",
+         "version":"Versión",
+         "date":"Fecha",
+         "dev":"Desarrollador",
+         "lic":"Licencia",
+         "desc":"La utiliad portable  ip changer, permite al usuario cambiar rápida y fácilmente la configuración de red más común para cualquier conexión.",
+         "icons":"Los íconos del programa son de"
+      },
+      "changelog":{
+         "changelog":"Registro de cambios"
+      },
+      "blacklist":{
+         "title":"Lista negra de adaptadores",
+         "heading":"Seleccionar adaptadores para ocultar"
+      },
+      "settings":{
+         "title":"Opciones",
+         "lang":"Idioma",
+         "opt1":"Inicio en la bara de escritorio",
+         "opt2":"Minimizar a la barra de escritorio",
+         "opt3":"Guardar adaptador en perfil",
+         "opt4":"Buscar actualizaciones automáticamente"
+      },
+      "message":{
+         "ready":"Listo",
+         "timedout":"¡Se agotó el tiempo de acción! Comando abortado.",
+         "couldNotSave":"¡No se pudo guardar en la ubicación seleccionada!",
+         "updatingList":"Actualizando lista de adaptadores...",
+         "selectAdapter":"Seleccione un adaptador y vuelva a intentarlo",
+		 "enterIP":"Ingrese una dirección IP",
+         "enterSubnet":"Ingrese una máscara de subred",
+         "settingIP":"Configurando dirección IP estática...",
+         "settingDnsDhcp":"Configurando DNS DHCP...",
+         "settingDnsPref":"Configurando el servidor DNS preferido...",
+         "settingDnsAlt":"Configurando servidor DNS alternativo...",
+         "errorOccurred":"Ocurrió un error",
+         "profileNameExists":"¡El nombre del perfil ya existe!",
+         "noProfileSel":"¡No se ha seleccionado ningún perfil!",
+         "profilesNotFound":"No se encontró el archivo Profiles.ini - Se creará un nuevo archivo",
+         "errorReadingProf":"Error al leer perfiles.ini",
+         "adapterNotFound":"Adaptador no encontrado",
+         "error":"Error",
+         "advertencia":"Advertencia",
+         "newItem":"Nuevo elemento",
+         "applying":"Aplicando perfil",
+         "errorRetrieving":"Hubo un problema al recuperar los adaptadores..",
+         "commandTimeout":"Tiempo de espera agotado",
+         "updateCheckError":"Se encontró un error al recuperar la actualización.",
+         "checkConnect":"Por favor revise su conexion a internet.",
+         "errorCode":"Error de codigo",
+         "newVersion":"Una nueva versión está disponible",
+         "currentVersion":"Tienes la ultima versión.",
+         "yourVersion":"Tu versión es",
+         "latestVersion":"La Ultima versión es",
+         "loadedFile":"Archivo Cargado",
+         "doneImporting":"Importación de perfil hecha!!!",
+         "fileSaved":"Archivo Guardado"
+      },
+      "dialog":{
+         "selectFile":"Seleccionar Archivo",
+         "ini":"Archivo INI"
+      }
+   }
+}
