@@ -49,7 +49,6 @@
 #include <WinAPIEx.au3>
 #include <GDIPlus.au3>
 #include <GUIImageList.au3>
-#include <GUIToolbar.au3>
 #include <GuiListView.au3>
 #include <GuiIPAddress.au3>
 #include <GuiMenu.au3>
@@ -178,11 +177,7 @@ Global $label_CurrIp, $label_CurrSubnet, $label_CurrGateway, $label_CurrDnsPri, 
 Global $label_DnsPri, $label_DnsAlt, $ck_dnsReg, $label_ip, $label_subnet, $label_gateway
 
 ; TOOLBAR
-Global $oToolbar, $oToolbar2, $hTool, $hTool2
-Global $hToolbar, $hToolbar2
-Global $ToolbarIDs, $Toolbar2IDs
-Global Enum $tb_apply = 1000, $tb_refresh, $tb_add, $tb_save, $tb_delete, $tb_clear
-Global Enum $tb_settings = 2000, $tb_tray
+Global $oToolbar, $oToolbar2, $tbButtonApply
 
 ; LANGUAGE VARIABLES
 Global $oLangStrings

@@ -503,7 +503,7 @@ Func _makeToolbar()
 	$oToolbar = _GuiFlatToolbarCreate(-1, 4, 4, 52 * $dscale, $tbarHeight * $dscale - 8, $aColorsEx)
 	_GuiFlatToolbar_SetBkColor($oToolbar, 0x666666)
 	;add new buttons and associate an icon
-	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.apply, _getMemoryAsIcon(GetIconData($pngAccept)))
+	$tbButtonApply = _GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.apply, _getMemoryAsIcon(GetIconData($pngAccept)))
 	GUICtrlSetTip(-1, $oLangStrings.toolbar.apply_tip)
 	GUICtrlSetOnEvent(-1, "_apply_GUI")
 	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.refresh, _getMemoryAsIcon(GetIconData($pngRefresh)))

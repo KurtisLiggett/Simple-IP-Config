@@ -48,31 +48,40 @@ Func RunCallback($sDescription, $sNextDescription, $sStdOut)
 	If $sStdOut = $oLangStrings.message.commandTimeout Then
 		_setStatus($oLangStrings.message.timedout, 1)
 		If asyncRun_isIdle() Then
-			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+;~ 			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+			GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
+			GUICtrlSetState
 		Else
-			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+;~ 			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+			GuiFlatButton_SetState($tbButtonApply, $GUI_DISABLE)
 		EndIf
 	Else
 		If StringInStr($sStdOut, "failed") Then
 			_setStatus(StringReplace($sStdOut, @CRLF, " "), 1)
 			If asyncRun_isIdle() Then
-				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+;~ 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+				GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
 			EndIf
 		ElseIf StringInStr($sStdOut, "exists") Then
 			_setStatus(StringReplace($sStdOut, @CRLF, " "), 1)
-			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+;~ 			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+			GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
 			_asyncRun_Clear()
 		Else
 			If $sDescription = $sNextDescription Then
 				If Not $showWarning Then _setStatus($sNextDescription)
-				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+;~ 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+				GuiFlatButton_SetState($tbButtonApply, $GUI_DISABLE)
 			ElseIf asyncRun_isIdle() Then
-				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+;~ 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+				GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
 				If Not $showWarning Then _setStatus($oLangStrings.message.ready)
-				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+;~ 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+				GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
 			Else
 				If Not $showWarning Then _setStatus($sNextDescription)
-				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+;~ 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+				GuiFlatButton_SetState($tbButtonApply, $GUI_DISABLE)
 			EndIf
 		EndIf
 	EndIf
@@ -1056,7 +1065,8 @@ Func _refresh($init = 0)
 		If Not $init Or ($init And Not $showWarning) Then
 			_setStatus($oLangStrings.message.ready)
 		EndIf
-		_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+;~ 		_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+		GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
 	EndIf
 EndFunc   ;==>_refresh
 
@@ -1421,8 +1431,6 @@ Func _maximize()
 	GUISetState(@SW_SHOW, $hGUI)
 	GUISetState(@SW_RESTORE, $hGUI)
 
-	GUISetState(@SW_SHOWNOACTIVATE, $hTool)
-	GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
 	TrayItemSetText($RestoreItem, $oLangStrings.traymenu.hide)
 EndFunc   ;==>_maximize
 

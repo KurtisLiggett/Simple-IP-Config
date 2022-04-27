@@ -943,6 +943,7 @@ Func GuiFlatButton_DrawButton($hwnd, $hCtrl, $hDC, $iLeft, $iTop, $iRight, $iBot
 		$nClrTxt_select = $aGuiFlatButton[$idx][15]
 	EndIf
 
+
 	;check button state and select the colors
 	Local $hBrush, $hBrushFrame
 	Local $colorButton, $colorFrame, $colorText
@@ -962,6 +963,10 @@ Func GuiFlatButton_DrawButton($hwnd, $hCtrl, $hDC, $iLeft, $iTop, $iRight, $iBot
 		$colorButton = $nClrButton
 		$colorFrame = $nClrFrame
 		$colorText = $nClrTxt
+	EndIf
+
+	If BitAND( $nItemState, $ODS_DISABLED) = $ODS_DISABLED Then
+		$colorButton = $nClrButton_Hover
 	EndIf
 
 	;--------------------------
@@ -1170,7 +1175,6 @@ Func GuiFlatButton_DrawButton($hwnd, $hCtrl, $hDC, $iLeft, $iTop, $iRight, $iBot
 		Else
 			Return -1
 		EndIf
-
 	EndIf
 
 	;text position setup
@@ -1179,6 +1183,8 @@ Func GuiFlatButton_DrawButton($hwnd, $hCtrl, $hDC, $iLeft, $iTop, $iRight, $iBot
 	If $iTextHeight > $bmHeight Then
 		$useTextHeight = 1
 	EndIf
+
+;~ 	$bBottom = BitAND($aGuiFlatButton[$idx][20], $BS_BOTTOM) = $BS_BOTTOM
 	If $bBottom Then
 		If $bLeft Then
 			$nTmpLeft = $bmWidth + 2 + 1
@@ -1244,7 +1250,8 @@ Func GuiFlatButton_DrawButton($hwnd, $hCtrl, $hDC, $iLeft, $iTop, $iRight, $iBot
 	ElseIf $bToolButton Then
 		$nTmpLeft = $iLeft + ($iRight - $iLeft) / 2 - $iTextWidth / 2
 		$nTmpRight = $iRight - ($nTmpLeft - $iLeft)
-		$nTmpTop = ($iBottom - $iTop) / 2 - ($iTextHeight + $bmHeight) / 2 + $bmHeight + 1
+;~ 		$nTmpTop = ($iBottom - $iTop) / 2 - ($iTextHeight + $bmHeight) / 2 + $bmHeight + 1
+		$nTmpTop = $iBottom - $iTextHeight - 2
 		$nTmpBottom = $nTmpTop + $iTextHeight
 	Else
 		$nTmpLeft = $iLeft + ($iRight - $iLeft) / 2 - ($iTextWidth + $bmWidth + 2) / 2 + $bmWidth + 1
