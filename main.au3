@@ -116,9 +116,9 @@ Global $winVersion = "2.9.4-beta05"
 Global $winDate = "4/19/2022"
 Global $hgui
 Global $guiWidth = 600
-Global $guiHeight = 550
+Global $guiHeight = 600
 Global $footerHeight = 16
-Global $tbarHeight = 49
+Global $tbarHeight = 52
 Global $dscale = 1
 Global $iDPI = 0
 
@@ -178,7 +178,7 @@ Global $label_CurrIp, $label_CurrSubnet, $label_CurrGateway, $label_CurrDnsPri, 
 Global $label_DnsPri, $label_DnsAlt, $ck_dnsReg, $label_ip, $label_subnet, $label_gateway
 
 ; TOOLBAR
-Global $hTool, $hTool2
+Global $oToolbar, $oToolbar2, $hTool, $hTool2
 Global $hToolbar, $hToolbar2
 Global $ToolbarIDs, $Toolbar2IDs
 Global Enum $tb_apply = 1000, $tb_refresh, $tb_add, $tb_save, $tb_delete, $tb_clear
@@ -198,6 +198,7 @@ Global $oLangStrings
 #include "libraries\StringSize.au3"
 #include "libraries\Toast.au3"
 #include "libraries\_NetworkStatistics.au3"
+#include "libraries\GuiFlatToolbar.au3"
 #include "functions.au3"
 #include "events.au3"
 #include "network.au3"

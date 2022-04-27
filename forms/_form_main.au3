@@ -22,6 +22,7 @@
 ; Description:	- GUI creation and related functions
 ;==============================================================================
 
+
 Func _form_main()
 	; GUI FORMATTING
 	$ixCoordMin = _WinAPI_GetSystemMetrics(76)
@@ -53,7 +54,7 @@ Func _form_main()
 
 	;$hgui = GUICreate( $winName & " " & $winVersion, $guiWidth*$dscale, $guiHeight*$dscale, @DesktopWidth/2-$guiWidth*$dscale/2, @DesktopHeight/2-$guiHeight*$dscale/2, BITOR($GUI_SS_DEFAULT_GUI,$WS_CLIPCHILDREN, $WS_SIZEBOX), $WS_EX_COMPOSITED )
 	$hgui = GUICreate($winName & " " & $winVersion, $guiWidth * $dscale, $guiHeight * $dscale, $xpos, $ypos, BitOR($GUI_SS_DEFAULT_GUI, $WS_CLIPCHILDREN), $WS_EX_COMPOSITED)
-	GUISetBkColor(0xFFFFFF)
+	GUISetBkColor(0x666666)
 
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 	_GDIPlus_Startup()
@@ -137,9 +138,10 @@ Func _form_main()
 	TraySetOnEvent($TRAY_EVENT_PRIMARYDOWN, "_OnTrayClick")
 	TraySetToolTip($winName)
 
-	GUICtrlCreateLabel("", 0, 0, $guiWidth * $dscale, $guiHeight * $dscale)
+;~ 	GUICtrlCreateLabel("", 0, 0, $guiWidth * $dscale, $guiHeight * $dscale)
 	;GUICtrlSetBkColor(-1,0xC9C9C9)
-	GUICtrlSetBkColor(-1, 0x666666)
+;~ 	GUICtrlSetBkColor(-1, 0x666666)
+;~ 	GUICtrlSetState(-1, $GUI_DISABLE)
 
 	If IsObj($profiles) Then
 		If $profiles.count > 0 Then
@@ -152,12 +154,12 @@ Func _form_main()
 	$sStartupMode = $options.StartupMode
 	If $sStartupMode <> "1" And $sStartupMode <> "true" Then
 		GUISetState(@SW_SHOW, $hgui)
-		GUISetState(@SW_SHOWNOACTIVATE, $hTool)
-		GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
+;~ 		GUISetState(@SW_SHOWNOACTIVATE, $hTool)
+;~ 		GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
 
 		GUISetState(@SW_SHOW, $hgui)
-		GUISetState(@SW_SHOWNOACTIVATE, $hTool)
-		GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
+;~ 		GUISetState(@SW_SHOWNOACTIVATE, $hTool)
+;~ 		GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
 	Else
 		TrayItemSetText($RestoreItem, $oLangStrings.traymenu.restore)
 	EndIf
@@ -174,16 +176,16 @@ Func _makeFooter()
 	GUICtrlSetBkColor(-1, 0x404040)
 
 	If $screenshot Then
-		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": ________", $x + 3, $y + 2, $w, $h)
+		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": ________", $x + 3, $y + 2, $w/2, $h)
 	Else
-		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": " & @ComputerName, $x + 3, $y + 2, $w, $h)
+		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": " & @ComputerName, $x + 3, $y + 2, $w/2, $h)
 	EndIf
-	GUICtrlSetBkColor($computerName, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetBkColor($computerName, 0x666666)
 	_setFont($computerName, 8, -1, 0xFFFFFF)
 
 	If @LogonDomain <> "" Then
-		$domainName = GUICtrlCreateLabel("", $x, $y + 2, $w - 3, $h, $SS_RIGHT)
-		GUICtrlSetBkColor($domainName, $GUI_BKCOLOR_TRANSPARENT)
+		$domainName = GUICtrlCreateLabel("", $w/2, $y + 2, $w/2 - 3, $h, $SS_RIGHT)
+		GUICtrlSetBkColor($domainName, 0x666666)
 		_setFont($domainName, 8, -1, 0xFFFFFF)
 	EndIf
 
@@ -491,74 +493,47 @@ Func _makeComboSelect($label, $x, $y, $w, $h)
 EndFunc   ;==>_makeComboSelect
 
 Func _makeToolbar()
-	$tb2_width = $tbarHeight * $dscale / 2 - 4 * $dscale
+	Local $aColorsEx = _
+		[0x666666, 0xFCFCFC, 0x666666, _	; normal 	: Background, Text, Border
+		0x666666, 0xFCFCFC, 0x666666, _	 	; focus 	: Background, Text, Border
+		0x888888, 0xFCFCFC, 0x999999, _	 	; hover 	: Background, Text, Border
+		0x555555, 0xFCFCFC, 0x444444] 		; selected 	: Background, Text, Border
 
-	$hTool = GUICreate('', $guiWidth * $dscale - 18 * $dscale - 6, $tbarHeight * $dscale - 1, 0, 0, $WS_CHILD, 0, $hgui)
-	$hToolbar = _GUICtrlToolbar_Create($hTool, BitOR($BTNS_BUTTON, $BTNS_SHOWTEXT, $TBSTYLE_FLAT, $TBSTYLE_TOOLTIPS), $TBSTYLE_EX_DOUBLEBUFFER)
-	GUICtrlSetBkColor(-1, GUISetBkColor(0x888889))
-	$ToolbarIDs = GUICtrlCreateDummy()
-	GUICtrlSetOnEvent(-1, "_OnToolbarButton")
+	;create horizontal toolbar and add buttons
+	$oToolbar = _GuiFlatToolbarCreate(-1, 4, 4, 52 * $dscale, $tbarHeight * $dscale - 8, $aColorsEx)
+	_GuiFlatToolbar_SetBkColor($oToolbar, 0x666666)
+	;add new buttons and associate an icon
+	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.apply, _getMemoryAsIcon(GetIconData($pngAccept)))
+	GUICtrlSetTip(-1, $oLangStrings.toolbar.apply_tip)
+	GUICtrlSetOnEvent(-1, "_apply_GUI")
+	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.refresh, _getMemoryAsIcon(GetIconData($pngRefresh)))
+	GUICtrlSetTip(-1, $oLangStrings.toolbar.refresh_tip)
+	GUICtrlSetOnEvent(-1, "_onRefresh")
+	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.new, _getMemoryAsIcon(GetIconData($pngAdd)))
+	GUICtrlSetTip(-1, $oLangStrings.toolbar.new_tip)
+	GUICtrlSetOnEvent(-1, "_onNewItem")
+	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.save, _getMemoryAsIcon(GetIconData($pngSave)))
+	GUICtrlSetTip(-1, $oLangStrings.toolbar.save_tip)
+	GUICtrlSetOnEvent(-1, "_onSave")
+	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.delete, _getMemoryAsIcon(GetIconData($pngDelete)))
+	GUICtrlSetTip(-1, $oLangStrings.toolbar.delete_tip)
+	GUICtrlSetOnEvent(-1, "_onDelete")
+	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.clear, _getMemoryAsIcon(GetIconData($pngEdit)))
+	GUICtrlSetTip(-1, $oLangStrings.toolbar.clear_tip)
+	GUICtrlSetOnEvent(-1, "_onClear")
 
-	$hImageList = _GUIImageList_Create(24, 24, 5, 1, 5)
-	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon(GetIconData($pngAccept)))
-	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon(GetIconData($pngRefresh)))
-	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon(GetIconData($pngAdd)))
-	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon(GetIconData($pngSave)))
-	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon(GetIconData($pngDelete)))
-	_GUIImageList_ReplaceIcon($hImageList, -1, _getMemoryAsIcon(GetIconData($pngEdit)))
+	_GuiFlatToolbar_SetAutoWidth($oToolbar)
 
-	_GUICtrlToolbar_SetImageList($hToolbar, $hImageList)
-
-	Local $aStringList[6]
-	$aStringList[0] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.apply)
-	$aStringList[1] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.refresh)
-	$aStringList[2] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.new)
-	$aStringList[3] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.save)
-	$aStringList[4] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.delete)
-	$aStringList[5] = _GUICtrlToolbar_AddString($hToolbar, $oLangStrings.toolbar.clear)
-
-	$bbutton = _GUICtrlToolbar_AddButton($hToolbar, $tb_apply, 0, $aStringList[0])
-	$bbutton = _GUICtrlToolbar_AddButton($hToolbar, $tb_refresh, 1, $aStringList[1])
-	$bbutton = _GUICtrlToolbar_AddButtonSep($hToolbar, 5)
-	$bbutton = _GUICtrlToolbar_AddButton($hToolbar, $tb_add, 2, $aStringList[2])
-	$bbutton = _GUICtrlToolbar_AddButton($hToolbar, $tb_save, 3, $aStringList[3])
-	$bbutton = _GUICtrlToolbar_AddButton($hToolbar, $tb_delete, 4, $aStringList[4])
-	$bbutton = _GUICtrlToolbar_AddButtonSep($hToolbar, 5)
-	$bbutton = _GUICtrlToolbar_AddButton($hToolbar, $tb_clear, 5, $aStringList[5])
-
-	_GUICtrlToolbar_SetButtonWidth($hToolbar, 35 * $dscale, 80 * $dscale)
-	_GUICtrlToolbar_SetMetrics($hToolbar, 0, 0, 1, 0)
-	_GUICtrlToolbar_SetIndent($hToolbar, 1)
-
-;~ 	_GUICtrlToolbar_SetButtonSize($hToolbar, $tbarHeight*$dscale-4*$dscale, 75*$dscale)
-	;_SendMessage($hToolbar, $TB_AUTOSIZE)
-
-	GUISwitch($hgui)
-
-	$hTool2 = GUICreate('', 18 * $dscale + 6, $tbarHeight * $dscale - 1, $guiWidth * $dscale - 18 * $dscale - 6, 0, $WS_CHILD, 0, $hgui)
-	$hToolbar2 = _GUICtrlToolbar_Create($hTool2, BitOR($BTNS_BUTTON, $BTNS_SHOWTEXT, $TBSTYLE_FLAT, $TBSTYLE_TOOLTIPS), $TBSTYLE_EX_DOUBLEBUFFER)
-	GUICtrlSetBkColor(-1, GUISetBkColor(0x888889))
-	$Toolbar2IDs = GUICtrlCreateDummy()
-	GUICtrlSetOnEvent(-1, "_OnToolbar2Button")
-
-	$hImageList2 = _GUIImageList_Create(16, 16, 5, 1, 2)
-	_GUIImageList_ReplaceIcon($hImageList2, -1, _getMemoryAsIcon(GetIconData($pngSettings)))
-	_GUIImageList_ReplaceIcon($hImageList2, -1, _getMemoryAsIcon(GetIconData($pngTray)))
-
-	_GUICtrlToolbar_SetImageList($hToolbar2, $hImageList2)
-
-	_GUICtrlToolbar_SetButtonSize($hToolbar2, 18 * $dscale, 18 * $dscale)
-
-	$bbutton = _GUICtrlToolbar_AddButton($hToolbar2, $tb_settings, 0, 0)
-	$bbutton = _GUICtrlToolbar_AddButton($hToolbar2, $tb_tray, 1, 1)
-
-	_GUICtrlToolbar_SetRows($hToolbar2, 2)
-
-
-	GUISwitch($hgui)
-
-	GUICtrlCreateLabel('', 0, $tbarHeight * $dscale, $guiWidth * $dscale, 1)
-	GUICtrlSetBkColor(-1, 0x101010)
+	;create vertical toolbar and add buttons
+	$oToolbar2 = _GuiFlatToolbarCreate(BitOR($GFTB_VERTICAL, $GFTB_RIGHT), 4, 4, 22 * $dscale, 22 * $dscale, $aColorsEx)
+	_GuiFlatToolbar_SetBkColor($oToolbar2, 0x666666)
+	;add new buttons and associate an icon
+	_GuiFlatToolbar_AddButton($oToolbar2, "", _getMemoryAsIcon(GetIconData($pngSettings)))
+	GUICtrlSetTip(-1, $oLangStrings.toolbar.settings_tip)
+	GUICtrlSetOnEvent(-1, "_onSettings")
+	_GuiFlatToolbar_AddButton($oToolbar2, "", _getMemoryAsIcon(GetIconData($pngTray)))
+	GUICtrlSetTip(-1, $oLangStrings.toolbar.tray_tip)
+	GUICtrlSetOnEvent(-1, "_onTray")
 EndFunc   ;==>_makeToolbar
 
 ; Create Header
@@ -647,20 +622,6 @@ EndFunc   ;==>_makeBox
 #EndRegion -- MAIN GUI CREATION --
 
 #Region -- Helper Functions --
-Func _memoryToPic($idPic, $name)
-	$hBmp = _GDIPlus_BitmapCreateFromMemory(Binary($name), 1)
-	_WinAPI_DeleteObject(GUICtrlSendMsg($idPic, 0x0172, 0, $hBmp))
-	_WinAPI_DeleteObject($hBmp)
-	Return 0
-EndFunc   ;==>_memoryToPic
-
-Func _getMemoryAsIcon($name)
-	$Bmp = _GDIPlus_BitmapCreateFromMemory(Binary($name))
-	$hIcon = _GDIPlus_HICONCreateFromBitmap($Bmp)
-	_GDIPlus_ImageDispose($Bmp)
-	Return $hIcon
-EndFunc   ;==>_getMemoryAsIcon
-
 Func _setFont($ControlID, $size, $bkcolor = -1, $color = 0x000000)
 	Local $LControlID
 	If $ControlID = -1 Then
