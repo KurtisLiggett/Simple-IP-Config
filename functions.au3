@@ -1510,7 +1510,7 @@ Func GetChangeLogData()
 			"     #43   Escape key will no longer close the program." & @CRLF & _
 			"     #104   Bring to foreground if already running." & @CRLF & _
 			"MAINT:" & @CRLF & _
-			"     New toolbar icons." & @CRLF _
+			"     New toolbar icons." & @CRLF & _
 			"     Updated check for updates functionality." & @CRLF & _
 			"     Moved profiles.ini to local AppData" & @CRLF & _
 			"     Code redesigned." & @CRLF & _
