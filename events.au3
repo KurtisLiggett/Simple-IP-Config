@@ -411,48 +411,6 @@ Func _OnCombo()
 EndFunc   ;==>_OnCombo
 
 ;------------------------------------------------------------------------------
-; Title........: _OnToolbarButton
-; Description..: Check to see which toolbar button was clicked
-; Events.......: Any toolbar button click
-;------------------------------------------------------------------------------
-Func _OnToolbarButton()
-	$ID = GUICtrlRead($ToolbarIDs)
-	Switch $ID
-		Case $tb_apply ; Button 1
-			_apply_GUI()
-		Case $tb_refresh ; Button 2
-			_onRefresh()
-		Case $tb_add ; Button 3
-			_onNewItem()
-		Case $tb_save ; Button 4
-			_onSave()
-		Case $tb_delete ; Button 5
-			_onDelete()
-		Case $tb_clear ; Button 5
-			_onClear()
-		Case Else
-
-	EndSwitch
-EndFunc   ;==>_OnToolbarButton
-
-;------------------------------------------------------------------------------
-; Title........: _OnToolbar2Button
-; Description..: Check to see which right toolbar button was clicked
-; Events.......: Any right toolbar button click
-;------------------------------------------------------------------------------
-Func _OnToolbar2Button()
-	$ID = GUICtrlRead($Toolbar2IDs)
-	Switch $ID
-		Case $tb_settings ; Button 5
-			_onSettings()
-		Case $tb_tray ; Button 5
-			_onTray()
-		Case Else
-
-	EndSwitch
-EndFunc   ;==>_OnToolbar2Button
-
-;------------------------------------------------------------------------------
 ; Title........: _iconLink
 ; Description..: Open browser and go to icon website
 ; Events.......: Click on link in About window
@@ -536,21 +494,7 @@ Func WM_COMMAND($hWnd, $iMsg, $wParam, $lParam)
 	Local $tempstring, $iDot1Pos, $iDot2Pos, $iDot3Pos, $SplitString, $temp, $tip
 
 	Switch $hWnd
-		Case $hTool
-			Switch $ID
-				Case $tb_apply To $tb_clear ; Button 1 - Button 8
-					GUICtrlSendToDummy($ToolbarIDs, $ID)
-				Case Else
-
-			EndSwitch
-		Case $hTool2
-			Switch $ID
-				Case $tb_settings To $tb_tray ; Button 1 - Button 8
-					GUICtrlSendToDummy($Toolbar2IDs, $ID)
-				Case Else
-
-			EndSwitch
-		Case Else
+		Case $hgui
 			If $iCode = $EN_CHANGE Then
 				Switch $iIDFrom
 					Case $input_filter
@@ -587,65 +531,8 @@ Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 	$iIDFrom = DllStructGetData($tNMHDR, "IDFrom")
 	$iCode = DllStructGetData($tNMHDR, "Code")
 
-
 	Switch $hWnd
-		Case $hTool
-			Switch $hTarget
-				Case $hToolbar
-					Switch $ID
-						Case $TBN_GETINFOTIPW
-
-;~                          Local $tNMTBGIT = DllStructCreate($tagNMTBGETINFOTIP, $lParam)
-							Local $tNMTBGIT = DllStructCreate($tagNMHDR & ';ptr Text;int TextMax;int Item;lparam lParam;', $lParam)
-							Local $Item = DllStructGetData($tNMTBGIT, 'Item')
-							Local $Text = ''
-
-							Switch $Item
-								Case $tb_apply ; Button 1
-									$Text = $oLangStrings.toolbar.apply_tip
-								Case $tb_refresh ; Button 2
-									$Text = $oLangStrings.toolbar.refresh_tip
-								Case $tb_add ; Button 3
-									$Text = $oLangStrings.toolbar.new_tip
-								Case $tb_save ; Button 4
-									$Text = $oLangStrings.toolbar.save_tip
-								Case $tb_delete ; Button 5
-									$Text = $oLangStrings.toolbar.delete_tip
-								Case $tb_clear ; Button 6
-									$Text = $oLangStrings.toolbar.clear_tip
-								Case Else
-
-							EndSwitch
-							If $Text Then
-								DllStructSetData(DllStructCreate('wchar[' & DllStructGetData($tNMTBGIT, 'TextMax') & ']', DllStructGetData($tNMTBGIT, 'Text')), 1, $Text)
-							EndIf
-					EndSwitch
-			EndSwitch
-		Case $hTool2
-			Switch $hTarget
-				Case $hToolbar2
-					Switch $ID
-						Case $TBN_GETINFOTIPW
-
-;~                          Local $tNMTBGIT = DllStructCreate($tagNMTBGETINFOTIP, $lParam)
-							Local $tNMTBGIT = DllStructCreate($tagNMHDR & ';ptr Text;int TextMax;int Item;lparam lParam;', $lParam)
-							Local $Item = DllStructGetData($tNMTBGIT, 'Item')
-							Local $Text = ''
-
-							Switch $Item
-								Case $tb_settings ; Button 1
-									$Text = $oLangStrings.toolbar.settings_tip
-								Case $tb_tray ; Button 2
-									$Text = $oLangStrings.toolbar.tray_tip
-								Case Else
-
-							EndSwitch
-							If $Text Then
-								DllStructSetData(DllStructCreate('wchar[' & DllStructGetData($tNMTBGIT, 'TextMax') & ']', DllStructGetData($tNMTBGIT, 'Text')), 1, $Text)
-							EndIf
-					EndSwitch
-			EndSwitch
-		Case Else
+		Case $hgui
 			Switch $hWndFrom
 				Case $hWndListView
 					Switch $iCode

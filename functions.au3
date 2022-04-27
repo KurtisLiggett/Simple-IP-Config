@@ -1334,11 +1334,17 @@ Func _updateCurrent($init = 0, $selected_adapter = "")
 	EndIf
 
 	If Adapter_Exists($adapters, $selected_adapter) Then
-		GUICtrlSetData($lDescription, Adapter_GetDescription($adapters, $selected_adapter))
+		Local $newDesc = Adapter_GetDescription($adapters, $selected_adapter)
+		if GUICtrlRead($lDescription) <> $newDesc Then
+			GUICtrlSetData($lDescription, $newDesc)
+		EndIf
 		If $screenshot Then
 			GUICtrlSetData($lMac, $oLangStrings.interface.mac & ": " & "XX-XX-XX-XX-XX-XX")
 		Else
-			GUICtrlSetData($lMac, $oLangStrings.interface.mac & ": " & Adapter_GetMAC($adapters, $selected_adapter))
+			Local $newMAC = $oLangStrings.interface.mac & ": " & Adapter_GetMAC($adapters, $selected_adapter)
+			if GUICtrlRead($lMac) <> $newMAC Then
+				GUICtrlSetData($lMac, $newMAC)
+			EndIf
 		EndIf
 	Else
 		GUICtrlSetData($lDescription, "! " & $oLangStrings.message.adapterNotFound & " !")
@@ -1501,9 +1507,10 @@ Func GetChangeLogData()
 			"     Added menu item to open network connections." & @CRLF & _
 			"     Added menu item to go to profiles.ini location." & @CRLF & _
 			"     Select subnet when tabbing from IP." & @CRLF & _
-			"     #43   Escape key will not close the program." & @CRLF & _
+			"     #43   Escape key will no longer close the program." & @CRLF & _
 			"     #104   Bring to foreground if already running." & @CRLF & _
 			"MAINT:" & @CRLF & _
+			"     New toolbar icons." & @CRLF _
 			"     Updated check for updates functionality." & @CRLF & _
 			"     Moved profiles.ini to local AppData" & @CRLF & _
 			"     Code redesigned." & @CRLF & _
