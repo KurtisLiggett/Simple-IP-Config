@@ -48,31 +48,40 @@ Func RunCallback($sDescription, $sNextDescription, $sStdOut)
 	If $sStdOut = $oLangStrings.message.commandTimeout Then
 		_setStatus($oLangStrings.message.timedout, 1)
 		If asyncRun_isIdle() Then
-			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+;~ 			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+			GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
+			GUICtrlSetState
 		Else
-			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+;~ 			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+			GuiFlatButton_SetState($tbButtonApply, $GUI_DISABLE)
 		EndIf
 	Else
 		If StringInStr($sStdOut, "failed") Then
 			_setStatus(StringReplace($sStdOut, @CRLF, " "), 1)
 			If asyncRun_isIdle() Then
-				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+;~ 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+				GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
 			EndIf
 		ElseIf StringInStr($sStdOut, "exists") Then
 			_setStatus(StringReplace($sStdOut, @CRLF, " "), 1)
-			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+;~ 			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+			GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
 			_asyncRun_Clear()
 		Else
 			If $sDescription = $sNextDescription Then
 				If Not $showWarning Then _setStatus($sNextDescription)
-				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+;~ 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+				GuiFlatButton_SetState($tbButtonApply, $GUI_DISABLE)
 			ElseIf asyncRun_isIdle() Then
-				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+;~ 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+				GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
 				If Not $showWarning Then _setStatus($oLangStrings.message.ready)
-				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+;~ 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+				GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
 			Else
 				If Not $showWarning Then _setStatus($sNextDescription)
-				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+;~ 				_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
+				GuiFlatButton_SetState($tbButtonApply, $GUI_DISABLE)
 			EndIf
 		EndIf
 	EndIf
@@ -1056,7 +1065,8 @@ Func _refresh($init = 0)
 		If Not $init Or ($init And Not $showWarning) Then
 			_setStatus($oLangStrings.message.ready)
 		EndIf
-		_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+;~ 		_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
+		GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
 	EndIf
 EndFunc   ;==>_refresh
 
@@ -1334,11 +1344,17 @@ Func _updateCurrent($init = 0, $selected_adapter = "")
 	EndIf
 
 	If Adapter_Exists($adapters, $selected_adapter) Then
-		GUICtrlSetData($lDescription, Adapter_GetDescription($adapters, $selected_adapter))
+		Local $newDesc = Adapter_GetDescription($adapters, $selected_adapter)
+		if GUICtrlRead($lDescription) <> $newDesc Then
+			GUICtrlSetData($lDescription, $newDesc)
+		EndIf
 		If $screenshot Then
 			GUICtrlSetData($lMac, $oLangStrings.interface.mac & ": " & "XX-XX-XX-XX-XX-XX")
 		Else
-			GUICtrlSetData($lMac, $oLangStrings.interface.mac & ": " & Adapter_GetMAC($adapters, $selected_adapter))
+			Local $newMAC = $oLangStrings.interface.mac & ": " & Adapter_GetMAC($adapters, $selected_adapter)
+			if GUICtrlRead($lMac) <> $newMAC Then
+				GUICtrlSetData($lMac, $newMAC)
+			EndIf
 		EndIf
 	Else
 		GUICtrlSetData($lDescription, "! " & $oLangStrings.message.adapterNotFound & " !")
@@ -1415,8 +1431,6 @@ Func _maximize()
 	GUISetState(@SW_SHOW, $hGUI)
 	GUISetState(@SW_RESTORE, $hGUI)
 
-	GUISetState(@SW_SHOWNOACTIVATE, $hTool)
-	GUISetState(@SW_SHOWNOACTIVATE, $hTool2)
 	TrayItemSetText($RestoreItem, $oLangStrings.traymenu.hide)
 EndFunc   ;==>_maximize
 
@@ -1501,9 +1515,10 @@ Func GetChangeLogData()
 			"     Added menu item to open network connections." & @CRLF & _
 			"     Added menu item to go to profiles.ini location." & @CRLF & _
 			"     Select subnet when tabbing from IP." & @CRLF & _
-			"     #43   Escape key will not close the program." & @CRLF & _
+			"     #43   Escape key will no longer close the program." & @CRLF & _
 			"     #104   Bring to foreground if already running." & @CRLF & _
 			"MAINT:" & @CRLF & _
+			"     New toolbar icons." & @CRLF & _
 			"     Updated check for updates functionality." & @CRLF & _
 			"     Moved profiles.ini to local AppData" & @CRLF & _
 			"     Code redesigned." & @CRLF & _

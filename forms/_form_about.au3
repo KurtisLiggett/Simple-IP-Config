@@ -18,7 +18,7 @@
 Func _form_about()
 	Local $bt_AboutOk, $lb_Heading, $lb_date, $lb_version, $lb_info, $lb_sig, $pic, $lb_license, $GFLine
 	$w = 275 * $dScale
-	$h = 230 * $dScale
+	$h = 200 * $dScale
 
 	If Not BitAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
 		$currentWinPos = WinGetPos($hgui)
@@ -68,22 +68,6 @@ Func _form_about()
 
 	$desc = $oLangStrings.about.desc
 	GUICtrlCreateLabel($desc, 8, 110 * $dscale, $w - 16, 50 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-
-	GUICtrlCreateLabel("", 0, 165 * $dscale, $w, 1)
-	GUICtrlSetBkColor(-1, 0x000000)
-
-	;$link = _GUICtrlHyperLink_Create("Aha-Soft", 180 * $dscale, 175 * $dscale, -1, 20 * $dscale, 0x0000FF, 0x551A8B, -1, 'http://www.aha-soft.com/', 'Visit: aha-soft.com', $AboutChild)
-	$link = GUICtrlCreateLabel("Aha-Soft", 180 * $dscale, 175 * $dscale, -1, 20 * $dscale)
-	GUICtrlSetOnEvent(-1, "_iconLink")
-	GUICtrlSetColor(-1, 0x0000FF)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetFont(-1, -1, -1, $GUI_FONTUNDER)
-	GUICtrlSetTip(-1, 'Visit: aha-soft.com')
-	GUICtrlSetCursor(-1, 0)
-
-	$desc = $oLangStrings.about.icons & " "
-	GUICtrlCreateLabel($desc, 40 * $dscale, 175 * $dscale, $w - 20, 20 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
 	; bottom section
