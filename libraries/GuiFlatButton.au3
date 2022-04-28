@@ -164,7 +164,7 @@ Func GuiFlatButton_Create($sText, $x, $y, $w = -1, $h = -1, $style = 0)
 	Local $parentHWND = GuiFlatButton_getParent()
 
 	;create child gui to hold the button (for subclassing)
-	Local $childHWND = GUICreate("", $w, $h, $x, $y, BitOR($WS_CHILD, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS), BITOR($WS_EX_COMPOSITED, $WS_EX_CONTROLPARENT), $parentHWND)
+	Local $childHWND = GUICreate("", $w, $h, $x, $y, BitOR($WS_CHILD, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS), BITOR($WS_EX_COMPOSITED, $WS_EX_CONTROLPARENT, $WS_EX_TRANSPARENT), $parentHWND)
 ;~ 	_WinAPI_SetParent($childHWND, $parentHWND)
 	_WinAPI_SetWindowPos( $childHWND, $HWND_TOP, 0, 0, 0, 0, BitOR($SWP_NOMOVE, $SWP_NOSIZE))
 	GUISetState(@SW_SHOWNOACTIVATE)
