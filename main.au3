@@ -112,7 +112,7 @@ EndIf
 ;GUI stuff
 Global $winName = "Simple IP Config"
 Global $winVersion = "2.9.4-beta05"
-Global $winDate = "4/26/2022"
+Global $winDate = "5/2/2022"
 Global $hgui
 Global $guiWidth = 600
 Global $guiHeight = 700
