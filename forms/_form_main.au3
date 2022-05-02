@@ -281,38 +281,6 @@ Func _form_main()
 	#EndRegion footer
 
 
-	; =================================================
-	#Region accelerators
-	$deletedummy = GUICtrlCreateDummy()
-	GUICtrlSetOnEvent(-1, "_onLvDel")
-	$aAccelKeys[0][0] = '{ENTER}'
-	$aAccelKeys[0][1] = $list_profiles
-	$aAccelKeys[1][0] = '^r'
-	$aAccelKeys[1][1] = $refreshitem
-	$aAccelKeys[2][0] = '{F2}'
-	$aAccelKeys[2][1] = $renameitem
-	$aAccelKeys[3][0] = '{DEL}'
-	$aAccelKeys[3][1] = $deletedummy
-	$aAccelKeys[4][0] = '^s'
-	$aAccelKeys[4][1] = $saveitem
-	$aAccelKeys[5][0] = '^n'
-	$aAccelKeys[5][1] = $newitem
-	$aAccelKeys[6][0] = '^p'
-	$aAccelKeys[6][1] = $pullitem
-	$aAccelKeys[7][0] = '^t'
-	$aAccelKeys[7][1] = $send2trayitem
-	$aAccelKeys[8][0] = '{F1}'
-	$aAccelKeys[8][1] = $helpitem
-	$aAccelKeys[9][0] = '^c'
-	$aAccelKeys[9][1] = $clearitem
-	$aAccelKeys[10][0] = '{UP}'
-	$aAccelKeys[10][1] = $dummyUp
-	$aAccelKeys[11][0] = '{DOWN}'
-	$aAccelKeys[11][1] = $dummyDown
-	GUISetAccelerators($aAccelKeys)
-	#EndRegion accelerators
-
-
 	Local $guiSpacer = 0
 	Local $y_offset = 0
 	Local $y = $tbarHeight * $dscale + $guiSpacer + $y_offset + 2
@@ -632,6 +600,37 @@ Func _form_main()
 	_makeBox($x, $y, $w, $h)
 	#EndRegion set-ip-properties
 
+
+	; =================================================
+	#Region accelerators
+	$deletedummy = GUICtrlCreateDummy()
+	GUICtrlSetOnEvent(-1, "_onLvDel")
+	$aAccelKeys[0][0] = '{ENTER}'
+	$aAccelKeys[0][1] = $list_profiles
+	$aAccelKeys[1][0] = '^r'
+	$aAccelKeys[1][1] = $refreshitem
+	$aAccelKeys[2][0] = '{F2}'
+	$aAccelKeys[2][1] = $renameitem
+	$aAccelKeys[3][0] = '{DEL}'
+	$aAccelKeys[3][1] = $deletedummy
+	$aAccelKeys[4][0] = '^s'
+	$aAccelKeys[4][1] = $saveitem
+	$aAccelKeys[5][0] = '^n'
+	$aAccelKeys[5][1] = $newitem
+	$aAccelKeys[6][0] = '^p'
+	$aAccelKeys[6][1] = $pullitem
+	$aAccelKeys[7][0] = '^t'
+	$aAccelKeys[7][1] = $send2trayitem
+	$aAccelKeys[8][0] = '{F1}'
+	$aAccelKeys[8][1] = $helpitem
+	$aAccelKeys[9][0] = '^c'
+	$aAccelKeys[9][1] = $clearitem
+	$aAccelKeys[10][0] = '{UP}'
+	$aAccelKeys[10][1] = $dummyUp
+	$aAccelKeys[11][0] = '{DOWN}'
+	$aAccelKeys[11][1] = $dummyDown
+	GUISetAccelerators($aAccelKeys)
+	#EndRegion accelerators
 
 
 
