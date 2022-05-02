@@ -262,8 +262,8 @@ Func _form_main()
 	$w = $guiWidth * $dscale
 	$h = $footerHeight * $dscale
 
-	GUICtrlCreateLabel("", $x, $y, $w, 1)
-	GUICtrlSetBkColor(-1, 0x404040)
+;~ 	GUICtrlCreateLabel("", $x, $y, $w, 1)
+;~ 	GUICtrlSetBkColor(-1, 0x404040)
 
 	If $screenshot Then
 		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": ________", $x + 3, $y + 2, $w / 2, $h)
@@ -318,8 +318,8 @@ Func _form_main()
 	Local $y = $tbarHeight * $dscale + $guiSpacer + $y_offset + 2
 	Local $xLeft = $guiSpacer
 	Local $wLeft = 200 * $dscale
-	Local $xRight = $xLeft + $wLeft + 2*$dscale
-	Local $wRight = $guiWidth * $dscale - $wLeft - 2 * $guiSpacer- 3*$dscale
+	Local $xRight = $xLeft + $wLeft + 2 * $dscale
+	Local $wRight = $guiWidth * $dscale - $wLeft - 2 * $guiSpacer - 3 * $dscale - 2 * $dscale
 	Local $hLeft = $tbarHeight * $dscale + $guiSpacer + $y_offset
 
 
@@ -329,10 +329,10 @@ Func _form_main()
 	Local $hoverColor = _colorChangeLightness($menuColor, 0.9)
 	Local $buttonSpace = 0 * $dscale
 	Local $aColorsEx = _
-			[$menuColor, 0xFCFCFC, $menuColor, _ 	; normal 	: Background, Text, Border
+			[$menuColor, 0xFCFCFC, $menuColor, _     ; normal 	: Background, Text, Border
 			$menuColor, 0xFCFCFC, $menuColor, _     ; focus 	: Background, Text, Border
-			$hoverColor, 0xFCFCFC, $hoverColor, _  	; hover 	: Background, Text, Border
-			$menuColor, 0xFCFCFC, $menuColor]    	; selected 	: Background, Text, Border
+			$hoverColor, 0xFCFCFC, $hoverColor, _      ; hover 	: Background, Text, Border
+			$menuColor, 0xFCFCFC, $menuColor]        ; selected 	: Background, Text, Border
 
 	Local $thisButton = GuiFlatButton_Create("", 2, $y, 22 * $dscale, 22 * $dscale, $BS_TOOLBUTTON)
 	GUICtrlSetTip(-1, $oLangStrings.toolbar.new_tip)
@@ -357,20 +357,20 @@ Func _form_main()
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($thisButton), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngDelete16))))
 
 	;right line
-	GUICtrlCreateLabel("", $wLeft-1, $y-1, 1, 22 * $dscale +2)
+	GUICtrlCreateLabel("", $wLeft - 1, $y - 1, 1, 22 * $dscale + 2)
 	GUICtrlSetBkColor(-1, 0x888888)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 
 	;bottom line
-	GUICtrlCreateLabel("", 0, 22 * $dscale +2, $wLeft-1, 1)
+	GUICtrlCreateLabel("", 0, 22 * $dscale + 2, $wLeft - 1, 1)
 	GUICtrlSetBkColor(-1, 0xAAAAAA)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 
 	;background
-	GUICtrlCreateLabel("", 0, $y-1, $wLeft-1, 22 * $dscale +2)
+	GUICtrlCreateLabel("", 0, $y - 1, $wLeft - 1, 22 * $dscale + 2)
 	GUICtrlSetBkColor(-1, $menuColor)
 	GUICtrlSetState(-1, $GUI_DISABLE)
-	#EndRegion
+	#EndRegion profile-buttons
 
 
 	; ================================================
@@ -419,7 +419,7 @@ Func _form_main()
 	GUICtrlSetOnEvent(-1, "_onLvDown")
 
 	;create right border
-	GUICtrlCreateLabel("", $w-1, $y, 1, $h)
+	GUICtrlCreateLabel("", $w - 1, $y, 1, $h)
 	GUICtrlSetBkColor(-1, 0x666666)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 
@@ -433,7 +433,7 @@ Func _form_main()
 
 	; ================================================
 	#Region adapter-info
-	$y_offset = 0
+	$y_offset = 3 * $dscale
 	$x = $xRight
 	$xIndent = 5 * $dscale
 	$y = $tbarHeight * $dscale + $guiSpacer + $y_offset
@@ -462,7 +462,7 @@ Func _form_main()
 ;~ 			0xDDDDDD, 0xFCFCFC, 0xDDDDDD, _     ; hover 	: Background, Text, Border
 ;~ 			0xDDDDDD, 0xFCFCFC, 0xDDDDDD]     ; selected 	: Background, Text, Border
 
-	Local $buttonRefresh = GuiFlatButton_Create("", $x + 8 * $dscale + $w - 16 * $dscale - 32 * $dscale + 5 * $dscale, $y + 8 * $dscale, 26*$dscale, 26*$dscale, $BS_TOOLBUTTON)
+	Local $buttonRefresh = GuiFlatButton_Create("", $x + 8 * $dscale + $w - 16 * $dscale - 32 * $dscale + 5 * $dscale, $y + 8 * $dscale, 26 * $dscale, 26 * $dscale, $BS_TOOLBUTTON)
 	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetCursor(-1, $MCID_HAND)
 ;~ 	GuiFlatButton_SetColorsEx($buttonRefresh, $aColorsEx)
@@ -544,7 +544,7 @@ Func _form_main()
 	$xIndent = 5 * $dscale
 	$y = $tbarHeight * $dscale + $h + $guiSpacer + $y_offset + 10 * $dscale
 	$w = $wRight
-	$h = $guiHeight - $menuHeight - $statusbarHeight * $dscale - $guiSpacer - $footerHeight * $dscale + 1 * $dscale - $y
+	$h = $guiHeight - $menuHeight - $statusbarHeight * $dscale - $guiSpacer - $footerHeight * $dscale + 2 * $dscale - $y
 	$textHeight = 9 * $dscale
 	$bkcolor = 0xFFFFFF
 
@@ -616,6 +616,19 @@ Func _form_main()
 	GUICtrlSetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetFont(-1, 8.5)
 
+	;MAKE THE APPLY BUTTON
+	Local $aColorsEx = _
+			[0x5cff87, 0x111111, 0x666666, _     ; normal 	: Background, Text, Border
+			0x7dff9f, 0x111111, 0x666666, _     ; focus 	: Background, Text, Border
+			0x82ffa3, 0x333333, 0x666666, _      ; hover 	: Background, Text, Border
+			0x5cff87, 0x111111, 0x666666]        ; selected 	: Background, Text, Border
+
+	$thisButton = GuiFlatButton_Create("Apply", $x + 8 * $dscale, $yText_offset + $textHeight * 10 + $textSpacer * 10, $wRight - 2 * (8 * $dscale), 50 * $dscale)
+	GUICtrlSetTip(-1, $oLangStrings.toolbar.apply_tip)
+	GUICtrlSetOnEvent(-1, "_apply_GUI")
+	GuiFlatButton_SetColorsEx($thisButton, $aColorsEx)
+
+
 	_makeBox($x, $y, $w, $h)
 	#EndRegion set-ip-properties
 
@@ -640,7 +653,7 @@ Func _form_main()
 EndFunc   ;==>_form_main
 
 
-Func _colorChangeLightness($baseColor, $lightness=1)
+Func _colorChangeLightness($baseColor, $lightness = 1)
 	Local $baseRGB = _ColorGetRGB($baseColor)
 	Local $baseHSL = _ColorConvertRGBtoHSL($baseRGB)
 	Local $newL = $lightness * $baseHSL[2]
@@ -649,7 +662,7 @@ Func _colorChangeLightness($baseColor, $lightness=1)
 	Local $darkenHSL[3] = [$baseHSL[0], $baseHSL[1], $newL]
 	Local $darkenRGB = _ColorConvertHSLtoRGB($darkenHSL)
 	Return _ColorSetRGB($darkenRGB)
-EndFunc
+EndFunc   ;==>_colorChangeLightness
 
 
 Func _makeCurrentProps($label, $x, $y, $w, $h)
