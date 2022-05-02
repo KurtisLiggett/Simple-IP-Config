@@ -21,8 +21,8 @@
 ;				  requiring external sources.
 ;==============================================================================
 
-Global Enum $pngAccept, $pngAdd, $pngBigicon, $pngDelete, $pngEdit, $pngRefresh, $pngSave, _
-		$pngSearch, $pngSettings, $pngTray, $pngWarning, $pngMax
+Global Enum $pngAccept, $pngAdd, $pngBigicon, $pngDelete, $pngEdit, $pngRefresh, $pngSave, $pngSave16, _
+		$pngSearch, $pngSettings, $pngTray, $pngWarning, $pngMax, $pngNew16, $pngRefresh24, $pngDelete16
 
 ;Get icons on-demand instead of keeping the data permanently in memory
 Func GetIconData($iconSel)
@@ -54,15 +54,18 @@ Func GetIconData($iconSel)
 			$icondData = '' & _
 					'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhk' & _
 					'iAAAAAlwSFlzAAAPgAAAD4ABMkKt4wAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3Nj' & _
-					'YXBlLm9yZ5vuPBoAAAFwSURBVEiJ7ZS/SwJhHMaf97339IyGQFKppSH0khBahGgI' & _
-					'QrSpSadobG3qX2hram0okLaWhoYggqZokNDCVAyCxH5IU4N3+t77NrXU+54QLYnP' & _
-					'eB/ez3Mv3+8dgV9SiFiGee04/RkVDo0FHrpubwl3eNUpmG8BRzaRioa3tleUeG/3' & _
-					'IlIutbIAijoF9S0QYMygRPt2BiWQMPwU/gV/kFHBwDDYCINiDQKmon5xoIFiGTYC' & _
-					'P54TOJA4ZVbILM0mJsOGZlviyZilc8eTsRDnogCg8J0JT8hG/W2HYA5y/2gDVL+N' & _
-					'v4oQEpvrxSEY8qhgYEhwgT3FE5EJqlnTZGrKyuRs5Q/t/KzmVSttR8U8T8hmvfPO' & _
-					'XIenbyvtVd2HxhjNZ3L2uErSqL50yzetYwhcKc72QXDCcI9nAAfK+9noAcgr2VcE' & _
-					'LlHDoQ7//yEPewGBxz0hdZh7QoKC+yv8Mo9okLGS6/JpFbYs89H56KfRREen+AQ2' & _
-					'v2wsuVyVwgAAAABJRU5ErkJggg=='
+					'YXBlLm9yZ5vuPBoAAAIMSURBVEiJrZXNaxNBGMafZ2Y23S0ehGAqiKAgTVok6MFC' & _
+					'8SB4KIq1p/bov+Cp/4I3T149KIg3L4peBS9+IKFYExSsEFAUES8ezKY72fGQzSab' & _
+					'zExCyVyW5d3397xf8y7hO3VUQhm8i+PkjM0cLZa+drqHl9HELxdCeQU0Nqr1pfLt' & _
+					'3atW8727LysfGt83ADxyIYRXIIVSUtAZnRSEgfQh/AJTDv3sfhBHRQtKCHdyRxfg' & _
+					'AE4JYM4CQ7iCoARnEqihDIEtpAgmrALrRbjKoxeUIAkIXEENJUs0MQxeqDAKGueq' & _
+					'J8rSMS3LqydDQhTAA6GV1dORTswOwB2SWRgESfR6qWm12neIFZj7j285G0ZmcMiJ' & _
+					'DIrvRZsxAtdv7vp7kMOpMoHp4MG7Mcx64IWPOWM6OM+Awi1QdBxxzspEDzjPgI4M' & _
+					'vDV2lmlkdH0ZzFRj+EszngEXLqpvy9XKcSklR0cN7D/rF86GmzcuyWKZ+qBnz1/3' & _
+					'9vYO4sH3Apk/Ca1Ts9/68kd1Y732cf/HNddFKwWl7a3N9WO2DJrNduft+9YTpHhj' & _
+					'8U1APFX4hJ8AHlhHqYZDktsTpcibTSDFK3zGQ8cwzrKLxlfEsNmz7aJpeBKSlvGE' & _
+					'wly26eSSGzabnMu6pn0coebwRyN6WqfGdS+SRBsIaD/Cd85jKQwWGnHcPWUzL0ZR' & _
+					'+9/fzhoO8NuF+A/lOnTXVv7rjQAAAABJRU5ErkJggg=='
 		Case $pngBigicon
 			$icondData = '' & _
 					'iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAABTVBMVEUAAAAAAAAC' & _
@@ -117,6 +120,25 @@ Func GetIconData($iconSel)
 					'LdwwXXu2PcYEYERkuasV/CL38hKw5woxvGZZuXShcHozRmS5SwAGHyR6+6lcnu8L' & _
 					'heT3pVKtE7gf20ApSbSate3ZKpHyy/PYSi5XPiaakoD/+9vyG4IKQs0zHCz0AAAA' & _
 					'AElFTkSuQmCC'
+		Case $pngDelete16
+			$icondData = '' & _
+					'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhk' & _
+					'iAAAAAlwSFlzAAAKIwAACiMBfBPMxQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3Nj' & _
+					'YXBlLm9yZ5vuPBoAAAKNSURBVDiNpZNLTxNhFIbPXCDTrzOdKdAbSjpjFyRIaTVp' & _
+					'iJsWosGU8BMsBRcksua3uCSUCom/wLjRQsKqIm1NQFBkwIDUXphxhoHO5asLJcEE' & _
+					'iAlnfZ7kvOfJS0wD+PyC8JYA0A8VJZ0HOIUbJgPgviMIb9oA7E9FeUqNCcLai4mJ' & _
+					'+EAodPfL0VE6YppLFQDrOjjAcSvZ0dHEo2g0tHlwMEYSGOtnqopFjqOyiUQ8gNBK' & _
+					'BsB9JYzQSjaRiIscR52pKiYw1qn7rdbrzcPDdB/L+u+xLB1xu4Nfm83xftte3gAw' & _
+					'AQBmAFAPwxSmBgfjktdLy40GXlhb+1TXtCfExYLH5Vp9NjAQizAM/b3ZxAu7u+W6' & _
+					'aaZoAIfv7CxMRiIPxK4uWj4/x4tbW5WGYSTnATTi4sRZABYxTGEyHI6JFEXLqooX' & _
+					'q9UyAOCM3x+TBIGWbRu/2t8v661W8iWADgBAXM45C8Cijo5CxueLi+02tWcYDgCA' & _
+					'hBAlE4STr9VKhmWNXMDXapqj6Q8lj8dSGKatMEy77PE4czT98arnkjc5/5+5dQTq' & _
+					'H5hhCpOSFJMQovdNE+dPTioVy/oRZlm/JAh0mOeDn3V9POY4S8W/ikmAPxrdCL3L' & _
+					'RqNxqaeHljHG+Vqt0rTt1C/bTubr9dIuxrbk85HTQ0MxFqHV5wAcAAA1A4B4jitM' & _
+					'DQ8/FL1eSlZVnN/erjRMMzkPoK0DWIOOs7Sj6+m+7m6/FAxSkWAwsF2rpftNc5l6' & _
+					'7PG8nx4ZSYg+H7XXbDq5jY1S9fw8mbuUcx3Aitj28jdFSYcDgYDY20tJoZB/5/g4' & _
+					'RQJJul08T8qa5uSKxVLVMFJXNTIPcFo1jFSuWCzJmua4eJ4kSNJN3LbOvwFR0zR/' & _
+					'yIVS+wAAAABJRU5ErkJggg=='
 		Case $pngEdit
 			$icondData = '' & _
 					'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhk' & _
@@ -176,6 +198,36 @@ Func GetIconData($iconSel)
 					'8qVIth4WdffVGMMnnjyz57X1YCzgLa0Xajjq41YWRPKeElyvlgOziJnqg5U5BWtk' & _
 					'QFjp3rx5Lsmd7FkNhBlUUna600p0OVQ2LQT4EkhyPaXMB8E7uW0fJEyJE8osQtkJ' & _
 					'1zE7wO3fQUQ3TLsbg/vSE+l/Axlqcm0XPzm2AAAAAElFTkSuQmCC'
+		Case $pngRefresh24
+			$icondData = '' & _
+					'iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABHNCSVQICAgIfAhk' & _
+					'iAAAAAlwSFlzAAAM1gAADNYBN9oYHwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3Nj' & _
+					'YXBlLm9yZ5vuPBoAAAS0SURBVDiNjdLZb1QFGAXwc/dl7qzUaTvTbTqFthkEGoqU' & _
+					'kU0srSzFEm0ikBijGB+MMT4YEh40QZ40oqKiCUF5MBFEECqbiFQRiSlLaZBOB6bT' & _
+					'jdZWGGZ6Z727D4iRAOr5A375vpNDAABqVnAwiRmwzDpRFGeJgtCo63qdpukelmM/' & _
+					'ldPKaYK1bbJg3rQU+bSpFL7C6PfjuE8IBFu8Nt7WX1MdMII1NVwgELD7/OUo9pWj' & _
+					'P3oVH3+w7cu0Skz3Ln6lkaB5FCb71anI8Sx0NaLnEy9g6ET/P0EaijNN2Yhbbe3t' & _
+					'VQvCiyjNAFQD0AxgcHjMTOczF02LbxYrGkGQNMSyOaxn7jNs7vql8GTXu7+atU+9' & _
+					'YUb3b78DUpD7dEXy7znXfeHFmvrZguAoQk4D8hrQ9cNxeSTetxsWuc5UMhklEScp' & _
+					'TqIowQXGUQJnfSufH+kJmzZfxkpEum+DACh3qNVfUdHevGYdXzBI5DUgpwEnD+/N' & _
+					'yHLiI5hWb+GP/n3KRN+5zMDp4mz8LC+UNfC06IYUXMSnY11h0+brRvLaEIFQB2sj' & _
+					'iZHXt3xYLLm9GLgWRTKZMIIPh6n3N61PZQ29GFf2qXc1X7NqDUXbP/O3bZ0mFQdh' & _
+					'JIcRP7AppkX2ziApJd9RP3u+QNu9SOZ0fLHjrdTB3e+NdZ85aRiGodyDAUDsSKeR' & _
+					'n1r++/EtKRuto8hXCWf5zIcQbHuSFCTHc6GmVodcAM52fadpmvZ1Qc02/nxoVw9J' & _
+					'0bvuNw0AwPCxHphKZ27wF1NigelNa5y86HiJ1jVttlRaC1kBIhd+nCrkMtsRP3aj' & _
+					'AMx7IPZXtHRm+2Tv0ZV1c5cUOYP1uGhoDbRFEGxWp6HpQOrGGAXBFv0v6O/oZCSf' & _
+					'nCAlFmAoBiDA0ZYFyIXbuwNBA8kMDeDe3u4XUTcsyyAkDmAogARAWpapTOV0yArA' & _
+					'OktMMGrd/77QMOs8Xr8hsYBAagCgkATB9ozH+yAXAEf9Kg8lul/7N8M2a8PbQmjd' & _
+					'eQRbvKLN82rDgmUuiQMSoxEwLHORVJXUJ9cvHEylFYCrepQgaHY1Klc0PAg0Df3Z' & _
+					'lo6Nc3jOeZ5m6LXhpY/TEgv0nDkhZ9Opz2nEjnZmGSmhJodcrLsKpa1vusaPbD5p' & _
+					'BFdvxMDhb+7SQh0sRZFc0+JllMcl+DzuaZRToJG6OYG+3u6s4Zw4SAGA5az4LTfa' & _
+					'0+6obeYZuxf2msWCciPaCkfVBriqJcsRqIB7ehhG3ij1V69f2twqVpSXkyXeaWAI' & _
+					'Hdu2bp66devm89aVnyIUACAZG4SjOpMdPb/QXr2Io0Q3HLUtvFj5SDElepawnvJW' & _
+					'NRFvg2WemjVn3tr5TfN5gQEEGhgbuoYj33bmVc3ajFQ0S935xkpEui3BJ09Fjy7g' & _
+					'PAGecZYSFO+EUBKiRH8Dn7p8KElZRHTpssdWzqyvJQQGEBigrLQIgUo/e+lS7+qC' & _
+					'n91J31V47MAOVLWcmux6ZydBMSFH/RMS761jLK0AkmaG7SI3N1BZRpqKjMGxEYyP' & _
+					'XsfgYFy+GhtQVVUphep1EQ/cR/lyH8kyTxOccyFBkkWmUdjv4rliwzBeJkhM0TTd' & _
+					'n8vlu3PZwmVYVgR2KYYr+9Q/AW2CBC7NpAEbAAAAAElFTkSuQmCC'
 		Case $pngSave
 			$icondData = '' & _
 					'iVBORw0KGgoAAAANSUhEUgAAABcAAAAXCAYAAADgKtSgAAAABHNCSVQICAgIfAhk' & _
@@ -195,6 +247,21 @@ Func GetIconData($iconSel)
 					'ma4kL97R0UEwGPwHT4UBlk0zCx6PWwgBkkRpIEBVVVWyqWkamqblOh+ABKx4vd4d' & _
 					'Jc1N/BYC1tbAMEwJj+ccdnsnqio5VVXZ53Ipkmkm8oopMQzDFDab/iW6KsVicUks' & _
 					'L0cxjJt/AGWf2kIVsXjlAAAAAElFTkSuQmCC'
+		Case $pngSave16
+			$icondData = '' & _
+					'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhk' & _
+					'iAAAAAlwSFlzAAAKVwAAClcBp/M/4AAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3Nj' & _
+					'YXBlLm9yZ5vuPBoAAAHjSURBVDiNjZFNaxNRFIafO8l0Mkm0CcFpoxkoYrtIRVJw' & _
+					'UbB0Zaw2de0fCN0kmKX/QGhdBSsUf4ErJWLFhRtpxYWLgBZUkJpqJLZuajV08nWv' & _
+					'izTNN/pu7r0v530451zB5GQO276EgFO7X0Px+flfQso6PRJCaH+U0je3Nv1lw1Ng' & _
+					'ZyfB0dE3wbX4F215eQLg/MZzcg/WerPcujKHZVl4xsd5D3y/voBcvfeOfH5JQ9P6' & _
+					'Ar0Kh8NcjEap1Y8b03VE5jbY9ob7n+ljNeo9U7lcOqGQ+V+A/b0feL1eNI+n09YB' & _
+					'ugBVx+Hh+nof4HJiCdVoUDFNatvbTVMpHVBdgOLiDe4fHva3MGa174nF5imlDlTb' & _
+					'ACkxPn7AXakMHUVTiqphUInNAKobEHn2lLXpc5wNhoYCGij2Cp9J5x5TvLqgKzp2' & _
+					'EKg63JyNDQ23VB3zE/j0kmJzB22A04A7L/JMWGeYmY7y6vWbgYCa41BBb43QBnhO' & _
+					'B1i5u3pSOBtPDASUy2UepdMgVf83tpTNZimVSl2ebdukUqlOSwwF+Hw+gsFgs0oI' & _
+					'MpkMhmEM7MiNlACM+P0nZjKZHFgM4EiJ2zSbDyURTE09IRKJXRgdHZmzLM1VrztD' & _
+					'08DvWk17e3BgFn7uK1XY3foLS4ebi0+2J4UAAAAASUVORK5CYII='
 		Case $pngSearch
 			$icondData = '' & _
 					'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhk' & _
@@ -249,6 +316,18 @@ Func GetIconData($iconSel)
 					'HS4g6KxtbKFv5yUE5UuH6riYWxnqarPKgfnKnLp6nn5W+u56HnxgAakQX3V1twB/' & _
 					'dQODaBmQAIeRkVqgcaShmpqaCTeQLxJlEqwa5mMepAoEsZIM8iyWlmZmGqamGhqa' & _
 					'mppxXAwMEkyMCMAkhuFtANTtFsa8W/5uAAAAAElFTkSuQmCC'
+		Case $pngNew16
+			$icondData = '' & _
+					'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhk' & _
+					'iAAAAAlwSFlzAAAKVQAAClUB2A38aQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3Nj' & _
+					'YXBlLm9yZ5vuPBoAAAFMSURBVDiNlZO9TgJBFIXPuTMj/m0WQ1QKIBT6IGthLEwM' & _
+					'j6E1USqsfAMjr0FlKb6FhWIEjdmGhEVWYmMsYGWWHUycaubk3HtPvtwhHKcYeB1/' & _
+					'a2PP1qLh5DG8iw4WvdrVYN3Llc+bhyVbu2refrm84hJdh6BTdyZYLFRils76M0FS' & _
+					'rGhAdwDoYuDdb/prZVsslfI+IbNiDSUG1epuXtdMFyCEBECMRp997td2XhuXRylg' & _
+					'pEBxOjlJoESn3zSoX7TeMgx+iy3jvMks0exOMg1RqJxGRQMRk2kMWA3SxbZRZ7UE' & _
+					'LAgWA7/j+auVhDpJlCvb/tnpccGedt1qD3ovYQTI1Adi+BH3dNiJghBRisP3iTwp' & _
+					'MQWbwXP3ffjQ7qXWG1iySCShuDInzykw5x44VRB6gfyynXMnADPQ/vUX4vGkX2/c' & _
+					'5BJYEGIcT/ou7w9MzD6ryePdiwAAAABJRU5ErkJggg=='
 	EndSwitch
 
 	Return _Base64Decode($icondData)

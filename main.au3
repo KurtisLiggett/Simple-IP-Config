@@ -115,9 +115,9 @@ Global $winVersion = "2.9.4-beta05"
 Global $winDate = "4/26/2022"
 Global $hgui
 Global $guiWidth = 600
-Global $guiHeight = 560
+Global $guiHeight = 700
 Global $footerHeight = 16
-Global $tbarHeight = 52
+Global $tbarHeight = 0
 Global $dscale = 1
 Global $iDPI = 0
 
