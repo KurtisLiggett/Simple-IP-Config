@@ -125,7 +125,7 @@ Global $headingHeight = 20
 Global $menuHeight, $captionHeight
 Global $MinToTray, $RestoreItem, $aboutitem, $exititem, $exititemtray
 
-Global $aAccelKeys[12][2]
+Global $aAccelKeys[13][2]
 
 ;GUI Fonts
 Global $MyGlobalFontName = "Arial"
@@ -163,7 +163,7 @@ Global $OpenFileFlag, $ImportFileFlag, $ExportFileFlag
 ; CONTROLS
 Global $combo_adapters, $combo_dummy, $selected_adapter, $lDescription, $lMac
 Global $list_profiles, $input_filter, $filter_dummy, $dummyUp, $dummyDown
-Global $lv_oldName, $lv_newName, $lv_editIndex, $lv_doneEditing, $lv_newItem, $lv_startEditing, $lv_editing, $lv_aboutEditing
+Global $lv_oldName, $lv_newName, $lv_editIndex, $lv_doneEditing, $lv_newItem, $lv_startEditing, $lv_editing, $lv_aboutEditing, $lvEditHandle
 Global $radio_IpAuto, $radio_IpMan, $ip_Ip, $ip_Subnet, $ip_Gateway, $dummyTab
 Global $radio_DnsAuto, $radio_DnsMan, $ip_DnsPri, $ip_DnsAlt
 Global $label_CurrentIp, $label_CurrentSubnet, $label_CurrentGateway

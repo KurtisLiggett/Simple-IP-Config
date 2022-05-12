@@ -605,6 +605,9 @@ Func _form_main()
 	#Region accelerators
 	$deletedummy = GUICtrlCreateDummy()
 	GUICtrlSetOnEvent(-1, "_onLvDel")
+	$tabdummy = GUICtrlCreateDummy()
+	GUICtrlSetOnEvent(-1, "_onTabKey")
+
 	$aAccelKeys[0][0] = '{ENTER}'
 	$aAccelKeys[0][1] = $list_profiles
 	$aAccelKeys[1][0] = '^r'
@@ -629,6 +632,8 @@ Func _form_main()
 	$aAccelKeys[10][1] = $dummyUp
 	$aAccelKeys[11][0] = '{DOWN}'
 	$aAccelKeys[11][1] = $dummyDown
+	$aAccelKeys[12][0] = '{TAB}'
+	$aAccelKeys[12][1] = $tabdummy
 	GUISetAccelerators($aAccelKeys)
 	#EndRegion accelerators
 

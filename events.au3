@@ -148,8 +148,23 @@ Func _onRename()
 		Return
 	EndIf
 	$Index = _GUICtrlListView_GetSelectedIndices($list_profiles)
-	_GUICtrlListView_EditLabel(ControlGetHandle($hgui, "", $list_profiles), $Index)
+	$lvEditHandle = _GUICtrlListView_EditLabel(ControlGetHandle($hgui, "", $list_profiles), $Index)
 EndFunc   ;==>_onRename
+
+
+;------------------------------------------------------------------------------
+; Title........: _onTabKey
+; Description..: Cancel editing listview item - prevents system from tabbing
+;					through listview items while editing
+; Events.......: TAB key (while editing)
+;------------------------------------------------------------------------------
+Func _onTabKey()
+	_GUICtrlListView_CancelEditLabel(ControlGetHandle($hgui, "", $list_profiles))
+	GUISetAccelerators(0)
+	Send("{TAB}")
+	GUISetAccelerators($aAccelKeys)
+EndFunc
+
 
 ;------------------------------------------------------------------------------
 ; Title........: _onNewItem
@@ -518,13 +533,12 @@ EndFunc   ;==>WM_COMMAND
 ;                - Detect moving from IP address to Subnet mask
 ;------------------------------------------------------------------------------
 Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
-
 	Local $tNMIA = DllStructCreate($tagNMITEMACTIVATE, $lParam)
 	Local $hTarget = DllStructGetData($tNMIA, 'hWndFrom')
 	Local $ID = DllStructGetData($tNMIA, 'Code')
 
 	$hWndListView = $list_profiles
-	If Not IsHWnd($list_profiles) Then $hWndListView = GUICtrlGetHandle($list_profiles)
+	If Not IsHWnd($hWndListView) Then $hWndListView = GUICtrlGetHandle($hWndListView)
 
 	$tNMHDR = DllStructCreate($tagNMHDR, $lParam)
 	$hWndFrom = HWnd(DllStructGetData($tNMHDR, "hWndFrom"))
@@ -547,7 +561,7 @@ Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 							$lv_doneEditing = 1
 							$lv_editing = 0
 							$tInfo = DllStructCreate($tagNMLVDISPINFO, $lParam)
-							If _WinAPI_GetAsyncKeyState($VK_RETURN) == 1 Then    ;enter key was pressed
+							If BitAND(_WinAPI_GetAsyncKeyState($VK_RETURN), 0x0001 ) <> 0 Then    ;enter key was pressed
 								Local $tBuffer = DllStructCreate("char Text[" & DllStructGetData($tInfo, "TextMax") & "]", DllStructGetData($tInfo, "Text"))
 								If StringLen(DllStructGetData($tBuffer, "Text")) Then
 									Return True
