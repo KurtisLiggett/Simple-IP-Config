@@ -591,10 +591,10 @@ Func _form_main()
 			0x82ffa3, 0x333333, 0x666666, _      ; hover 	: Background, Text, Border
 			0x5cff87, 0x111111, 0x666666]        ; selected 	: Background, Text, Border
 
-	$thisButton = GuiFlatButton_Create("Apply", $x + 8 * $dscale, $yText_offset + $textHeight * 10 + $textSpacer * 10, $wRight - 2 * (8 * $dscale), 50 * $dscale)
+	$tbButtonApply = GuiFlatButton_Create("Apply", $x + 8 * $dscale, $yText_offset + $textHeight * 10 + $textSpacer * 10, $wRight - 2 * (8 * $dscale), 50 * $dscale)
 	GUICtrlSetTip(-1, $oLangStrings.toolbar.apply_tip)
 	GUICtrlSetOnEvent(-1, "_apply_GUI")
-	GuiFlatButton_SetColorsEx($thisButton, $aColorsEx)
+	GuiFlatButton_SetColorsEx($tbButtonApply, $aColorsEx)
 
 
 	_makeBox($x, $y, $w, $h)
