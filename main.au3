@@ -83,7 +83,7 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4-BETA07.exe
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4-BETA08.exe
 #AutoIt3Wrapper_Res_Fileversion=2.9.4.0
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
@@ -111,11 +111,11 @@ EndIf
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.9.4-beta07"
-Global $winDate = "5/11/2022"
+Global $winVersion = "2.9.4-beta08"
+Global $winDate = "5/13/2022"
 Global $hgui
 Global $guiWidth = 600
-Global $guiHeight = 700
+Global $guiHeight = 625
 Global $footerHeight = 16
 Global $tbarHeight = 0
 Global $dscale = 1
@@ -163,7 +163,7 @@ Global $OpenFileFlag, $ImportFileFlag, $ExportFileFlag
 ; CONTROLS
 Global $combo_adapters, $combo_dummy, $selected_adapter, $lDescription, $lMac
 Global $list_profiles, $input_filter, $filter_dummy, $dummyUp, $dummyDown
-Global $lv_oldName, $lv_newName, $lv_editIndex, $lv_doneEditing, $lv_newItem, $lv_startEditing, $lv_editing, $lv_aboutEditing, $lvEditHandle
+Global $lv_oldName, $lv_newName, $lv_editIndex, $lv_doneEditing, $lv_newItem, $lv_startEditing, $lv_editing, $lv_aboutEditing, $lvTabKey
 Global $radio_IpAuto, $radio_IpMan, $ip_Ip, $ip_Subnet, $ip_Gateway, $dummyTab
 Global $radio_DnsAuto, $radio_DnsMan, $ip_DnsPri, $ip_DnsAlt
 Global $label_CurrentIp, $label_CurrentSubnet, $label_CurrentGateway
@@ -364,6 +364,11 @@ Func _main()
 				FileCopy($sProfileName, $filePath, $FC_OVERWRITE)
 				_setStatus($oLangStrings.message.fileSaved & ": " & $filePath, 0)
 			EndIf
+		EndIf
+
+		If $lvTabKey And Not IsHWnd(_GUICtrlListView_GetEditControl(ControlGetHandle($hgui, "", $list_profiles))) Then
+			$lvTabKey = False
+			Send("{TAB}")
 		EndIf
 
 		Sleep(100)

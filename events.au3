@@ -159,10 +159,14 @@ EndFunc   ;==>_onRename
 ; Events.......: TAB key (while editing)
 ;------------------------------------------------------------------------------
 Func _onTabKey()
-	_GUICtrlListView_CancelEditLabel(ControlGetHandle($hgui, "", $list_profiles))
-	GUISetAccelerators(0)
-	Send("{TAB}")
-	GUISetAccelerators($aAccelKeys)
+	If IsHWnd(_GUICtrlListView_GetEditControl(ControlGetHandle($hgui, "", $list_profiles))) Then
+		$lvTabKey = True
+		Send("{ENTER}")
+	Else
+		GUISetAccelerators(0)
+		Send("{TAB}")
+		GUISetAccelerators($aAccelKeys)
+	EndIf
 EndFunc
 
 
@@ -561,7 +565,7 @@ Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 							$lv_doneEditing = 1
 							$lv_editing = 0
 							$tInfo = DllStructCreate($tagNMLVDISPINFO, $lParam)
-							If BitAND(_WinAPI_GetAsyncKeyState($VK_RETURN), 0x0001 ) <> 0 Then    ;enter key was pressed
+							If _WinAPI_GetAsyncKeyState($VK_RETURN) == 1 Then    ;enter key was pressed
 								Local $tBuffer = DllStructCreate("char Text[" & DllStructGetData($tInfo, "TextMax") & "]", DllStructGetData($tInfo, "Text"))
 								If StringLen(DllStructGetData($tBuffer, "Text")) Then
 									Return True
