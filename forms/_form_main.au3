@@ -586,10 +586,10 @@ Func _form_main()
 
 	;MAKE THE APPLY BUTTON
 	Local $aColorsEx = _
-			[0x5cff87, 0x111111, 0x666666, _     ; normal 	: Background, Text, Border
-			0x7dff9f, 0x111111, 0x666666, _     ; focus 	: Background, Text, Border
-			0x82ffa3, 0x333333, 0x666666, _      ; hover 	: Background, Text, Border
-			0x5cff87, 0x111111, 0x666666]        ; selected 	: Background, Text, Border
+			[0x73f773, 0x111111, 0x666666, _     ; normal 	: Background, Text, Border
+			0x8ef98e, 0x111111, 0x999999, _     ; focus 	: Background, Text, Border
+			0xbbfbbb, 0x333333, 0x666666, _      ; hover 	: Background, Text, Border
+			0x73f773, 0x111111, 0x666666]        ; selected 	: Background, Text, Border
 
 	$tbButtonApply = GuiFlatButton_Create("Apply", $x + 8 * $dscale, $yText_offset + $textHeight * 10 + $textSpacer * 10, $wRight - 2 * (8 * $dscale), 50 * $dscale)
 	GUICtrlSetTip(-1, $oLangStrings.toolbar.apply_tip)
