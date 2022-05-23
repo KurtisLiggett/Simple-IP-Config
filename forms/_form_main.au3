@@ -96,7 +96,7 @@ Func _form_main()
 	GUICtrlSetOnEvent(-1, "_onSave")
 	$deleteitem = GUICtrlCreateMenuItem($oLangStrings.menu.file.delete & @TAB & $oLangStrings.menu.file.deleteKey, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onDelete")
-	$clearitem = GUICtrlCreateMenuItem($oLangStrings.menu.file.clear & @TAB & $oLangStrings.menu.file.clearKey, $filemenu)
+	$clearitem = GUICtrlCreateMenuItem($oLangStrings.menu.file.clear, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onClear")
 	$createLinkItem = GUICtrlCreateMenuItem($oLangStrings.menu.file.shortcut, $filemenu)
 	GUICtrlSetOnEvent(-1, "_onCreateLink")
@@ -626,14 +626,12 @@ Func _form_main()
 	$aAccelKeys[7][1] = $send2trayitem
 	$aAccelKeys[8][0] = '{F1}'
 	$aAccelKeys[8][1] = $helpitem
-	$aAccelKeys[9][0] = '^c'
-	$aAccelKeys[9][1] = $clearitem
-	$aAccelKeys[10][0] = '{UP}'
-	$aAccelKeys[10][1] = $dummyUp
-	$aAccelKeys[11][0] = '{DOWN}'
-	$aAccelKeys[11][1] = $dummyDown
-	$aAccelKeys[12][0] = '{TAB}'
-	$aAccelKeys[12][1] = $tabdummy
+	$aAccelKeys[9][0] = '{UP}'
+	$aAccelKeys[9][1] = $dummyUp
+	$aAccelKeys[10][0] = '{DOWN}'
+	$aAccelKeys[10][1] = $dummyDown
+	$aAccelKeys[11][0] = '{TAB}'
+	$aAccelKeys[11][1] = $tabdummy
 	GUISetAccelerators($aAccelKeys)
 	#EndRegion accelerators
 

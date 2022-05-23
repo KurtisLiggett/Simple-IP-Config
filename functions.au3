@@ -1523,6 +1523,7 @@ Func GetChangeLogData()
 			"     New toolbar icons." & @CRLF & _
 			"     Updated check for updates functionality." & @CRLF & _
 			"     Moved profiles.ini to local AppData" & @CRLF & _
+			"     Removed shortcut Ctrl+c to prevent accidental clear" & @CRLF & _
 			"     Code redesigned." & @CRLF & _
 			@CRLF & _
 			"v2.9.3" & @CRLF & _
