@@ -18,17 +18,15 @@
 Func _Profiles()
 	Local $oObject = _AutoItObject_Create()
 
+	Local $aNames[0]
 	;object properties
 	_AutoItObject_AddProperty($oObject, "count", $ELSCOPE_PUBLIC, 0)
-	_AutoItObject_AddProperty($oObject, "names", $ELSCOPE_PUBLIC, "")
-	_AutoItObject_AddProperty($oObject, "tokenStart", $ELSCOPE_PUBLIC, "(?")
-	_AutoItObject_AddProperty($oObject, "tokenEnd", $ELSCOPE_PUBLIC, "?)")
+	_AutoItObject_AddProperty($oObject, "names", $ELSCOPE_PUBLIC, $aNames)
 	_AutoItObject_AddProperty($oObject, "Profiles", $ELSCOPE_PRIVATE, LinkedList())
 
 	;object methods
 	_AutoItObject_AddMethod($oObject, "create", "_Profiles_createProfile")
 	_AutoItObject_AddMethod($oObject, "add", "_Profiles_addProfile")
-	_AutoItObject_AddMethod($oObject, "insert", "_Profiles_insertProfile")
 	_AutoItObject_AddMethod($oObject, "move", "_Profiles_moveProfile")
 	_AutoItObject_AddMethod($oObject, "remove", "_Profiles_removeProfile")
 	_AutoItObject_AddMethod($oObject, "removeAll", "_Profiles_removeAllProfiles")
@@ -68,50 +66,31 @@ Func _Profiles_addProfile($oSelf, $oProfile)
 	#forceref $oSelf
 
 	$oSelf.Profiles.add($oProfile)
-	$oSelf.names &= $oSelf.tokenStart & _regex_stringLiteralEncode($oProfile.ProfileName) & $oSelf.tokenEnd
 	$oSelf.count += 1
+
+	Local $aNames = $oSelf.names
+	If $oSelf.count > UBound($oSelf.names) Then
+		ReDim $aNames[$oSelf.count]
+	EndIf
+
+	$aNames[$oSelf.count-1] = $oProfile.ProfileName
+	$oSelf.names = $aNames
 EndFunc   ;==>_Profiles_addProfile
 
-Func _Profiles_insertProfile($oSelf, $index, $sName)
-	$sName = _regex_stringLiteralEncode($sName)
-	Local $aNames = $oSelf.getNames()
-	If Not IsArray($aNames) Then Return 1
-
-	If $index + 1 < UBound($aNames) Then
-		_ArrayInsert($aNames, $index + 1, $sName)
-	Else
-		_ArrayAdd($aNames, $sName)
-	EndIf
-
-	$oSelf.names = ""
-	For $sName In $aNames
-		$oSelf.names &= $oSelf.tokenStart & $sName & $oSelf.tokenEnd
-	Next
-	$oSelf.count += 1
-
-	Return 0
-EndFunc   ;==>_Profiles_insertProfile
-
 Func _Profiles_moveProfile($oSelf, $sName, $indexTo)
-	$sName = _regex_stringLiteralEncode($sName)
-
 	;remove from profile name list
-	$oSelf.names = StringReplace($oSelf.names, $oSelf.tokenStart & $sName & $oSelf.tokenEnd, "")
+	$oSelf.remove($sName)
 
 	;add name at selected position
-	Local $aNames = $oSelf.getNames()
-	If Not IsArray($aNames) Then Return 1
+	Local $aNames = $oSelf.names
 
-	If $indexTo + 1 < UBound($aNames) Then
-		_ArrayInsert($aNames, $indexTo + 1, $sName)
+	If $indexTo < UBound($aNames) Then
+		_ArrayInsert($aNames, $indexTo, $sName)
 	Else
 		_ArrayAdd($aNames, $sName)
 	EndIf
 
-	$oSelf.names = ""
-	For $sName In $aNames
-		$oSelf.names &= $oSelf.tokenStart & $sName & $oSelf.tokenEnd
-	Next
+	$oSelf.names = $aNames
 
 	Return 0
 EndFunc   ;==>_Profiles_moveProfile
@@ -119,22 +98,21 @@ EndFunc   ;==>_Profiles_moveProfile
 Func _Profiles_getNames($oSelf)
 	#forceref $oSelf
 
-	Local $aNames = StringRegExp($oSelf.names, "(?<=\(\?)(.*?)(?=\?\))", $STR_REGEXPARRAYGLOBALMATCH)
-	If @error Then
-		Return 1
-	Else
-		For $i=0 to UBound($aNames)-1
-			$aNames[$i] = _regex_stringLiteralDecode($aNames[$i])
-		Next
-		Return $aNames
-	EndIf
+	Return $oSelf.names
 EndFunc   ;==>_Profiles_getNames
 
 Func _Profiles_exists($oSelf, $sName)
 	#forceref $oSelf
 
-	$sName = _regex_stringLiteralEncode($sName)
-	Local $bMatch = StringRegExp($oSelf.names, "(?<=\(\?)\Q" & $sName & "\E(?=\?\))", $STR_REGEXPMATCH)
+	Local $bMatch = False
+
+	For $oProfile in $oSelf.Profiles
+		If $oProfile.ProfileName = $sName Then
+			$bMatch = True
+			ExitLoop
+		EndIf
+	Next
+
 	Return $bMatch
 EndFunc   ;==>_Profiles_exists
 
@@ -148,14 +126,26 @@ Func _Profiles_removeProfile($oSelf, $sName)
 		$index += 1
 	Next
 
-	$oSelf.names = StringReplace($oSelf.names, $oSelf.tokenStart & _regex_stringLiteralEncode($sName) & $oSelf.tokenEnd, "")
+	$index = 0
+	Local $aNames = $oSelf.names
+	For $name In $aNames
+		If $name = $sName Then
+			_ArrayDelete($aNames, $index)
+			ExitLoop
+		EndIf
+		$index += 1
+	Next
+	$oSelf.names = $aNames
+
 	$oSelf.count -= 1
 EndFunc   ;==>_Profiles_removeProfile
 
 Func _Profiles_removeAllProfiles($oSelf)
 	$oSelf.Profiles = 0
 	$oSelf.Profiles = LinkedList()
-	$oSelf.names = ""
+	$oSelf.names = 0
+	Local $aNames[0]
+	$oSelf.names = $aNames
 	$oSelf.count = 0
 EndFunc   ;==>_Profiles_removeAllProfiles
 
@@ -185,10 +175,7 @@ Func _Profiles_sort($oSelf, $iDescending = 0)
 	If Not IsArray($aNames) Then Return 1
 
 	_ArraySort($aNames, $iDescending)
-	$oSelf.names = ""
-	For $sName In $aNames
-		$oSelf.names &= $oSelf.tokenStart & _regex_stringLiteralEncode($sName) & $oSelf.tokenEnd
-	Next
+	$oSelf.names = $aNames
 
 	Return 0
 EndFunc   ;==>_Profiles_sort

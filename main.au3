@@ -125,7 +125,7 @@ Global $headingHeight = 20
 Global $menuHeight, $captionHeight
 Global $MinToTray, $RestoreItem, $aboutitem, $exititem, $exititemtray
 
-Global $aAccelKeys[13][2]
+Global $aAccelKeys[12][2]
 
 ;GUI Fonts
 Global $MyGlobalFontName = "Arial"
