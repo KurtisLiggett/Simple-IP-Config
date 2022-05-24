@@ -121,7 +121,7 @@
          "title":"Controlla aggiornamenti",
          "thisVersion":"Versione installata",
          "latestVersion":"Versione aggiornata",
-         "newMessage":"È disponibile una versione più recente.",
+         "newMessage":"È disponibile una nuova versione.",
          "latestMessage":"La versione installata è aggiornata."
       },
       "about":{
