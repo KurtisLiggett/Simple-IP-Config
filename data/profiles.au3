@@ -78,6 +78,9 @@ Func _Profiles_addProfile($oSelf, $oProfile)
 EndFunc   ;==>_Profiles_addProfile
 
 Func _Profiles_moveProfile($oSelf, $sName, $indexTo)
+	Local $oProfileMove = $oSelf.get($sName)
+	Local $oProfilesTemp = LinkedList()
+
 	;remove from profile name list
 	$oSelf.remove($sName)
 
@@ -90,6 +93,23 @@ Func _Profiles_moveProfile($oSelf, $sName, $indexTo)
 		_ArrayAdd($aNames, $sName)
 	EndIf
 
+	Local $i = 0
+	For $oProfile in $oSelf.Profiles
+		If $i = $indexTo Then
+			$oProfilesTemp.add($oProfileMove)
+			$oProfilesTemp.add($oProfile)
+		Else
+			$oProfilesTemp.add($oProfile)
+		EndIf
+		$i += 1
+	Next
+
+	If $indexTo = UBound($aNames)-1 Then
+		$oProfilesTemp.add($oProfileMove)
+	EndIf
+
+	$oSelf.Profiles = 0
+	$oSelf.Profiles = $oProfilesTemp
 	$oSelf.names = $aNames
 
 	Return 0
