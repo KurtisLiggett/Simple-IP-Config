@@ -608,7 +608,7 @@ EndFunc   ;==>GuiFlatButton_SetState
 ; Author ........: kurtykurtyboy
 ; Modified ......:
 ;=====================================================================================================================
-Func GuiFlatButton_Delete($controlID)
+Func GuiFlatButton_Delete($controlID, $isDestroy = False)
 	If Not $aGuiFlatButton[0][0] Then Return 0
 	$controlID = GuiFlatButton_prevControlId($controlID)
 
@@ -622,7 +622,11 @@ Func GuiFlatButton_Delete($controlID)
 			$parentHWND = _WinAPI_GetParent($childHWND)
 			DllCall("comctl32.dll", "bool", "RemoveWindowSubclass", "hwnd", $controlHWND, "ptr", $aGuiFlatButton[$i][2], "uint_ptr", $i)
 			DllCall("comctl32.dll", "bool", "RemoveWindowSubclass", "hwnd", $childHWND, "ptr", $aGuiFlatButton[$i][3], "uint_ptr", $i)
-			GUIDelete($childHWND)
+
+			;if window is being destroyed, then let it be
+			If Not $isDestroy Then
+				GUIDelete($childHWND)
+			EndIf
 			GUISwitch($parentHWND)
 
 			For $j = 0 To UBound($aGuiFlatButton, 2) - 1
@@ -746,7 +750,7 @@ EndFunc   ;==>GuiFlatButton_ButtonHandler
 ; Modified ......:
 ; ===============================================================================================================================
 Func GuiFlatButton_ChildHandler($hwnd, $iMsg, $wParam, $lParam, $idx, $pData)
-	If $iMsg <> $WM_DRAWITEM And $iMsg <> $WM_NCHITTEST Then Return DllCall("comctl32.dll", "lresult", "DefSubclassProc", "hwnd", $hwnd, "uint", $iMsg, "wparam", $wParam, "lparam", $lParam)[0]
+	If $iMsg <> $WM_DRAWITEM And $iMsg <> $WM_NCHITTEST And $iMsg <> $WM_DESTROY Then Return DllCall("comctl32.dll", "lresult", "DefSubclassProc", "hwnd", $hwnd, "uint", $iMsg, "wparam", $wParam, "lparam", $lParam)[0]
 	#forceref $iMsg, $wParam, $lParam
 	Static $i=0
 	Switch $iMsg
@@ -776,6 +780,10 @@ Func GuiFlatButton_ChildHandler($hwnd, $iMsg, $wParam, $lParam, $idx, $pData)
 
 		Case $WM_NCHITTEST ;prevent dragging disabled buttons
 			Return 1
+
+		;if this child is being destroyed, undo the subclassing
+		Case $WM_DESTROY
+			GuiFlatButton_Delete($aGuiFlatButton[$idx][1], True)
 
 	EndSwitch
 	Return DllCall("comctl32.dll", "lresult", "DefSubclassProc", "hwnd", $hwnd, "uint", $iMsg, "wparam", $wParam, "lparam", $lParam)[0]

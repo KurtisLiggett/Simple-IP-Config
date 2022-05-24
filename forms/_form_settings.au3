@@ -102,8 +102,8 @@ Func _saveOptions()
 	_ExitChild(@GUI_WinHandle)
 
 	If $updateGUI Then
-		_GuiFlatToolbar_DeleteAll($oToolbar)
-		_GuiFlatToolbar_DeleteAll($oToolbar2)
+;~ 		_GuiFlatToolbar_DeleteAll($oToolbar)
+;~ 		_GuiFlatToolbar_DeleteAll($oToolbar2)
 		GUIDelete($hgui)
 		Local $restartGUI = _form_restart($oLangStrings.OSLang, $options.PositionX, $options.PositionY)
 		_setLangStrings($oLangStrings.OSLang)
