@@ -2,18 +2,19 @@
 
 Simple IP Config is a small, portable ip changer utility to change common Windows network settings quickly and easily without having to click through the endless system windows.
 
-![latest using](../assets/gif_latest.gif?raw=true "using Simple IP Config")
+![latest using](../assets/screenshot.png?raw=true "using Simple IP Config")
 
 Features
 ---
 * View / Change IP Address, Subnet Mask, Gateway, DNS Servers
 * Simple, easy to use interface
-* Small size - less than 1MB
+* Tiny install size
 * Portable / run from USB
 * Enable / Disable Network Adapters
 * Save unlimited number of profiles for quickly changing settings
-* Shortcuts for most actions
+* Shortcuts for common actions
 * Send to tray for later use
+* Support for multiple languages
 * Free for personal and commercial use
 
 Installing
