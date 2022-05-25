@@ -83,8 +83,8 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.4.exe
-#AutoIt3Wrapper_Res_Fileversion=2.9.4.0
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.5.exe
+#AutoIt3Wrapper_Res_Fileversion=2.9.5.0
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
 #Region Global Variables
@@ -111,8 +111,8 @@ EndIf
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.9.4"
-Global $winDate = "5/23/2022"
+Global $winVersion = "2.9.5"
+Global $winDate = "5/24/2022"
 Global $hgui
 Global $guiWidth = 600
 Global $guiHeight = 625

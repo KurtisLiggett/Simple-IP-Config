@@ -1507,6 +1507,10 @@ Func GetChangeLogData()
 	$sChangeLog[0] = $oLangStrings.changelog.changelog & " - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
+			"     #148   Fixed issue - Apply button text language." & @CRLF & _
+			@CRLF & _
+			"v2.9.4" & @CRLF & _
+			"BUG FIXES:" & @CRLF & _
 			"     #143   Fixed issue - crash on TAB key while renaming." & @CRLF & _
 			"     #103   COM Error 80020009 checking for updates." & @CRLF & _
 			"     Bug creating new profiles from scratch." & @CRLF & _

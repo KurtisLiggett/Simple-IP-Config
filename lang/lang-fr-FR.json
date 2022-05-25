@@ -1,0 +1,191 @@
+{
+   "language-info":{
+      "name":"Français",
+      "code":"fr-FR"
+   },
+   "strings":{
+      "buttonOK":"OK",
+      "buttonCancel":"Annuler",
+      "buttonSave":"Enregistrer",
+      "menu":{
+         "file":{
+            "file":"&Fichier",
+            "apply":"&Appliquer profil",
+            "applyKey":"Entrer",
+            "rename":"&Renommer",
+            "renameKey":"F2",
+            "new":"&Nouveau",
+            "newKey":"Ctrl+n",
+            "save":"&Enregistrer",
+            "saveKey":"Ctrl+s",
+            "delete":"&Supprimer",
+            "deleteKey":"Del",
+            "clear":"&Effacer les entrées",
+            "clearKey":"Ctrl+c",
+            "shortcut":"Créer un raccourci vers le profil",
+            "open":"Ouvrir Fichier",
+            "import":"Importer profils",
+            "export":"Exporter profils",
+            "exit":"&Quitter"
+         },
+         "view":{
+            "view":"&Affichage",
+            "refresh":"&Actualiser",
+            "refreshKey":"Ctrl+r",
+            "tray":"Envoyer vers &barre d'état système",
+            "trayKey":"Ctrl+t",
+            "hide":"Masquer les adaptateurs"
+         },
+         "tools":{
+            "tools":"&Outils",
+            "netConn":"Ouvrir les connexions réseau",
+            "pull":"&Tirer de l'adaptateur",
+            "pullKey":"Ctrl+p",
+            "disable":"Désactiver l'adaptateur",
+            "enable":"Activer l'adaptateur",
+            "release":"&Libérer DHCP",
+            "renew":"Re&nouveler DHCP",
+            "cycle":"Libérer/renouveler &cycler",
+            "openprofloc":"Accédez au dossier profiles.ini",
+            "settings":"&Paramètres"
+         },
+         "help":{
+            "help":"&Aide",
+            "docs":"&Documentation en ligne",
+            "docsKey":"F1",
+            "changelog":"Afficher &Modifier le journal",
+            "update":"Vérifier les &mises à jour...",
+            "debug":"&Informations de débogage",
+            "about":"&À propos de Simple IP Config"
+         }
+      },
+      "traymenu":{
+         "hide":"Masquer",
+         "restore":"Restaurer",
+         "about":"À propos de",
+         "exit":"Quitter"
+      },
+      "lvmenu":{
+         "rename":"Renommer",
+         "delete":"Supprimer",
+         "sortAsc":"Trier de A->Z",
+         "sortDesc":"Trier de Z->A",
+         "shortcut":"Créer un raccourci vers le profil"
+      },
+      "toolbar":{
+         "apply":"Appliquer",
+         "refresh":"Actualiser",
+         "new":"Nouveau",
+         "save":"Enregistrer",
+         "delete":"Supprimer",
+         "clear":"Effacer",
+         "apply_tip":"Appliquer",
+         "refresh_tip":"Actualiser",
+         "new_tip":"Créer un nouveau profil",
+         "save_tip":"Enregistrer le profil",
+         "delete_tip":"Supprimer le profil",
+         "clear_tip":"Effacer les entrées",
+         "settings_tip":"Paramètres",
+         "tray_tip":"Envoyer vers barre d'état système"
+      },
+      "interface":{
+         "computername":"Nom de l'ordinateur",
+         "domain":"Domaine",
+         "workgroup":"Workgroup",
+         "adapterDesc":"Description",
+         "mac":"Adresse Mac",
+         "select":"Sélectionnez l'adaptateur",
+         "profiles":"Profils",
+         "profileprops":"Propriétés IP du profil",
+         "currentprops":"Propriétés actuelles de l'adaptateur",
+         "restarting":"Redémarrage",
+         "props":{
+            "ip":"Adresse IP",
+            "subnet":"Masque de sous-réseau",
+            "gateway":"Passerelle",
+            "dnsPref":"Serveur DNS préféré",
+            "dnsAlt":"Serveur DNS alternatif",
+            "dhcpServer":"Serveur DHCP",
+            "adapterState":"État de l'adaptateur",
+            "adapterStateEnabled":"Activé",
+            "adapterStateDisabled":"Désactivé",
+			"adapterStateUnplugged":"Débranché",
+            "ipauto":"Définir l'adresse IP automatiquement",
+            "ipmanual":"Définir l'adresse IP manuellement",
+            "dnsauto":"Définir l'adresse DNS automatiquement",
+            "dnsmanual":"Définir l'adresse DNS manuellement",
+            "dnsreg":"Enregistrer les adresses"
+         }
+      },
+      "updates":{
+         "title":"Vérifier les mises à jour",
+         "thisVersion":"Cette version",
+         "latestVersion":"Dernière version",
+         "newMessage":"Une nouvelle version est disponible.",
+         "latestMessage":"Vous avez la dernière version."
+      },
+      "about":{
+         "title":"À propos de",
+         "version":"Version",
+         "date":"Date",
+         "dev":"Développeur",
+         "lic":"License",
+         "desc":"Utilitaire de changeur d'IP portable qui offre à l'usager de changer rapidement et aisément les réglages réseau courants des connexions.",
+         "icons":"Les icônes de programme proviennent de"
+      },
+      "changelog":{
+         "changelog":"Journal des changements"
+      },
+      "blacklist":{
+         "title":"Liste noire des adaptateurs",
+         "heading":"Sélectionnez les adaptateurs à masquer"
+      },
+      "settings":{
+         "title":"Paramètres",
+         "lang":"Langage",
+         "opt1":"Démarrage dans la barre d'état système",
+         "opt2":"Réduire dans la barre d'état système",
+         "opt3":"Enregistrer l'adaptateur dans le profil",
+         "opt4":"Vérifier automatiquement les mises à jour"
+      },
+      "message":{
+         "ready":"Prêt",
+         "timedout":"Action expirée!  Commande abandonnée.",
+         "couldNotSave":"Impossible d'enregistrer à l'emplacement sélectionné!",
+         "updatingList":"Mettre à jour la liste d'adaptateurs...",
+         "selectAdapter":"Sélectionnez un adaptateur et réessayez",
+         "enterIP":"Entrez une adresse IP",
+         "enterSubnet":"Entrez un masque de sous-réseau",
+         "settingIP":"Paramétrage d'une adresse IP statique...",
+         "settingDnsDhcp":"Paramétrage DNS DHCP...",
+         "settingDnsPref":"Paramétrage du serveur DNS préféré...",
+         "settingDnsAlt":"Paramétrage d'un serveur DNS alternatif...",
+         "errorOccurred":"une erreur est survenue",
+         "profileNameExists":"Le nom du profil existe déjà!",
+         "noProfileSel":"Aucun profil n'est sélectionné!",
+         "profilesNotFound":"Fichier Profiles.ini introuvable - Un nouveau fichier sera créé",
+         "errorReadingProf":"Erreur de lecture du fichier profiles.ini",
+         "adapterNotFound":"Adaptateur introuvable",
+         "error":"Erreur",
+         "warning":"Avertissement",
+         "newItem":"Nouvel élément",
+         "applying":"Application du profil",
+         "errorRetrieving":"Il y a eu un problème lors de la récupération des adaptateurs.",
+         "commandTimeout":"Délai d'attente de la commande",
+         "updateCheckError":"Une erreur s'est produite lors de la récupération de la mise à jour.",
+         "checkConnect":"Veuillez vérifier votre connexion Internet.",
+         "errorCode":"Code d'erreur",
+         "newVersion":"Une nouvelle version est disponible",
+         "currentVersion":"Vous avez la dernière version.",
+         "yourVersion":"Votre version est",
+         "latestVersion":"La dernière version est",
+         "loadedFile":"Fichier chargé",
+         "doneImporting":"Importation des profils terminée",
+         "fileSaved":"Fichier enregistré"
+      },
+      "dialog":{
+         "selectFile":"Sélectionnez Fichier",
+         "ini":"Fichiers INI"
+      }
+   }
+}
