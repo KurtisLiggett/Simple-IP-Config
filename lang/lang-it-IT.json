@@ -19,7 +19,7 @@
             "save":"&Salva",
             "saveKey":"Ctrl+s",
             "delete":"&Elimina",
-            "deleteKey":"Del",
+            "deleteKey":"Canc",
             "clear":"A&zzera voci",
             "clearKey":"Ctrl+c",
             "shortcut":"Crea colle&gamento al profilo",
@@ -45,8 +45,8 @@
             "enable":"Abilita scheda di rete",
             "release":"&Rilascia DHCP",
             "renew":"Ri&nnova DHCP",
-            "cycle":"&Ciclo rilascio/rinnovo",
-            "openprofloc":"Vai alla cartella profiles.ini",
+            "cycle":"&Ciclo rilascio/rinnovo DHCP",
+            "openprofloc":"Vai alla cartella del file 'profiles.ini'",
             "settings":"&Impostazioni"
          },
          "help":{
@@ -56,7 +56,7 @@
             "changelog":"Visualizza &novità programma",
             "update":"Controlla &aggiornamenti programma...",
             "debug":"Informazioni &debug",
-            "about":"&Info su Simple IP Config"
+            "about":"&Informazioni su Simple IP Config"
          }
       },
       "traymenu":{
@@ -112,8 +112,8 @@
             "adapterStateUnplugged":"Non collegata",
             "ipauto":"Imposta automaticamente indirizzo IP",
             "ipmanual":"Imposta manualmente indirizzo IP",
-            "dnsauto":"Imposta automaticamente indirizzo DNS",
-            "dnsmanual":"Imposta manualmente indirizzo DNS",
+            "dnsauto":"Imposta automaticamente indirizzo IP server DNS",
+            "dnsmanual":"Imposta manualmente indirizzo IP server DNS",
             "dnsreg":"Registra indirizzi"
          }
       },
@@ -125,12 +125,12 @@
          "latestMessage":"La versione installata è aggiornata."
       },
       "about":{
-         "title":"Info programma",
+         "title":"Informazioni programma",
          "version":"Versione",
          "date":"Data",
          "dev":"Sviluppatore",
          "lic":"Licenza",
-         "desc":"Il programma che permette di modificare rapidamente e facilmente le impostazioni di rete più comuni per qualsiasi connessione.",
+         "desc":"Programma che permette di modificare rapidamente e facilmente le impostazioni di rete più comuni per qualsiasi connessione.",
          "icons":"Autore icone programma"
       },
       "changelog":{
@@ -151,31 +151,31 @@
       "message":{
          "ready":"Pronto",
          "timedout":"Azione scaduta! Comando interrotto.",
-         "couldNotSave":"Impossibile salvare nel percorso selezionato!",
+         "couldNotSave":"Impossibile salvare il file nel percorso selezionato!",
          "updatingList":"Aggiornamento elenco schede di rete...",
          "selectAdapter":"Seleziona una scheda di rete e riprova",
          "enterIP":"Inserisci un indirizzo IP",
-         "enterSubnet":"Inserisci una maschera sotto rete",
+         "enterSubnet":"Inserisci una maschera di sotto rete",
          "settingIP":"Impostazione indirizzo IP statico...",
          "settingDnsDhcp":"Impostazione DNS DHCP...",
-         "settingDnsPref":"Impostazione server DNS primario...",
-         "settingDnsAlt":"Impostazione DNS secondario...",
+         "settingDnsPref":"Impostazione indirizzo IP server DNS primario...",
+         "settingDnsAlt":"Impostazione indirizzo IP DNS secondario...",
          "errorOccurred":"Si è verificato un errore",
          "profileNameExists":"Questo nome profilo esiste già!",
          "noProfileSel":"Nessun profilo selezionato!",
-         "profilesNotFound":"File profiles.ini non trovato - Verrà creato un nuovo file profilo.",
-         "errorReadingProf":"Errore durante la lettura del file profiles.ini",
+         "profilesNotFound":"File 'profiles.ini' non trovato - Verrà creato un nuovo file profilo.",
+         "errorReadingProf":"Errore durante la lettura del file 'profiles.ini'",
          "adapterNotFound":"Scheda di rete non trovata",
          "error":"Errore",
          "warning":"Avviso",
          "newItem":"Nuovo profilo",
          "applying":"Applicazione profilo",
-         "errorRetrieving":"Si è verificato un problema durante il recupero delle info sulle schede di rete.",
+         "errorRetrieving":"Si è verificato un problema durante il recupero delle informazioni sulle schede di rete.",
          "commandTimeout":"Timeout comando",
          "updateCheckError":"Si è verificato un errore durante il download dell'aggiornamento.",
          "checkConnect":"Controlla la connessione Internet.",
          "errorCode":"Codice errore",
-         "newVersion":"È disponibile una versione più recente",
+         "newVersion":"È disponibile una nuova versione del programma",
          "currentVersion":"La versione installata è aggiornata.",
          "yourVersion":"Versione installata",
          "latestVersion":"Versione aggiornata",
