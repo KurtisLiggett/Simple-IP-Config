@@ -22,7 +22,7 @@ Func _Profiles()
 	;object properties
 	_AutoItObject_AddProperty($oObject, "count", $ELSCOPE_PUBLIC, 0)
 	_AutoItObject_AddProperty($oObject, "names", $ELSCOPE_PUBLIC, $aNames)
-	_AutoItObject_AddProperty($oObject, "Profiles", $ELSCOPE_PRIVATE, LinkedList())
+	_AutoItObject_AddProperty($oObject, "Profiles", $ELSCOPE_PUBLIC, LinkedList())
 
 	;object methods
 	_AutoItObject_AddMethod($oObject, "create", "_Profiles_createProfile")
@@ -66,7 +66,7 @@ Func _Profiles_addProfile($oSelf, $oProfile)
 	#forceref $oSelf
 
 	$oSelf.Profiles.add($oProfile)
-	$oSelf.count += 1
+	$oSelf.count = $oSelf.count + 1
 
 	Local $aNames = $oSelf.names
 	If $oSelf.count > UBound($oSelf.names) Then
@@ -157,7 +157,7 @@ Func _Profiles_removeProfile($oSelf, $sName)
 	Next
 	$oSelf.names = $aNames
 
-	$oSelf.count -= 1
+	$oSelf.count = $oSelf.count - 1
 EndFunc   ;==>_Profiles_removeProfile
 
 Func _Profiles_removeAllProfiles($oSelf)
@@ -191,10 +191,20 @@ EndFunc   ;==>_Profiles_setProfile
 
 Func _Profiles_sort($oSelf, $iDescending = 0)
 	#forceref $oSelf
-	Local $aNames = $oSelf.getNames()
-	If Not IsArray($aNames) Then Return 1
+	Local $oProfilesTemp = LinkedList()
+	Local $aNames = $oSelf.names
 
+	;sort the names first
+	If Not IsArray($aNames) Then Return 1
 	_ArraySort($aNames, $iDescending)
+
+	;recreate the list
+	For $i=0 to $oSelf.count-1
+		$oProfilesTemp.add($oSelf.get($aNames[$i]))
+	Next
+
+	$oSelf.Profiles = 0
+	$oSelf.Profiles = $oProfilesTemp
 	$oSelf.names = $aNames
 
 	Return 0

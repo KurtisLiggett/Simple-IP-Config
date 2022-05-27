@@ -1507,6 +1507,7 @@ Func GetChangeLogData()
 	$sChangeLog[0] = $oLangStrings.changelog.changelog & " - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
+			"     #150   Fixed issue - Sort profiles crashed and deleted all profiles." & @CRLF & _
 			"     #148   Fixed issue - Apply button text language." & @CRLF & _
 			@CRLF & _
 			"v2.9.4" & @CRLF & _
