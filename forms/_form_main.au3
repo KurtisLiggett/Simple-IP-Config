@@ -294,7 +294,7 @@ Func _form_main()
 	; =================================================
 	#Region profile-buttons
 	Local $menuColor = _WinAPI_GetSysColor($COLOR_MENUBAR)
-	Local $hoverColor = _colorChangeLightness($menuColor, 0.9)
+	Local $hoverColor = $menuColor * 0.9
 	Local $buttonSpace = 0 * $dscale
 	Local $aColorsEx = _
 			[$menuColor, 0xFCFCFC, $menuColor, _     ; normal 	: Background, Text, Border
@@ -432,7 +432,7 @@ Func _form_main()
 
 	Local $buttonRefresh = GuiFlatButton_Create("", $x + 8 * $dscale + $w - 16 * $dscale - 32 * $dscale + 5 * $dscale, $y + 8 * $dscale, 26 * $dscale, 26 * $dscale, $BS_TOOLBUTTON)
 	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetCursor(-1, $MCID_HAND)
+	GUICtrlSetCursor(-1, 0)
 ;~ 	GuiFlatButton_SetColorsEx($buttonRefresh, $aColorsEx)
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonRefresh), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngRefresh24))))
 

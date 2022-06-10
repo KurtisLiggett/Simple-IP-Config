@@ -78,8 +78,14 @@ Func Adapter_Add(ByRef $hObject, $sName, $sMAC, $sDescription)
 		$hObject[0][1] = $sMAC
 		$hObject[0][2] = $sDescription
 	Else
-		_ArrayAdd($hObject, $sName & "|" & $sMAC & "|" & $sDescription)
+;~ 		$ret = _ArrayAdd($hObject, $sName & "|" & $sMAC & "|" & $sDescription, 0, "|")
+		Local $size = UBound($hObject)
+		ReDim $hObject[$size+1][3]
+		$hObject[$size][0] = $sName
+		$hObject[$size][1] = $sMAC
+		$hObject[$size][2] = $sDescription
 	EndIf
+
 EndFunc   ;==>Adapter_Add
 
 ; delete profile
