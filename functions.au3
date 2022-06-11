@@ -46,11 +46,11 @@ EndFunc   ;==>MyErrFunc
 ;------------------------------------------------------------------------------
 Func RunCallback($sDescription, $sNextDescription, $sStdOut)
 	If $sStdOut = $oLangStrings.message.commandTimeout Then
+
 		_setStatus($oLangStrings.message.timedout, 1)
 		If asyncRun_isIdle() Then
 ;~ 			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, True)
 			GuiFlatButton_SetState($tbButtonApply, $GUI_ENABLE)
-			GUICtrlSetState
 		Else
 ;~ 			_GUICtrlToolbar_EnableButton($hToolbar, $tb_apply, False)
 			GuiFlatButton_SetState($tbButtonApply, $GUI_DISABLE)
@@ -679,6 +679,7 @@ Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $ada
 			asyncRun($cmd1 & $cmd2 & $cmd3, $Callback, $message)
 		EndIf
 	EndIf
+
 EndFunc   ;==>_apply
 
 ;Func _OLDapply()
@@ -1507,6 +1508,7 @@ Func GetChangeLogData()
 	$sChangeLog[0] = $oLangStrings.changelog.changelog & " - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
+			"     Internal issues with array handling. (affected lots of things)" & @CRLF & _
 			"     #152   Program antivirus false-positive." & @CRLF & _
 			@CRLF & _
 			"v2.9.5" & @CRLF & _
