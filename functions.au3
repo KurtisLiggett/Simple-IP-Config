@@ -1508,6 +1508,10 @@ Func GetChangeLogData()
 	$sChangeLog[0] = $oLangStrings.changelog.changelog & " - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
+			"     #157   Save profiles in portable directory (auto-detect)." & @CRLF & _
+			@CRLF & _
+			"v2.9.6" & @CRLF & _
+			"BUG FIXES:" & @CRLF & _
 			"     Internal issues with array handling. (affected lots of things)" & @CRLF & _
 			"     #152   Program antivirus false-positive." & @CRLF & _
 			@CRLF & _
