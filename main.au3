@@ -1,5 +1,3 @@
-;~ #AutoIt3Wrapper_Run_Au3Stripper=y
-
 #Region license
 ; -----------------------------------------------------------------------------
 ; Simple IP Config is free software: you can redistribute it and/or modify
@@ -61,6 +59,7 @@
 #include <Inet.au3>
 #include <File.au3>
 
+#include "libraries\GetInstalledPath.au3"
 #include "libraries\AutoItObject.au3"
 #include "libraries\oLinkedList.au3"
 _AutoItObject_StartUp()
@@ -83,8 +82,8 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.6.exe
-#AutoIt3Wrapper_Res_Fileversion=2.9.6.1
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.7.exe
+#AutoIt3Wrapper_Res_Fileversion=2.9.7
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
 #Region Global Variables
@@ -100,19 +99,15 @@ Global Const $wbemFlagForwardOnly = 0x20
 
 Global $screenshot = 0
 Global $sProfileName
-If FileExists(@ScriptDir & "\profiles.ini") Then
-	$sProfileName = @ScriptDir & "\profiles.ini"
-Else
-	If Not FileExists(@LocalAppDataDir & "\Simple IP Config") Then
-		DirCreate(@LocalAppDataDir & "\Simple IP Config")
-	EndIf
-	$sProfileName = @LocalAppDataDir & "\Simple IP Config\profiles.ini"
-EndIf
+
+;set profile name based on installation and script dir
+_setProfilesIniLocation()
+
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.9.6.1"
-Global $winDate = "6/10/2022"
+Global $winVersion = "2.9.7"
+Global $winDate = "6/14/2022"
 Global $hgui
 Global $guiWidth = 600
 Global $guiHeight = 625
@@ -401,3 +396,43 @@ Func _NewInstance($hWnd, $iMsg, $iwParam, $ilParam)
 		_maximize()
 	EndIf
 EndFunc   ;==>_NewInstance
+
+
+Func _setProfilesIniLocation()
+	Local $isPortable = True
+
+	;if profiles.ini exists in the exe directory, always choose that first, otherwise check for install
+	If FileExists(@ScriptDir & "\profiles.ini") Then
+		$isPortable = True
+	Else
+		;get install path and check if running from installed or other directory
+		Local $sDisplayName
+		Local $InstallPath = _GetInstalledPath("Simple IP Config", $sDisplayName)
+
+		If @error Then
+			;program is not installed
+			$isPortable = True
+		Else
+			;program is installed, check if running from install directory
+			Local $scriptPath = @ScriptDir
+			If StringRight(@ScriptDir, 1) <> "\" Then
+				$scriptPath &= "\"
+			EndIf
+
+			If $InstallPath = $scriptPath Then
+				$isPortable = False
+			Else
+				$isPortable = True
+			EndIf
+		EndIf
+	EndIf
+
+	If $isPortable Then
+		$sProfileName = @ScriptDir & "\profiles.ini"
+	Else
+		If Not FileExists(@LocalAppDataDir & "\Simple IP Config") Then
+			DirCreate(@LocalAppDataDir & "\Simple IP Config")
+		EndIf
+		$sProfileName = @LocalAppDataDir & "\Simple IP Config\profiles.ini"
+	EndIf
+EndFunc
