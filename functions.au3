@@ -1476,7 +1476,7 @@ Func _DomainComputerBelongs($strComputer = "localhost")
 			If $objItem.PartOfDomain Then
 				$Domain = $oLangStrings.interface.domain & ": " & $objItem.Domain
 			Else
-				$Domain = $oLangStrings.interface.domain & ": " & $objItem.Domain
+				$Domain = $oLangStrings.interface.workgroup & ": " & $objItem.Domain
 			EndIf
 
 		Next
@@ -1509,6 +1509,7 @@ Func GetChangeLogData()
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
 			"     #157   Save profiles in portable directory (auto-detect)." & @CRLF & _
+			"     #166   Workgroup incorrect text." & @CRLF & _
 			@CRLF & _
 			"v2.9.6" & @CRLF & _
 			"BUG FIXES:" & @CRLF & _
