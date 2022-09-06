@@ -1,4 +1,6 @@
-![Simple IP Config](../assets/logo.png?raw=true "logo")
+<img align="left" width="72" height="72" src="../assets/logo.png" alt="logo">
+
+# Simple IP Config
 
 Simple IP Config is a small, portable ip changer utility to change common Windows network settings quickly and easily without having to click through the endless system windows.
 
