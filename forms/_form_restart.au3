@@ -16,7 +16,7 @@
 ; -----------------------------------------------------------------------------
 
 Func _form_restart($langCode, $x, $y)
-	$w = 275 * $dScale
+	$w = 350 * $dScale
 	$h = 170 * $dScale
 	$x = $x + $guiWidth / 2 - $w / 2
 	$y = $y + $guiHeight / 2 - $h / 2

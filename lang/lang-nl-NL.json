@@ -1,0 +1,191 @@
+{
+   "language-info":{
+      "name":"Nederlands",
+      "code":"nl-NL"
+   },
+   "strings":{
+      "buttonOK":"OK",
+      "buttonCancel":"Annuleren",
+      "buttonSave":"Opslaan",
+      "menu":{
+         "file":{
+            "file":"&Bestand",
+            "apply":"&Profiel toepassen",
+            "applyKey":"Enter",
+            "rename":"&Hernoemen",
+            "renameKey":"F2",
+            "new":"&Nieuw",
+            "newKey":"Ctrl+n",
+            "save":"&Opslaan",
+            "saveKey":"Ctrl+s",
+            "delete":"&Verwijderen",
+            "deleteKey":"Del",
+            "clear":"&Waardes leegmaken",
+            "clearKey":"Ctrl+c",
+            "shortcut":"Maak profiel snelkoppeling",
+            "open":"Open Bestand",
+            "import":"Profielen importeren",
+            "export":"Profielen exporteren",
+            "exit":"&Afsluiten"
+         },
+         "view":{
+            "view":"&View",
+            "refresh":"&Verversen",
+            "refreshKey":"Ctrl+r",
+            "tray":"Naar &taakbalk minimaliseren",
+            "trayKey":"Ctrl+t",
+            "hide":"Adapters verbergen"
+         },
+         "tools":{
+            "tools":"&Gereedshappen",
+            "netConn":"Open netwerkverbindingen",
+            "pull":"&Haal adapterinformatie op",
+            "pullKey":"Ctrl+p",
+            "disable":"Adapter uitschakelen",
+            "enable":"Adapter inschakelen",
+            "release":"&DHCP lease vrijgeven",
+            "renew":"DHCP lease &vernieuwen",
+            "cycle":"Vrijgeven/vernieuwen &cyclus",
+            "openprofloc":"Ga naar profiles.ini folder",
+            "settings":"&Instellingen"
+         },
+         "help":{
+            "help":"&Help",
+            "docs":"&Online Documentatie",
+            "docsKey":"F1",
+            "changelog":"Toon &Change Log",
+            "update":"Check voor &Updates...",
+            "debug":"&Debug Informatie",
+            "about":"&Over Simple IP Config"
+         }
+      },
+      "traymenu":{
+         "hide":"Verbergen",
+         "restore":"Herstellen",
+         "about":"Over",
+         "exit":"Afsluiten"
+      },
+      "lvmenu":{
+         "rename":"Hernoemen",
+         "delete":"Verwijderen",
+         "sortAsc":"Sorteren A->Z",
+         "sortDesc":"Sorteren Z->A",
+         "shortcut":"Maak snelkoppeling naar profielen"
+      },
+      "toolbar":{
+         "apply":"Toepassen",
+         "refresh":"Vernieuwen",
+         "new":"Nieuw",
+         "save":"Opslaan",
+         "delete":"Verwijderen",
+         "clear":"Schonen",
+         "apply_tip":"Toepassen",
+         "refresh_tip":"Vernieuwen",
+         "new_tip":"Maak nieuw profiel",
+         "save_tip":"Profiel opslaan",
+         "delete_tip":"Profiel verwijderen",
+         "clear_tip":"Waardes leegmaken",
+         "settings_tip":"Instellingen",
+         "tray_tip":"Naar taakbalk"
+      },
+      "interface":{
+         "computername":"Computer naam",
+         "domain":"Domein",
+         "workgroup":"Workgroup",
+         "adapterDesc":"Beschrijving",
+         "mac":"MAC Adres",
+         "select":"Selecteer Adapter",
+         "profiles":"Profielen",
+         "profileprops":"Profiel IP eigenschappen",
+         "currentprops":"Huidige Adapter eigenschappen",
+         "restarting":"Opnieuw aan het starten",
+         "props":{
+            "ip":"IP Adres",
+            "subnet":"Subnetmasker",
+            "gateway":"Gateway",
+            "dnsPref":"Voorkeur DNS Server",
+            "dnsAlt":"Alternatieve DNS Server",
+            "dhcpServer":"DHCP Server",
+            "adapterState":"Adapter Status",
+            "adapterStateEnabled":"Ingeschakeld",
+            "adapterStateDisabled":"Uitgeschakeld",
+			"adapterStateUnplugged":"Niet aangesloten",
+            "ipauto":"Automatisch IP Adres verkrijgen",
+            "ipmanual":"Handmatig IP Adres toekennen",
+            "dnsauto":"Automatisch DNS Adres verkrijgen",
+            "dnsmanual":"Handmatig DNS Adres toekennen",
+            "dnsreg":"Registeer Adressen"
+         }
+      },
+      "updates":{
+         "title":"Controleer op updates",
+         "thisVersion":"Deze versie",
+         "latestVersion":"Laatste versie",
+         "newMessage":"Een nieuwe versie is beschikbaar.",
+         "latestMessage":"Je hebt de laatste versie."
+      },
+      "about":{
+         "title":"Over",
+         "version":"Versie",
+         "date":"Datum",
+         "dev":"Ontwikkelaar",
+         "lic":"Licentie",
+         "desc":"The portable ip changer utility that allows a user to quickly and easily change the most common network settings for any connection.",
+         "icons":"Programma iconen zijn van"
+      },
+      "changelog":{
+         "changelog":"Change Log"
+      },
+      "blacklist":{
+         "title":"Adapter Blacklist",
+         "heading":"Selecter Adapters om te verbergen"
+      },
+      "settings":{
+         "title":"Instellingen",
+         "lang":"Taal",
+         "opt1":"Opstarten in taakbalk",
+         "opt2":"Minimaliseer naar taakbalk",
+         "opt3":"Sla adapter op naar profiel",
+         "opt4":"Automatisch checken op updates"
+      },
+      "message":{
+         "ready":"Klaar",
+         "timedout":"Actie timed out!  Commando afgebroken.",
+         "couldNotSave":"Kan niet opslaan op opgegeven locatie!",
+         "updatingList":"Bijwerken Adapter lijst...",
+         "selectAdapter":"Selecteer een adapter en probeer opnieuw",
+         "enterIP":"Geef een IP adres op",
+         "enterSubnet":"Geef een subnetmasker op",
+         "settingIP":"Vast IP adres toepassen...",
+         "settingDnsDhcp":"DNS DHCP toepassen...",
+         "settingDnsPref":"Voorkeur DNS server toepassen...",
+         "settingDnsAlt":"Alternatieve DNS server toepassen...",
+         "errorOccurred":"Er is een fout opgetreden",
+         "profileNameExists":"De profielnaam bestaat al!",
+         "noProfileSel":"Er is geen profiel geselecteerd!",
+         "profilesNotFound":"Profiles.ini bestand niet gevonden - Een nieuw bestand wordt aangemaakt",
+         "errorReadingProf":"Kan profiles.ini niet lezen",
+         "adapterNotFound":"Adapter niet gevonden",
+         "error":"Fout",
+         "warning":"Waarschuwing",
+         "newItem":"Nieuw Item",
+         "applying":"Profiel wordt toegepast",
+         "errorRetrieving":"There was a problem retrieving the adapters.",
+         "commandTimeout":"Commando timeout",
+         "updateCheckError":"Er is een fout opgetreden met het binnenhalen van de update.",
+         "checkConnect":"Controleer de internetverbindig.",
+         "errorCode":"Fout code",
+         "newVersion":"Er is een nieuwe versie beschikbaar",
+         "currentVersion":"Je hebt de laatste versie.",
+         "yourVersion":"Deze versie is",
+         "latestVersion":"De laaste versie is",
+         "loadedFile":"Geladen bestand",
+         "doneImporting":"Klaar met importeren profielen",
+         "fileSaved":"Bestand opgeslagen"
+      },
+      "dialog":{
+         "selectFile":"Selecter bestand",
+         "ini":"INI Files"
+      }
+   }
+}
