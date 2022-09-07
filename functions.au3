@@ -1513,8 +1513,11 @@ Func GetChangeLogData()
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
 			"     #157   Save profiles in portable directory (auto-detect)." & @CRLF & _
-			"     #164   Auto expand larger error popup messages." & @CRLF & _
 			"     #166   Workgroup incorrect text." & @CRLF & _
+			"     #167   Refresh button does nothing." & @CRLF & _
+			"NEW FEATURES:" & @CRLF & _
+			"     #163   Close to system tray." & @CRLF & _
+			"     #164   Auto expand larger error popup messages." & @CRLF & _
 			@CRLF & _
 			"v2.9.6" & @CRLF & _
 			"BUG FIXES:" & @CRLF & _
