@@ -271,27 +271,27 @@ Func _main()
 	GUIRegisterMsg($iMsg, '_NewInstance')
 
 	;Add adapters the the combobox
-	If Not IsArray($adapters) Then
-		MsgBox(16, $oLangStrings.message.error, $oLangStrings.message.errorRetrieving)
-	Else
-		Adapter_Sort($adapters)    ; connections sort ascending
-		$defaultitem = Adapter_GetName($adapters, 0)
-		$sStartupAdapter = $options.StartupAdapter
-		If Adapter_Exists($adapters, $sStartupAdapter) Then
-			$defaultitem = $sStartupAdapter
-		EndIf
+;~ 	If Not IsArray($adapters) Then
+;~ 		MsgBox(16, $oLangStrings.message.error, $oLangStrings.message.errorRetrieving)
+;~ 	Else
+;~ 		Adapter_Sort($adapters)    ; connections sort ascending
+;~ 		$defaultitem = Adapter_GetName($adapters, 0)
+;~ 		$sStartupAdapter = $options.StartupAdapter
+;~ 		If Adapter_Exists($adapters, $sStartupAdapter) Then
+;~ 			$defaultitem = $sStartupAdapter
+;~ 		EndIf
 
-		$sAdapterBlacklist = $options.AdapterBlacklist
-		$aBlacklist = StringSplit($sAdapterBlacklist, "|")
-		If IsArray($aBlacklist) Then
-			Local $adapterNames = Adapter_GetNames($adapters)
-			For $i = 0 To UBound($adapterNames) - 1
-				$indexBlacklist = _ArraySearch($aBlacklist, $adapterNames[$i], 1)
-				If $indexBlacklist <> -1 Then ContinueLoop
-				GUICtrlSetData($combo_adapters, $adapterNames[$i], $defaultitem)
-			Next
-		EndIf
-	EndIf
+;~ 		$sAdapterBlacklist = $options.AdapterBlacklist
+;~ 		$aBlacklist = StringSplit($sAdapterBlacklist, "|")
+;~ 		If IsArray($aBlacklist) Then
+;~ 			Local $adapterNames = Adapter_GetNames($adapters)
+;~ 			For $i = 0 To UBound($adapterNames) - 1
+;~ 				$indexBlacklist = _ArraySearch($aBlacklist, $adapterNames[$i], 1)
+;~ 				If $indexBlacklist <> -1 Then ContinueLoop
+;~ 				GUICtrlSetData($combo_adapters, $adapterNames[$i], $defaultitem)
+;~ 			Next
+;~ 		EndIf
+;~ 	EndIf
 
 	_refresh(1)
 	ControlListView($hgui, "", $list_profiles, "Select", 0)

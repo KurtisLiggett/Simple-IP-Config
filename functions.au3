@@ -273,7 +273,8 @@ Func _updateCombo()
 		MsgBox(16, $oLangStrings.message.error, $oLangStrings.message.errorRetrieving)
 	Else
 		Adapter_Sort($adapters) ; connections sort ascending
-		$defaultitem = $adapterNames[0]
+;~ 		$defaultitem = Adapter_GetName($adapters, 0)
+		$defaultitem = ""
 		$sStartupAdapter = $options.StartupAdapter
 		$index = _ArraySearch($adapters, $sStartupAdapter, 1)
 		If ($index <> -1) Then
@@ -1111,8 +1112,14 @@ Func _setProperties($init = 0, $profileName = "")
 
 		$sSaveAdapter = $options.SaveAdapterToProfile
 		$profileAdapter = $oProfile.AdapterName
-		If $profileAdapter <> "" And ($sSaveAdapter = 1 Or $sSaveAdapter = "true") Then
-			ControlCommand($hgui, "", $combo_adapters, "SelectString", $profileAdapter)
+		If ($sSaveAdapter = 1 Or $sSaveAdapter = "true") Then
+			$index = _ArraySearch($adapters, $profileAdapter, 1)
+			If ($index <> -1) Then
+				ControlCommand($hgui, "", $combo_adapters, "SelectString", $profileAdapter)
+			Else
+				_GUICtrlComboBox_SetCurSel($combo_adapters, -1)
+				_updateCurrent()
+			EndIf
 		EndIf
 
 		_radios()
