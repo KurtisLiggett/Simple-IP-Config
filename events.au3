@@ -31,6 +31,29 @@
 ; Events.......: GUI_EVENT_CLOSE, tray item 'Exit', File menu 'Exit'
 ;------------------------------------------------------------------------------
 Func _onExit()
+	$sMinToTray = $options.MinToTray
+	If $sMinToTray = 1 Or $sMinToTray = "true" Then
+		_SendToTray()
+	Else
+		_Exit()
+	EndIf
+EndFunc   ;==>_onExit
+
+;------------------------------------------------------------------------------
+; Title........: _onMenuExit
+; Description..: Clean up and exit the program
+; Events.......: GUI_EVENT_CLOSE, tray item 'Exit', File menu 'Exit'
+;------------------------------------------------------------------------------
+Func _onMenuExit()
+	_Exit()
+EndFunc   ;==>_onExit
+
+;------------------------------------------------------------------------------
+; Title........: _Exit
+; Description..: Clean up and exit the program
+; Events.......: GUI_EVENT_CLOSE, tray item 'Exit', File menu 'Exit'
+;------------------------------------------------------------------------------
+Func _Exit()
 	_GDIPlus_Shutdown()
 
 	; save window position in ini file

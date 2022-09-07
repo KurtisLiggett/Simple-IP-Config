@@ -143,8 +143,8 @@
       "settings":{
          "title":"Instellingen",
          "lang":"Taal",
-         "opt1":"Opstarten in taakbalk",
-         "opt2":"Minimaliseer naar taakbalk",
+         "opt1":"Opstarten in systeemvak",
+         "opt2":"Dicht bij het systeemvak",
          "opt3":"Sla adapter op naar profiel",
          "opt4":"Automatisch checken op updates"
       },

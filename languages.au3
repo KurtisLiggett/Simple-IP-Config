@@ -595,7 +595,7 @@ Func _getEnglish()
 			'         "title":"Settings",' & _
 			'         "lang":"Language",' & _
 			'         "opt1":"Startup in system tray",' & _
-			'         "opt2":"Minimize to the system tray",' & _
+			'         "opt2":"Close to the system tray",' & _
 			'         "opt3":"Save adapter to profile",' & _
 			'         "opt4":"Automatically check for updates"' & _
 			'      },' & _
