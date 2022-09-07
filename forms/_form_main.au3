@@ -1051,7 +1051,7 @@ Func _statusPopup()
 ;~ 	$y = $wPos[1] + $menuHeight + $guiheight*$dscale-$h + 1
 
 	$w = $guiWidth * $dScale
-	$h = 63 * $dScale
+	$h = 100 * $dScale
 	$x = 0
 	$y = $guiheight * $dscale - $h - $menuHeight
 
@@ -1061,7 +1061,13 @@ Func _statusPopup()
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 	GUISetBkColor(_WinAPI_GetSysColor($COLOR_MENUBAR), $statusChild)
 
-	$edit = GUICtrlCreateEdit(GUICtrlRead($statuserror), 5, 8, $w - 10, $h - 37 * $dscale, BitOR($ES_MULTILINE, $WS_VSCROLL, $ES_NOHIDESEL, $ES_READONLY), $WS_EX_TRANSPARENT)
+	$pic = GUICtrlCreatePic("", 3 * $dScale, 3 * $dScale, 16, 16)
+	_memoryToPic($pic, GetIconData($pngWarning))
+
+	GUICtrlCreateLabel($oLangStrings.message.errorOccurred, 27 * $dscale, 4 * $dscale, 200 * $dscale)
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+
+	$edit = GUICtrlCreateEdit(GUICtrlRead($statuserror), 5, 23, $w - 10, $h - 37 * $dscale - 23, BitOR($ES_MULTILINE, $WS_VSCROLL, $ES_NOHIDESEL, $ES_READONLY), $WS_EX_TRANSPARENT)
 	GUICtrlSetFont(-1, 8.5)
 	Send("^{HOME}")
 

@@ -167,7 +167,7 @@ Func _onTabKey()
 		Send("{TAB}")
 		GUISetAccelerators($aAccelKeys)
 	EndIf
-EndFunc
+EndFunc   ;==>_onTabKey
 
 
 ;------------------------------------------------------------------------------
@@ -486,7 +486,7 @@ Func _onOpenProfLoc()
 ;~ 	Local $path = StringRegExp($sProfileName, "(.*)\\", $STR_REGEXPARRAYGLOBALMATCH)
 	Local $path = $sProfileName
 	Run("explorer.exe /n,/e,/select," & $path)
-EndFunc   ;==>_onExportProfiles
+EndFunc   ;==>_onOpenProfLoc
 
 ;------------------------------------------------------------------------------
 ; Title........: _onOpenNetConnections

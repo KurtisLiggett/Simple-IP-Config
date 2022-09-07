@@ -116,7 +116,9 @@ Func _CreateLink()
 	If @error Then Return
 
 	Local $res = FileCreateShortcut(@ScriptFullPath, $dir, @ScriptDir, '/set-config "' & $iniName & '"', "desc", @ScriptFullPath)
-	If $res = -1 Then _setStatus($oLangStrings.message.couldNotSave, 1)
+	If $res = -1 Then
+		_setStatus($oLangStrings.message.couldNotSave, 1)
+	EndIf
 EndFunc   ;==>_CreateLink
 
 ;------------------------------------------------------------------------------
@@ -1447,6 +1449,7 @@ Func _setStatus($sMessage, $bError = 0, $bTiming = 0)
 		GUICtrlSetState($statuserror, $GUI_SHOW)
 		GUICtrlSetState($statustext, $GUI_HIDE)
 		GUICtrlSetState($wgraphic, $GUI_SHOW)
+		_statusPopup()
 	Else
 		GUICtrlSetData($statustext, $sMessage)
 		GUICtrlSetState($statustext, $GUI_SHOW)

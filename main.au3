@@ -200,6 +200,7 @@ Global $oLangStrings
 #include "forms\_form_settings.au3"
 #include "forms\_form_update.au3"
 #include "forms\_form_restart.au3"
+#include "forms\_form_error.au3"
 #include "cli.au3"
 
 #Region PROGRAM CONTROL
@@ -435,4 +436,4 @@ Func _setProfilesIniLocation()
 		EndIf
 		$sProfileName = @LocalAppDataDir & "\Simple IP Config\profiles.ini"
 	EndIf
-EndFunc
+EndFunc   ;==>_setProfilesIniLocation
