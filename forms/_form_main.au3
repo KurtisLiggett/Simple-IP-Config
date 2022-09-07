@@ -433,6 +433,7 @@ Func _form_main()
 	Local $buttonRefresh = GuiFlatButton_Create("", $x + 8 * $dscale + $w - 16 * $dscale - 32 * $dscale + 5 * $dscale, $y + 8 * $dscale, 26 * $dscale, 26 * $dscale, $BS_TOOLBUTTON)
 	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
 	GUICtrlSetCursor(-1, 0)
+	GUICtrlSetOnEvent(-1, "_onRefresh")
 ;~ 	GuiFlatButton_SetColorsEx($buttonRefresh, $aColorsEx)
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonRefresh), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngRefresh24))))
 

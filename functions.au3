@@ -1061,6 +1061,7 @@ Func _refresh($init = 0)
 		_GUICtrlListView_CancelEditLabel(ControlGetHandle($hgui, "", $list_profiles))
 	EndIf
 
+	_updateCombo()
 	_loadProfiles()
 	_updateProfileList()
 	_updateCurrent()
