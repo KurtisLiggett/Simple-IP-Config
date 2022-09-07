@@ -1519,6 +1519,7 @@ Func GetChangeLogData()
 	$sChangeLog[0] = $oLangStrings.changelog.changelog & " - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
+			"     #141   Behavior when adapter does not exist." & @CRLF & _
 			"     #157   Save profiles in portable directory (auto-detect)." & @CRLF & _
 			"     #166   Workgroup incorrect text." & @CRLF & _
 			"     #167   Refresh button does nothing." & @CRLF & _
