@@ -144,7 +144,7 @@
          "title":"Settings",
          "lang":"Language",
          "opt1":"Startup in system tray",
-         "opt2":"Close to the system tray",
+         "opt2":"Minimize to the system tray",
          "opt3":"Save adapter to profile",
          "opt4":"Automatically check for updates"
       },

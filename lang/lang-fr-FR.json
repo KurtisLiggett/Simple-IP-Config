@@ -144,7 +144,7 @@
          "title":"Paramètres",
          "lang":"Langage",
          "opt1":"Démarrage dans la barre d'état système",
-         "opt2":"Près de la barre d'état système",
+         "opt2":"Réduire dans la barre d'état système",
          "opt3":"Enregistrer l'adaptateur dans le profil",
          "opt4":"Vérifier automatiquement les mises à jour"
       },

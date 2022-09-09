@@ -82,7 +82,7 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.7.exe
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.7-beta1.exe
 #AutoIt3Wrapper_Res_Fileversion=2.9.7
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
