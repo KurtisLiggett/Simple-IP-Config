@@ -37,7 +37,7 @@
             "hide":"Adapters verbergen"
          },
          "tools":{
-            "tools":"&Gereedshappen",
+            "tools":"&Gereedschappen",
             "netConn":"Open netwerkverbindingen",
             "pull":"&Haal adapterinformatie op",
             "pullKey":"Ctrl+p",
