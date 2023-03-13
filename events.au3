@@ -521,6 +521,96 @@ Func _onOpenNetConnections()
 EndFunc   ;==>_onOpenNetConnections
 
 ;------------------------------------------------------------------------------
+; Title........: _onCopyIp
+; Description..: Copy the IP address into clipboard
+; Events.......: button click
+;------------------------------------------------------------------------------
+Func _onCopyIp()
+	ClipPut(_GUICtrlIpAddress_Get($ip_Ip))
+EndFunc   ;==>_onCopyIp
+
+;------------------------------------------------------------------------------
+; Title........: _onPasteIp
+; Description..: Paste the IP address from clipboard into the IP box
+; Events.......: button click
+;------------------------------------------------------------------------------
+Func _onPasteIp()
+	$sIpString = _GUICtrlIpAddress_Set($ip_Ip, ClipGet())
+EndFunc   ;==>_onPasteIp
+
+;------------------------------------------------------------------------------
+; Title........: _onCopySubnet
+; Description..: Copy the Subnet address into clipboard
+; Events.......: button click
+;------------------------------------------------------------------------------
+Func _onCopySubnet()
+	ClipPut(_GUICtrlIpAddress_Get($ip_Subnet))
+EndFunc   ;==>_onCopySubnet
+
+;------------------------------------------------------------------------------
+; Title........: _onPasteSubnet
+; Description..: Paste the Subnet address from clipboard into the IP box
+; Events.......: button click
+;------------------------------------------------------------------------------
+Func _onPasteSubnet()
+	$sIpString = _GUICtrlIpAddress_Set($ip_Subnet, ClipGet())
+EndFunc   ;==>_onPasteSubnet
+
+;------------------------------------------------------------------------------
+; Title........: _onCopyGateway
+; Description..: Copy the Gateway address into clipboard
+; Events.......: button click
+;------------------------------------------------------------------------------
+Func _onCopyGateway()
+	ClipPut(_GUICtrlIpAddress_Get($ip_Gateway))
+EndFunc   ;==>_onCopyGateway
+
+;------------------------------------------------------------------------------
+; Title........: _onPasteGateway
+; Description..: Paste the Gateway address from clipboard into the IP box
+; Events.......: button click
+;------------------------------------------------------------------------------
+Func _onPasteGateway()
+	$sIpString = _GUICtrlIpAddress_Set($ip_Gateway, ClipGet())
+EndFunc   ;==>_onPasteGateway
+
+;------------------------------------------------------------------------------
+; Title........: _onCopyDnsPri
+; Description..: Copy the Gateway address into clipboard
+; Events.......: button click
+;------------------------------------------------------------------------------
+Func _onCopyDnsPri()
+	ClipPut(_GUICtrlIpAddress_Get($ip_DnsPri))
+EndFunc   ;==>_onCopyDnsPri
+
+;------------------------------------------------------------------------------
+; Title........: _onPasteDnsPri
+; Description..: Paste the Gateway address from clipboard into the IP box
+; Events.......: button click
+;------------------------------------------------------------------------------
+Func _onPasteDnsPri()
+	$sIpString = _GUICtrlIpAddress_Set($ip_DnsPri, ClipGet())
+EndFunc   ;==>_onPasteDnsPri
+
+;------------------------------------------------------------------------------
+; Title........: _onCopyDnsAlt
+; Description..: Copy the Gateway address into clipboard
+; Events.......: button click
+;------------------------------------------------------------------------------
+Func _onCopyDnsAlt()
+	ClipPut(_GUICtrlIpAddress_Get($ip_DnsAlt))
+EndFunc   ;==>_onCopyDnsAlt
+
+;------------------------------------------------------------------------------
+; Title........: _onPasteDnsAlt
+; Description..: Paste the Gateway address from clipboard into the IP box
+; Events.......: button click
+;------------------------------------------------------------------------------
+Func _onPasteDnsAlt()
+	$sIpString = _GUICtrlIpAddress_Set($ip_DnsAlt, ClipGet())
+EndFunc   ;==>_onPasteDnsAlt
+
+;------------------------------------------------------------------------------
 ; Title........: WM_COMMAND
 ; Description..: Process WM_COMMAND messages
 ;                - Toolbar buttons

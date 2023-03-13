@@ -532,20 +532,70 @@ Func _form_main()
 	$yText_offset = $y
 	$textSpacer = 17 * $dscale
 
+	;IP address
 	$label_ip = GUICtrlCreateLabel($oLangStrings.interface.props.ip & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 2 + $textSpacer * 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	$ip_Ip = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2, 135 * $dscale, 22 * $dscale)
 	_GUICtrlIpAddress_SetFontByHeight($ip_Ip, $MyGlobalFontName, $MyGlobalFontHeight)
 
+	;IP copy/paste buttons
+	Local $buttonCopyIp = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 42 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2 + 2 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
+	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetCursor(-1, 0)
+	GUICtrlSetOnEvent(-1, "_onCopyIp")
+	GUICtrlSetTip(-1, "Copy Address")
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyIp), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngCopy16))))
+
+	Local $buttonPasteIp = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 26 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2 + 2  * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
+	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetCursor(-1, 0)
+	GUICtrlSetOnEvent(-1, "_onPasteIp")
+	GUICtrlSetTip(-1, "Paste Address")
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteIp), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngPaste16))))
+
+
+	;subnet address
 	$label_subnet = GUICtrlCreateLabel($oLangStrings.interface.props.subnet & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 3 + $textSpacer * 3)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	$ip_Subnet = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 3 + $textSpacer * 3, 135 * $dscale, 22 * $dscale)
 	_GUICtrlIpAddress_SetFontByHeight($ip_Subnet, $MyGlobalFontName, $MyGlobalFontHeight)
 
+	;subnet copy/paste buttons
+	Local $buttonCopySubnet = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 42 * $dscale, $yText_offset + $textHeight * 3 + $textSpacer * 3 + 2 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
+	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetCursor(-1, 0)
+	GUICtrlSetOnEvent(-1, "_onCopySubnet")
+	GUICtrlSetTip(-1, "Copy Address")
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopySubnet), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngCopy16))))
+
+	Local $buttonPasteSubnet = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 26 * $dscale, $yText_offset + $textHeight * 3 + $textSpacer * 3 + 2  * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
+	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetCursor(-1, 0)
+	GUICtrlSetOnEvent(-1, "_onPasteSubnet")
+	GUICtrlSetTip(-1, "Paste Address")
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteSubnet), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngPaste16))))
+
+
+	;gateway address
 	$label_gateway = GUICtrlCreateLabel($oLangStrings.interface.props.gateway & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 4 + $textSpacer * 4)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	$ip_Gateway = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 4 + $textSpacer * 4, 135 * $dscale, 22 * $dscale)
 	_GUICtrlIpAddress_SetFontByHeight($ip_Gateway, $MyGlobalFontName, $MyGlobalFontHeight)
+
+	;gateway copy/paste buttons
+	Local $buttonCopyGateway = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 42 * $dscale, $yText_offset + $textHeight * 4 + $textSpacer * 4 + 2 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
+	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetCursor(-1, 0)
+	GUICtrlSetOnEvent(-1, "_onCopyGateway")
+	GUICtrlSetTip(-1, "Copy Address")
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyGateway), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngCopy16))))
+
+	Local $buttonPasteGateway = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 26 * $dscale, $yText_offset + $textHeight * 4 + $textSpacer * 4 + 2  * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
+	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetCursor(-1, 0)
+	GUICtrlSetOnEvent(-1, "_onPasteGateway")
+	GUICtrlSetTip(-1, "Paste Address")
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteGateway), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngPaste16))))
 
 
 	; ------------------
@@ -576,10 +626,42 @@ Func _form_main()
 	$ip_DnsPri = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 7 + $textSpacer * 7, 135 * $dscale, 22 * $dscale)
 	_GUICtrlIpAddress_SetFontByHeight($ip_DnsPri, $MyGlobalFontName, $MyGlobalFontHeight)
 
+	;Primary DNS copy/paste buttons
+	Local $buttonCopyDnsPri = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 42 * $dscale, $yText_offset + $textHeight * 7 + $textSpacer * 7 + 2 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
+	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetCursor(-1, 0)
+	GUICtrlSetOnEvent(-1, "_onCopyDnsPri")
+	GUICtrlSetTip(-1, "Copy Address")
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyDnsPri), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngCopy16))))
+
+	Local $buttonPasteDnsPri = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 26 * $dscale, $yText_offset + $textHeight * 7 + $textSpacer * 7 + 2  * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
+	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetCursor(-1, 0)
+	GUICtrlSetOnEvent(-1, "_onPasteDnsPri")
+	GUICtrlSetTip(-1, "Paste Address")
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteDnsPri), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngPaste16))))
+
+
 	$label_DnsAlt = GUICtrlCreateLabel($oLangStrings.interface.props.dnsAlt & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 8 + $textSpacer * 8)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	$ip_DnsAlt = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 8 + $textSpacer * 8, 135 * $dscale, 22 * $dscale)
 	_GUICtrlIpAddress_SetFontByHeight($ip_DnsAlt, $MyGlobalFontName, $MyGlobalFontHeight)
+
+	;Alternate DNS copy/paste buttons
+	Local $buttonCopyDnsAlt = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 42 * $dscale, $yText_offset + $textHeight * 8 + $textSpacer * 8 + 2 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
+	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetCursor(-1, 0)
+	GUICtrlSetOnEvent(-1, "_onCopyDnsAlt")
+	GUICtrlSetTip(-1, "Copy Address")
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyDnsAlt), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngCopy16))))
+
+	Local $buttonPasteDnsAlt = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 26 * $dscale, $yText_offset + $textHeight * 8 + $textSpacer * 8 + 2  * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
+	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetCursor(-1, 0)
+	GUICtrlSetOnEvent(-1, "_onPasteDnsAlt")
+	GUICtrlSetTip(-1, "Paste Address")
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteDnsAlt), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngPaste16))))
+
 
 	$ck_dnsReg = GUICtrlCreateCheckbox($oLangStrings.interface.props.dnsreg, $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 9 + $textSpacer * 9, -1, 15 * $dscale)
 	GUICtrlSetBkColor(-1, 0xFFFFFF)

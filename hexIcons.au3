@@ -22,7 +22,8 @@
 ;==============================================================================
 
 Global Enum $pngAccept, $pngAdd, $pngBigicon, $pngDelete, $pngEdit, $pngRefresh, $pngSave, $pngSave16, _
-		$pngSearch, $pngSettings, $pngTray, $pngWarning, $pngMax, $pngNew16, $pngRefresh24, $pngDelete16
+		$pngSearch, $pngSettings, $pngTray, $pngWarning, $pngMax, $pngNew16, $pngRefresh24, $pngDelete16, _
+		$pngCopy16, $pngPaste16
 
 ;Get icons on-demand instead of keeping the data permanently in memory
 Func GetIconData($iconSel)
@@ -328,6 +329,20 @@ Func GetIconData($iconSel)
 					'LAgWA7/j+auVhDpJlCvb/tnpccGedt1qD3ovYQTI1Adi+BH3dNiJghBRisP3iTwp' & _
 					'MQWbwXP3ffjQ7qXWG1iySCShuDInzykw5x44VRB6gfyynXMnADPQ/vUX4vGkX2/c' & _
 					'5BJYEGIcT/ou7w9MzD6ryePdiwAAAABJRU5ErkJggg=='
+		Case $pngCopy16
+			$icondData = '' & _
+					'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAAL' & _
+					'EwEAmpwYAAAAdklEQVR4nO3SsQ2DMBRF0TNKxEJUGYsNCG0kDxIGYQNokYiMUlDE' & _
+					'xpIpudKrvv/Vl/W4iAYDQkH+MmCqEYTcsIRwEPRYsWWyoE0JVnR4ZjLinRJsv0el' & _
+					'F+/cAvV/4EC1YMbnpM6x9q+UIDYsliQniMuPkyvL+AIcjUoWpd2MpAAAAABJRU5E' & _
+					'rkJggg=='
+		Case $pngPaste16
+			$icondData = '' & _
+					'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAAL' & _
+					'EwEAmpwYAAAAeklEQVR4nO2SywmAMBBEXyNWom2kGXtQvPo5erIobSQQWdhA0CSK' & _
+					'B/HgwDskOzuEMJBXBZQ8VAc4pb2zMAE2WBJqJbwTzxgLsECjePMKbMHZz8V7kgMM' & _
+					'UAAzsByYdWbUmwy40h/Al//AaknEkCNZpCFS5Rji6W+89CXtfdJB3QhWA3YAAAAA' & _
+					'SUVORK5CYII='
 	EndSwitch
 
 	Return _Base64Decode($icondData)
