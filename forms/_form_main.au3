@@ -533,14 +533,20 @@ Func _form_main()
 	$textSpacer = 9 * $dscale
 
 	GUIStartGroup()
-	$radio_IpAuto = GUICtrlCreateRadio($oLangStrings.interface.props.ipauto, $x + 8 * $dscale, $yText_offset, $w - 16 * $dscale, 20 * $dscale)
+	$radio_IpAuto = GUICtrlCreateRadio("", $x + 8 * $dscale, $yText_offset, 15 * $dscale, 20 * $dscale)
+	GUICtrlSetOnEvent(-1, "_onRadioIpAuto")
+	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
+	Local $radio_IpAutoLabel = GUICtrlCreateLabel($oLangStrings.interface.props.ipauto, $x + 8 * $dscale + 15 * $dscale, $yText_offset + 2 * $dscale, $w - 16 * $dscale - 14 * $dscale, 20 * $dscale)
 	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
 	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-	GUICtrlSetOnEvent(-1, "_onRadio")
-	$radio_IpMan = GUICtrlCreateRadio($oLangStrings.interface.props.ipmanual, $x + 8 * $dscale, $yText_offset + $textHeight + $textSpacer, $w - 16 * $dscale, 20 * $dscale)
+	GUICtrlSetOnEvent(-1, "_onRadioIpAuto")
+	$radio_IpMan = GUICtrlCreateRadio("", $x + 8 * $dscale, $yText_offset + $textHeight + $textSpacer, 15 * $dscale, 20 * $dscale)
+	GUICtrlSetOnEvent(-1, "_onRadioIpMan")
+	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
+	Local $radio_IpManLabel = GUICtrlCreateLabel($oLangStrings.interface.props.ipmanual, $x + 8 * $dscale + 15 * $dscale, $yText_offset + $textHeight + $textSpacer + 2 * $dscale, $w - 16 * $dscale - 14 * $dscale, 20 * $dscale)
 	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
 	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-	GUICtrlSetOnEvent(-1, "_onRadio")
+	GUICtrlSetOnEvent(-1, "_onRadioIpMan")
 	GUICtrlSetState(-1, $GUI_CHECKED)
 
 	$yText_offset = $y
@@ -627,15 +633,22 @@ Func _form_main()
 	$yText_offset = $y + 50 * $dscale
 
 	GUIStartGroup()
-	$radio_DnsAuto = GUICtrlCreateRadio($oLangStrings.interface.props.dnsauto, $x + 8 * $dscale, $yText_offset + $textHeight * 5 + $textSpacer * 5, $w - 16 * $dscale, 20 * $dscale)
+	$radio_DnsAuto = GUICtrlCreateRadio("", $x + 8 * $dscale, $yText_offset + $textHeight * 5 + $textSpacer * 5, 15 * $dscale, 20 * $dscale)
+	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
+	GUICtrlSetOnEvent(-1, "_onRadioDnsAuto")
+	Local $radio_DnsAutoLabel = GUICtrlCreateLabel($oLangStrings.interface.props.dnsauto, $x + 8 * $dscale + 15 * $dscale, $yText_offset + $textHeight * 5 + $textSpacer * 5 + 2 * $dscale, $w - 16 * $dscale - 14 * $dscale, 20 * $dscale)
 	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
 	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-	GUICtrlSetOnEvent(-1, "_onRadio")
-	$radio_DnsMan = GUICtrlCreateRadio($oLangStrings.interface.props.dnsmanual, $x + 8 * $dscale, $yText_offset + $textHeight * 6 + $textSpacer * 6, $w - 16 * $dscale, 20 * $dscale)
+	GUICtrlSetOnEvent(-1, "_onRadioDnsAuto")
+	$radio_DnsMan = GUICtrlCreateRadio("", $x + 8 * $dscale, $yText_offset + $textHeight * 6 + $textSpacer * 6, 15 * $dscale, 20 * $dscale)
 	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
 	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-	GUICtrlSetOnEvent(-1, "_onRadio")
+	GUICtrlSetOnEvent(-1, "_onRadioDnsMan")
 	GUICtrlSetState(-1, $GUI_CHECKED)
+	Local $radio_DnsManLabel = GUICtrlCreateLabel($oLangStrings.interface.props.dnsmanual, $x + 8 * $dscale + 15 * $dscale, $yText_offset + $textHeight * 6 + $textSpacer * 6 + 2 * $dscale, $w - 16 * $dscale - 14 * $dscale, 20 * $dscale)
+	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
+	GUICtrlSetOnEvent(-1, "_onRadioDnsMan")
 
 	$yText_offset = $y
 	$textSpacer = 17 * $dscale
@@ -1046,6 +1059,7 @@ Func _makeBox($x, $y, $w, $h, $bkcolor = $cTheme_InfoBox)
 	Local $border = GUICtrlCreateLabel("", $x, $y, $w, $h)
 ;~ 	GUICtrlSetBkColor(-1, 0x000880)
 	GUICtrlSetBkColor(-1, 0x666666)
+;~ 	GUICtrlSetState(-1, $GUI_DISABLE)
 EndFunc   ;==>_makeBox
 
 #Region -- Helper Functions --

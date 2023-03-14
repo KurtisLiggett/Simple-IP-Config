@@ -121,8 +121,59 @@ EndFunc   ;==>_onBlacklist
 ; Events.......: Any radio button state changed
 ;------------------------------------------------------------------------------
 Func _onRadio()
+	ConsoleWrite("click" & @CRLF)
 	_radios()
 EndFunc   ;==>_onRadio
+
+;------------------------------------------------------------------------------
+; Title........: _onRadioIpAuto
+; Description..: Update radio button selections and states
+; Events.......: radio button or text clicked
+;------------------------------------------------------------------------------
+Func _onRadioIpAuto()
+	GUICtrlSetState($radio_IpMan, $GUI_UNCHECKED)
+	GUICtrlSetState($radio_IpAuto, $GUI_CHECKED)
+	If GUICtrlRead($radio_DnsMan) = $GUI_CHECKED Then
+		GUICtrlSetState($radio_DnsAuto, $GUI_UNCHECKED)
+	EndIf
+	_radios()
+EndFunc   ;==>_onRadioIpAuto
+
+;------------------------------------------------------------------------------
+; Title........: _onRadioIpMan
+; Description..: Update radio button selections and states
+; Events.......: radio button or text clicked
+;------------------------------------------------------------------------------
+Func _onRadioIpMan()
+	GUICtrlSetState($radio_IpAuto, $GUI_UNCHECKED)
+	GUICtrlSetState($radio_IpMan, $GUI_CHECKED)
+	GUICtrlSetState($radio_DnsMan, $GUI_UNCHECKED)
+	GUICtrlSetState($radio_DnsAuto, $GUI_CHECKED)
+	_radios()
+EndFunc   ;==>_onRadioIpMan
+
+;------------------------------------------------------------------------------
+; Title........: _onRadioDnsAuto
+; Description..: Update radio button selections and states
+; Events.......: radio button or text clicked
+;------------------------------------------------------------------------------
+Func _onRadioDnsAuto()
+	GUICtrlSetState($radio_DnsMan, $GUI_UNCHECKED)
+	GUICtrlSetState($radio_DnsAuto, $GUI_CHECKED)
+	_radios()
+EndFunc   ;==>_onRadioDnsAuto
+
+;------------------------------------------------------------------------------
+; Title........: _onRadioDnsMan
+; Description..: Update radio button selections and states
+; Events.......: radio button or text clicked
+;------------------------------------------------------------------------------
+Func _onRadioDnsMan()
+	GUICtrlSetState($radio_DnsAuto, $GUI_UNCHECKED)
+	GUICtrlSetState($radio_DnsMan, $GUI_CHECKED)
+	_radios()
+EndFunc   ;==>_onRadioDnsMan
+
 
 ;------------------------------------------------------------------------------
 ; Title........: _onSelect

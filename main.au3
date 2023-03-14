@@ -182,7 +182,7 @@ Global $cThemeLight_ProfileList = 0xFFFFFF
 Global $cThemeLight_ProfileText = 0x000000
 Global $cThemeLight_SearchBox = 0xFFFFFF
 Global $cThemeLight_SearchText = 0x000000
-Global $cThemeLight_InfoBox = 0x333333
+Global $cThemeLight_InfoBox = 0x555555
 Global $cThemeLight_InfoBoxText = 0xFFFFFF
 
 Global $cTheme_Back = $cThemeLight_Back
