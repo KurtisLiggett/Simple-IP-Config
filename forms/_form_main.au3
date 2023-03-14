@@ -57,7 +57,7 @@ Func _form_main()
 	; ---- create the main GUI
 	$hgui = GUICreate($winName & " " & $winVersion, $guiWidth * $dscale, $guiHeight * $dscale, $xpos, $ypos, BitOR($GUI_SS_DEFAULT_GUI, $WS_CLIPCHILDREN), $WS_EX_COMPOSITED)
 ;~ 	GUISetBkColor(0xFFFFFF)
-	GUISetBkColor(0x1a81d7)
+	GUISetBkColor($cTheme_Back)
 
 	; GUI SET EVENTS
 	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExit")
@@ -119,6 +119,9 @@ Func _form_main()
 	GUICtrlCreateMenuItem("", $viewmenu)     ; create a separator line
 	$blacklistitem = GUICtrlCreateMenuItem($oLangStrings.menu.view.hide, $viewmenu)
 	GUICtrlSetOnEvent(-1, "_onBlacklist")
+	$appearancemenu = GUICtrlCreateMenu($oLangStrings.menu.view.appearance, $viewmenu)
+	$lightmodeitem = GUICtrlCreateMenuItem($oLangStrings.menu.view.light, $appearancemenu)
+	$darkmodeitem = GUICtrlCreateMenuItem($oLangStrings.menu.view.dark, $appearancemenu)
 
 	$toolsmenu = GUICtrlCreateMenu($oLangStrings.menu.tools.tools)
 	$netConnItem = GUICtrlCreateMenuItem($oLangStrings.menu.tools.netConn, $toolsmenu)
@@ -244,14 +247,14 @@ Func _form_main()
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetState($statuserror, $GUI_HIDE)
 
-	GUICtrlCreateLabel("", $x, $y + 1, $w, 1)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
+;~ 	GUICtrlCreateLabel("", $x, $y + 1, $w, 1)
+;~ 	GUICtrlSetBkColor(-1, 0xAAAAAA)
 
-	GUICtrlCreateLabel("", $x, $y, $w, 1)
+	GUICtrlCreateLabel("", $x, $y + 1, $w, 1)
 	GUICtrlSetBkColor(-1, 0x404040)
 
 	GUICtrlCreateLabel("", $x, $y, $w, $h)
-	GUICtrlSetBkColor(-1, _WinAPI_GetSysColor($COLOR_MENUBAR))
+	GUICtrlSetBkColor(-1, $cTheme_Menu)
 	#EndRegion statusbar
 
 
@@ -270,13 +273,13 @@ Func _form_main()
 	Else
 		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": " & @ComputerName, $x + 3, $y + 2, $w / 2, $h)
 	EndIf
-	GUICtrlSetBkColor($computerName, 0x1a81d7)
-	_setFont($computerName, 8, -1, 0xFFFFFF)
+	GUICtrlSetBkColor($computerName, $cTheme_Back)
+	_setFont($computerName, 8, -1, $cTheme_Name)
 
 	If @LogonDomain <> "" Then
 		$domainName = GUICtrlCreateLabel("", $w / 2, $y + 2, $w / 2 - 3, $h, $SS_RIGHT)
-		GUICtrlSetBkColor($domainName, 0x1a81d7)
-		_setFont($domainName, 8, -1, 0xFFFFFF)
+		GUICtrlSetBkColor($domainName, $cTheme_Back)
+		_setFont($domainName, 8, -1, $cTheme_Name)
 	EndIf
 	#EndRegion footer
 
@@ -293,7 +296,7 @@ Func _form_main()
 
 	; =================================================
 	#Region profile-buttons
-	Local $menuColor = _WinAPI_GetSysColor($COLOR_MENUBAR)
+	Local $menuColor = $cTheme_Menu
 	Local $hoverColor = $menuColor * 0.9
 	Local $buttonSpace = 0 * $dscale
 	Local $aColorsEx = _
@@ -353,8 +356,10 @@ Func _form_main()
 	_memoryToPic($searchgraphic, GetIconData($pngSearch))
 
 	$input_filter = GUICtrlCreateInput("*", $x + 12 + 11, $y + 3 + 2 * $dscale, $w - 12 - 18, 15 * $dscale, -1, $WS_EX_TOOLWINDOW)
+	GUICtrlSetBkColor(-1, $cTheme_SearchBox)
+	GUICtrlSetColor(-1, $cTheme_SearchText)
 	GUICtrlCreateLabel("", $x + 3, $y + 3, $w - 6, 20 * $dscale)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetBkColor(-1, $cTheme_SearchBox)
 	GUICtrlCreateLabel("", $x + 2, $y + 2, $w - 4, 20 * $dscale + 2)
 	GUICtrlSetBkColor(-1, 0x777777)
 	$filter_dummy = GUICtrlCreateDummy()
@@ -364,6 +369,8 @@ Func _form_main()
 	_GUICtrlListView_SetColumnWidth($list_profiles, 0, $w - 2 - 20 * $dscale)  ; sets column width
 	_GUICtrlListView_AddItem($list_profiles, "Item1")
 	GUICtrlSetOnEvent($list_profiles, "_onLvEnter")
+	GUICtrlSetBkColor($list_profiles, $cTheme_ProfileList)
+	GUICtrlSetColor($list_profiles, $cTheme_ProfileText)
 
 	; ListView Context Menu
 	$lvcontext = GUICtrlCreateContextMenu($list_profiles)
@@ -391,10 +398,15 @@ Func _form_main()
 	GUICtrlSetBkColor(-1, 0x666666)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 
+	;create bottom border
+	GUICtrlCreateLabel("", 0, $y + $h, $w, 1)
+	GUICtrlSetBkColor(-1, 0x666666)
+	GUICtrlSetState(-1, $GUI_DISABLE)
+
 	;create white background box
 ;~ 	_makeBox($x, $y, $w, $h)
 	GUICtrlCreateLabel("", $x, $y, $w, $h)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetBkColor(-1, $cTheme_ProfileList)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	#EndRegion profiles-list
 
@@ -409,32 +421,32 @@ Func _form_main()
 	$h = 228 * $dscale
 	$textSpacer = 10 * $dscale
 	$textHeight = 9 * $dscale
-	$bkcolor = 0xFFFFFF
+	$bkcolor = $cTheme_InfoBox
 	$yText_offset = $y + 9 * $dscale + 28 * $dscale
 
 	$combo_adapters = GUICtrlCreateCombo("", $x + 8 * $dscale, $y + 8 * $dscale, $w - 16 * $dscale - 32 * $dscale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
 	GUICtrlSetOnEvent($combo_adapters, "_OnCombo")
 	$lDescription = GUICtrlCreateLabel($oLangStrings.interface.adapterDesc, $x + 8 * $dscale + $xIndent, $y + 9 * $dscale + 28 * $dscale, $w - 16 * $dscale, -1, $SS_LEFTNOWORDWRAP)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$lMac = GUICtrlCreateLabel($oLangStrings.interface.mac & ": ", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight + $textSpacer, $w - 16 * $dscale, -1, $SS_LEFTNOWORDWRAP)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$combo_dummy = GUICtrlCreateDummy()
 	GUICtrlSetOnEvent(-1, "_onCombo")
 
-;~ 	Local $aColorsEx = _
-;~ 			[0xFFFFFF, 0xFCFCFC, 0xFFFFFF, _ ; normal 	: Background, Text, Border
-;~ 			0xFFFFFF, 0xFCFCFC, 0xFFFFFF, _     ; focus 	: Background, Text, Border
-;~ 			0xDDDDDD, 0xFCFCFC, 0xDDDDDD, _     ; hover 	: Background, Text, Border
-;~ 			0xDDDDDD, 0xFCFCFC, 0xDDDDDD]     ; selected 	: Background, Text, Border
+	Local $aColorsEx = _
+			[$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox, _     ; normal 	: Background, Text, Border
+			$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox, _     ; focus 	: Background, Text, Border
+			$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox, _      ; hover 	: Background, Text, Border
+			$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox]        ; selected 	: Background, Text, Border
 
 	Local $buttonRefresh = GuiFlatButton_Create("", $x + 8 * $dscale + $w - 16 * $dscale - 32 * $dscale + 5 * $dscale, $y + 8 * $dscale, 26 * $dscale, 26 * $dscale, $BS_TOOLBUTTON)
-	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GuiFlatButton_SetBkColor(-1, $cTheme_InfoBox)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onRefresh")
-;~ 	GuiFlatButton_SetColorsEx($buttonRefresh, $aColorsEx)
+	GuiFlatButton_SetColorsEx($buttonRefresh, $aColorsEx)
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonRefresh), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngRefresh24))))
 
 	$label_sep1 = GUICtrlCreateLabel("", $x + 1, $yText_offset + $textHeight * 2 + $textSpacer * 2, $w - 2, 1)
@@ -445,24 +457,24 @@ Func _form_main()
 	; current adapter properties
 	$label_CurrIp = GUICtrlCreateLabel($oLangStrings.interface.props.ip & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 2 + $textSpacer * 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentIp = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$label_CurrSubnet = GUICtrlCreateLabel($oLangStrings.interface.props.subnet & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 3 + $textSpacer * 3)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentSubnet = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 3 + $textSpacer * 3, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$label_CurrGateway = GUICtrlCreateLabel($oLangStrings.interface.props.gateway & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 4 + $textSpacer * 4)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentGateway = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 4 + $textSpacer * 4, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$label_sep1 = GUICtrlCreateLabel("", $x + 1, $yText_offset + $textHeight * 5 + $textSpacer * 5, $w - 2, 1)
 	GUICtrlSetBkColor(-1, 0xBBBBBB)
@@ -471,17 +483,17 @@ Func _form_main()
 
 	$label_CurrDnsPri = GUICtrlCreateLabel($oLangStrings.interface.props.dnsPref & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 5 + $textSpacer * 5)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentDnsPri = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 5 + $textSpacer * 5, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$label_CurrDnsAlt = GUICtrlCreateLabel($oLangStrings.interface.props.dnsAlt & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 6 + $textSpacer * 6)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentDnsAlt = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 6 + $textSpacer * 6, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$label_sep2 = GUICtrlCreateLabel("", $x + 1, $yText_offset + $textHeight * 7 + $textSpacer * 7, $w - 2, 1)
 	GUICtrlSetBkColor(-1, 0xBBBBBB)
@@ -490,17 +502,17 @@ Func _form_main()
 
 	$label_CurrDhcp = GUICtrlCreateLabel($oLangStrings.interface.props.dhcpServer & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 7 + $textSpacer * 7)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentDhcp = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 7 + $textSpacer * 7, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$label_CurrAdapterState = GUICtrlCreateLabel($oLangStrings.interface.props.adapterState & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 8 + $textSpacer * 8)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentAdapterState = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 8 + $textSpacer * 8, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 
 	_makeBox($x, $y, $w, $h)
@@ -515,17 +527,19 @@ Func _form_main()
 	$w = $wRight
 	$h = $guiHeight - $menuHeight - $statusbarHeight * $dscale - $guiSpacer - $footerHeight * $dscale + 2 * $dscale - $y
 	$textHeight = 9 * $dscale
-	$bkcolor = 0xFFFFFF
+	$bkcolor = $cTheme_InfoBox
 
 	$yText_offset = $y + 6 * $dscale
 	$textSpacer = 9 * $dscale
 
 	GUIStartGroup()
 	$radio_IpAuto = GUICtrlCreateRadio($oLangStrings.interface.props.ipauto, $x + 8 * $dscale, $yText_offset, $w - 16 * $dscale, 20 * $dscale)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	GUICtrlSetOnEvent(-1, "_onRadio")
 	$radio_IpMan = GUICtrlCreateRadio($oLangStrings.interface.props.ipmanual, $x + 8 * $dscale, $yText_offset + $textHeight + $textSpacer, $w - 16 * $dscale, 20 * $dscale)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	GUICtrlSetOnEvent(-1, "_onRadio")
 	GUICtrlSetState(-1, $GUI_CHECKED)
 
@@ -535,19 +549,20 @@ Func _form_main()
 	;IP address
 	$label_ip = GUICtrlCreateLabel($oLangStrings.interface.props.ip & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 2 + $textSpacer * 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$ip_Ip = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2, 135 * $dscale, 22 * $dscale)
 	_GUICtrlIpAddress_SetFontByHeight($ip_Ip, $MyGlobalFontName, $MyGlobalFontHeight)
 
 	;IP copy/paste buttons
 	Local $buttonCopyIp = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 42 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2 + 3 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
-	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GuiFlatButton_SetColorsEx(-1, $aColorsEx)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onCopyIp")
 	GUICtrlSetTip(-1, "Copy Address")
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyIp), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngCopy16))))
 
 	Local $buttonPasteIp = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 26 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2 + 3  * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
-	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GuiFlatButton_SetColorsEx(-1, $aColorsEx)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onPasteIp")
 	GUICtrlSetTip(-1, "Paste Address")
@@ -557,19 +572,20 @@ Func _form_main()
 	;subnet address
 	$label_subnet = GUICtrlCreateLabel($oLangStrings.interface.props.subnet & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 3 + $textSpacer * 3)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$ip_Subnet = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 3 + $textSpacer * 3, 135 * $dscale, 22 * $dscale)
 	_GUICtrlIpAddress_SetFontByHeight($ip_Subnet, $MyGlobalFontName, $MyGlobalFontHeight)
 
 	;subnet copy/paste buttons
 	Local $buttonCopySubnet = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 42 * $dscale, $yText_offset + $textHeight * 3 + $textSpacer * 3 + 3 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
-	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GuiFlatButton_SetColorsEx(-1, $aColorsEx)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onCopySubnet")
 	GUICtrlSetTip(-1, "Copy Address")
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopySubnet), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngCopy16))))
 
 	Local $buttonPasteSubnet = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 26 * $dscale, $yText_offset + $textHeight * 3 + $textSpacer * 3 + 3  * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
-	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GuiFlatButton_SetColorsEx(-1, $aColorsEx)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onPasteSubnet")
 	GUICtrlSetTip(-1, "Paste Address")
@@ -579,19 +595,20 @@ Func _form_main()
 	;gateway address
 	$label_gateway = GUICtrlCreateLabel($oLangStrings.interface.props.gateway & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 4 + $textSpacer * 4)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$ip_Gateway = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 4 + $textSpacer * 4, 135 * $dscale, 22 * $dscale)
 	_GUICtrlIpAddress_SetFontByHeight($ip_Gateway, $MyGlobalFontName, $MyGlobalFontHeight)
 
 	;gateway copy/paste buttons
 	Local $buttonCopyGateway = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 42 * $dscale, $yText_offset + $textHeight * 4 + $textSpacer * 4 + 3 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
-	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GuiFlatButton_SetColorsEx(-1, $aColorsEx)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onCopyGateway")
 	GUICtrlSetTip(-1, "Copy Address")
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyGateway), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngCopy16))))
 
 	Local $buttonPasteGateway = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 26 * $dscale, $yText_offset + $textHeight * 4 + $textSpacer * 4 + 3  * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
-	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GuiFlatButton_SetColorsEx(-1, $aColorsEx)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onPasteGateway")
 	GUICtrlSetTip(-1, "Paste Address")
@@ -611,10 +628,12 @@ Func _form_main()
 
 	GUIStartGroup()
 	$radio_DnsAuto = GUICtrlCreateRadio($oLangStrings.interface.props.dnsauto, $x + 8 * $dscale, $yText_offset + $textHeight * 5 + $textSpacer * 5, $w - 16 * $dscale, 20 * $dscale)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	GUICtrlSetOnEvent(-1, "_onRadio")
 	$radio_DnsMan = GUICtrlCreateRadio($oLangStrings.interface.props.dnsmanual, $x + 8 * $dscale, $yText_offset + $textHeight * 6 + $textSpacer * 6, $w - 16 * $dscale, 20 * $dscale)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	GUICtrlSetOnEvent(-1, "_onRadio")
 	GUICtrlSetState(-1, $GUI_CHECKED)
 
@@ -623,19 +642,20 @@ Func _form_main()
 
 	$label_DnsPri = GUICtrlCreateLabel($oLangStrings.interface.props.dnsPref & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 7 + $textSpacer * 7)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$ip_DnsPri = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 7 + $textSpacer * 7, 135 * $dscale, 22 * $dscale)
 	_GUICtrlIpAddress_SetFontByHeight($ip_DnsPri, $MyGlobalFontName, $MyGlobalFontHeight)
 
 	;Primary DNS copy/paste buttons
 	Local $buttonCopyDnsPri = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 42 * $dscale, $yText_offset + $textHeight * 7 + $textSpacer * 7 + 3 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
-	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GuiFlatButton_SetColorsEx(-1, $aColorsEx)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onCopyDnsPri")
 	GUICtrlSetTip(-1, "Copy Address")
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyDnsPri), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngCopy16))))
 
 	Local $buttonPasteDnsPri = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 26 * $dscale, $yText_offset + $textHeight * 7 + $textSpacer * 7 + 3  * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
-	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GuiFlatButton_SetColorsEx(-1, $aColorsEx)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onPasteDnsPri")
 	GUICtrlSetTip(-1, "Paste Address")
@@ -644,19 +664,20 @@ Func _form_main()
 
 	$label_DnsAlt = GUICtrlCreateLabel($oLangStrings.interface.props.dnsAlt & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 8 + $textSpacer * 8)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$ip_DnsAlt = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 8 + $textSpacer * 8, 135 * $dscale, 22 * $dscale)
 	_GUICtrlIpAddress_SetFontByHeight($ip_DnsAlt, $MyGlobalFontName, $MyGlobalFontHeight)
 
 	;Alternate DNS copy/paste buttons
 	Local $buttonCopyDnsAlt = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 42 * $dscale, $yText_offset + $textHeight * 8 + $textSpacer * 8 + 3 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
-	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GuiFlatButton_SetColorsEx(-1, $aColorsEx)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onCopyDnsAlt")
 	GUICtrlSetTip(-1, "Copy Address")
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyDnsAlt), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngCopy16))))
 
 	Local $buttonPasteDnsAlt = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 26 * $dscale, $yText_offset + $textHeight * 8 + $textSpacer * 8 + 3  * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
-	GuiFlatButton_SetBkColor(-1, 0xFFFFFF)
+	GuiFlatButton_SetColorsEx(-1, $aColorsEx)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onPasteDnsAlt")
 	GUICtrlSetTip(-1, "Paste Address")
@@ -664,7 +685,8 @@ Func _form_main()
 
 
 	$ck_dnsReg = GUICtrlCreateCheckbox($oLangStrings.interface.props.dnsreg, $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 9 + $textSpacer * 9, -1, 15 * $dscale)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
+	GUICtrlSetBkColor(-1, $cTheme_InfoBox)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	GUICtrlSetFont(-1, 8.5)
 
 	;MAKE THE APPLY BUTTON
@@ -758,24 +780,24 @@ Func _makeCurrentProps($label, $x, $y, $w, $h)
 
 	$label_CurrIp = GUICtrlCreateLabel($oLangStrings.interface.props.ip & ":", $x + 8 * $dscale, $y + $headingHeight + 8 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentIp = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 8 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$label_CurrSubnet = GUICtrlCreateLabel($oLangStrings.interface.props.subnet & ":", $x + 8 * $dscale, $y + $headingHeight + 25 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentSubnet = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 25 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$label_CurrGateway = GUICtrlCreateLabel($oLangStrings.interface.props.gateway & ":", $x + 8 * $dscale, $y + $headingHeight + 42 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentGateway = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 42 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$label_sep1 = GUICtrlCreateLabel("", $x + 1, $y + $headingHeight + 62 * $dscale, $w - 2, 1)
 ;~ 	GUICtrlSetBkColor(-1, 0x0051FF)
@@ -783,17 +805,17 @@ Func _makeCurrentProps($label, $x, $y, $w, $h)
 
 	$label_CurrDnsPri = GUICtrlCreateLabel($oLangStrings.interface.props.dnsPref & ":", $x + 8 * $dscale, $y + $headingHeight + 67 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentDnsPri = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 67 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$label_CurrDnsAlt = GUICtrlCreateLabel($oLangStrings.interface.props.dnsAlt & ":", $x + 8 * $dscale, $y + $headingHeight + 84 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentDnsAlt = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 84 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$label_sep2 = GUICtrlCreateLabel("", $x + 1, $y + $headingHeight + 105 * $dscale, $w - 2, 1)
 ;~ 	GUICtrlSetBkColor(-1, 0x0051FF)
@@ -801,17 +823,17 @@ Func _makeCurrentProps($label, $x, $y, $w, $h)
 
 	$label_CurrDhcp = GUICtrlCreateLabel($oLangStrings.interface.props.dhcpServer & ":", $x + 8 * $dscale, $y + $headingHeight + 112 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentDhcp = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 112 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	$label_CurrAdapterState = GUICtrlCreateLabel($oLangStrings.interface.props.adapterState & ":", $x + 8 * $dscale, $y + $headingHeight + 129 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 	$label_CurrentAdapterState = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 129 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
 	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, 0x444444)
+	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
 
 	_makeBox($x, $y, $w, $h, $bkcolor)
 EndFunc   ;==>_makeCurrentProps
@@ -1017,7 +1039,7 @@ Func _makeHeading($sLabel, $x, $y, $w, $height = -1, $color = -1, $lightness = -
 EndFunc   ;==>_makeHeading
 
 ; Create Section Box
-Func _makeBox($x, $y, $w, $h, $bkcolor = 0xFFFFFF)
+Func _makeBox($x, $y, $w, $h, $bkcolor = $cTheme_InfoBox)
 	Local $bg = GUICtrlCreateLabel("", $x + 1, $y + 1, $w - 2, $h - 2)
 	GUICtrlSetBkColor(-1, $bkcolor)
 

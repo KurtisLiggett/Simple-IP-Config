@@ -138,7 +138,7 @@ Global $wgraphic, $showWarning
 
 ;Menu Items
 Global $filemenu, $applyitem, $renameitem, $newitem, $saveitem, $deleteitem, $clearitem, $createLinkItem, $profilesOpenItem, $profilesImportItem, $profilesExportItem, $exititem, $netConnItem
-Global $viewmenu, $refreshitem, $send2trayitem, $blacklistitem
+Global $viewmenu, $refreshitem, $send2trayitem, $blacklistitem, $appearancemenu, $lightmodeitem, $darkmodeitem
 Global $toolsmenu, $pullitem, $disableitem, $releaseitem, $renewitem, $cycleitem, $settingsitem
 Global $helpmenu, $helpitem, $changelogitem, $checkUpdatesItem, $debugmenuitem, $infoitem
 
@@ -173,6 +173,27 @@ Global $label_DnsPri, $label_DnsAlt, $ck_dnsReg, $label_ip, $label_subnet, $labe
 
 ; TOOLBAR
 Global $oToolbar, $oToolbar2, $tbButtonApply
+
+; THEMES
+Global $cThemeLight_Back = 0xCCCCCC
+Global $cThemeLight_Name = 0x555555
+Global $cThemeLight_Menu = _WinAPI_GetSysColor($COLOR_MENUBAR)
+Global $cThemeLight_ProfileList = 0xFFFFFF
+Global $cThemeLight_ProfileText = 0x000000
+Global $cThemeLight_SearchBox = 0xFFFFFF
+Global $cThemeLight_SearchText = 0x000000
+Global $cThemeLight_InfoBox = 0x333333
+Global $cThemeLight_InfoBoxText = 0xFFFFFF
+
+Global $cTheme_Back = $cThemeLight_Back
+Global $cTheme_Name = $cThemeLight_Name
+Global $cTheme_Menu = $cThemeLight_Menu
+Global $cTheme_ProfileList = $cThemeLight_ProfileList
+Global $cTheme_ProfileText = $cThemeLight_ProfileText
+Global $cTheme_SearchBox = $cThemeLight_SearchBox
+Global $cTheme_SearchText = $cThemeLight_SearchText
+Global $cTheme_InfoBox = $cThemeLight_InfoBox
+Global $cTheme_InfoBoxText = $cThemeLight_InfoBoxText
 
 ; LANGUAGE VARIABLES
 Global $oLangStrings
