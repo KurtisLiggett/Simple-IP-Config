@@ -82,7 +82,7 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.7-beta1.exe
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.7.exe
 #AutoIt3Wrapper_Res_Fileversion=2.9.7
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
@@ -107,7 +107,7 @@ _setProfilesIniLocation()
 ;GUI stuff
 Global $winName = "Simple IP Config"
 Global $winVersion = "2.9.7"
-Global $winDate = "6/14/2022"
+Global $winDate = "3/13/2023"
 Global $hgui
 Global $guiWidth = 600
 Global $guiHeight = 625
@@ -271,10 +271,6 @@ Func _main()
 	$selectedLang = $options.Language
 	If $selectedLang <> "" And $oLangStrings.OSLang <> $selectedLang Then
 		$oLangStrings.OSLang = $selectedLang
-	EndIf
-	If $selectedLang = "" Then
-		$options.Language = $oLangStrings.OSLang
-		IniWrite($sProfileName, "options", "Language", $oLangStrings.OSLang)
 	EndIf
 
 	_setLangStrings($oLangStrings.OSLang)

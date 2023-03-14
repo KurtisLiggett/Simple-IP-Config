@@ -1523,13 +1523,15 @@ Func GetChangeLogData()
 			"     #157   Save profiles in portable directory (auto-detect)." & @CRLF & _
 			"     #166   Workgroup incorrect text." & @CRLF & _
 			"     #167   Refresh button does nothing." & @CRLF & _
+			"     #169   Error reading language file." & @CRLF & _
 			"NEW FEATURES:" & @CRLF & _
+			"     #123   Added copy/paste buttons to IP addresses." & @CRLF & _
 			"     #163   Close to system tray." & @CRLF & _
 			"     #164   Auto expand larger error popup messages." & @CRLF & _
 			@CRLF & _
 			"v2.9.6" & @CRLF & _
 			"BUG FIXES:" & @CRLF & _
-			"     Internal issues with array handling. (affected lots of things)" & @CRLF & _
+			"     Internal issues with array handling. (affected lots of things)." & @CRLF & _
 			"     #152   Program antivirus false-positive." & @CRLF & _
 			@CRLF & _
 			"v2.9.5" & @CRLF & _
