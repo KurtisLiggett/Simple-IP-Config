@@ -251,10 +251,6 @@ Func _main()
 	If $selectedLang <> "" And $oLangStrings.OSLang <> $selectedLang Then
 		$oLangStrings.OSLang = $selectedLang
 	EndIf
-	If $selectedLang = "" Then
-		$options.Language = $oLangStrings.OSLang
-		IniWrite($sProfileName, "options", "Language", $oLangStrings.OSLang)
-	EndIf
 
 	_setLangStrings($oLangStrings.OSLang)
 	_print("set lang")
