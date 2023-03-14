@@ -46,7 +46,7 @@ EndFunc   ;==>_onExit
 ;------------------------------------------------------------------------------
 Func _onMenuExit()
 	_Exit()
-EndFunc   ;==>_onExit
+EndFunc   ;==>_onMenuExit
 
 ;------------------------------------------------------------------------------
 ; Title........: _Exit
@@ -65,7 +65,7 @@ Func _Exit()
 	EndIf
 
 	Exit
-EndFunc   ;==>_onExit
+EndFunc   ;==>_Exit
 
 Func _onCreateLink()
 	_CreateLink()
@@ -173,6 +173,19 @@ Func _onRadioDnsMan()
 	GUICtrlSetState($radio_DnsMan, $GUI_CHECKED)
 	_radios()
 EndFunc   ;==>_onRadioDnsMan
+
+;------------------------------------------------------------------------------
+; Title........: _onCheckboxRegDns
+; Description..: Set checkbox state
+; Events.......: click checkbox text
+;------------------------------------------------------------------------------
+Func _onCheckboxRegDns()
+	If GUICtrlRead($ck_dnsReg) = $GUI_CHECKED Then
+		GUICtrlSetState($ck_dnsReg, $GUI_UNCHECKED)
+	Else
+		GUICtrlSetState($ck_dnsReg, $GUI_CHECKED)
+	EndIf
+EndFunc   ;==>_onCheckboxRegDns
 
 
 ;------------------------------------------------------------------------------

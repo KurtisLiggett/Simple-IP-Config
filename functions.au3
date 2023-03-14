@@ -1356,14 +1356,14 @@ Func _updateCurrent($init = 0, $selected_adapter = "")
 
 	If Adapter_Exists($adapters, $selected_adapter) Then
 		Local $newDesc = Adapter_GetDescription($adapters, $selected_adapter)
-		if GUICtrlRead($lDescription) <> $newDesc Then
+		If GUICtrlRead($lDescription) <> $newDesc Then
 			GUICtrlSetData($lDescription, $newDesc)
 		EndIf
 		If $screenshot Then
 			GUICtrlSetData($lMac, $oLangStrings.interface.mac & ": " & "XX-XX-XX-XX-XX-XX")
 		Else
 			Local $newMAC = $oLangStrings.interface.mac & ": " & Adapter_GetMAC($adapters, $selected_adapter)
-			if GUICtrlRead($lMac) <> $newMAC Then
+			If GUICtrlRead($lMac) <> $newMAC Then
 				GUICtrlSetData($lMac, $newMAC)
 			EndIf
 		EndIf
