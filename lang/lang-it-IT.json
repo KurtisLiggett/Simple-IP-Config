@@ -34,7 +34,12 @@
             "refreshKey":"Ctrl+r",
             "tray":"Riduci nella barra di sis&tema",
             "trayKey":"Ctrl+t",
-            "hide":"Nascondi schede di rete"
+            "hide":"Nascondi schede di rete",
+            "appearance":{
+                        "appearance":"Appearance",
+                        "light":"Light",
+                        "dark":"Dark"
+            }
          },
          "tools":{
             "tools":"&Strumenti",

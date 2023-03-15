@@ -34,7 +34,12 @@
 				"refreshKey": "Ctrl+r",
 				"tray": "Trimite în &tavă",
 				"tavăKey": "Ctrl+t",
-				"hide": "&Ascunde adaptori"
+				"hide": "&Ascunde adaptori",
+            "appearance":{
+                        "appearance":"Appearance",
+                        "light":"Light",
+                        "dark":"Dark"
+            }
 			},
 			"tools": {
 				"tools": "&Unelte",

@@ -34,7 +34,12 @@
             "refreshKey":"Ctrl+r",
             "tray":"Naar &taakbalk minimaliseren",
             "trayKey":"Ctrl+t",
-            "hide":"Adapters verbergen"
+            "hide":"Adapters verbergen",
+            "appearance":{
+                        "appearance":"Appearance",
+                        "light":"Light",
+                        "dark":"Dark"
+            }
          },
          "tools":{
             "tools":"&Gereedshappen",

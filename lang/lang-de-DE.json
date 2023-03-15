@@ -34,7 +34,12 @@
             "refreshKey":"Strg+R",
             "tray":"An &Tray senden",
             "trayKey":"Strg+T",
-            "hide":"Adapter ausblenden"
+            "hide":"Adapter ausblenden",
+            "appearance":{
+                        "appearance":"Appearance",
+                        "light":"Light",
+                        "dark":"Dark"
+            }
          },
          "tools":{
             "tools":"&Werkzeuge",
