@@ -1220,6 +1220,8 @@ Func _loadProfiles()
 						$options.AutoUpdate = $thisSection[$j][1]
 					Case "LastUpdateCheck"
 						$options.LastUpdateCheck = $thisSection[$j][1]
+					Case "Theme"
+						$options.Theme = $thisSection[$j][1]
 				EndSwitch
 			Else
 				Switch $thisSection[$j][0]
@@ -1519,6 +1521,11 @@ Func GetChangeLogData()
 	$sChangeLog[0] = $oLangStrings.changelog.changelog & " - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
+			"NEW FEATURES:" & @CRLF & _
+			'     #175   Added "Dark" mode under View->Appearance menu' & @CRLF & _
+			@CRLF & _
+			"v2.9.7" & @CRLF & _
+			"BUG FIXES:" & @CRLF & _
 			"     #141   Behavior when adapter does not exist." & @CRLF & _
 			"     #157   Save profiles in portable directory (auto-detect)." & @CRLF & _
 			"     #166   Workgroup incorrect text." & @CRLF & _
@@ -1764,3 +1771,149 @@ Func _regex_stringLiteralDecode($sString)
 ;~ 	$sNewString = StringRight($sNewString, StringLen($sNewString)-2)
 	Return $sNewString
 EndFunc   ;==>_regex_stringLiteralDecode
+
+
+
+;------------------------------------------------------------------------------
+; Title...........: _setTheme
+; Description.....: set the theme colors
+; Parameters......: $bLightTheme: use light theme, otherwise dark
+;------------------------------------------------------------------------------
+Func _setTheme($bLightTheme = True)
+	_SendMessage($hgui, $WM_SETREDRAW, False)
+
+	Local $searchIcon, $copyIcon, $pasteIcon
+
+	If $bLightTheme Then
+		$cTheme_Back = 0xCCCCCC
+		$cTheme_Name = 0x555555
+		$cTheme_Menu = _WinAPI_GetSysColor($COLOR_MENUBAR)
+		$cTheme_ProfileList = 0xFFFFFF
+		$cTheme_ProfileText = 0x000000
+		$cTheme_SearchBox = 0xFFFFFF
+		$cTheme_SearchText = 0x000000
+		$cTheme_InfoBox = 0xFFFFFF
+		$cTheme_InfoBoxText = 0x000000
+		$searchIcon = $pngSearch
+		$copyIcon = $pngCopy16
+		$pasteIcon = $pngPaste16
+	Else
+		$cTheme_Back = 0x1F262D
+		$cTheme_Name = 0xB5B5B5
+		$cTheme_Menu = 0xD5D5D5
+		$cTheme_ProfileList = 0x3D3135
+		$cTheme_ProfileText = 0xFFFFFF
+		$cTheme_SearchBox = 0x1D2125
+		$cTheme_SearchText = 0xFFFFFF
+		$cTheme_InfoBox = 0xD5D5D5
+		$cTheme_InfoBoxText = 0x3C373F
+		$searchIcon = $pngSearchDarkmode
+		$copyIcon = $pngCopy16
+		$pasteIcon = $pngPaste16
+	EndIf
+
+	Local $aColorsToolsEx = _
+			[$cTheme_Menu, 0xFCFCFC, $cTheme_Menu, _     ; normal 	: Background, Text, Border
+			$cTheme_Menu, 0xFCFCFC, $cTheme_Menu, _     ; focus 	: Background, Text, Border
+			$cTheme_Menu, 0xFCFCFC, $cTheme_Menu, _      ; hover 	: Background, Text, Border
+			$cTheme_Menu, 0xFCFCFC, $cTheme_Menu]        ; selected 	: Background, Text, Border
+
+	GuiFlatButton_SetColorsEx($button_New, $aColorsToolsEx)
+	GuiFlatButton_SetColorsEx($button_Save, $aColorsToolsEx)
+	GuiFlatButton_SetColorsEx($button_Delete, $aColorsToolsEx)
+
+	Local $aColorsEx = _
+			[$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox, _ ; normal 	: Background, Text, Border
+			$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox, _ ; focus 	: Background, Text, Border
+			$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox, _  ; hover 	: Background, Text, Border
+			$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox]    ; selected 	: Background, Text, Border
+
+	GUISetBkColor($cTheme_Back, $hgui)
+	GUICtrlSetBkColor($statusbar_background, $cTheme_Menu)
+	GUICtrlSetColor($computerName, $cTheme_Name)
+	GUICtrlSetColor($domainName, $cTheme_Name)
+	GUICtrlSetBkColor($profilebuttons_background, $cTheme_Menu)
+	GUICtrlSetBkColor($input_filter, $cTheme_SearchBox)
+	GUICtrlSetColor($input_filter, $cTheme_SearchText)
+	GUICtrlSetBkColor($filter_background, $cTheme_SearchBox)
+	_memoryToPic($searchgraphic, GetIconData($searchIcon))
+	GUICtrlSetBkColor($list_profiles, $cTheme_ProfileList)
+	GUICtrlSetColor($list_profiles, $cTheme_ProfileText)
+	GUICtrlSetBkColor($lvBackground, $cTheme_ProfileList)
+	GUICtrlSetColor($lDescription, $cTheme_InfoBoxText)
+;~ 	GUICtrlSetBkColor($lDescription, $cTheme_InfoBox)
+	GUICtrlSetColor($lMac, $cTheme_InfoBoxText)
+;~ 	GUICtrlSetBkColor($lMac, $cTheme_InfoBox)
+
+	GUICtrlSetBkColor($currentInfoBox, $cTheme_InfoBox)
+	GUICtrlSetBkColor($setInfoBox, $cTheme_InfoBox)
+	GUICtrlSetBkColor($label_CurrentAdapterState, $cTheme_InfoBox)
+
+	GuiFlatButton_SetColorsEx($buttonRefresh, $aColorsEx)
+
+	GUICtrlSetColor($label_CurrIp, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrSubnet, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrGateway, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrDnsPri, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrDnsAlt, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrDhcp, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrAdapterState, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrentIp, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrentSubnet, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrentGateway, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrentDnsPri, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrentDnsAlt, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrentDhcp, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_CurrentAdapterState, $cTheme_InfoBoxText)
+	GUICtrlSetBkColor($label_CurrentIp, $cTheme_InfoBox)
+	GUICtrlSetBkColor($label_CurrentSubnet, $cTheme_InfoBox)
+	GUICtrlSetBkColor($label_CurrentGateway, $cTheme_InfoBox)
+	GUICtrlSetBkColor($label_CurrentDnsPri, $cTheme_InfoBox)
+	GUICtrlSetBkColor($label_CurrentDnsAlt, $cTheme_InfoBox)
+	GUICtrlSetBkColor($label_CurrentDhcp, $cTheme_InfoBox)
+
+	GUICtrlSetBkColor($radio_IpAuto, $cTheme_InfoBox)
+	GUICtrlSetBkColor($radio_IpAutoLabel, $cTheme_InfoBox)
+	GUICtrlSetColor($radio_IpAutoLabel, $cTheme_InfoBoxText)
+	GUICtrlSetBkColor($radio_IpMan, $cTheme_InfoBox)
+	GUICtrlSetBkColor($radio_IpManLabel, $cTheme_InfoBox)
+	GUICtrlSetColor($radio_IpManLabel, $cTheme_InfoBoxText)
+
+	GUICtrlSetBkColor($radio_DnsAuto, $cTheme_InfoBox)
+	GUICtrlSetBkColor($radio_DnsAutoLabel, $cTheme_InfoBox)
+	GUICtrlSetColor($radio_DnsAutoLabel, $cTheme_InfoBoxText)
+	GUICtrlSetBkColor($radio_DnsMan, $cTheme_InfoBox)
+	GUICtrlSetBkColor($radio_DnsManLabel, $cTheme_InfoBox)
+	GUICtrlSetColor($radio_DnsManLabel, $cTheme_InfoBoxText)
+
+	GUICtrlSetBkColor($ck_dnsReg, $cTheme_InfoBox)
+	GUICtrlSetBkColor($ck_dnsRegLabel, $cTheme_InfoBox)
+	GUICtrlSetBkColor($ck_dnsRegLabel, $cTheme_InfoBox)
+
+	GuiFlatButton_SetColorsEx($buttonCopyIp, $aColorsEx)
+	GuiFlatButton_SetColorsEx($buttonCopySubnet, $aColorsEx)
+	GuiFlatButton_SetColorsEx($buttonCopyGateway, $aColorsEx)
+	GuiFlatButton_SetColorsEx($buttonCopyDnsPri, $aColorsEx)
+	GuiFlatButton_SetColorsEx($buttonCopyDnsAlt, $aColorsEx)
+	GuiFlatButton_SetColorsEx($buttonPasteIp, $aColorsEx)
+	GuiFlatButton_SetColorsEx($buttonPasteSubnet, $aColorsEx)
+	GuiFlatButton_SetColorsEx($buttonPasteGateway, $aColorsEx)
+	GuiFlatButton_SetColorsEx($buttonPasteDnsPri, $aColorsEx)
+	GuiFlatButton_SetColorsEx($buttonPasteDnsAlt, $aColorsEx)
+
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyIp), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($copyIcon))))
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopySubnet), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($copyIcon))))
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyGateway), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($copyIcon))))
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyDnsPri), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($copyIcon))))
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyDnsAlt), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($copyIcon))))
+
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteIp), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pasteIcon))))
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteSubnet), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pasteIcon))))
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteGateway), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pasteIcon))))
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteDnsPri), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pasteIcon))))
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteDnsAlt), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pasteIcon))))
+
+	_SendMessage($hgui, $WM_SETREDRAW, True)
+	_WinAPI_RedrawWindow($hgui)
+EndFunc   ;==>_setTheme
+

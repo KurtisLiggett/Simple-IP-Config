@@ -509,7 +509,7 @@ Func _getEnglish()
 			'            "release":"&Release DHCP",' & _
 			'            "renew":"Re&new DHCP",' & _
 			'            "cycle":"Release/renew &cycle",' & _
-			'            "openprofloc":"Go to profiles.ini folder,"' & _
+			'            "openprofloc":"Go to profiles.ini folder",' & _
 			'            "settings":"&Settings"' & _
 			'         },' & _
 			'         "help":{' & _

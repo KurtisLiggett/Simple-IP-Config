@@ -23,7 +23,7 @@
 
 Global Enum $pngAccept, $pngAdd, $pngBigicon, $pngDelete, $pngEdit, $pngRefresh, $pngSave, $pngSave16, _
 		$pngSearch, $pngSettings, $pngTray, $pngWarning, $pngMax, $pngNew16, $pngRefresh24, $pngDelete16, _
-		$pngCopy16, $pngPaste16
+		$pngCopy16, $pngCopyDarkmode16, $pngPaste16, $pngPasteDarkmode16, $pngSearchDarkmode
 
 ;Get icons on-demand instead of keeping the data permanently in memory
 Func GetIconData($iconSel)
@@ -273,6 +273,15 @@ Func GetIconData($iconSel)
 					'WMtT3/FVEXCD5TygqhlepQ//BRgZAjCHhzzgWYqqijbRzh/OSjkP0gIOi4pNKeda' & _
 					'ifkuuo/3FrqZ3uIzIFPoYBSL2MdK3G3E+hwf9OdfxyqWMI17XOIpOrcCciX9R6fw' & _
 					'wQUaw4UU/TUmhgWISdoBaf0H0IW00PgGTogouhCe70QAAAAASUVORK5CYII='
+		Case $pngSearchDarkmode
+			$icondData = '' & _
+					'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAATlBMVEUAAAD/////' & _
+					'////////////////////////////////////////////////////////////////' & _
+					'//////////////////////////////+QlxstAAAAGXRSTlMAuwgboJuZi2FWPLJB' & _
+					'p5CGgXJTKSYYDN4lYphXOgAAAG5JREFUGNNdjVkSgCAMQ8sqIO6Acv+LSqUDDvlI' & _
+					'wiMzhSIrtVaTAFKSFkOok4B8qGz+C1v+SUsdQJNx6LqDcAwg7uiqA2fQ6X6vok2u' & _
+					'tea50ftmvDa/mBDdtLJMBMAduxHAiXTxObP0B7iZYdj4F4eyAyIrSt8kAAAAAElF' & _
+					'TkSuQmCC'
 		Case $pngSettings
 			$icondData = '' & _
 					'iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABHNCSVQICAgIfAhk' & _
@@ -336,6 +345,14 @@ Func GetIconData($iconSel)
 					'xpIpudKrvv/Vl/W4iAYDQkH+MmCqEYTcsIRwEPRYsWWyoE0JVnR4ZjLinRJsv0el' & _
 					'F+/cAvV/4EC1YMbnpM6x9q+UIDYsliQniMuPkyvL+AIcjUoWpd2MpAAAAABJRU5E' & _
 					'rkJggg=='
+		Case $pngCopyDarkmode16
+			$icondData = '' & _
+					'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEX///8AAADz' & _
+					'8/Pz8/P////////5+fn19fX6+vr////z8/P////n5+f8/Pz9/f3m5ub9/f3////u' & _
+					'7u4tqowZAAAAEnRSTlMnAPLKSCG+y8EG8EPm09LA0UxXENxWAAAAZ0lEQVQY053Q' & _
+					'SxKEIAxF0UB4JnzUbva/WH0iA6be4UmlUhXJkBlyCEHgJb41EKTspqNzQLR/TU+V' & _
+					'WzdobX2mIKT+8435EWWAJ2HJJmwSmOg3QDvrAhmQ5QoH/TBltpcHoPGtOAjLBy5x' & _
+					'XAQ92xbYNAAAAABJRU5ErkJggg=='
 		Case $pngPaste16
 			$icondData = '' & _
 					'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAAL' & _
@@ -343,6 +360,13 @@ Func GetIconData($iconSel)
 					'B/HgwDskOzuEMJBXBZQ8VAc4pb2zMAE2WBJqJbwTzxgLsECjePMKbMHZz8V7kgMM' & _
 					'UAAzsByYdWbUmwy40h/Al//AaknEkCNZpCFS5Rji6W+89CXtfdJB3QhWA3YAAAAA' & _
 					'SUVORK5CYII='
+		Case $pngPasteDarkmode16
+			$icondData = '' & _
+					'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAKlBMVEUAAAD/////' & _
+					'//////////////////////////////////////////////+Gu8ovAAAADXRSTlMA' & _
+					'VY2qm6R6Ox3f3pCOEew8sQAAADtJREFUCNdjAAL2AgYI2HsHTPnevZZ79wqQcUn3' & _
+					'1txLukDGxVZj4whZEAMkTz7jkiAQ6IKtAIIrDJgAAMJmGC+LQDKJAAAAAElFTkSu' & _
+					'QmCC'
 	EndSwitch
 
 	Return _Base64Decode($icondData)

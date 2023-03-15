@@ -166,10 +166,16 @@ Global $label_CurrentDnsPri, $label_CurrentDnsAlt
 Global $label_CurrentDhcp, $label_CurrentAdapterState
 Global $link, $computerName, $domainName
 Global $blacklistLV
+Global $button_New, $button_Save, $button_Delete
 
 Global $headingSelect, $headingProfiles, $headingIP, $headingCurrent
 Global $label_CurrIp, $label_CurrSubnet, $label_CurrGateway, $label_CurrDnsPri, $label_CurrDnsAlt, $label_CurrDhcp, $label_CurrAdapterState
+Global $radio_IpAutoLabel, $radio_IpManLabel, $radio_DnsAutoLabel, $radio_DnsmanLabel, $ck_dnsRegLabel
 Global $label_DnsPri, $label_DnsAlt, $ck_dnsReg, $label_ip, $label_subnet, $label_gateway
+Global $buttonCopyIp, $buttonPasteIp, $buttonCopySubnet, $buttonPasteSubnet, $buttonCopyGateway, $buttonPasteGateway
+Global $buttonRefresh, $buttonCopyDnsPri, $buttonPasteDnsPri, $buttonCopyDnsAlt, $buttonPasteDnsAlt
+Global $searchgraphic, $filter_background, $lvBackground, $statusbar_background, $profilebuttons_background
+Global $currentInfoBox,$setInfoBox
 
 ; TOOLBAR
 Global $oToolbar, $oToolbar2, $tbButtonApply
@@ -182,8 +188,8 @@ Global $cThemeLight_ProfileList = 0xFFFFFF
 Global $cThemeLight_ProfileText = 0x000000
 Global $cThemeLight_SearchBox = 0xFFFFFF
 Global $cThemeLight_SearchText = 0x000000
-Global $cThemeLight_InfoBox = 0x555555
-Global $cThemeLight_InfoBoxText = 0xFFFFFF
+Global $cThemeLight_InfoBox = 0xFFFFFF
+Global $cThemeLight_InfoBoxText = 0x000000
 
 Global $cTheme_Back = $cThemeLight_Back
 Global $cTheme_Name = $cThemeLight_Name

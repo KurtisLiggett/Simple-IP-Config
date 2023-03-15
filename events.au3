@@ -188,6 +188,7 @@ Func _onCheckboxRegDns()
 EndFunc   ;==>_onCheckboxRegDns
 
 
+
 ;------------------------------------------------------------------------------
 ; Title........: _onSelect
 ; Description..: Set IP address information from profile
@@ -393,6 +394,35 @@ EndFunc   ;==>_onLvEnter
 Func _onTray()
 	_SendToTray()
 EndFunc   ;==>_onTray
+
+;------------------------------------------------------------------------------
+; Title........: _onLightMode
+; Description..: Set light mode
+; Events.......: View menu -> Appearance
+;------------------------------------------------------------------------------
+Func _onLightMode()
+	_setTheme(True)
+	GUICtrlSetState($lightmodeitem, $GUI_CHECKED)
+	GUICtrlSetState($darkmodeitem, $GUI_UNCHECKED)
+
+	$options.Theme = "Light"
+	IniWrite($sProfileName, "options", "Theme", "Light")
+EndFunc   ;==>_onLightMode
+
+;------------------------------------------------------------------------------
+; Title........: _onDarkMode
+; Description..: Set dark mode
+; Events.......: View menu -> Appearance
+;------------------------------------------------------------------------------
+Func _onDarkMode()
+	_setTheme(False)
+	GUICtrlSetState($lightmodeitem, $GUI_UNCHECKED)
+	GUICtrlSetState($darkmodeitem, $GUI_CHECKED)
+
+	$options.Theme = "Dark"
+	IniWrite($sProfileName, "options", "Theme", "Dark")
+EndFunc   ;==>_onDarkMode
+
 
 ;------------------------------------------------------------------------------
 ; Title........: _onPull
