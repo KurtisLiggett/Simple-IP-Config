@@ -82,8 +82,8 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.7.exe
-#AutoIt3Wrapper_Res_Fileversion=2.9.7
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.8-b1.exe
+#AutoIt3Wrapper_Res_Fileversion=2.9.8
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
 #Region Global Variables
@@ -106,8 +106,8 @@ _setProfilesIniLocation()
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.9.7"
-Global $winDate = "3/13/2023"
+Global $winVersion = "2.9.8-b1"
+Global $winDate = "3/15/2023"
 Global $hgui
 Global $guiWidth = 600
 Global $guiHeight = 625
