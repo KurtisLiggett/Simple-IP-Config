@@ -1115,7 +1115,8 @@ Func _setProperties($init = 0, $profileName = "")
 		If ($sSaveAdapter = 1 Or $sSaveAdapter = "true") Then
 			$index = _ArraySearch($adapters, $profileAdapter, 1)
 			If ($index <> -1) Then
-				ControlCommand($hgui, "", $combo_adapters, "SelectString", $profileAdapter)
+				Local $selection = ControlCommand($hgui, "", $combo_adapters, "FindString", $profileAdapter)
+				ControlCommand($hgui, "", $combo_adapters, "SetCurrentSelection", $selection)
 			Else
 				_GUICtrlComboBox_SetCurSel($combo_adapters, -1)
 				_updateCurrent()
@@ -1521,8 +1522,9 @@ Func GetChangeLogData()
 	$sChangeLog[0] = $oLangStrings.changelog.changelog & " - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
+			"     #186   Wrong adapter selected." & @CRLF & _
 			"NEW FEATURES:" & @CRLF & _
-			'     #175   Added "Dark" mode under View->Appearance menu' & @CRLF & _
+			'     #175   Added "Dark" mode under View->Appearance menu.' & @CRLF & _
 			@CRLF & _
 			"v2.9.7" & @CRLF & _
 			"BUG FIXES:" & @CRLF & _
