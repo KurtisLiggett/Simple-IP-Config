@@ -46,7 +46,7 @@ EndFunc   ;==>_onExit
 ;------------------------------------------------------------------------------
 Func _onMenuExit()
 	_Exit()
-EndFunc   ;==>_onExit
+EndFunc   ;==>_onMenuExit
 
 ;------------------------------------------------------------------------------
 ; Title........: _Exit
@@ -65,7 +65,7 @@ Func _Exit()
 	EndIf
 
 	Exit
-EndFunc   ;==>_onExit
+EndFunc   ;==>_Exit
 
 Func _onCreateLink()
 	_CreateLink()
@@ -121,8 +121,73 @@ EndFunc   ;==>_onBlacklist
 ; Events.......: Any radio button state changed
 ;------------------------------------------------------------------------------
 Func _onRadio()
+	ConsoleWrite("click" & @CRLF)
 	_radios()
 EndFunc   ;==>_onRadio
+
+;------------------------------------------------------------------------------
+; Title........: _onRadioIpAuto
+; Description..: Update radio button selections and states
+; Events.......: radio button or text clicked
+;------------------------------------------------------------------------------
+Func _onRadioIpAuto()
+	GUICtrlSetState($radio_IpMan, $GUI_UNCHECKED)
+	GUICtrlSetState($radio_IpAuto, $GUI_CHECKED)
+	If GUICtrlRead($radio_DnsMan) = $GUI_CHECKED Then
+		GUICtrlSetState($radio_DnsAuto, $GUI_UNCHECKED)
+	EndIf
+	_radios()
+EndFunc   ;==>_onRadioIpAuto
+
+;------------------------------------------------------------------------------
+; Title........: _onRadioIpMan
+; Description..: Update radio button selections and states
+; Events.......: radio button or text clicked
+;------------------------------------------------------------------------------
+Func _onRadioIpMan()
+	GUICtrlSetState($radio_IpAuto, $GUI_UNCHECKED)
+	GUICtrlSetState($radio_IpMan, $GUI_CHECKED)
+	GUICtrlSetState($radio_DnsMan, $GUI_UNCHECKED)
+	GUICtrlSetState($radio_DnsAuto, $GUI_CHECKED)
+	_radios()
+EndFunc   ;==>_onRadioIpMan
+
+;------------------------------------------------------------------------------
+; Title........: _onRadioDnsAuto
+; Description..: Update radio button selections and states
+; Events.......: radio button or text clicked
+;------------------------------------------------------------------------------
+Func _onRadioDnsAuto()
+	GUICtrlSetState($radio_DnsMan, $GUI_UNCHECKED)
+	GUICtrlSetState($radio_DnsAuto, $GUI_CHECKED)
+	_radios()
+EndFunc   ;==>_onRadioDnsAuto
+
+;------------------------------------------------------------------------------
+; Title........: _onRadioDnsMan
+; Description..: Update radio button selections and states
+; Events.......: radio button or text clicked
+;------------------------------------------------------------------------------
+Func _onRadioDnsMan()
+	GUICtrlSetState($radio_DnsAuto, $GUI_UNCHECKED)
+	GUICtrlSetState($radio_DnsMan, $GUI_CHECKED)
+	_radios()
+EndFunc   ;==>_onRadioDnsMan
+
+;------------------------------------------------------------------------------
+; Title........: _onCheckboxRegDns
+; Description..: Set checkbox state
+; Events.......: click checkbox text
+;------------------------------------------------------------------------------
+Func _onCheckboxRegDns()
+	If GUICtrlRead($ck_dnsReg) = $GUI_CHECKED Then
+		GUICtrlSetState($ck_dnsReg, $GUI_UNCHECKED)
+	Else
+		GUICtrlSetState($ck_dnsReg, $GUI_CHECKED)
+	EndIf
+EndFunc   ;==>_onCheckboxRegDns
+
+
 
 ;------------------------------------------------------------------------------
 ; Title........: _onSelect
@@ -329,6 +394,35 @@ EndFunc   ;==>_onLvEnter
 Func _onTray()
 	_SendToTray()
 EndFunc   ;==>_onTray
+
+;------------------------------------------------------------------------------
+; Title........: _onLightMode
+; Description..: Set light mode
+; Events.......: View menu -> Appearance
+;------------------------------------------------------------------------------
+Func _onLightMode()
+	_setTheme(True)
+	GUICtrlSetState($lightmodeitem, $GUI_CHECKED)
+	GUICtrlSetState($darkmodeitem, $GUI_UNCHECKED)
+
+	$options.Theme = "Light"
+	IniWrite($sProfileName, "options", "Theme", "Light")
+EndFunc   ;==>_onLightMode
+
+;------------------------------------------------------------------------------
+; Title........: _onDarkMode
+; Description..: Set dark mode
+; Events.......: View menu -> Appearance
+;------------------------------------------------------------------------------
+Func _onDarkMode()
+	_setTheme(False)
+	GUICtrlSetState($lightmodeitem, $GUI_UNCHECKED)
+	GUICtrlSetState($darkmodeitem, $GUI_CHECKED)
+
+	$options.Theme = "Dark"
+	IniWrite($sProfileName, "options", "Theme", "Dark")
+EndFunc   ;==>_onDarkMode
+
 
 ;------------------------------------------------------------------------------
 ; Title........: _onPull

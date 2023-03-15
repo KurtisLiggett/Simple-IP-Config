@@ -34,7 +34,12 @@
             "refreshKey":"Ctrl+r",
             "tray":"Отправить в &трей",
             "trayKey":"Ctrl+t",
-            "hide":"Скрыть адаптеры"
+            "hide":"Скрыть адаптеры",
+            "appearance":{
+                        "appearance":"Appearance",
+                        "light":"Light",
+                        "dark":"Dark"
+            }
          },
          "tools":{
             "tools":"&Инструменты",

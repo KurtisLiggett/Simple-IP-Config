@@ -82,8 +82,8 @@ TraySetClick(16)
 #AutoIt3Wrapper_Res_HiDpi=y
 #AutoIt3Wrapper_UseX64=N
 #AutoIt3Wrapper_Icon=icon.ico
-#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.7.exe
-#AutoIt3Wrapper_Res_Fileversion=2.9.7
+#AutoIt3Wrapper_OutFile=Simple IP Config 2.9.8-b1.exe
+#AutoIt3Wrapper_Res_Fileversion=2.9.8
 #AutoIt3Wrapper_Res_Description=Simple IP Config
 
 #Region Global Variables
@@ -106,8 +106,8 @@ _setProfilesIniLocation()
 
 ;GUI stuff
 Global $winName = "Simple IP Config"
-Global $winVersion = "2.9.7"
-Global $winDate = "3/13/2023"
+Global $winVersion = "2.9.8-b1"
+Global $winDate = "3/15/2023"
 Global $hgui
 Global $guiWidth = 600
 Global $guiHeight = 625
@@ -138,7 +138,7 @@ Global $wgraphic, $showWarning
 
 ;Menu Items
 Global $filemenu, $applyitem, $renameitem, $newitem, $saveitem, $deleteitem, $clearitem, $createLinkItem, $profilesOpenItem, $profilesImportItem, $profilesExportItem, $exititem, $netConnItem
-Global $viewmenu, $refreshitem, $send2trayitem, $blacklistitem
+Global $viewmenu, $refreshitem, $send2trayitem, $blacklistitem, $appearancemenu, $lightmodeitem, $darkmodeitem
 Global $toolsmenu, $pullitem, $disableitem, $releaseitem, $renewitem, $cycleitem, $settingsitem
 Global $helpmenu, $helpitem, $changelogitem, $checkUpdatesItem, $debugmenuitem, $infoitem
 
@@ -166,13 +166,40 @@ Global $label_CurrentDnsPri, $label_CurrentDnsAlt
 Global $label_CurrentDhcp, $label_CurrentAdapterState
 Global $link, $computerName, $domainName
 Global $blacklistLV
+Global $button_New, $button_Save, $button_Delete
 
 Global $headingSelect, $headingProfiles, $headingIP, $headingCurrent
 Global $label_CurrIp, $label_CurrSubnet, $label_CurrGateway, $label_CurrDnsPri, $label_CurrDnsAlt, $label_CurrDhcp, $label_CurrAdapterState
+Global $radio_IpAutoLabel, $radio_IpManLabel, $radio_DnsAutoLabel, $radio_DnsmanLabel, $ck_dnsRegLabel
 Global $label_DnsPri, $label_DnsAlt, $ck_dnsReg, $label_ip, $label_subnet, $label_gateway
+Global $buttonCopyIp, $buttonPasteIp, $buttonCopySubnet, $buttonPasteSubnet, $buttonCopyGateway, $buttonPasteGateway
+Global $buttonRefresh, $buttonCopyDnsPri, $buttonPasteDnsPri, $buttonCopyDnsAlt, $buttonPasteDnsAlt
+Global $searchgraphic, $filter_background, $lvBackground, $statusbar_background, $profilebuttons_background
+Global $currentInfoBox,$setInfoBox
 
 ; TOOLBAR
 Global $oToolbar, $oToolbar2, $tbButtonApply
+
+; THEMES
+Global $cThemeLight_Back = 0xCCCCCC
+Global $cThemeLight_Name = 0x555555
+Global $cThemeLight_Menu = _WinAPI_GetSysColor($COLOR_MENUBAR)
+Global $cThemeLight_ProfileList = 0xFFFFFF
+Global $cThemeLight_ProfileText = 0x000000
+Global $cThemeLight_SearchBox = 0xFFFFFF
+Global $cThemeLight_SearchText = 0x000000
+Global $cThemeLight_InfoBox = 0xFFFFFF
+Global $cThemeLight_InfoBoxText = 0x000000
+
+Global $cTheme_Back = $cThemeLight_Back
+Global $cTheme_Name = $cThemeLight_Name
+Global $cTheme_Menu = $cThemeLight_Menu
+Global $cTheme_ProfileList = $cThemeLight_ProfileList
+Global $cTheme_ProfileText = $cThemeLight_ProfileText
+Global $cTheme_SearchBox = $cThemeLight_SearchBox
+Global $cTheme_SearchText = $cThemeLight_SearchText
+Global $cTheme_InfoBox = $cThemeLight_InfoBox
+Global $cTheme_InfoBoxText = $cThemeLight_InfoBoxText
 
 ; LANGUAGE VARIABLES
 Global $oLangStrings

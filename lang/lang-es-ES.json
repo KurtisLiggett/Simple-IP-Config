@@ -34,7 +34,12 @@
             "refreshKey":"Ctrl+r",
             "tray":"Ocultar en barra de tareas",
             "trayKey":"Ctrl+t",
-            "hide":"Ocultar adaptadores"
+            "hide":"Ocultar adaptadores",
+            "appearance":{
+                        "appearance":"Appearance",
+                        "light":"Light",
+                        "dark":"Dark"
+            }
          },
          "tools":{
             "tools":"&Herramientas",

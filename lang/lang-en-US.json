@@ -34,7 +34,12 @@
             "refreshKey":"Ctrl+r",
             "tray":"Send to &tray",
             "trayKey":"Ctrl+t",
-            "hide":"Hide adapters"
+            "hide":"Hide adapters",
+            "appearance":{
+                        "appearance":"Appearance",
+                        "light":"Light",
+                        "dark":"Dark"
+            }
          },
          "tools":{
             "tools":"&Tools",

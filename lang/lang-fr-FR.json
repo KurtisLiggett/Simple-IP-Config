@@ -34,7 +34,12 @@
             "refreshKey":"Ctrl+r",
             "tray":"Envoyer vers &barre d'état système",
             "trayKey":"Ctrl+t",
-            "hide":"Masquer les adaptateurs"
+            "hide":"Masquer les adaptateurs",
+            "appearance":{
+                        "appearance":"Appearance",
+                        "light":"Light",
+                        "dark":"Dark"
+            }
          },
          "tools":{
             "tools":"&Outils",

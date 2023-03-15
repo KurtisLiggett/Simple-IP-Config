@@ -114,6 +114,9 @@ Func _langStrings()
 	_AutoItObject_AddProperty($oMenuView, "tray")
 	_AutoItObject_AddProperty($oMenuView, "trayKey")
 	_AutoItObject_AddProperty($oMenuView, "hide")
+	_AutoItObject_AddProperty($oMenuView, "appearance")
+	_AutoItObject_AddProperty($oMenuView, "light")
+	_AutoItObject_AddProperty($oMenuView, "dark")
 
 	_AutoItObject_AddProperty($oMenuTools, "tools")
 	_AutoItObject_AddProperty($oMenuTools, "netConn")
@@ -301,6 +304,9 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.menu.view.tray = Json_Get($jsonData, ".strings.menu.view.tray")
 	$oLangStrings.menu.view.trayKey = Json_Get($jsonData, ".strings.menu.view.trayKey")
 	$oLangStrings.menu.view.hide = Json_Get($jsonData, ".strings.menu.view.hide")
+	$oLangStrings.menu.view.appearance = Json_Get($jsonData, ".strings.menu.view.appearance.appearance")
+	$oLangStrings.menu.view.light = Json_Get($jsonData, ".strings.menu.view.appearance.light")
+	$oLangStrings.menu.view.dark = Json_Get($jsonData, ".strings.menu.view.appearance.dark")
 
 	$oLangStrings.menu.tools.tools = Json_Get($jsonData, ".strings.menu.tools.tools")
 	$oLangStrings.menu.tools.netConn = Json_Get($jsonData, ".strings.menu.tools.netConn")
@@ -486,7 +492,12 @@ Func _getEnglish()
 			'            "refreshKey":"Ctrl+r",' & _
 			'            "tray":"Send to &tray",' & _
 			'            "trayKey":"Ctrl+t",' & _
-			'            "hide":"Hide adapters"' & _
+			'            "hide":"Hide adapters",' & _
+			'            "appearance":{' & _
+			'            	"appearance":"Appearance",' & _
+			'            	"light":"Light",' & _
+			'            	"dark":"Dark"' & _
+			'            }' & _
 			'         },' & _
 			'         "tools":{' & _
 			'            "tools":"&Tools",' & _
@@ -498,7 +509,7 @@ Func _getEnglish()
 			'            "release":"&Release DHCP",' & _
 			'            "renew":"Re&new DHCP",' & _
 			'            "cycle":"Release/renew &cycle",' & _
-			'            "openprofloc":"Go to profiles.ini folder,"' & _
+			'            "openprofloc":"Go to profiles.ini folder",' & _
 			'            "settings":"&Settings"' & _
 			'         },' & _
 			'         "help":{' & _
