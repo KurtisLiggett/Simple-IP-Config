@@ -1,3 +1,6 @@
+#AutoIt3Wrapper_Run_Au3Stripper=y
+#Au3Stripper_Parameters=/MO
+
 #Region license
 ; -----------------------------------------------------------------------------
 ; Simple IP Config is free software: you can redistribute it and/or modify
