@@ -154,6 +154,7 @@ Global $mdblTimerInit = 0, $mdblTimerDiff = 1000, $mdblClick = 0, $mDblClickTime
 Global $dragging = False, $dragitem = 0, $contextSelect = 0
 Global $prevWinPos, $winPosTimer, $writePos
 Global $OpenFileFlag, $ImportFileFlag, $ExportFileFlag
+Global $buttonCopyX, $buttonPasteX, $buttonRefreshX, $buttonApplyX, $IpAddressX
 
 ; CONTROLS
 Global $combo_adapters, $combo_dummy, $selected_adapter, $lDescription, $lMac

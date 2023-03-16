@@ -55,7 +55,7 @@ Func _form_main()
 	EndIf
 
 	; ---- create the main GUI
-	$hgui = GUICreate($winName & " " & $winVersion, $guiWidth * $dscale, $guiHeight * $dscale, $xpos, $ypos, BitOR($GUI_SS_DEFAULT_GUI, $WS_CLIPCHILDREN), $WS_EX_COMPOSITED)
+	$hgui = GUICreate($winName & " " & $winVersion, $guiWidth * $dscale, $guiHeight * $dscale, $xpos, $ypos, BitOR($GUI_SS_DEFAULT_GUI, $WS_CLIPCHILDREN, $WS_SIZEBOX), $WS_EX_COMPOSITED)
 
 	; GUI SET EVENTS
 	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExit")
@@ -66,6 +66,8 @@ Func _form_main()
 
 	GUIRegisterMsg($WM_COMMAND, 'WM_COMMAND')
 	GUIRegisterMsg($WM_NOTIFY, 'WM_NOTIFY')
+	GUIRegisterMsg($WM_SIZE, "WM_SIZE")
+;~ 	GUIRegisterMsg($WM_SIZE, "WM_SIZING")
 
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 	_GDIPlus_Startup()
@@ -238,20 +240,25 @@ Func _form_main()
 	GUICtrlSetOnEvent(-1, "_statusPopup")
 	GUICtrlSetState($wgraphic, $GUI_HIDE)
 	GUICtrlSetCursor($wgraphic, 0)
+	GUICtrlSetResizing($wgraphic, $GUI_DOCKBOTTOM+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	$statustext = GUICtrlCreateLabel($oLangStrings.message.ready, $x + 3, $y + 3, $w - 2, $h - 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing($statustext, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT)
 
 	$statuserror = GUICtrlCreateLabel("", $x + 3, $y + 3, $w - 2, $h - 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetOnEvent(-1, "_statusPopup")
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetState($statuserror, $GUI_HIDE)
+	GUICtrlSetResizing($statuserror, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT)
 
 	GUICtrlCreateLabel("", $x, $y + 1, $w, 1)
 	GUICtrlSetBkColor(-1, 0x404040)
+	GUICtrlSetResizing(-1, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT+$GUI_DOCKRIGHT)
 
 	$statusbar_background = GUICtrlCreateLabel("", $x, $y + 1, $w, $h - 1)
+	GUICtrlSetResizing(-1, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT+$GUI_DOCKRIGHT)
 	#EndRegion statusbar
 
 
@@ -268,10 +275,12 @@ Func _form_main()
 		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": " & @ComputerName, $x + 3, $y + 2, $w / 2, $h)
 	EndIf
 	_setFont($computerName, 8, -1, $cTheme_Name)
+	GUICtrlSetResizing($computerName, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT+$GUI_DOCKSIZE)
 
 	If @LogonDomain <> "" Then
 		$domainName = GUICtrlCreateLabel("", $w / 2, $y + 2, $w / 2 - 3, $h, $SS_RIGHT)
 		_setFont($domainName, 8, -1, $cTheme_Name)
+		GUICtrlSetResizing($domainName, $GUI_DOCKBOTTOM+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	EndIf
 	#EndRegion footer
 
@@ -402,10 +411,13 @@ Func _form_main()
 
 	$combo_adapters = GUICtrlCreateCombo("", $x + 8 * $dscale, $y + 8 * $dscale, $w - 16 * $dscale - 32 * $dscale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
 	GUICtrlSetOnEvent($combo_adapters, "_OnCombo")
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$lDescription = GUICtrlCreateLabel($oLangStrings.interface.adapterDesc, $x + 8 * $dscale + $xIndent, $y + 9 * $dscale + 28 * $dscale, $w - 16 * $dscale, -1, $SS_LEFTNOWORDWRAP)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$lMac = GUICtrlCreateLabel($oLangStrings.interface.mac & ": ", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight + $textSpacer, $w - 16 * $dscale, -1, $SS_LEFTNOWORDWRAP)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	$combo_dummy = GUICtrlCreateDummy()
 	GUICtrlSetOnEvent(-1, "_onCombo")
@@ -419,51 +431,69 @@ Func _form_main()
 	$buttonRefresh = GuiFlatButton_Create("", $x + 8 * $dscale + $w - 16 * $dscale - 32 * $dscale + 5 * $dscale, $y + 8 * $dscale, 26 * $dscale, 26 * $dscale, $BS_TOOLBUTTON)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onRefresh")
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonRefresh), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngRefresh24))))
 
 	$label_sep1 = GUICtrlCreateLabel("", $x + 1, $yText_offset + $textHeight * 2 + $textSpacer * 2, $w - 2, 1)
 	GUICtrlSetBkColor(-1, 0x666666)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	$yText_offset = $y + 9 * $dscale + 28 * $dscale + 5 * $dscale
 
 	; current adapter properties
 	$label_CurrIp = GUICtrlCreateLabel($oLangStrings.interface.props.ip & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 2 + $textSpacer * 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$label_CurrentIp = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	$label_CurrSubnet = GUICtrlCreateLabel($oLangStrings.interface.props.subnet & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 3 + $textSpacer * 3)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$label_CurrentSubnet = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 3 + $textSpacer * 3, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	$label_CurrGateway = GUICtrlCreateLabel($oLangStrings.interface.props.gateway & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 4 + $textSpacer * 4)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$label_CurrentGateway = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 4 + $textSpacer * 4, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	$label_sep1 = GUICtrlCreateLabel("", $x + 1, $yText_offset + $textHeight * 5 + $textSpacer * 5, $w - 2, 1)
 	GUICtrlSetBkColor(-1, 0x666666)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	$yText_offset = $y + 9 * $dscale + 28 * $dscale + 5 * $dscale + 5 * $dscale
 
 	$label_CurrDnsPri = GUICtrlCreateLabel($oLangStrings.interface.props.dnsPref & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 5 + $textSpacer * 5)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$label_CurrentDnsPri = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 5 + $textSpacer * 5, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	$label_CurrDnsAlt = GUICtrlCreateLabel($oLangStrings.interface.props.dnsAlt & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 6 + $textSpacer * 6)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$label_CurrentDnsAlt = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 6 + $textSpacer * 6, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	$label_sep2 = GUICtrlCreateLabel("", $x + 1, $yText_offset + $textHeight * 7 + $textSpacer * 7, $w - 2, 1)
 	GUICtrlSetBkColor(-1, 0x666666)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	$yText_offset = $y + 9 * $dscale + 28 * $dscale + 5 * $dscale + 5 * $dscale + 5 * $dscale
 
 	$label_CurrDhcp = GUICtrlCreateLabel($oLangStrings.interface.props.dhcpServer & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 7 + $textSpacer * 7)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$label_CurrentDhcp = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 7 + $textSpacer * 7, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	$label_CurrAdapterState = GUICtrlCreateLabel($oLangStrings.interface.props.adapterState & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 8 + $textSpacer * 8)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$label_CurrentAdapterState = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 8 + $textSpacer * 8, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	$currentInfoBox = _makeBox($x, $y, $w, $h)
 	#EndRegion adapter-info
@@ -485,12 +515,16 @@ Func _form_main()
 	GUIStartGroup()
 	$radio_IpAuto = GUICtrlCreateRadio("", $x + 8 * $dscale, $yText_offset, 15 * $dscale, 20 * $dscale)
 	GUICtrlSetOnEvent(-1, "_onRadioIpAuto")
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$radio_IpAutoLabel = GUICtrlCreateLabel($oLangStrings.interface.props.ipauto, $x + 8 * $dscale + 15 * $dscale, $yText_offset + 2 * $dscale, $w - 16 * $dscale - 14 * $dscale, 20 * $dscale)
 	GUICtrlSetOnEvent(-1, "_onRadioIpAuto")
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$radio_IpMan = GUICtrlCreateRadio("", $x + 8 * $dscale, $yText_offset + $textHeight + $textSpacer, 15 * $dscale, 20 * $dscale)
 	GUICtrlSetOnEvent(-1, "_onRadioIpMan")
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$radio_IpManLabel = GUICtrlCreateLabel($oLangStrings.interface.props.ipmanual, $x + 8 * $dscale + 15 * $dscale, $yText_offset + $textHeight + $textSpacer + 2 * $dscale, $w - 16 * $dscale - 14 * $dscale, 20 * $dscale)
 	GUICtrlSetOnEvent(-1, "_onRadioIpMan")
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	GUICtrlSetState(-1, $GUI_CHECKED)
 
 	$yText_offset = $y
@@ -499,7 +533,9 @@ Func _form_main()
 	;IP address
 	$label_ip = GUICtrlCreateLabel($oLangStrings.interface.props.ip & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 2 + $textSpacer * 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$ip_Ip = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2, 135 * $dscale, 22 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	_GUICtrlIpAddress_SetFontByHeight($ip_Ip, $MyGlobalFontName, $MyGlobalFontHeight)
 
 	;IP copy/paste buttons
@@ -519,7 +555,9 @@ Func _form_main()
 	;subnet address
 	$label_subnet = GUICtrlCreateLabel($oLangStrings.interface.props.subnet & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 3 + $textSpacer * 3)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$ip_Subnet = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 3 + $textSpacer * 3, 135 * $dscale, 22 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	_GUICtrlIpAddress_SetFontByHeight($ip_Subnet, $MyGlobalFontName, $MyGlobalFontHeight)
 
 	;subnet copy/paste buttons
@@ -539,7 +577,9 @@ Func _form_main()
 	;gateway address
 	$label_gateway = GUICtrlCreateLabel($oLangStrings.interface.props.gateway & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 4 + $textSpacer * 4)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$ip_Gateway = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 4 + $textSpacer * 4, 135 * $dscale, 22 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	_GUICtrlIpAddress_SetFontByHeight($ip_Gateway, $MyGlobalFontName, $MyGlobalFontHeight)
 
 	;gateway copy/paste buttons
@@ -563,19 +603,24 @@ Func _form_main()
 	$textSpacer = 9 * $dscale
 
 	$label_sep1 = GUICtrlCreateLabel("", $x + 1, $yText_offset + $textHeight * 5 + $textSpacer * 5, $w - 2, 1)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	GUICtrlSetBkColor(-1, 0xBBBBBB)
 
 	$yText_offset = $y + 50 * $dscale
 
 	GUIStartGroup()
 	$radio_DnsAuto = GUICtrlCreateRadio("", $x + 8 * $dscale, $yText_offset + $textHeight * 5 + $textSpacer * 5, 15 * $dscale, 20 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	GUICtrlSetOnEvent(-1, "_onRadioDnsAuto")
 	$radio_DnsAutoLabel = GUICtrlCreateLabel($oLangStrings.interface.props.dnsauto, $x + 8 * $dscale + 15 * $dscale, $yText_offset + $textHeight * 5 + $textSpacer * 5 + 2 * $dscale, $w - 16 * $dscale - 14 * $dscale, 20 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	GUICtrlSetOnEvent(-1, "_onRadioDnsAuto")
 	$radio_DnsMan = GUICtrlCreateRadio("", $x + 8 * $dscale, $yText_offset + $textHeight * 6 + $textSpacer * 6, 15 * $dscale, 20 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	GUICtrlSetOnEvent(-1, "_onRadioDnsMan")
 	GUICtrlSetState(-1, $GUI_CHECKED)
 	$radio_DnsManLabel = GUICtrlCreateLabel($oLangStrings.interface.props.dnsmanual, $x + 8 * $dscale + 15 * $dscale, $yText_offset + $textHeight * 6 + $textSpacer * 6 + 2 * $dscale, $w - 16 * $dscale - 14 * $dscale, 20 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	GUICtrlSetOnEvent(-1, "_onRadioDnsMan")
 
 	$yText_offset = $y
@@ -583,7 +628,9 @@ Func _form_main()
 
 	$label_DnsPri = GUICtrlCreateLabel($oLangStrings.interface.props.dnsPref & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 7 + $textSpacer * 7)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$ip_DnsPri = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 7 + $textSpacer * 7, 135 * $dscale, 22 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	_GUICtrlIpAddress_SetFontByHeight($ip_DnsPri, $MyGlobalFontName, $MyGlobalFontHeight)
 
 	;Primary DNS copy/paste buttons
@@ -602,7 +649,9 @@ Func _form_main()
 
 	$label_DnsAlt = GUICtrlCreateLabel($oLangStrings.interface.props.dnsAlt & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 8 + $textSpacer * 8)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$ip_DnsAlt = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 8 + $textSpacer * 8, 135 * $dscale, 22 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	_GUICtrlIpAddress_SetFontByHeight($ip_DnsAlt, $MyGlobalFontName, $MyGlobalFontHeight)
 
 	;Alternate DNS copy/paste buttons
@@ -620,7 +669,9 @@ Func _form_main()
 
 
 	$ck_dnsReg = GUICtrlCreateCheckbox("", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 9 + $textSpacer * 9, 15 * $dscale, 15 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	$ck_dnsRegLabel = GUICtrlCreateLabel($oLangStrings.interface.props.dnsreg, $x + 8 * $dscale + $xIndent + 16 * $dscale, $yText_offset + $textHeight * 9 + $textSpacer * 9 + 1 * $dscale, 125 * $dscale, 15 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	GUICtrlSetFont(-1, 8.5)
 	GUICtrlSetOnEvent(-1, "_onCheckboxRegDns")
 
@@ -988,8 +1039,10 @@ EndFunc   ;==>_makeHeading
 Func _makeBox($x, $y, $w, $h, $bkcolor = $cTheme_InfoBox)
 	Local $bg = GUICtrlCreateLabel("", $x + 1, $y + 1, $w - 2, $h - 2)
 	GUICtrlSetBkColor(-1, $bkcolor)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	Local $border = GUICtrlCreateLabel("", $x, $y, $w, $h)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 ;~ 	GUICtrlSetBkColor(-1, 0x000880)
 	GUICtrlSetBkColor(-1, 0x666666)
 ;~ 	GUICtrlSetState(-1, $GUI_DISABLE)

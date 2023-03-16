@@ -802,3 +802,27 @@ Func WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 	EndSwitch
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>WM_NOTIFY
+
+
+;------------------------------------------------------------------------------
+; Title........: WM_SIZE
+; Description..: Process WM_SIZE messages
+;                - Reposition custom buttons
+;------------------------------------------------------------------------------
+Func WM_SIZE($hWnd, $iMsg, $wParam, $lParam)
+    Local $clientWidth = BitAND($lParam, 0xFFFF)
+	ConsoleWrite("width " & $clientWidth & @CRLF)
+
+    WinMove($ip_Ip, "", $clientWidth - $IpAddressX,Default)
+EndFunc
+
+;------------------------------------------------------------------------------
+; Title........: WM_ENTERSIZEMOVE
+; Description..: Process WM_ENTERSIZEMOVE messages
+;                - get initial positions
+;------------------------------------------------------------------------------
+Func WM_SIZING($hWnd, $iMsg, $wParam, $lParam)
+	$IpAddressX = WinGetPos($ip_Ip, "")[0]
+	ConsoleWrite("X " & $IpAddressX & @CRLF)
+	Return $GUI_RUNDEFMSG
+EndFunc
