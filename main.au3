@@ -180,7 +180,7 @@ Global $label_DnsPri, $label_DnsAlt, $ck_dnsReg, $label_ip, $label_subnet, $labe
 Global $buttonCopyIp, $buttonPasteIp, $buttonCopySubnet, $buttonPasteSubnet, $buttonCopyGateway, $buttonPasteGateway
 Global $buttonRefresh, $buttonCopyDnsPri, $buttonPasteDnsPri, $buttonCopyDnsAlt, $buttonPasteDnsAlt
 Global $searchgraphic, $filter_background, $lvBackground, $statusbar_background, $profilebuttons_background
-Global $currentInfoBox,$setInfoBox
+Global $currentInfoBox, $setInfoBox
 
 ; TOOLBAR
 Global $oToolbar, $oToolbar2, $tbButtonApply

@@ -810,15 +810,15 @@ EndFunc   ;==>WM_NOTIFY
 ;                - Reposition custom buttons
 ;------------------------------------------------------------------------------
 Func WM_SIZE($hWnd, $iMsg, $wParam, $lParam)
-    Local $clientWidth = BitAND($lParam, 0xFFFF)
+	Local $clientWidth = BitAND($lParam, 0xFFFF)
 	Local $clientHeight = BitShift($lParam, 16)
 	ConsoleWrite("width " & $clientWidth & @CRLF)
 
-    WinMove($ip_Ip, "", $clientWidth - $IpAddressOffset,Default)
-	WinMove($ip_Subnet, "", $clientWidth - $IpAddressOffset,Default)
-	WinMove($ip_Gateway, "", $clientWidth - $IpAddressOffset,Default)
-	WinMove($ip_DnsPri, "", $clientWidth - $IpAddressOffset,Default)
-	WinMove($ip_DnsAlt, "", $clientWidth - $IpAddressOffset,Default)
+	WinMove($ip_Ip, "", $clientWidth - $IpAddressOffset, Default)
+	WinMove($ip_Subnet, "", $clientWidth - $IpAddressOffset, Default)
+	WinMove($ip_Gateway, "", $clientWidth - $IpAddressOffset, Default)
+	WinMove($ip_DnsPri, "", $clientWidth - $IpAddressOffset, Default)
+	WinMove($ip_DnsAlt, "", $clientWidth - $IpAddressOffset, Default)
 
 	GuiFlatButton_SetPos($buttonCopyIp, $clientWidth - $buttonCopyOffset)
 	GuiFlatButton_SetPos($buttonCopySubnet, $clientWidth - $buttonCopyOffset)
@@ -835,17 +835,17 @@ Func WM_SIZE($hWnd, $iMsg, $wParam, $lParam)
 	GuiFlatButton_SetPos($buttonRefresh, $clientWidth - $buttonRefreshOffset)
 	GuiFlatButton_SetPos($tbButtonApply, $clientWidth - $buttonApplyOffset)
 
-EndFunc
+EndFunc   ;==>WM_SIZE
 
 ;------------------------------------------------------------------------
 ; Title........: WM_GETMINMAXINFO
 ; Description..: Process WM_GETMINMAXINFO messages
 ;------------------------------------------------------------------------------
 Func WM_GETMINMAXINFO($hWnd, $iMsg, $wParam, $lParam)
-    $tagMaxinfo = DllStructCreate("int;int;int;int;int;int;int;int;int;int", $lParam)
-    DllStructSetData($tagMaxinfo, 7, $guiMinWidth) ; min X
-    DllStructSetData($tagMaxinfo, 8, $guiMinHeight) ; min Y
-    DllStructSetData($tagMaxinfo, 9, $guiMaxWidth ); max X
-    DllStructSetData($tagMaxinfo, 10, $guiMaxHeight ) ; max Y
-    Return 0
-EndFunc
+	$tagMaxinfo = DllStructCreate("int;int;int;int;int;int;int;int;int;int", $lParam)
+	DllStructSetData($tagMaxinfo, 7, $guiMinWidth) ; min X
+	DllStructSetData($tagMaxinfo, 8, $guiMinHeight) ; min Y
+	DllStructSetData($tagMaxinfo, 9, $guiMaxWidth) ; max X
+	DllStructSetData($tagMaxinfo, 10, $guiMaxHeight)  ; max Y
+	Return 0
+EndFunc   ;==>WM_GETMINMAXINFO
