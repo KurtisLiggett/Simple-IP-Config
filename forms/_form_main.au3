@@ -66,8 +66,7 @@ Func _form_main()
 
 	GUIRegisterMsg($WM_COMMAND, 'WM_COMMAND')
 	GUIRegisterMsg($WM_NOTIFY, 'WM_NOTIFY')
-	GUIRegisterMsg($WM_SIZE, "WM_SIZE")
-;~ 	GUIRegisterMsg($WM_SIZE, "WM_SIZING")
+	GUIRegisterMsg($WM_GETMINMAXINFO, "WM_GETMINMAXINFO")
 
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 	_GDIPlus_Startup()
@@ -79,6 +78,7 @@ Func _form_main()
 	GUICtrlCreateLabel("", 0, 0, $guiWidth, 1)
 	GUICtrlSetBkColor(-1, 0x888888)
 	GUICtrlSetState(-1, $GUI_DISABLE)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKLEFT)
 	#EndRegion main-gui
 
 
@@ -244,21 +244,21 @@ Func _form_main()
 
 	$statustext = GUICtrlCreateLabel($oLangStrings.message.ready, $x + 3, $y + 3, $w - 2, $h - 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetResizing($statustext, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT)
+	GUICtrlSetResizing($statustext, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT+$GUI_DOCKRIGHT+$GUI_DOCKHEIGHT)
 
 	$statuserror = GUICtrlCreateLabel("", $x + 3, $y + 3, $w - 2, $h - 2)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetOnEvent(-1, "_statusPopup")
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetState($statuserror, $GUI_HIDE)
-	GUICtrlSetResizing($statuserror, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT)
+	GUICtrlSetResizing($statuserror, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT+$GUI_DOCKRIGHT+$GUI_DOCKHEIGHT)
 
 	GUICtrlCreateLabel("", $x, $y + 1, $w, 1)
 	GUICtrlSetBkColor(-1, 0x404040)
-	GUICtrlSetResizing(-1, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT+$GUI_DOCKRIGHT)
+	GUICtrlSetResizing(-1, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT+$GUI_DOCKRIGHT+$GUI_DOCKHEIGHT)
 
 	$statusbar_background = GUICtrlCreateLabel("", $x, $y + 1, $w, $h - 1)
-	GUICtrlSetResizing(-1, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT+$GUI_DOCKRIGHT)
+	GUICtrlSetResizing(-1, $GUI_DOCKBOTTOM+$GUI_DOCKLEFT+$GUI_DOCKRIGHT+$GUI_DOCKHEIGHT)
 	#EndRegion statusbar
 
 
@@ -324,15 +324,18 @@ Func _form_main()
 	GUICtrlCreateLabel("", $wLeft - 1, $y - 1, 1, 22 * $dscale + 2)
 	GUICtrlSetBkColor(-1, 0x888888)
 	GUICtrlSetState(-1, $GUI_DISABLE)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 
 	;bottom line
 	GUICtrlCreateLabel("", 0, 22 * $dscale + 2, $wLeft - 1, 1)
 	GUICtrlSetBkColor(-1, 0xAAAAAA)
 	GUICtrlSetState(-1, $GUI_DISABLE)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKHEIGHT+$GUI_DOCKRIGHT+$GUI_DOCKLEFT)
 
 	;background
 	$profilebuttons_background = GUICtrlCreateLabel("", 0, $y - 1, $wLeft - 1, 22 * $dscale + 2)
 	GUICtrlSetState(-1, $GUI_DISABLE)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKLEFT+$GUI_DOCKHEIGHT)
 	#EndRegion profile-buttons
 
 
@@ -346,11 +349,16 @@ Func _form_main()
 	$searchgraphic = GUICtrlCreatePic("", $x + 5, $y + 3 + 2 * $dscale, 16, 16)
 	;_ResourceSetImageToCtrl($hGUI, $searchgraphic, "search_png")
 	_memoryToPic($searchgraphic, GetIconData($pngSearch))
+	GUICtrlSetResizing($searchgraphic, $GUI_DOCKTOP+$GUI_DOCKLEFT+$GUI_DOCKSIZE+$GUI_DOCKHEIGHT)
 
 	$input_filter = GUICtrlCreateInput("*", $x + 12 + 11, $y + 3 + 2 * $dscale, $w - 12 - 18, 15 * $dscale, -1, $WS_EX_TOOLWINDOW)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKLEFT+$GUI_DOCKHEIGHT)
 	$filter_background = GUICtrlCreateLabel("", $x + 3, $y + 3, $w - 6, 20 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKLEFT+$GUI_DOCKHEIGHT)
+	;box border
 	GUICtrlCreateLabel("", $x + 2, $y + 2, $w - 4, 20 * $dscale + 2)
 	GUICtrlSetBkColor(-1, 0x777777)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKLEFT+$GUI_DOCKHEIGHT)
 	$filter_dummy = GUICtrlCreateDummy()
 	GUICtrlSetOnEvent($filter_dummy, "_onFilter")
 
@@ -358,6 +366,7 @@ Func _form_main()
 	_GUICtrlListView_SetColumnWidth($list_profiles, 0, $w - 2 - 20 * $dscale)  ; sets column width
 	_GUICtrlListView_AddItem($list_profiles, "Item1")
 	GUICtrlSetOnEvent($list_profiles, "_onLvEnter")
+	GUICtrlSetResizing($list_profiles, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKLEFT+$GUI_DOCKBOTTOM)
 
 	; ListView Context Menu
 	$lvcontext = GUICtrlCreateContextMenu($list_profiles)
@@ -384,15 +393,18 @@ Func _form_main()
 	GUICtrlCreateLabel("", $w - 1, $y, 1, $h)
 	GUICtrlSetBkColor(-1, 0x666666)
 	GUICtrlSetState(-1, $GUI_DISABLE)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKWIDTH+$GUI_DOCKBOTTOM)
 
 	;create bottom border
 	GUICtrlCreateLabel("", 0, $y + $h, $w, 1)
 	GUICtrlSetBkColor(-1, 0x666666)
 	GUICtrlSetState(-1, $GUI_DISABLE)
+	GUICtrlSetResizing(-1, $GUI_DOCKBOTTOM+$GUI_DOCKRIGHT+$GUI_DOCKLEFT+$GUI_DOCKHEIGHT)
 
-	;create white background box
+	;create background box
 	$lvBackground = GUICtrlCreateLabel("", $x, $y, $w, $h)
 	GUICtrlSetState(-1, $GUI_DISABLE)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKLEFT+$GUI_DOCKBOTTOM)
 	#EndRegion profiles-list
 
 
@@ -433,6 +445,7 @@ Func _form_main()
 	GUICtrlSetOnEvent(-1, "_onRefresh")
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonRefresh), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngRefresh24))))
+	$buttonRefreshOffset = $guiWidth-($x + 8 * $dscale + $w - 16 * $dscale - 32 * $dscale + 5 * $dscale)
 
 	$label_sep1 = GUICtrlCreateLabel("", $x + 1, $yText_offset + $textHeight * 2 + $textSpacer * 2, $w - 2, 1)
 	GUICtrlSetBkColor(-1, 0x666666)
@@ -537,6 +550,7 @@ Func _form_main()
 	$ip_Ip = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2, 135 * $dscale, 22 * $dscale)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP+$GUI_DOCKRIGHT+$GUI_DOCKSIZE)
 	_GUICtrlIpAddress_SetFontByHeight($ip_Ip, $MyGlobalFontName, $MyGlobalFontHeight)
+	$IpAddressOffset = $guiWidth-($x + $w - 135 * $dscale - 8 * $dscale)
 
 	;IP copy/paste buttons
 	$buttonCopyIp = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 42 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2 + 3 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
@@ -544,13 +558,14 @@ Func _form_main()
 	GUICtrlSetOnEvent(-1, "_onCopyIp")
 	GUICtrlSetTip(-1, "Copy Address")
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyIp), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngCopyDarkmode16))))
+	$buttonCopyOffset = $guiWidth-($x + $w - 135 * $dscale - 42 * $dscale)
 
 	$buttonPasteIp = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 26 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2 + 3 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onPasteIp")
 	GUICtrlSetTip(-1, "Paste Address")
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteIp), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngPasteDarkmode16))))
-
+	$buttonPasteOffset = $guiWidth-($x + $w - 135 * $dscale - 26 * $dscale)
 
 	;subnet address
 	$label_subnet = GUICtrlCreateLabel($oLangStrings.interface.props.subnet & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 3 + $textSpacer * 3)
@@ -686,6 +701,7 @@ Func _form_main()
 	GUICtrlSetTip(-1, $oLangStrings.toolbar.apply_tip)
 	GUICtrlSetOnEvent(-1, "_apply_GUI")
 	GuiFlatButton_SetColorsEx($tbButtonApply, $aColorsEx)
+	$buttonApplyOffset = $guiWidth - ($x + 8 * $dscale)
 
 
 	$setInfoBox = _makeBox($x, $y, $w, $h)
@@ -754,6 +770,15 @@ Func _form_main()
 		TrayItemSetText($RestoreItem, $oLangStrings.traymenu.restore)
 	EndIf
 	$prevWinPos = WinGetPos($hgui)
+
+	Local $tagRECT = _WinAPI_GetWindowRect($hgui)
+	$guiMinWidth = DllStructGetData($tagRECT, "Right") - DllStructGetData($tagRECT, "Left")
+	$guiMinHeight = DllStructGetData($tagRECT, "Bottom") - DllStructGetData($tagRECT, "Top")
+
+	$guiMaxWidth = _WinAPI_GetSystemMetrics($SM_CXMAXTRACK)
+	$guiMaxHeight = _WinAPI_GetSystemMetrics($SM_CYMAXTRACK)
+
+	GUIRegisterMsg($WM_SIZE, "WM_SIZE")
 EndFunc   ;==>_form_main
 
 

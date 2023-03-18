@@ -118,6 +118,7 @@ Global $footerHeight = 16
 Global $tbarHeight = 0
 Global $dscale = 1
 Global $iDPI = 0
+Global $guiMinWidth, $guiMinHeight, $guiMaxWidth, $guiMaxHeight
 
 Global $headingHeight = 20
 Global $menuHeight, $captionHeight
@@ -157,7 +158,7 @@ Global $mdblTimerInit = 0, $mdblTimerDiff = 1000, $mdblClick = 0, $mDblClickTime
 Global $dragging = False, $dragitem = 0, $contextSelect = 0
 Global $prevWinPos, $winPosTimer, $writePos
 Global $OpenFileFlag, $ImportFileFlag, $ExportFileFlag
-Global $buttonCopyX, $buttonPasteX, $buttonRefreshX, $buttonApplyX, $IpAddressX
+Global $buttonCopyOffset, $buttonPasteOffset, $buttonRefreshOffset, $buttonApplyOffset, $IpAddressOffset
 
 ; CONTROLS
 Global $combo_adapters, $combo_dummy, $selected_adapter, $lDescription, $lMac
