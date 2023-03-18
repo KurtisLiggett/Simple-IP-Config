@@ -138,7 +138,7 @@ Global $MyGlobalFontHeight = 0
 Global $statusbarHeight = 20
 Global $statusChild, $RestartChild
 Global $statustext, $statuserror, $sStatusMessage
-Global $wgraphic, $showWarning
+Global $wgraphic, $showWarning, $statusPopupEdit
 
 ;Menu Items
 Global $filemenu, $applyitem, $renameitem, $newitem, $saveitem, $deleteitem, $clearitem, $createLinkItem, $profilesOpenItem, $profilesImportItem, $profilesExportItem, $exititem, $netConnItem

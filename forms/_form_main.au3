@@ -1175,46 +1175,50 @@ EndFunc   ;==>_getDpiScale
 
 ; Status Message Popup
 Func _statusPopup()
-	$wPos = WinGetPos($hgui)
+	If IsHWnd($statusChild) Then
+		GUICtrlSetData($statusPopupEdit, GUICtrlRead($statuserror))
+	Else
+		$wPos = WinGetClientSize($hgui)
 
-;~ 	$w = $guiWidth*$dScale
-;~ 	$h = 250*$dScale
-;~ 	$x = $wPos[0] + ($wPos[2]-$w)/2
-;~ 	$y = $wPos[1] + $menuHeight + $guiheight*$dscale-$h + 1
+	;~ 	$w = $guiWidth*$dScale
+	;~ 	$h = 250*$dScale
+	;~ 	$x = $wPos[0] + ($wPos[2]-$w)/2
+	;~ 	$y = $wPos[1] + $menuHeight + $guiheight*$dscale-$h + 1
 
-	$w = $guiWidth * $dScale
-	$h = 100 * $dScale
-	$x = 0
-	$y = $guiheight * $dscale - $h - $menuHeight
+		$w = $wPos[0] * $dScale
+		$h = 100 * $dScale
+		$x = 0
+		$y = $wPos[1] * $dscale - $h - $menuHeight + 25 * $dscale
 
-	$statusChild = GUICreate("StatusMessage", $w, $h, $x, $y, $WS_POPUP, $WS_EX_TOOLWINDOW)
-	_WinAPI_SetParent($statusChild, $hgui)
-	GUISetOnEvent($GUI_EVENT_CLOSE, "_onExitChild")
-	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
-	GUISetBkColor(_WinAPI_GetSysColor($COLOR_MENUBAR), $statusChild)
+		$statusChild = GUICreate("StatusMessage", $w, $h, $x, $y, $WS_POPUP, $WS_EX_TOOLWINDOW)
+		_WinAPI_SetParent($statusChild, $hgui)
+		GUISetOnEvent($GUI_EVENT_CLOSE, "_onExitChild")
+		GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
+		GUISetBkColor(_WinAPI_GetSysColor($COLOR_MENUBAR), $statusChild)
 
-	$pic = GUICtrlCreatePic("", 3 * $dScale, 3 * $dScale, 16, 16)
-	_memoryToPic($pic, GetIconData($pngWarning))
+		$pic = GUICtrlCreatePic("", 3 * $dScale, 3 * $dScale, 16, 16)
+		_memoryToPic($pic, GetIconData($pngWarning))
 
-	GUICtrlCreateLabel($oLangStrings.message.errorOccurred, 27 * $dscale, 4 * $dscale, 200 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+		GUICtrlCreateLabel($oLangStrings.message.errorOccurred, 27 * $dscale, 4 * $dscale, 200 * $dscale)
+		GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
-	$edit = GUICtrlCreateEdit(GUICtrlRead($statuserror), 5, 23, $w - 10, $h - 37 * $dscale - 23, BitOR($ES_MULTILINE, $WS_VSCROLL, $ES_NOHIDESEL, $ES_READONLY), $WS_EX_TRANSPARENT)
-	GUICtrlSetFont(-1, 8.5)
-	Send("^{HOME}")
+		$statusPopupEdit = GUICtrlCreateEdit(GUICtrlRead($statuserror), 5, 23, $w - 10, $h - 37 * $dscale - 23, BitOR($ES_MULTILINE, $WS_VSCROLL, $ES_NOHIDESEL, $ES_READONLY), $WS_EX_TRANSPARENT)
+		GUICtrlSetFont(-1, 8.5)
+		Send("^{HOME}")
 
-	GUICtrlCreateLabel("", 0, 1, $w, 1)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
+		GUICtrlCreateLabel("", 0, 1, $w, 1)
+		GUICtrlSetBkColor(-1, 0xFFFFFF)
 
-	GUICtrlCreateLabel("", 0, 0, $w, 1)
-	GUICtrlSetBkColor(-1, 0x404040)
+		GUICtrlCreateLabel("", 0, 0, $w, 1)
+		GUICtrlSetBkColor(-1, 0x404040)
 
-	$bt_Ok = GUICtrlCreateButton("OK", $w - 55 * $dScale, $h - 27 * $dScale, 50 * $dScale, 22 * $dScale)
-	GUICtrlSetOnEvent(-1, "_onExitChild")
+		$bt_Ok = GUICtrlCreateButton("OK", $w - 55 * $dScale, $h - 27 * $dScale, 50 * $dScale, 22 * $dScale)
+		GUICtrlSetOnEvent(-1, "_onExitChild")
 
-	;GUISetState(@SW_DISABLE, $hGUI)
-	GUISetState(@SW_SHOW, $statusChild)
+		;GUISetState(@SW_DISABLE, $hGUI)
+		GUISetState(@SW_SHOW, $statusChild)
 
-	;Switch to the parent window
-	GUISwitch($hgui)
+		;Switch to the parent window
+		GUISwitch($hgui)
+	EndIf
 EndFunc   ;==>_statusPopup

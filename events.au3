@@ -78,6 +78,10 @@ EndFunc   ;==>_onCreateLink
 ;------------------------------------------------------------------------------
 Func _onExitChild()
 	_ExitChild(@GUI_WinHandle)
+
+	If @GUI_WinHandle = $statusChild Then
+		$statusChild = 0
+	EndIf
 EndFunc   ;==>_onExitChild
 
 ;------------------------------------------------------------------------------
