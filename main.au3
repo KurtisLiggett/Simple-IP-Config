@@ -110,7 +110,7 @@ _setProfilesIniLocation()
 ;GUI stuff
 Global $winName = "Simple IP Config"
 Global $winVersion = "2.9.8-b1"
-Global $winDate = "3/15/2023"
+Global $winDate = "3/19/2023"
 Global $hgui
 Global $guiWidth = 600
 Global $guiHeight = 625
