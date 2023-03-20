@@ -118,7 +118,7 @@ Global $footerHeight = 16
 Global $tbarHeight = 0
 Global $dscale = 1
 Global $iDPI = 0
-Global $guiMinWidth, $guiMinHeight, $guiMaxWidth, $guiMaxHeight
+Global $guiMinWidth, $guiMinHeight, $guiMaxWidth, $guiMaxHeight, $guiRightWidth
 
 Global $headingHeight = 20
 Global $menuHeight, $captionHeight

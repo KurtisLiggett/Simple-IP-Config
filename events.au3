@@ -839,6 +839,7 @@ Func WM_SIZE($hWnd, $iMsg, $wParam, $lParam)
 	GuiFlatButton_SetPos($buttonRefresh, $clientWidth - $buttonRefreshOffset)
 	GuiFlatButton_SetPos($tbButtonApply, $clientWidth - $buttonApplyOffset)
 
+	_GUICtrlListView_SetColumnWidth($list_profiles, 0, $clientWidth - $guiRightWidth - 24 * $dscale)  ; sets column width
 EndFunc   ;==>WM_SIZE
 
 ;------------------------------------------------------------------------

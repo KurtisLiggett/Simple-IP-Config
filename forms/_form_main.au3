@@ -367,6 +367,7 @@ Func _form_main()
 	_GUICtrlListView_AddItem($list_profiles, "Item1")
 	GUICtrlSetOnEvent($list_profiles, "_onLvEnter")
 	GUICtrlSetResizing($list_profiles, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKLEFT + $GUI_DOCKBOTTOM)
+	$guiRightWidth = $guiWidth - $w - 2
 
 	; ListView Context Menu
 	$lvcontext = GUICtrlCreateContextMenu($list_profiles)
