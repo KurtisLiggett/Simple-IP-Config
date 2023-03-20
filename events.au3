@@ -814,6 +814,10 @@ EndFunc   ;==>WM_NOTIFY
 ;                - Reposition custom buttons
 ;------------------------------------------------------------------------------
 Func WM_SIZE($hWnd, $iMsg, $wParam, $lParam)
+	If $hWnd <> $hgui Then
+		Return $GUI_RUNDEFMSG
+	EndIf
+
 	Local $clientWidth = BitAND($lParam, 0xFFFF)
 	Local $clientHeight = BitShift($lParam, 16)
 	ConsoleWrite("width " & $clientWidth & @CRLF)
