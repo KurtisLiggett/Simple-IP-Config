@@ -34,7 +34,12 @@
             "refreshKey":"Ctrl+r",
             "tray":"缩小到任务栏",
             "trayKey":"Ctrl+t",
-            "hide":"隐藏网络适配器"
+            "hide":"隐藏网络适配器",
+            "appearance":{
+                        "appearance":"Appearance",
+                        "light":"Light",
+                        "dark":"Dark"
+            }
          },
          "tools":{
             "tools":"&工具",
