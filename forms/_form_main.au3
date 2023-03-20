@@ -75,7 +75,7 @@ Func _form_main()
 	$MyGlobalFontHeight = $strSize[1]
 
 	;create line under main menu
-	GUICtrlCreateLabel("", 0, 0, $guiWidth, 1)
+	GUICtrlCreateLabel("", 0, 0, $guiWidth * $dscale, 1)
 	GUICtrlSetBkColor(-1, 0x888888)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKLEFT)
@@ -267,20 +267,20 @@ Func _form_main()
 	$x = 0
 	$y = $guiheight * $dscale - $statusbarHeight * $dscale - $footerHeight * $dscale - $menuHeight
 	$w = $guiWidth * $dscale
-	$h = $footerHeight * $dscale
+	$h = $footerHeight * $dscale - 3 * $dscale
 
 	If $screenshot Then
-		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": ________", $x + 3, $y + 2, $w / 2, $h)
+		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": ________", $x + 3, $y + 3 * $dscale, $w / 2, $h)
 	Else
-		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": " & @ComputerName, $x + 3, $y + 2, $w / 2, $h)
+		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": " & @ComputerName, $x + 3, $y + 3 * $dscale, $w / 2, $h)
 	EndIf
 	_setFont($computerName, 8, -1, $cTheme_Name)
-	GUICtrlSetResizing($computerName, $GUI_DOCKBOTTOM + $GUI_DOCKLEFT + $GUI_DOCKSIZE)
+	GUICtrlSetResizing($computerName, $GUI_DOCKBOTTOM + $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKHEIGHT)
 
 	If @LogonDomain <> "" Then
-		$domainName = GUICtrlCreateLabel("", $w / 2, $y + 2, $w / 2 - 3, $h, $SS_RIGHT)
+		$domainName = GUICtrlCreateLabel("", $w / 2, $y + 3 * $dscale, $w / 2 - 3, $h, $SS_RIGHT)
 		_setFont($domainName, 8, -1, $cTheme_Name)
-		GUICtrlSetResizing($domainName, $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
+		GUICtrlSetResizing($domainName, $GUI_DOCKBOTTOM + $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKHEIGHT)
 	EndIf
 	#EndRegion footer
 
@@ -367,7 +367,7 @@ Func _form_main()
 	_GUICtrlListView_AddItem($list_profiles, "Item1")
 	GUICtrlSetOnEvent($list_profiles, "_onLvEnter")
 	GUICtrlSetResizing($list_profiles, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKLEFT + $GUI_DOCKBOTTOM)
-	$guiRightWidth = $guiWidth - $w - 2
+	$guiRightWidth = $guiWidth * $dscale - $w - 2
 
 	; ListView Context Menu
 	$lvcontext = GUICtrlCreateContextMenu($list_profiles)
@@ -446,7 +446,7 @@ Func _form_main()
 	GUICtrlSetOnEvent(-1, "_onRefresh")
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonRefresh), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngRefresh24))))
-	$buttonRefreshOffset = $guiWidth - ($x + 8 * $dscale + $w - 16 * $dscale - 32 * $dscale + 5 * $dscale)
+	$buttonRefreshOffset = $guiWidth * $dscale - ($x + 8 * $dscale + $w - 16 * $dscale - 32 * $dscale + 5 * $dscale)
 
 	$label_sep1 = GUICtrlCreateLabel("", $x + 1, $yText_offset + $textHeight * 2 + $textSpacer * 2, $w - 2, 1)
 	GUICtrlSetBkColor(-1, 0x666666)
@@ -519,7 +519,7 @@ Func _form_main()
 	$xIndent = 5 * $dscale
 	$y = $tbarHeight * $dscale + $h + $guiSpacer + $y_offset + 10 * $dscale
 	$w = $wRight
-	$h = $guiHeight - $menuHeight - $statusbarHeight * $dscale - $guiSpacer - $footerHeight * $dscale + 2 * $dscale - $y
+	$h = $guiHeight * $dscale - $menuHeight - $statusbarHeight * $dscale - $guiSpacer - $footerHeight * $dscale + 2 * $dscale - $y
 	$textHeight = 9 * $dscale
 	$bkcolor = $cTheme_InfoBox
 
@@ -551,7 +551,7 @@ Func _form_main()
 	$ip_Ip = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2, 135 * $dscale, 22 * $dscale)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
 	_GUICtrlIpAddress_SetFontByHeight($ip_Ip, $MyGlobalFontName, $MyGlobalFontHeight)
-	$IpAddressOffset = $guiWidth - ($x + $w - 135 * $dscale - 8 * $dscale)
+	$IpAddressOffset = $guiWidth * $dscale - ($x + $w - 135 * $dscale - 8 * $dscale)
 
 	;IP copy/paste buttons
 	$buttonCopyIp = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 42 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2 + 3 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
@@ -559,14 +559,14 @@ Func _form_main()
 	GUICtrlSetOnEvent(-1, "_onCopyIp")
 	GUICtrlSetTip(-1, "Copy Address")
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonCopyIp), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngCopyDarkmode16))))
-	$buttonCopyOffset = $guiWidth - ($x + $w - 135 * $dscale - 42 * $dscale)
+	$buttonCopyOffset = $guiWidth * $dscale - ($x + $w - 135 * $dscale - 42 * $dscale)
 
 	$buttonPasteIp = GuiFlatButton_Create("", $x + $w - 135 * $dscale - 26 * $dscale, $yText_offset + $textHeight * 2 + $textSpacer * 2 + 3 * $dscale, 16 * $dscale, 16 * $dscale, $BS_TOOLBUTTON)
 	GUICtrlSetCursor(-1, 0)
 	GUICtrlSetOnEvent(-1, "_onPasteIp")
 	GUICtrlSetTip(-1, "Paste Address")
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteIp), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngPasteDarkmode16))))
-	$buttonPasteOffset = $guiWidth - ($x + $w - 135 * $dscale - 26 * $dscale)
+	$buttonPasteOffset = $guiWidth * $dscale - ($x + $w - 135 * $dscale - 26 * $dscale)
 
 	;subnet address
 	$label_subnet = GUICtrlCreateLabel($oLangStrings.interface.props.subnet & ":", $x + 8 * $dscale + $xIndent, $yText_offset + $textHeight * 3 + $textSpacer * 3)
@@ -702,7 +702,7 @@ Func _form_main()
 	GUICtrlSetTip(-1, $oLangStrings.toolbar.apply_tip)
 	GUICtrlSetOnEvent(-1, "_apply_GUI")
 	GuiFlatButton_SetColorsEx($tbButtonApply, $aColorsEx)
-	$buttonApplyOffset = $guiWidth - ($x + 8 * $dscale)
+	$buttonApplyOffset = $guiWidth * $dscale - ($x + 8 * $dscale)
 
 
 	$setInfoBox = _makeBox($x, $y, $w, $h)

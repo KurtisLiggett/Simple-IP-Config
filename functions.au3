@@ -1523,6 +1523,7 @@ Func GetChangeLogData()
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
 			"     #186   Wrong adapter selected." & @CRLF & _
+			"                Miscellaneous DPI scaling bugs." & @CRLF & _
 			"NEW FEATURES:" & @CRLF & _
 			'     #171   Added ability to resize the main window.' & @CRLF & _
 			'     #175   Added "Dark" mode under View->Appearance menu.' & @CRLF & _
