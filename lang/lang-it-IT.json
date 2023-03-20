@@ -36,9 +36,9 @@
             "trayKey":"Ctrl+t",
             "hide":"Nascondi schede di rete",
             "appearance":{
-                        "appearance":"Appearance",
-                        "light":"Light",
-                        "dark":"Dark"
+                        "appearance":"Tema",
+                        "light":"Chiaro",
+                        "dark":"Scuro"
             }
          },
          "tools":{
