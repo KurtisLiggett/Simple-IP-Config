@@ -116,6 +116,12 @@ Func _form_main()
 	GUICtrlSetOnEvent(-1, "_onRefresh")
 	$send2trayitem = GUICtrlCreateMenuItem($oLangStrings.menu.view.tray & @TAB & $oLangStrings.menu.view.trayKey, $viewmenu)
 	GUICtrlSetOnEvent(-1, "_onTray")
+	$memoitem = GUICtrlCreateMenuItem($oLangStrings.menu.view.memo, $viewmenu)
+	GUICtrlSetOnEvent(-1, "_onMemo")
+	;Set memo checkmark
+	If ($options.ShowMemo = "true" Or $options.ShowMemo = "1") Then
+		GUICtrlSetState($memoitem, $GUI_CHECKED)
+	EndIf
 	$appearancemenu = GUICtrlCreateMenu($oLangStrings.menu.view.appearance, $viewmenu)
 	$lightmodeitem = GUICtrlCreateMenuItem($oLangStrings.menu.view.light, $appearancemenu)
 	GUICtrlSetOnEvent(-1, "_onLightMode")

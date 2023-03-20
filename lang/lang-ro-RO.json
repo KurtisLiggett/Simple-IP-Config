@@ -1,197 +1,199 @@
 {
-	"language-info": {
-		"name": "Română",
-		"code": "ro-RO"
-	},
-	"strings": {
-		"buttonOK": "Închide",
-		"buttonCancel": "Anulază",
-		"buttonSave": "Salvează",
-		"menu": {
-			"file": {
-				"file": "&Fișier",
-				"apply": "&Aplică profilul",
-				"applyKey": "Enter",
-				"rename": "&Redenumește",
-				"renameKey": "F2",
-				"new": "&Nou",
-				"newKey": "Ctrl+n",
-				"save": "&Salvează",
-				"saveKey": "Ctrl+s",
-				"delete": "Ș&terge",
-				"deleteKey": "Del",
-				"clear": "Șt&erge înregistrarea",
-				"clearKey": "Ctrl+c",
-				"shortcut": "&Crează scurtătură profil",
-				"open": "&Deschide fișier",
-				"import": "I&mportă profil",
-				"export": "Ex&portă profil",
-				"exit": "Înc&hide aplicația"
-			},
-			"view": {
-				"view": "&Vizualizare",
-				"refresh": "&Reîmprospătare",
-				"refreshKey": "Ctrl+r",
-				"tray": "Trimite în &tavă",
-				"tavăKey": "Ctrl+t",
-				"hide": "&Ascunde adaptori",
+   "language-info":{
+      "name":"Română",
+      "code":"ro-RO"
+   },
+   "strings":{
+      "buttonOK":"Închide",
+      "buttonCancel":"Anulază",
+      "buttonSave":"Salvează",
+      "menu":{
+         "file":{
+            "file":"&Fișier",
+            "apply":"&Aplică profilul",
+            "applyKey":"Enter",
+            "rename":"&Redenumește",
+            "renameKey":"F2",
+            "new":"&Nou",
+            "newKey":"Ctrl+n",
+            "save":"&Salvează",
+            "saveKey":"Ctrl+s",
+            "delete":"Ș&terge",
+            "deleteKey":"Del",
+            "clear":"Șt&erge înregistrarea",
+            "clearKey":"Ctrl+c",
+            "shortcut":"&Crează scurtătură profil",
+            "open":"&Deschide fișier",
+            "import":"I&mportă profil",
+            "export":"Ex&portă profil",
+            "exit":"Înc&hide aplicația"
+         },
+         "view":{
+            "view":"&Vizualizare",
+            "refresh":"&Reîmprospătare",
+            "refreshKey":"Ctrl+r",
+            "tray":"Trimite în &tavă",
+            "tavăKey":"Ctrl+t",
+            "hide":"&Ascunde adaptori",
             "appearance":{
-                        "appearance":"Appearance",
-                        "light":"Light",
-                        "dark":"Dark"
-            }
-			},
-			"tools": {
-				"tools": "&Unelte",
-				"netConn": "&Deschide conexiuni de rețea",
-				"pull": "Încarcă de pe ada&ptor",
-				"pullKey": "Ctrl+p",
-				"disable": "De&zactivează adaptorul",
-				"enable": "&Activare adaptor",
-				"release": "&Eliberează DHCP",
-				"renew": "&Reîmprospătează DHCP",
-				"cycle": "&Ciclu eliberare/reînnoire",
-				"openprofloc": "Mergi la &fișierul profiles.ini",
-				"settings": "&Setări"
-			},
-			"help": {
-				"help": "&Ajutor",
-				"docs": "&Documentație Online",
-				"docsKey": "F1",
-				"changelog": "Afișează &schimbările",
-				"update": "&Verifică actualizări...",
-				"debug": "&Informații depanare",
-				"about": "D&espre Simple IP Config"
-			}
-		},
-		"traymenu": {
-			"hide": "Ascunde",
-			"restore": "Restabilește",
-			"about": "Despre",
-			"exit": "Închide aplicația"
-		},
-		"lvmenu": {
-			"rename": "Redenumește",
-			"delete": "Șterge",
-			"sortAsc": "Sortează A->Z",
-			"sortDesc": "Sortează Z->A",
-			"shortcut": "Crează scurtătură pentru profil"
-		},
-		"toolbar": {
-			"apply": "Aplică",
-			"refresh": "Reîmprospătare",
-			"new": "Nou",
-			"save": "Salvează",
-			"delete": "Șterge",
-			"clear": "Curată",
-			"apply_tip": "Aplică",
-			"refresh_tip": "Reîmprospătare",
-			"new_tip": "Crează profil nou",
-			"save_tip": "Salvează profilul",
-			"delete_tip": "Șterge profilul",
-			"clear_tip": "Curată intrare",
-			"settings_tip": "Setări",
-			"tavă_tip": "Trimite în tavă"
-		},
-		"interface": {
-			"computername": "Nume calculator",
-			"domain": "Domeniu",
-			"workgroup": "Grup de lucru",
-			"adapterDesc": "Descriere",
-			"mac": "Adresă MAC",
-			"select": "Selectează adaptor",
-			"profiles": "Profile",
-			"profileprops": "Proprietăți profil IP",
-			"currentprops": "Proprietăți adaptor curent",
-			"restarting": "Repornire",
-			"props": {
-				"ip": "Adresă IP",
-				"subnet": "Mască subrețea",
-				"gateway": "Poartă",
-				"dnsPref": "Server DNS preferat",
-				"dnsAlt": "Server DNS alternativ",
-				"dhcpServer": "Server DHCP",
-				"adapterState": "Stare adaptor",
-				"adapterStateEnabled": "Activat",
-				"adapterStateDisabled": "Dezactivat",
-				"adapterStateUnplugged": "Deconectat",
-				"ipauto": "Setează adresă IP automat",
-				"ipmanual": "Setează adresă IP manual ",
-				"dnsauto": "Setează adresă DNS automat",
-				"dnsmanual": "Setează adresă DNS manual",
-				"dnsreg": "Înregistrează adresa"
-			}
-		},
-		"updates": {
-			"title": "Verifică actualizări",
-			"thisVersion": "Această versiune",
-			"latestVersion": "Ultima versiune",
-			"newMessage": "O nouă versiune este disponibilă.",
-			"latestMessage": "Ai deja ultima versiune."
-		},
-		"about": {
-			"title": "Despre",
-			"version": "Versiune",
-			"date": "Data",
-			"dev": "Dezvoltator",
-			"lic": "Licență",
-			"_comment": "Traducere în limba Română: Mihai ȘERBAN",
-			"desc": "Utilitar portabil pentru schimbarea de adrese IP, care permite unui utilizator să schimbe rapid și ușor cele mai comune setări de rețea.",
-			"icons": "Icon-urile programului sunt de la"
-		},
-		"changelog": {
-			"changelog": "Listă schimbări"
-		},
-		"blacklist": {
-			"title": "Listă neagră adaptori",
-			"heading": "Selectează adaptor pentru ascundere"
-		},
-		"settings": {
-			"title": "Setări",
-			"lang": "Limba",
-			"opt1": "Pornește în tavă",
-			"opt2": "Minimizează în tavă",
-			"opt3": "Salvează adaptorul în profil",
-			"opt4": "Verificare automată actualizări"
-		},
-		"message": {
-			"ready": "Pregătit",
-			"timedout": "Acțiunea a expirat!  Comandă anulată.",
-			"couldNotSave": "Nu s-a putut salva în locația selectată!",
-			"updatingList": "Se actualizează lista de adaptoare...",
-			"selectAdapter": "Selectați un adaptor și încercați din nou",
-			"enterIP": "Introduceți o adresă IP",
-			"enterSubnet": "Introduceți o mască de subrețea",
-			"settingIP": "Se setează adresa IP statică...",
-			"settingDnsDhcp": "Se setează DNS DHCP...",
-			"settingDnsPref": "Se setează serverul DNS preferat...",
-			"settingDnsAlt": "Se setează serverul DNS alternativ...",
-			"errorOccurred": "A aparut o eroare",
-			"profileNameExists": "Numele profilului există deja!",
-			"noProfileSel": "Niciun profil nu este selectat!",
-			"profilesNotFound": "Fișierul Profiles.ini nu a fost găsit - va fi creat un fișier nou",
-			"errorReadingProf": "Eroare la citirea profiles.ini",
-			"adapterNotFound": "Adaptorul nu a fost găsit",
-			"error": "Eroare",
-			"warning": "Avertizare",
-			"newItem": "Articol nou",
-			"applying": "Aplicarea profilului",
-			"errorRetrieving": "A apărut o problemă la preluarea adaptoarelor.",
-			"commandTimeout": "Comandă expirată",
-			"updateCheckError": "A apărut o eroare la preluarea actualizării.",
-			"checkConnect": "Te rog să verifici conexiunea la internet.",
-			"errorCode": "Cod de eroare",
-			"newVersion": "Este disponibilă o versiune mai nouă",
-			"currentVersion": "Ai cea mai recentă versiune.",
-			"yourVersion": "Versiunea ta este",
-			"latestVersion": "Ultima versiune este",
-			"loadedFile": "Fișier încărcat",
-			"doneImporting": "S-a terminat de importat profilurile",
-			"fileSaved": "Fișier salvat"
-		},
-		"dialog": {
-			"selectFile": "Selectați fișier",
-			"ini": "Fisier INI"
-		}
-	}
+               "appearance":"Appearance",
+               "light":"Light",
+               "dark":"Dark"
+            },
+            "memo":"Show Memo"
+         },
+         "tools":{
+            "tools":"&Unelte",
+            "netConn":"&Deschide conexiuni de rețea",
+            "pull":"Încarcă de pe ada&ptor",
+            "pullKey":"Ctrl+p",
+            "disable":"De&zactivează adaptorul",
+            "enable":"&Activare adaptor",
+            "release":"&Eliberează DHCP",
+            "renew":"&Reîmprospătează DHCP",
+            "cycle":"&Ciclu eliberare/reînnoire",
+            "openprofloc":"Mergi la &fișierul profiles.ini",
+            "settings":"&Setări"
+         },
+         "help":{
+            "help":"&Ajutor",
+            "docs":"&Documentație Online",
+            "docsKey":"F1",
+            "changelog":"Afișează &schimbările",
+            "update":"&Verifică actualizări...",
+            "debug":"&Informații depanare",
+            "about":"D&espre Simple IP Config"
+         }
+      },
+      "traymenu":{
+         "hide":"Ascunde",
+         "restore":"Restabilește",
+         "about":"Despre",
+         "exit":"Închide aplicația"
+      },
+      "lvmenu":{
+         "rename":"Redenumește",
+         "delete":"Șterge",
+         "sortAsc":"Sortează A->Z",
+         "sortDesc":"Sortează Z->A",
+         "shortcut":"Crează scurtătură pentru profil"
+      },
+      "toolbar":{
+         "apply":"Aplică",
+         "refresh":"Reîmprospătare",
+         "new":"Nou",
+         "save":"Salvează",
+         "delete":"Șterge",
+         "clear":"Curată",
+         "apply_tip":"Aplică",
+         "refresh_tip":"Reîmprospătare",
+         "new_tip":"Crează profil nou",
+         "save_tip":"Salvează profilul",
+         "delete_tip":"Șterge profilul",
+         "clear_tip":"Curată intrare",
+         "settings_tip":"Setări",
+         "tavă_tip":"Trimite în tavă"
+      },
+      "interface":{
+         "computername":"Nume calculator",
+         "domain":"Domeniu",
+         "workgroup":"Grup de lucru",
+         "adapterDesc":"Descriere",
+         "mac":"Adresă MAC",
+         "select":"Selectează adaptor",
+         "profiles":"Profile",
+         "profileprops":"Proprietăți profil IP",
+         "currentprops":"Proprietăți adaptor curent",
+         "restarting":"Repornire",
+         "props":{
+            "ip":"Adresă IP",
+            "subnet":"Mască subrețea",
+            "gateway":"Poartă",
+            "dnsPref":"Server DNS preferat",
+            "dnsAlt":"Server DNS alternativ",
+            "dhcpServer":"Server DHCP",
+            "adapterState":"Stare adaptor",
+            "adapterStateEnabled":"Activat",
+            "adapterStateDisabled":"Dezactivat",
+            "adapterStateUnplugged":"Deconectat",
+            "ipauto":"Setează adresă IP automat",
+            "ipmanual":"Setează adresă IP manual ",
+            "dnsauto":"Setează adresă DNS automat",
+            "dnsmanual":"Setează adresă DNS manual",
+            "dnsreg":"Înregistrează adresa",
+            "memo":"Memo"
+         }
+      },
+      "updates":{
+         "title":"Verifică actualizări",
+         "thisVersion":"Această versiune",
+         "latestVersion":"Ultima versiune",
+         "newMessage":"O nouă versiune este disponibilă.",
+         "latestMessage":"Ai deja ultima versiune."
+      },
+      "about":{
+         "title":"Despre",
+         "version":"Versiune",
+         "date":"Data",
+         "dev":"Dezvoltator",
+         "lic":"Licență",
+         "_comment":"Traducere în limba Română: Mihai ȘERBAN",
+         "desc":"Utilitar portabil pentru schimbarea de adrese IP, care permite unui utilizator să schimbe rapid și ușor cele mai comune setări de rețea.",
+         "icons":"Icon-urile programului sunt de la"
+      },
+      "changelog":{
+         "changelog":"Listă schimbări"
+      },
+      "blacklist":{
+         "title":"Listă neagră adaptori",
+         "heading":"Selectează adaptor pentru ascundere"
+      },
+      "settings":{
+         "title":"Setări",
+         "lang":"Limba",
+         "opt1":"Pornește în tavă",
+         "opt2":"Minimizează în tavă",
+         "opt3":"Salvează adaptorul în profil",
+         "opt4":"Verificare automată actualizări"
+      },
+      "message":{
+         "ready":"Pregătit",
+         "timedout":"Acțiunea a expirat!  Comandă anulată.",
+         "couldNotSave":"Nu s-a putut salva în locația selectată!",
+         "updatingList":"Se actualizează lista de adaptoare...",
+         "selectAdapter":"Selectați un adaptor și încercați din nou",
+         "enterIP":"Introduceți o adresă IP",
+         "enterSubnet":"Introduceți o mască de subrețea",
+         "settingIP":"Se setează adresa IP statică...",
+         "settingDnsDhcp":"Se setează DNS DHCP...",
+         "settingDnsPref":"Se setează serverul DNS preferat...",
+         "settingDnsAlt":"Se setează serverul DNS alternativ...",
+         "errorOccurred":"A aparut o eroare",
+         "profileNameExists":"Numele profilului există deja!",
+         "noProfileSel":"Niciun profil nu este selectat!",
+         "profilesNotFound":"Fișierul Profiles.ini nu a fost găsit - va fi creat un fișier nou",
+         "errorReadingProf":"Eroare la citirea profiles.ini",
+         "adapterNotFound":"Adaptorul nu a fost găsit",
+         "error":"Eroare",
+         "warning":"Avertizare",
+         "newItem":"Articol nou",
+         "applying":"Aplicarea profilului",
+         "errorRetrieving":"A apărut o problemă la preluarea adaptoarelor.",
+         "commandTimeout":"Comandă expirată",
+         "updateCheckError":"A apărut o eroare la preluarea actualizării.",
+         "checkConnect":"Te rog să verifici conexiunea la internet.",
+         "errorCode":"Cod de eroare",
+         "newVersion":"Este disponibilă o versiune mai nouă",
+         "currentVersion":"Ai cea mai recentă versiune.",
+         "yourVersion":"Versiunea ta este",
+         "latestVersion":"Ultima versiune este",
+         "loadedFile":"Fișier încărcat",
+         "doneImporting":"S-a terminat de importat profilurile",
+         "fileSaved":"Fișier salvat"
+      },
+      "dialog":{
+         "selectFile":"Selectați fișier",
+         "ini":"Fisier INI"
+      }
+   }
 }

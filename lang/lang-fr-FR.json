@@ -39,7 +39,8 @@
                         "appearance":"Appearance",
                         "light":"Light",
                         "dark":"Dark"
-            }
+            },
+            "memo":"Show Memo"
          },
          "tools":{
             "tools":"&Outils",
@@ -119,7 +120,8 @@
             "ipmanual":"Définir l'adresse IP manuellement",
             "dnsauto":"Définir l'adresse DNS automatiquement",
             "dnsmanual":"Définir l'adresse DNS manuellement",
-            "dnsreg":"Enregistrer les adresses"
+            "dnsreg":"Enregistrer les adresses",
+            "memo":"Memo"
          }
       },
       "updates":{

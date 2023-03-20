@@ -142,7 +142,7 @@ Global $wgraphic, $showWarning, $statusPopupEdit
 
 ;Menu Items
 Global $filemenu, $applyitem, $renameitem, $newitem, $saveitem, $deleteitem, $clearitem, $createLinkItem, $profilesOpenItem, $profilesImportItem, $profilesExportItem, $exititem, $netConnItem
-Global $viewmenu, $refreshitem, $send2trayitem, $blacklistitem, $appearancemenu, $lightmodeitem, $darkmodeitem
+Global $viewmenu, $refreshitem, $send2trayitem, $blacklistitem, $appearancemenu, $lightmodeitem, $darkmodeitem, $memoitem
 Global $toolsmenu, $pullitem, $disableitem, $releaseitem, $renewitem, $cycleitem, $settingsitem
 Global $helpmenu, $helpitem, $changelogitem, $checkUpdatesItem, $debugmenuitem, $infoitem
 

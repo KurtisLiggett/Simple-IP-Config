@@ -39,7 +39,8 @@
                         "appearance":"Appearance",
                         "light":"Light",
                         "dark":"Dark"
-            }
+            },
+            "memo":"Show Memo"
          },
          "tools":{
             "tools":"&Herramientas",
@@ -119,7 +120,8 @@
             "ipmanual":"Establecer manualmente la dirección IP",
             "dnsauto":"Establecer automáticamente la dirección DNS",
             "dnsmanual":"Establecer manualmente la dirección DNS",
-            "dnsreg":"Registrar Direcciones"
+            "dnsreg":"Registrar Direcciones",
+            "memo":"Memo"
          }
       },
       "updates":{

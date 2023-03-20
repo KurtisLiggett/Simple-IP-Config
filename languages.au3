@@ -117,6 +117,7 @@ Func _langStrings()
 	_AutoItObject_AddProperty($oMenuView, "appearance")
 	_AutoItObject_AddProperty($oMenuView, "light")
 	_AutoItObject_AddProperty($oMenuView, "dark")
+	_AutoItObject_AddProperty($oMenuView, "memo")
 
 	_AutoItObject_AddProperty($oMenuTools, "tools")
 	_AutoItObject_AddProperty($oMenuTools, "netConn")
@@ -195,6 +196,7 @@ Func _langStrings()
 	_AutoItObject_AddProperty($oInterfaceProps, "dnsauto")
 	_AutoItObject_AddProperty($oInterfaceProps, "dnsmanual")
 	_AutoItObject_AddProperty($oInterfaceProps, "dnsreg")
+	_AutoItObject_AddProperty($oInterfaceProps, "memo")
 
 	_AutoItObject_AddProperty($oUpdates, "title")
 	_AutoItObject_AddProperty($oUpdates, "thisVersion")
@@ -307,6 +309,7 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.menu.view.appearance = Json_Get($jsonData, ".strings.menu.view.appearance.appearance")
 	$oLangStrings.menu.view.light = Json_Get($jsonData, ".strings.menu.view.appearance.light")
 	$oLangStrings.menu.view.dark = Json_Get($jsonData, ".strings.menu.view.appearance.dark")
+	$oLangStrings.menu.view.memo = Json_Get($jsonData, ".strings.menu.view.memo")
 
 	$oLangStrings.menu.tools.tools = Json_Get($jsonData, ".strings.menu.tools.tools")
 	$oLangStrings.menu.tools.netConn = Json_Get($jsonData, ".strings.menu.tools.netConn")
@@ -369,6 +372,7 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.interface.props.adapterStateEnabled = Json_Get($jsonData, ".strings.interface.props.adapterStateEnabled")
 	$oLangStrings.interface.props.adapterStateDisabled = Json_Get($jsonData, ".strings.interface.props.adapterStateDisabled")
 	$oLangStrings.interface.props.adapterStateUnplugged = Json_Get($jsonData, ".strings.interface.props.adapterStateUnplugged")
+	$oLangStrings.interface.props.memo = Json_Get($jsonData, ".strings.interface.props.memo")
 
 	$oLangStrings.interface.props.ipauto = Json_Get($jsonData, ".strings.interface.props.ipauto")
 	$oLangStrings.interface.props.ipmanual = Json_Get($jsonData, ".strings.interface.props.ipmanual")
@@ -497,7 +501,8 @@ Func _getEnglish()
 			'            	"appearance":"Appearance",' & _
 			'            	"light":"Light",' & _
 			'            	"dark":"Dark"' & _
-			'            }' & _
+			'            },' & _
+			'            "memo":"Show memo"' & _
 			'         },' & _
 			'         "tools":{' & _
 			'            "tools":"&Tools",' & _
@@ -576,7 +581,8 @@ Func _getEnglish()
 			'            "ipmanual":"Manually Set IP Address",' & _
 			'            "dnsauto":"Automatically Set DNS Address",' & _
 			'            "dnsmanual":"Manually Set DNS Address",' & _
-			'            "dnsreg":"Register Addresses"' & _
+			'            "dnsreg":"Register Addresses",' & _
+			'            "memo":"Memo"' & _
 			'         }' & _
 			'      },' & _
 			'      "updates":{' & _

@@ -39,7 +39,8 @@
                         "appearance":"Appearance",
                         "light":"Light",
                         "dark":"Dark"
-            }
+            },
+            "memo":"Show Memo"
          },
          "tools":{
             "tools":"&Gereedshappen",
@@ -119,7 +120,8 @@
             "ipmanual":"Handmatig IP Adres toekennen",
             "dnsauto":"Automatisch DNS Adres verkrijgen",
             "dnsmanual":"Handmatig DNS Adres toekennen",
-            "dnsreg":"Registeer Adressen"
+            "dnsreg":"Registeer Adressen",
+            "memo":"Memo"
          }
       },
       "updates":{

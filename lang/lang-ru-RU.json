@@ -39,7 +39,8 @@
                         "appearance":"Appearance",
                         "light":"Light",
                         "dark":"Dark"
-            }
+            },
+            "memo":"Show Memo"
          },
          "tools":{
             "tools":"&Инструменты",
@@ -119,7 +120,8 @@
             "ipmanual":"Ручная установка IP-адрес",
             "dnsauto":"Автоматическая установка DNS-адресов",
             "dnsmanual":"Ручная установка DNS-адресов",
-            "dnsreg":"Регистрация адресов"
+            "dnsreg":"Регистрация адресов",
+            "memo":"Memo"
          }
       },
       "updates":{

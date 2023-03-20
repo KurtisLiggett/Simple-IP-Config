@@ -1221,8 +1221,8 @@ Func _loadProfiles()
 						$options.AutoUpdate = $thisSection[$j][1]
 					Case "LastUpdateCheck"
 						$options.LastUpdateCheck = $thisSection[$j][1]
-					Case "Theme"
-						$options.Theme = $thisSection[$j][1]
+					Case "ShowMemo"
+						$options.ShowMemo = $thisSection[$j][1]
 				EndSwitch
 			Else
 				Switch $thisSection[$j][0]

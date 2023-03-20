@@ -427,6 +427,22 @@ Func _onDarkMode()
 	IniWrite($sProfileName, "options", "Theme", "Dark")
 EndFunc   ;==>_onDarkMode
 
+;------------------------------------------------------------------------------
+; Title........: _onMemo
+; Description..: Show/Hide the memo field
+; Events.......: View menu -> Appearance
+;------------------------------------------------------------------------------
+Func _onMemo()
+	If ($options.ShowMemo = "true" Or $options.ShowMemo = "1") Then
+		GUICtrlSetState($memoitem, $GUI_UNCHECKED)
+		$options.ShowMemo = "false"
+	Else
+		GUICtrlSetState($memoitem, $GUI_CHECKED)
+		$options.ShowMemo = "true"
+	EndIf
+	IniWrite($sProfileName, "options", "ShowMemo", $options.ShowMemo)
+EndFunc   ;==>_onMemo
+
 
 ;------------------------------------------------------------------------------
 ; Title........: _onPull
