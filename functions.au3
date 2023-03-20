@@ -1524,6 +1524,7 @@ Func GetChangeLogData()
 			"BUG FIXES:" & @CRLF & _
 			"     #186   Wrong adapter selected." & @CRLF & _
 			"NEW FEATURES:" & @CRLF & _
+			'     #171   Added ability to resize the main window.' & @CRLF & _
 			'     #175   Added "Dark" mode under View->Appearance menu.' & @CRLF & _
 			@CRLF & _
 			"v2.9.7" & @CRLF & _

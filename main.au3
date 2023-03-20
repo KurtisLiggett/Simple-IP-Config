@@ -110,7 +110,7 @@ _setProfilesIniLocation()
 ;GUI stuff
 Global $winName = "Simple IP Config"
 Global $winVersion = "2.9.8-b1"
-Global $winDate = "3/15/2023"
+Global $winDate = "3/19/2023"
 Global $hgui
 Global $guiWidth = 600
 Global $guiHeight = 625
@@ -118,6 +118,7 @@ Global $footerHeight = 16
 Global $tbarHeight = 0
 Global $dscale = 1
 Global $iDPI = 0
+Global $guiMinWidth, $guiMinHeight, $guiMaxWidth, $guiMaxHeight
 
 Global $headingHeight = 20
 Global $menuHeight, $captionHeight
@@ -137,7 +138,7 @@ Global $MyGlobalFontHeight = 0
 Global $statusbarHeight = 20
 Global $statusChild, $RestartChild
 Global $statustext, $statuserror, $sStatusMessage
-Global $wgraphic, $showWarning
+Global $wgraphic, $showWarning, $statusPopupEdit
 
 ;Menu Items
 Global $filemenu, $applyitem, $renameitem, $newitem, $saveitem, $deleteitem, $clearitem, $createLinkItem, $profilesOpenItem, $profilesImportItem, $profilesExportItem, $exititem, $netConnItem
@@ -157,6 +158,7 @@ Global $mdblTimerInit = 0, $mdblTimerDiff = 1000, $mdblClick = 0, $mDblClickTime
 Global $dragging = False, $dragitem = 0, $contextSelect = 0
 Global $prevWinPos, $winPosTimer, $writePos
 Global $OpenFileFlag, $ImportFileFlag, $ExportFileFlag
+Global $buttonCopyOffset, $buttonPasteOffset, $buttonRefreshOffset, $buttonApplyOffset, $IpAddressOffset
 
 ; CONTROLS
 Global $combo_adapters, $combo_dummy, $selected_adapter, $lDescription, $lMac
@@ -178,7 +180,7 @@ Global $label_DnsPri, $label_DnsAlt, $ck_dnsReg, $label_ip, $label_subnet, $labe
 Global $buttonCopyIp, $buttonPasteIp, $buttonCopySubnet, $buttonPasteSubnet, $buttonCopyGateway, $buttonPasteGateway
 Global $buttonRefresh, $buttonCopyDnsPri, $buttonPasteDnsPri, $buttonCopyDnsAlt, $buttonPasteDnsAlt
 Global $searchgraphic, $filter_background, $lvBackground, $statusbar_background, $profilebuttons_background
-Global $currentInfoBox,$setInfoBox
+Global $currentInfoBox, $setInfoBox
 
 ; TOOLBAR
 Global $oToolbar, $oToolbar2, $tbButtonApply
