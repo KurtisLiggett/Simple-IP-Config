@@ -100,7 +100,7 @@ Global $adapters
 Global Const $wbemFlagReturnImmediately = 0x10
 Global Const $wbemFlagForwardOnly = 0x20
 
-Global $screenshot = 0
+Global $screenshot = 1
 Global $sProfileName
 
 ;set profile name based on installation and script dir
@@ -171,7 +171,7 @@ Global $label_CurrentDnsPri, $label_CurrentDnsAlt
 Global $label_CurrentDhcp, $label_CurrentAdapterState
 Global $link, $computerName, $domainName
 Global $blacklistLV
-Global $button_New, $button_Save, $button_Delete
+Global $button_New, $button_Save, $button_Delete, $menuLineBottom, $menuLineRight, $menuLineSep
 
 Global $headingSelect, $headingProfiles, $headingIP, $headingCurrent
 Global $label_CurrIp, $label_CurrSubnet, $label_CurrGateway, $label_CurrDnsPri, $label_CurrDnsAlt, $label_CurrDhcp, $label_CurrAdapterState
@@ -179,32 +179,11 @@ Global $radio_IpAutoLabel, $radio_IpManLabel, $radio_DnsAutoLabel, $radio_Dnsman
 Global $label_DnsPri, $label_DnsAlt, $ck_dnsReg, $label_ip, $label_subnet, $label_gateway
 Global $buttonCopyIp, $buttonPasteIp, $buttonCopySubnet, $buttonPasteSubnet, $buttonCopyGateway, $buttonPasteGateway
 Global $buttonRefresh, $buttonCopyDnsPri, $buttonPasteDnsPri, $buttonCopyDnsAlt, $buttonPasteDnsAlt
-Global $searchgraphic, $filter_background, $lvBackground, $statusbar_background, $profilebuttons_background
+Global $searchgraphic, $filter_background, $filter_border, $lvBackground, $statusbar_background, $profilebuttons_background
 Global $currentInfoBox, $setInfoBox
 
 ; TOOLBAR
 Global $oToolbar, $oToolbar2, $tbButtonApply
-
-; THEMES
-Global $cThemeLight_Back = 0xCCCCCC
-Global $cThemeLight_Name = 0x555555
-Global $cThemeLight_Menu = _WinAPI_GetSysColor($COLOR_MENUBAR)
-Global $cThemeLight_ProfileList = 0xFFFFFF
-Global $cThemeLight_ProfileText = 0x000000
-Global $cThemeLight_SearchBox = 0xFFFFFF
-Global $cThemeLight_SearchText = 0x000000
-Global $cThemeLight_InfoBox = 0xFFFFFF
-Global $cThemeLight_InfoBoxText = 0x000000
-
-Global $cTheme_Back = $cThemeLight_Back
-Global $cTheme_Name = $cThemeLight_Name
-Global $cTheme_Menu = $cThemeLight_Menu
-Global $cTheme_ProfileList = $cThemeLight_ProfileList
-Global $cTheme_ProfileText = $cThemeLight_ProfileText
-Global $cTheme_SearchBox = $cThemeLight_SearchBox
-Global $cTheme_SearchText = $cThemeLight_SearchText
-Global $cTheme_InfoBox = $cThemeLight_InfoBox
-Global $cTheme_InfoBoxText = $cThemeLight_InfoBoxText
 
 ; LANGUAGE VARIABLES
 Global $oLangStrings

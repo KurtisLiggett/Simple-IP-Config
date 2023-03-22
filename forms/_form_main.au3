@@ -274,12 +274,12 @@ Func _form_main()
 	Else
 		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": " & @ComputerName, $x + 3, $y + 3 * $dscale, $w / 2, $h)
 	EndIf
-	_setFont($computerName, 8, -1, $cTheme_Name)
+	_setFont($computerName, 8, -1, 0x000000)
 	GUICtrlSetResizing($computerName, $GUI_DOCKBOTTOM + $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKHEIGHT)
 
 	If @LogonDomain <> "" Then
 		$domainName = GUICtrlCreateLabel("", $w / 2, $y + 3 * $dscale, $w / 2 - 3, $h, $SS_RIGHT)
-		_setFont($domainName, 8, -1, $cTheme_Name)
+		_setFont($domainName, 8, -1, 0x000000)
 		GUICtrlSetResizing($domainName, $GUI_DOCKBOTTOM + $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKHEIGHT)
 	EndIf
 	#EndRegion footer
@@ -297,8 +297,6 @@ Func _form_main()
 
 	; =================================================
 	#Region profile-buttons
-	Local $menuColor = $cTheme_Menu
-	Local $hoverColor = $menuColor * 0.9
 	Local $buttonSpace = 0 * $dscale
 
 	$button_New = GuiFlatButton_Create("", 2, $y, 22 * $dscale, 22 * $dscale, $BS_TOOLBUTTON)
@@ -311,8 +309,7 @@ Func _form_main()
 	GUICtrlSetOnEvent(-1, "_onSave")
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($button_Save), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngSave16))))
 
-	GUICtrlCreateLabel("", 2 + 22 * $dscale * 2 + 3 * $dscale, $y, 1, 22 * $dscale)
-	GUICtrlSetBkColor(-1, 0xBBBBBB)
+	$menuLineSep = GUICtrlCreateLabel("", 2 + 22 * $dscale * 2 + 3 * $dscale, $y, 1, 22 * $dscale)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 
 	$button_Delete = GuiFlatButton_Create("", 2 + 22 * $dscale * 2 + 6 * $dscale, $y, 22 * $dscale, 22 * $dscale, $BS_TOOLBUTTON)
@@ -321,14 +318,12 @@ Func _form_main()
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($button_Delete), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pngDelete16))))
 
 	;right line
-	GUICtrlCreateLabel("", $wLeft - 1, $y - 1, 1, 22 * $dscale + 2)
-	GUICtrlSetBkColor(-1, 0x888888)
+	$menuLineRight = GUICtrlCreateLabel("", $wLeft - 1, $y - 1, 1, 22 * $dscale + 2)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
 
 	;bottom line
-	GUICtrlCreateLabel("", 0, 22 * $dscale + 2, $wLeft - 1, 1)
-	GUICtrlSetBkColor(-1, 0xAAAAAA)
+	$menuLineBottom = GUICtrlCreateLabel("", 0, 22 * $dscale + 2, $wLeft - 1, 1)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKHEIGHT + $GUI_DOCKRIGHT + $GUI_DOCKLEFT)
 
@@ -356,7 +351,7 @@ Func _form_main()
 	$filter_background = GUICtrlCreateLabel("", $x + 3, $y + 3, $w - 6, 20 * $dscale)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKLEFT + $GUI_DOCKHEIGHT)
 	;box border
-	GUICtrlCreateLabel("", $x + 2, $y + 2, $w - 4, 20 * $dscale + 2)
+	$filter_border = GUICtrlCreateLabel("", $x + 2, $y + 2, $w - 4, 20 * $dscale + 2)
 	GUICtrlSetBkColor(-1, 0x777777)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKLEFT + $GUI_DOCKHEIGHT)
 	$filter_dummy = GUICtrlCreateDummy()
@@ -419,7 +414,6 @@ Func _form_main()
 	$h = 228 * $dscale
 	$textSpacer = 10 * $dscale
 	$textHeight = 9 * $dscale
-	$bkcolor = $cTheme_InfoBox
 	$yText_offset = $y + 9 * $dscale + 28 * $dscale
 
 	$combo_adapters = GUICtrlCreateCombo("", $x + 8 * $dscale, $y + 8 * $dscale, $w - 16 * $dscale - 32 * $dscale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
@@ -434,12 +428,6 @@ Func _form_main()
 
 	$combo_dummy = GUICtrlCreateDummy()
 	GUICtrlSetOnEvent(-1, "_onCombo")
-
-	Local $aColorsEx = _
-			[$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox, _     ; normal 	: Background, Text, Border
-			$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox, _     ; focus 	: Background, Text, Border
-			$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox, _      ; hover 	: Background, Text, Border
-			$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox]        ; selected 	: Background, Text, Border
 
 	$buttonRefresh = GuiFlatButton_Create("", $x + 8 * $dscale + $w - 16 * $dscale - 32 * $dscale + 5 * $dscale, $y + 8 * $dscale, 26 * $dscale, 26 * $dscale, $BS_TOOLBUTTON)
 	GUICtrlSetCursor(-1, 0)
@@ -521,7 +509,6 @@ Func _form_main()
 	$w = $wRight
 	$h = $guiHeight * $dscale - $menuHeight - $statusbarHeight * $dscale - $guiSpacer - $footerHeight * $dscale + 2 * $dscale - $y
 	$textHeight = 9 * $dscale
-	$bkcolor = $cTheme_InfoBox
 
 	$yText_offset = $y + 6 * $dscale
 	$textSpacer = 9 * $dscale
@@ -620,7 +607,7 @@ Func _form_main()
 
 	$label_sep1 = GUICtrlCreateLabel("", $x + 1, $yText_offset + $textHeight * 5 + $textSpacer * 5, $w - 2, 1)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
-	GUICtrlSetBkColor(-1, 0xBBBBBB)
+	GUICtrlSetBkColor(-1, 0x666666)
 
 	$yText_offset = $y + 50 * $dscale
 
@@ -795,274 +782,8 @@ Func _colorChangeLightness($baseColor, $lightness = 1)
 EndFunc   ;==>_colorChangeLightness
 
 
-Func _makeCurrentProps($label, $x, $y, $w, $h)
-	Local $aRet = _makeHeading($label, $x + 1, $y + 1, $w - 2, -1, 0x0782FD, 0.95)
-	$headingCurrent = $aRet[0]
-	Local $headingHeight = $aRet[1]
-	Local $bkcolor = 0xEEEEEE
-
-	$label_CurrIp = GUICtrlCreateLabel($oLangStrings.interface.props.ip & ":", $x + 8 * $dscale, $y + $headingHeight + 8 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-	$label_CurrentIp = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 8 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
-	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-
-	$label_CurrSubnet = GUICtrlCreateLabel($oLangStrings.interface.props.subnet & ":", $x + 8 * $dscale, $y + $headingHeight + 25 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-	$label_CurrentSubnet = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 25 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
-	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-
-	$label_CurrGateway = GUICtrlCreateLabel($oLangStrings.interface.props.gateway & ":", $x + 8 * $dscale, $y + $headingHeight + 42 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-	$label_CurrentGateway = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 42 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
-	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-
-	$label_sep1 = GUICtrlCreateLabel("", $x + 1, $y + $headingHeight + 62 * $dscale, $w - 2, 1)
-;~ 	GUICtrlSetBkColor(-1, 0x0051FF)
-	GUICtrlSetBkColor(-1, 0x404040)
-
-	$label_CurrDnsPri = GUICtrlCreateLabel($oLangStrings.interface.props.dnsPref & ":", $x + 8 * $dscale, $y + $headingHeight + 67 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-	$label_CurrentDnsPri = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 67 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
-	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-
-	$label_CurrDnsAlt = GUICtrlCreateLabel($oLangStrings.interface.props.dnsAlt & ":", $x + 8 * $dscale, $y + $headingHeight + 84 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-	$label_CurrentDnsAlt = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 84 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
-	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-
-	$label_sep2 = GUICtrlCreateLabel("", $x + 1, $y + $headingHeight + 105 * $dscale, $w - 2, 1)
-;~ 	GUICtrlSetBkColor(-1, 0x0051FF)
-	GUICtrlSetBkColor(-1, 0x404040)
-
-	$label_CurrDhcp = GUICtrlCreateLabel($oLangStrings.interface.props.dhcpServer & ":", $x + 8 * $dscale, $y + $headingHeight + 112 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-	$label_CurrentDhcp = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 112 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
-	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-
-	$label_CurrAdapterState = GUICtrlCreateLabel($oLangStrings.interface.props.adapterState & ":", $x + 8 * $dscale, $y + $headingHeight + 129 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-	$label_CurrentAdapterState = GUICtrlCreateInput("", $x + $w - 125 * $dscale - 8 * $dscale, $y + $headingHeight + 129 * $dscale, 125 * $dscale, 15 * $dscale, BitOR($ES_READONLY, $SS_CENTER), $WS_EX_TOOLWINDOW)
-	GUICtrlSetBkColor(-1, $bkcolor)
-	GUICtrlSetColor(-1, $cTheme_InfoBoxText)
-
-	_makeBox($x, $y, $w, $h, $bkcolor)
-EndFunc   ;==>_makeCurrentProps
-
-Func _makeDnsProps($label, $x, $y, $w, $h)
-	Local $aRet = _makeHeading($label, $x + 1, $y + 1, $w - 2, 5, 0x0782FD, 0.95)
-	Local $headingHeight = $aRet[1]
-	GUIStartGroup()
-	$radio_DnsAuto = GUICtrlCreateRadio($oLangStrings.interface.props.dnsauto, $x + 8 * $dscale, $y + $headingHeight + 4 * $dscale, $w - 16 * $dscale, 20 * $dscale)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetOnEvent(-1, "_onRadio")
-	$radio_DnsMan = GUICtrlCreateRadio($oLangStrings.interface.props.dnsmanual, $x + 8 * $dscale, $y + $headingHeight + 23 * $dscale, $w - 16 * $dscale, 20 * $dscale)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetOnEvent(-1, "_onRadio")
-	GUICtrlSetState(-1, $GUI_CHECKED)
-
-	$label_DnsPri = GUICtrlCreateLabel($oLangStrings.interface.props.dnsPref & ":", $x + 8 * $dscale, $y + $headingHeight + 51 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	$ip_DnsPri = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $y + $headingHeight + 48 * $dscale, 135 * $dscale, 22 * $dscale)
-	_GUICtrlIpAddress_SetFontByHeight($ip_DnsPri, $MyGlobalFontName, $MyGlobalFontHeight)
-
-	$label_DnsAlt = GUICtrlCreateLabel($oLangStrings.interface.props.dnsAlt & ":", $x + 8 * $dscale, $y + $headingHeight + 77 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	$ip_DnsAlt = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $y + $headingHeight + 74 * $dscale, 135 * $dscale, 22 * $dscale)
-	_GUICtrlIpAddress_SetFontByHeight($ip_DnsAlt, $MyGlobalFontName, $MyGlobalFontHeight)
-
-	$ck_dnsReg = GUICtrlCreateCheckbox($oLangStrings.interface.props.dnsreg, $x + 8 * $dscale, $y + $h - 19 * $dscale, -1, 15 * $dscale)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetFont(-1, 8.5)
-
-	_makeBox($x, $y, $w, $h)
-EndFunc   ;==>_makeDnsProps
-
-Func _makeIpProps($label, $x, $y, $w, $h)
-	Local $aRet = _makeHeading($label, $x + 1, $y + 1, $w - 2, -1, 0x0782FD, 0.95)
-	$headingIP = $aRet[0]
-	Local $headingHeight = $aRet[1]
-	GUIStartGroup()
-	$radio_IpAuto = GUICtrlCreateRadio($oLangStrings.interface.props.ipauto, $x + 8 * $dscale, $y + $headingHeight + 4 * $dscale, $w - 16 * $dscale, 20 * $dscale)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetOnEvent(-1, "_onRadio")
-	$radio_IpMan = GUICtrlCreateRadio($oLangStrings.interface.props.ipmanual, $x + 8 * $dscale, $y + $headingHeight + 23 * $dscale, $w - 16 * $dscale, 20 * $dscale)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlSetOnEvent(-1, "_onRadio")
-	GUICtrlSetState(-1, $GUI_CHECKED)
-
-	$label_ip = GUICtrlCreateLabel($oLangStrings.interface.props.ip & ":", $x + 8 * $dscale, $y + $headingHeight + 51 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	$ip_Ip = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $y + $headingHeight + 48 * $dscale, 135 * $dscale, 22 * $dscale)
-	_GUICtrlIpAddress_SetFontByHeight($ip_Ip, $MyGlobalFontName, $MyGlobalFontHeight)
-
-	$label_subnet = GUICtrlCreateLabel($oLangStrings.interface.props.subnet & ":", $x + 8 * $dscale, $y + $headingHeight + 77 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	$ip_Subnet = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $y + $headingHeight + 74 * $dscale, 135 * $dscale, 22 * $dscale)
-	_GUICtrlIpAddress_SetFontByHeight($ip_Subnet, $MyGlobalFontName, $MyGlobalFontHeight)
-
-	$label_gateway = GUICtrlCreateLabel($oLangStrings.interface.props.gateway & ":", $x + 8 * $dscale, $y + $headingHeight + 103 * $dscale)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-	$ip_Gateway = _GUICtrlIpAddress_Create($hgui, $x + $w - 135 * $dscale - 8 * $dscale, $y + $headingHeight + 100 * $dscale, 135 * $dscale, 22 * $dscale)
-	_GUICtrlIpAddress_SetFontByHeight($ip_Gateway, $MyGlobalFontName, $MyGlobalFontHeight)
-
-	_makeBox($x, $y, $w, $h)
-EndFunc   ;==>_makeIpProps
-
-Func _makeProfileSelect($label, $x, $y, $w, $h)
-	Local $aRet = _makeHeading($label, $x + 1, $y + 1, $w - 2, -1, 0x0782FD, 0.95)
-	$headingProfiles = $aRet[0]
-	Local $headingHeight = $aRet[1]
-	$searchgraphic = GUICtrlCreatePic("", $x + 5, $y + $headingHeight + 3 + 2 * $dscale, 16, 16)
-	;_ResourceSetImageToCtrl($hGUI, $searchgraphic, "search_png")
-	_memoryToPic($searchgraphic, GetIconData($pngSearch))
-
-	$input_filter = GUICtrlCreateInput("*", $x + 12 + 11, $y + $headingHeight + 3 + 2 * $dscale, $w - 12 - 18, 15 * $dscale, -1, $WS_EX_TOOLWINDOW)
-	GUICtrlCreateLabel("", $x + 3, $y + $headingHeight + 3, $w - 6, 20 * $dscale)
-	GUICtrlSetBkColor(-1, 0xFFFFFF)
-	GUICtrlCreateLabel("", $x + 2, $y + $headingHeight + 2, $w - 4, 20 * $dscale + 2)
-	GUICtrlSetBkColor(-1, 0x777777)
-	$filter_dummy = GUICtrlCreateDummy()
-	GUICtrlSetOnEvent($filter_dummy, "_onFilter")
-
-	$list_profiles = GUICtrlCreateListView($label, $x + 1, $y + $headingHeight + 2 + 20 * $dscale + 3, $w - 2, $h - $headingHeight - 3 - 20 * $dscale - 3 - 1, BitOR($GUI_SS_DEFAULT_LISTVIEW, $LVS_NOCOLUMNHEADER, $LVS_EDITLABELS), $WS_EX_TRANSPARENT)
-	_GUICtrlListView_SetColumnWidth($list_profiles, 0, $w - 2 - 20 * $dscale)  ; sets column width
-	_GUICtrlListView_AddItem($list_profiles, "Item1")
-	GUICtrlSetOnEvent($list_profiles, "_onLvEnter")
-
-	; ListView Context Menu
-	$lvcontext = GUICtrlCreateContextMenu($list_profiles)
-	$lvcon_rename = GUICtrlCreateMenuItem($oLangStrings.lvmenu.rename, $lvcontext)
-	GUICtrlSetOnEvent(-1, "_onRename")
-	$lvcon_delete = GUICtrlCreateMenuItem($oLangStrings.lvmenu.delete, $lvcontext)
-	GUICtrlSetOnEvent(-1, "_onDelete")
-	GUICtrlCreateMenuItem("", $lvcontext)
-	$lvcon_arrAz = GUICtrlCreateMenuItem($oLangStrings.lvmenu.sortAsc, $lvcontext)
-	GUICtrlSetOnEvent(-1, "_onArrangeAz")
-	$lvcon_arrZa = GUICtrlCreateMenuItem($oLangStrings.lvmenu.sortDesc, $lvcontext)
-	GUICtrlSetOnEvent(-1, "_onArrangeZa")
-	GUICtrlCreateMenuItem("", $lvcontext)
-	$lvcreateLinkItem = GUICtrlCreateMenuItem($oLangStrings.lvmenu.shortcut, $lvcontext)
-	GUICtrlSetOnEvent(-1, "_onCreateLink")
-
-	$dummyUp = GUICtrlCreateDummy()
-	GUICtrlSetOnEvent(-1, "_onLvUp")
-
-	$dummyDown = GUICtrlCreateDummy()
-	GUICtrlSetOnEvent(-1, "_onLvDown")
-
-	_makeBox($x, $y, $w, $h)
-EndFunc   ;==>_makeProfileSelect
-
-Func _makeComboSelect($label, $x, $y, $w, $h)
-	Local $aRet = _makeHeading($label, $x + 1, $y + 1, $w - 2, -1, 0x0782FD, 0.95)
-	$headingSelect = $aRet[0]
-	Local $headingHeight = $aRet[1]
-
-	$combo_adapters = GUICtrlCreateCombo("", $x + 8 * $dscale, $y + $headingHeight + 8 * $dscale, $w - 16 * $dscale, -1, BitOR($CBS_DROPDOWNlist, $CBS_AUTOHSCROLL, $WS_VSCROLL))
-	GUICtrlSetOnEvent($combo_adapters, "_OnCombo")
-	_setFont($combo_adapters, $MyGlobalFontSize)
-	$lDescription = GUICtrlCreateLabel($oLangStrings.interface.adapterDesc, $x + 8 * $dscale, $y + $headingHeight + 9 * $dscale + 26 * $dscale, $w - 16 * $dscale, -1, $SS_LEFTNOWORDWRAP)
-	_setFont($lDescription, 8.5, $MyGlobalFontBKColor)
-	$lMac = GUICtrlCreateLabel($oLangStrings.interface.mac & ": ", $x + 8 * $dscale, $y + $headingHeight + 9 * $dscale + 41 * $dscale, $w - 16 * $dscale, -1, $SS_LEFTNOWORDWRAP)
-	_setFont($lMac, 8.5, $MyGlobalFontBKColor)
-
-	$combo_dummy = GUICtrlCreateDummy()
-	GUICtrlSetOnEvent(-1, "_onCombo")
-
-	_makeBox($x, $y, $w, $h)
-EndFunc   ;==>_makeComboSelect
-
-
-
-; Create Header
-Func _makeHeading($sLabel, $x, $y, $w, $height = -1, $color = -1, $lightness = -1)
-	$strSize = _StringSize($sLabel, 8.5, 400, 0, "Segoe UI")
-	$labelX = ($w - $strSize[2] * $dscale) / 2 + $x
-	$h = $strSize[3] - 2
-	If $height <> -1 Then
-		$h = $height
-	EndIf
-	$labelY = $y
-
-	Local $heading = GUICtrlCreateLabel($sLabel, $labelX, $labelY)
-	_setFont($heading, 8.5)
-	GUICtrlSetColor(-1, 0xFFFFFF)
-	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-
-;~ 	If $color = -1 Then
-;~ 		Local $bottomline = GUICtrlCreateLabel( "", $x, $y+$h-1, $w, 1 )
-;~ 	GUICtrlSetBkColor(-1, 0x000880)
-;~ 		GUICtrlSetBkColor(-1, 0x404040)
-;~ 	EndIf
-
-	;Local $bg = GUICtrlCreateLabel( "", $x, $y, $w, $h )
-	;GUICtrlSetBkColor(-1, 0x5C67FF)
-
-	Local $idPic = GUICtrlCreatePic('', $x, $y, $w, $h)
-	GUICtrlSetState(-1, $GUI_DISABLE)
-	Local $hPic = GUICtrlGetHandle($idPic)
-
-	; Create gradient
-	Local $hDC = _WinAPI_GetDC($hPic)
-	Local $hDestDC = _WinAPI_CreateCompatibleDC($hDC)
-	Local $hBitmap = _WinAPI_CreateCompatibleBitmap($hDC, $w, $h)
-	Local $hDestSv = _WinAPI_SelectObject($hDestDC, $hBitmap)
-
-	Local $baseColor = 0x0782FD
-	Local $lightFactor = 0.75
-	If $color <> -1 Then
-		$baseColor = $color
-		$lightFactor = $lightness
-	EndIf
-
-	$baseRGB = _ColorGetRGB($baseColor)
-	$baseHSL = _ColorConvertRGBtoHSL($baseRGB)
-	$newL = $lightFactor * $baseHSL[2]
-	If $newL < 0 Then $newL = 0
-	Local $darkenHSL[3] = [$baseHSL[0], $baseHSL[1], $newL]
-	$darkenRGB = _ColorConvertHSLtoRGB($darkenHSL)
-	$darkenColor = _ColorSetRGB($darkenRGB)
-
-	Local $aVertex[6][3] = [[0, 0, $baseColor], [$w, $h, $darkenColor], [0, 0, $baseColor], [$w, $h - $h / 4, $darkenColor], [0, $h - $h / 4, $darkenColor], [$w, $h, $baseColor]]
-	If $color = -1 Then
-		_WinAPI_GradientFill($hDestDC, $aVertex, 0, 1)
-	Else
-		_WinAPI_GradientFill($hDestDC, $aVertex, 2, 3)
-		_WinAPI_GradientFill($hDestDC, $aVertex, 4, 5)
-	EndIf
-
-	_WinAPI_ReleaseDC($hPic, $hDC)
-	_WinAPI_SelectObject($hDestDC, $hDestSv)
-	_WinAPI_DeleteDC($hDestDC)
-
-	; Set gradient to control
-	_SendMessage($hPic, 0x0172, 0, $hBitmap)
-	Local $hObj = _SendMessage($hPic, 0x0173)
-	If $hObj <> $hBitmap Then
-		_WinAPI_DeleteObject($hBitmap)
-	EndIf
-
-	Local $aRet[2]
-	$aRet[0] = $heading
-	$aRet[1] = $h
-	Return $aRet
-EndFunc   ;==>_makeHeading
-
 ; Create Section Box
-Func _makeBox($x, $y, $w, $h, $bkcolor = $cTheme_InfoBox)
+Func _makeBox($x, $y, $w, $h, $bkcolor = 0xFFFFFF)
 	Local $bg = GUICtrlCreateLabel("", $x + 1, $y + 1, $w - 2, $h - 2)
 	GUICtrlSetBkColor(-1, $bkcolor)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
@@ -1181,10 +902,10 @@ Func _statusPopup()
 	Else
 		$wPos = WinGetClientSize($hgui)
 
-	;~ 	$w = $guiWidth*$dScale
-	;~ 	$h = 250*$dScale
-	;~ 	$x = $wPos[0] + ($wPos[2]-$w)/2
-	;~ 	$y = $wPos[1] + $menuHeight + $guiheight*$dscale-$h + 1
+;~ 	$w = $guiWidth*$dScale
+;~ 	$h = 250*$dScale
+;~ 	$x = $wPos[0] + ($wPos[2]-$w)/2
+;~ 	$y = $wPos[1] + $menuHeight + $guiheight*$dscale-$h + 1
 
 		$w = $wPos[0] * $dScale
 		$h = 100 * $dScale

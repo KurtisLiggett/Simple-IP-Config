@@ -1786,7 +1786,17 @@ EndFunc   ;==>_regex_stringLiteralDecode
 Func _setTheme($bLightTheme = True)
 	_SendMessage($hgui, $WM_SETREDRAW, False)
 
+	Local $cTheme_Back
+	Local $cTheme_Name
+	Local $cTheme_Menu, $cTheme_MenuLine, $cTheme_MenuText
+	Local $cTheme_ProfileList
+	Local $cTheme_ProfileText
+	Local $cTheme_SearchBox
+	Local $cTheme_SearchText
+	Local $cTheme_InfoBox
+	Local $cTheme_InfoBoxText
 	Local $searchIcon, $copyIcon, $pasteIcon
+	Local $ipBack
 
 	If $bLightTheme Then
 		$cTheme_Back = 0xCCCCCC
@@ -1801,20 +1811,33 @@ Func _setTheme($bLightTheme = True)
 		$searchIcon = $pngSearch
 		$copyIcon = $pngCopy16
 		$pasteIcon = $pngPaste16
+		$cTheme_MenuLine = 0x888888
+		$cTheme_MenuText = 0x000000
+		$ipBack = 0xFFFFFF
 	Else
-		$cTheme_Back = 0x1F262D
-		$cTheme_Name = 0xB5B5B5
-		$cTheme_Menu = 0xD5D5D5
-		$cTheme_ProfileList = 0x3D3135
-		$cTheme_ProfileText = 0xFFFFFF
+		$cTheme_Back = 0x111111
+		$cTheme_Name = 0xB7B7B7
+		$cTheme_Menu = 0x373737
+		$cTheme_ProfileList = 0x1D1D1D
+		$cTheme_ProfileText = 0xE5E5E5
 		$cTheme_SearchBox = 0x1D2125
-		$cTheme_SearchText = 0xFFFFFF
-		$cTheme_InfoBox = 0xD5D5D5
-		$cTheme_InfoBoxText = 0x3C373F
+		$cTheme_SearchText = 0xE5E5E5
+		$cTheme_InfoBox = 0x373737
+		$cTheme_InfoBoxText = 0xE5E5E5
 		$searchIcon = $pngSearchDarkmode
-		$copyIcon = $pngCopy16
-		$pasteIcon = $pngPaste16
+		$copyIcon = $pngCopyDarkMode16
+		$pasteIcon = $pngPasteDarkMode16
+		$cTheme_MenuLine = 0x555555
+		$cTheme_MenuText = 0xE5E5E5
+		$ipBack = 0xAAAAAA
 	EndIf
+
+	GUICtrlSetBkColor($menuLineSep, $cTheme_MenuLine)
+	GUICtrlSetBkColor($menuLineRight, $cTheme_MenuLine)
+	GUICtrlSetBkColor($menuLineBottom, $cTheme_MenuLine)
+	GUICtrlSetBkColor($filter_border, $cTheme_MenuLine)
+
+	GUICtrlSetBkColor($ip_Ip, $ipBack)
 
 	Local $aColorsToolsEx = _
 			[$cTheme_Menu, 0xFCFCFC, $cTheme_Menu, _     ; normal 	: Background, Text, Border
@@ -1833,6 +1856,7 @@ Func _setTheme($bLightTheme = True)
 			$cTheme_InfoBox, 0xFCFCFC, $cTheme_InfoBox]    ; selected 	: Background, Text, Border
 
 	GUISetBkColor($cTheme_Back, $hgui)
+	GUICtrlSetColor($statustext, $cTheme_MenuText)
 	GUICtrlSetBkColor($statusbar_background, $cTheme_Menu)
 	GUICtrlSetColor($computerName, $cTheme_Name)
 	GUICtrlSetColor($domainName, $cTheme_Name)
@@ -1862,6 +1886,7 @@ Func _setTheme($bLightTheme = True)
 	GUICtrlSetColor($label_CurrDnsAlt, $cTheme_InfoBoxText)
 	GUICtrlSetColor($label_CurrDhcp, $cTheme_InfoBoxText)
 	GUICtrlSetColor($label_CurrAdapterState, $cTheme_InfoBoxText)
+
 	GUICtrlSetColor($label_CurrentIp, $cTheme_InfoBoxText)
 	GUICtrlSetColor($label_CurrentSubnet, $cTheme_InfoBoxText)
 	GUICtrlSetColor($label_CurrentGateway, $cTheme_InfoBoxText)
@@ -1869,12 +1894,26 @@ Func _setTheme($bLightTheme = True)
 	GUICtrlSetColor($label_CurrentDnsAlt, $cTheme_InfoBoxText)
 	GUICtrlSetColor($label_CurrentDhcp, $cTheme_InfoBoxText)
 	GUICtrlSetColor($label_CurrentAdapterState, $cTheme_InfoBoxText)
+
 	GUICtrlSetBkColor($label_CurrentIp, $cTheme_InfoBox)
 	GUICtrlSetBkColor($label_CurrentSubnet, $cTheme_InfoBox)
 	GUICtrlSetBkColor($label_CurrentGateway, $cTheme_InfoBox)
 	GUICtrlSetBkColor($label_CurrentDnsPri, $cTheme_InfoBox)
 	GUICtrlSetBkColor($label_CurrentDnsAlt, $cTheme_InfoBox)
 	GUICtrlSetBkColor($label_CurrentDhcp, $cTheme_InfoBox)
+
+	GUICtrlSetColor($label_ip, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_subnet, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_gateway, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_dnsPri, $cTheme_InfoBoxText)
+	GUICtrlSetColor($label_dnsAlt, $cTheme_InfoBoxText)
+
+	GUICtrlSetBkColor($label_ip, $cTheme_InfoBox)
+	GUICtrlSetBkColor($label_subnet, $cTheme_InfoBox)
+	GUICtrlSetBkColor($label_gateway, $cTheme_InfoBox)
+	GUICtrlSetBkColor($label_dnsPri, $cTheme_InfoBox)
+	GUICtrlSetBkColor($label_dnsAlt, $cTheme_InfoBox)
+
 
 	GUICtrlSetBkColor($radio_IpAuto, $cTheme_InfoBox)
 	GUICtrlSetBkColor($radio_IpAutoLabel, $cTheme_InfoBox)
@@ -1891,7 +1930,7 @@ Func _setTheme($bLightTheme = True)
 	GUICtrlSetColor($radio_DnsManLabel, $cTheme_InfoBoxText)
 
 	GUICtrlSetBkColor($ck_dnsReg, $cTheme_InfoBox)
-	GUICtrlSetBkColor($ck_dnsRegLabel, $cTheme_InfoBox)
+	GUICtrlSetColor($ck_dnsRegLabel, $cTheme_InfoBoxText)
 	GUICtrlSetBkColor($ck_dnsRegLabel, $cTheme_InfoBox)
 
 	GuiFlatButton_SetColorsEx($buttonCopyIp, $aColorsEx)
