@@ -118,6 +118,7 @@ Global $footerHeight = 16
 Global $tbarHeight = 0
 Global $dscale = 1
 Global $iDPI = 0
+Global $infoWidth = 395
 Global $guiMinWidth, $guiMinHeight, $guiMaxWidth, $guiMaxHeight, $guiRightWidth
 
 Global $headingHeight = 20
@@ -158,7 +159,7 @@ Global $mdblTimerInit = 0, $mdblTimerDiff = 1000, $mdblClick = 0, $mDblClickTime
 Global $dragging = False, $dragitem = 0, $contextSelect = 0
 Global $prevWinPos, $winPosTimer, $writePos
 Global $OpenFileFlag, $ImportFileFlag, $ExportFileFlag
-Global $buttonCopyOffset, $buttonPasteOffset, $buttonRefreshOffset, $buttonApplyOffset, $IpAddressOffset
+Global $buttonCopyOffset, $buttonPasteOffset, $buttonRefreshOffset, $buttonApplyOffset, $IpAddressOffset, $memoWidth = 250
 
 ; CONTROLS
 Global $combo_adapters, $combo_dummy, $selected_adapter, $lDescription, $lMac
@@ -171,7 +172,7 @@ Global $label_CurrentDnsPri, $label_CurrentDnsAlt
 Global $label_CurrentDhcp, $label_CurrentAdapterState
 Global $link, $computerName, $domainName
 Global $blacklistLV
-Global $button_New, $button_Save, $button_Delete
+Global $button_New, $button_Save, $button_Delete, $memo
 
 Global $headingSelect, $headingProfiles, $headingIP, $headingCurrent
 Global $label_CurrIp, $label_CurrSubnet, $label_CurrGateway, $label_CurrDnsPri, $label_CurrDnsAlt, $label_CurrDhcp, $label_CurrAdapterState

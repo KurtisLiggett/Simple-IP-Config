@@ -1087,7 +1087,6 @@ Func _setProperties($init = 0, $profileName = "")
 		$profileName = StringReplace(GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 	EndIf
 
-
 	If $profiles.exists($profileName) Then
 		Local $oProfile = $profiles.get($profileName)
 		$ipAuto = $oProfile.IpAuto
@@ -1784,7 +1783,10 @@ EndFunc   ;==>_regex_stringLiteralDecode
 ; Parameters......: $bLightTheme: use light theme, otherwise dark
 ;------------------------------------------------------------------------------
 Func _setTheme($bLightTheme = True)
-	_SendMessage($hgui, $WM_SETREDRAW, False)
+	Local $iState = WinGetState($hgui)
+	If BitAND($iState, $WIN_STATE_VISIBLE) Then
+		_SendMessage($hgui, $WM_SETREDRAW, False)
+	EndIf
 
 	Local $searchIcon, $copyIcon, $pasteIcon
 
@@ -1848,6 +1850,8 @@ Func _setTheme($bLightTheme = True)
 ;~ 	GUICtrlSetBkColor($lDescription, $cTheme_InfoBox)
 	GUICtrlSetColor($lMac, $cTheme_InfoBoxText)
 ;~ 	GUICtrlSetBkColor($lMac, $cTheme_InfoBox)
+	GUICtrlSetBkColor($memo, $cTheme_ProfileList)
+	GUICtrlSetColor($memo, $cTheme_ProfileText)
 
 	GUICtrlSetBkColor($currentInfoBox, $cTheme_InfoBox)
 	GUICtrlSetBkColor($setInfoBox, $cTheme_InfoBox)
@@ -1917,7 +1921,9 @@ Func _setTheme($bLightTheme = True)
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteDnsPri), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pasteIcon))))
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteDnsAlt), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pasteIcon))))
 
-	_SendMessage($hgui, $WM_SETREDRAW, True)
-	_WinAPI_RedrawWindow($hgui)
+	If BitAND($iState, $WIN_STATE_VISIBLE) Then
+		_SendMessage($hgui, $WM_SETREDRAW, True)
+		_WinAPI_RedrawWindow($hgui)
+	EndIf
 EndFunc   ;==>_setTheme
 

@@ -441,6 +441,8 @@ Func _onMemo()
 		$options.ShowMemo = "true"
 	EndIf
 	IniWrite($sProfileName, "options", "ShowMemo", $options.ShowMemo)
+
+	WinMove($hgui, "", Default, Default, 900, 900)
 EndFunc   ;==>_onMemo
 
 
@@ -836,7 +838,6 @@ Func WM_SIZE($hWnd, $iMsg, $wParam, $lParam)
 
 	Local $clientWidth = BitAND($lParam, 0xFFFF)
 	Local $clientHeight = BitShift($lParam, 16)
-	ConsoleWrite("width " & $clientWidth & @CRLF)
 
 	WinMove($ip_Ip, "", $clientWidth - $IpAddressOffset, Default)
 	WinMove($ip_Subnet, "", $clientWidth - $IpAddressOffset, Default)
