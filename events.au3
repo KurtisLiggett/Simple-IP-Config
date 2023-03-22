@@ -433,16 +433,21 @@ EndFunc   ;==>_onDarkMode
 ; Events.......: View menu -> Appearance
 ;------------------------------------------------------------------------------
 Func _onMemo()
+	Local $newW
+	Local $aPos = WinGetPos($hgui)
 	If ($options.ShowMemo = "true" Or $options.ShowMemo = "1") Then
 		GUICtrlSetState($memoitem, $GUI_UNCHECKED)
 		$options.ShowMemo = "false"
+		$newW = $aPos[2] - $memoWidth
 	Else
 		GUICtrlSetState($memoitem, $GUI_CHECKED)
 		$options.ShowMemo = "true"
+		$newW = $aPos[2] + $memoWidth
 	EndIf
-	IniWrite($sProfileName, "options", "ShowMemo", $options.ShowMemo)
 
-	WinMove($hgui, "", Default, Default, 900, 900)
+	WinMove($hgui, "", Default, Default, $newW, Default)
+
+	IniWrite($sProfileName, "options", "ShowMemo", $options.ShowMemo)
 EndFunc   ;==>_onMemo
 
 

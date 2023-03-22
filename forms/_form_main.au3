@@ -29,7 +29,7 @@ Func _form_main()
 	Local $iMemoSpacer = 10
 	Local $showMemo = 0
 	If ($options.ShowMemo = "true" Or $options.ShowMemo = "1") Then
-		$guiWidth = $guiWidth + $memoWidth + $iMemoSpacer
+		$guiWidth = $guiWidth + $memoWidth + $iMemoSpacer + 2
 		$showMemo = 1
 	EndIf
 
@@ -259,7 +259,7 @@ Func _form_main()
 	Local $y_offset = 0
 	Local $y = $tbarHeight * $dscale + $guiSpacer + $y_offset + 2
 	Local $xLeft = $guiSpacer
-	Local $wLeft = $guiWidth * $dscale - $infoWidth * $dscale - 2 * $dscale
+	Local $wLeft = $guiWidth * $dscale - $infoWidth * $dscale - 6 * $dscale - $showMemo * $memoWidth * $dscale
 	Local $xRight = $xLeft + $wLeft + 2 * $dscale
 ;~ 	Local $wRight = $guiWidth * $dscale - $wLeft - 2 * $guiSpacer - 3 * $dscale - 2 * $dscale
 	Local $wRight = $infoWidth
@@ -469,7 +469,6 @@ Func _form_main()
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
 
 	$currentInfoBox = _makeBox($x, $y, $w, $h)
-	ConsoleWrite($w & @CRLF)
 	#EndRegion adapter-info
 
 
@@ -669,7 +668,13 @@ Func _form_main()
 
 
 	#Region MEMO
-	$memo = GUICtrlCreateEdit("", $guiWidth * $dscale - $memoWidth * $dscale, $tbarHeight * $dscale + $iMemoSpacer * $dscale, $memoWidth * $dscale, 400 * $dscale, Bitor($ES_WANTRETURN, $WS_VSCROLL, $ES_AUTOVSCROLL))
+	Local $memoX = $guiWidth * $dscale - $showMemo * $memoWidth * $dscale - 2 * $dscale
+	Local $memoY = $tbarHeight * $dscale + $iMemoSpacer * $dscale
+	Local $memoH = $guiHeight * $dscale - $menuHeight - $statusbarHeight * $dscale - $footerHeight * $dscale - $memoY
+	$memo = GUICtrlCreateEdit("", $memoX + 1, $memoY + 1, $memoWidth * $dscale - 2, $memoH - 2, Bitor($ES_WANTRETURN, $WS_VSCROLL, $ES_AUTOVSCROLL), 0)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH)
+	$memoBackground = GUICtrlCreateLabel("", $memoX, $memoY, $memoWidth * $dscale, $memoH)
+	GUICtrlSetBkColor($memoBackground, 0x666666)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH)
 
 	#EndRegion MEMO

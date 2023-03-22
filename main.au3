@@ -172,7 +172,7 @@ Global $label_CurrentDnsPri, $label_CurrentDnsAlt
 Global $label_CurrentDhcp, $label_CurrentAdapterState
 Global $link, $computerName, $domainName
 Global $blacklistLV
-Global $button_New, $button_Save, $button_Delete, $menuLineBottom, $menuLineRight, $menuLineSep, $memo
+Global $button_New, $button_Save, $button_Delete, $menuLineBottom, $menuLineRight, $menuLineSep, $memo, $memoBackground
 
 Global $headingSelect, $headingProfiles, $headingIP, $headingCurrent
 Global $label_CurrIp, $label_CurrSubnet, $label_CurrGateway, $label_CurrDnsPri, $label_CurrDnsAlt, $label_CurrDhcp, $label_CurrAdapterState
