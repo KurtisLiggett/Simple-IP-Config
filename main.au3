@@ -220,6 +220,9 @@ $options = _Options()
 $profiles = _Profiles()
 $adapters = Adapter()
 
+;initialize language strings
+_initLang()
+
 ;check to see if called with command line arguments
 CheckCmdLine()
 
@@ -243,7 +246,6 @@ _main()
 ;------------------------------------------------------------------------------
 Func _main()
 	_print("starting")
-	_initLang()
 
 	_print("init lang")
 	; popuplate current adapter names and mac addresses

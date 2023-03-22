@@ -43,11 +43,10 @@ Func CheckCmdLine()
 						$ipSubnet = $oProfile.IpSubnet
 						$ipGateway = $oProfile.IpGateway
 						$dnsAuto = $oProfile.DnsAuto
-						$dnsPref = $oProfile.DnsPref
-						$dnsAlt = $oProfile.DnsAlt
+						$dnsPref = $oProfile.IpDnsPref
+						$dnsAlt = $oProfile.IpDnsAlt
 						$dnsReg = $oProfile.RegisterDns
 						$adapterName = $oProfile.AdapterName
-
 						_apply($ipAuto, $ipAddress, $ipSubnet, $ipGateway, $dnsAuto, $dnsPref, $dnsAlt, $dnsReg, $adapterName, RunCallback_cli)
 						_cmdLineMain($profileName)
 					EndIf
