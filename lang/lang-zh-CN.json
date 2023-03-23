@@ -1,0 +1,196 @@
+{
+   "language-info":{
+      "name":"Simple Chinese",
+      "code":"zh-CN"
+   },
+   "strings":{
+      "buttonOK":"确认",
+      "buttonCancel":"取消",
+      "buttonSave":"保存",
+      "menu":{
+         "file":{
+            "file":"&文件",
+            "apply":"&应用设置",
+            "applyKey":"Enter",
+            "rename":"&重命名",
+            "renameKey":"F2",
+            "new":"&新建",
+            "newKey":"Ctrl+n",
+            "save":"&保存",
+            "saveKey":"Ctrl+s",
+            "delete":"&删除",
+            "deleteKey":"Del",
+            "clear":"&清除条目",
+            "clearKey":"Ctrl+c",
+            "shortcut":"创建配置文件的快捷方式",
+            "open":"打开文件",
+            "import":"导入配置文件",
+            "export":"导出配置文件",
+            "exit":"&退出"
+         },
+         "view":{
+            "view":"&查看",
+            "refresh":"&刷新",
+            "refreshKey":"Ctrl+r",
+            "tray":"缩小到任务栏",
+            "trayKey":"Ctrl+t",
+            "hide":"隐藏网络适配器",
+            "appearance":{
+                        "appearance":"Appearance",
+                        "light":"Light",
+                        "dark":"Dark"
+            }
+         },
+         "tools":{
+            "tools":"&工具",
+            "netConn":"新建网络连接",
+            "pull":"&同步网络适配器设置",
+            "pullKey":"Ctrl+p",
+            "disable":"禁用网络适配器",
+            "enable":"启用网络适配器",
+            "release":"&释放 DHCP",
+            "renew":"&重新获取 DHCP",
+            "cycle":"先释放然后重新获取 DHCP",
+            "openprofloc":"转到profiles.ini 文件夹",
+            "settings":"&设置"
+         },
+         "help":{
+            "help":"&帮助",
+            "docs":"&在线文档",
+            "docsKey":"F1",
+            "changelog":"&更新日志",
+            "update":"&检查更新",
+            "debug":"&Debug 信息",
+            "about":"&关于 Simple IP Config"
+         }
+      },
+      "traymenu":{
+         "hide":"隐藏",
+         "restore":"恢复",
+         "about":"关于",
+         "exit":"退出"
+      },
+      "lvmenu":{
+         "rename":"重命名",
+         "delete":"删除",
+         "sortAsc":"按A->Z排序",
+         "sortDesc":"按Z->A排序",
+         "shortcut":"创建配置文件的快捷方式"
+      },
+      "toolbar":{
+         "apply":"应用",
+         "refresh":"刷新",
+         "new":"新建",
+         "save":"保存",
+         "delete":"删除",
+         "clear":"清空",
+         "apply_tip":"应用",
+         "refresh_tip":"刷新",
+         "new_tip":"创建新的配置文件",
+         "save_tip":"保存配置文件",
+         "delete_tip":"删除配置文件",
+         "clear_tip":"清除条目",
+         "settings_tip":"设置",
+         "tray_tip":"缩小到任务栏"
+      },
+      "interface":{
+         "computername":"计算机名称",
+         "domain":"域名",
+         "workgroup":"工作组",
+         "adapterDesc":"描述",
+         "mac":"MAC 地址",
+         "select":"选择网络适配器",
+         "profiles":"配置文件",
+         "profileprops":"配置文件IP属性",
+         "currentprops":"当前网络适配器属性",
+         "restarting":"正在重启",
+         "props":{
+            "ip":"IP 地址",
+            "subnet":"子网掩码",
+            "gateway":"网关",
+            "dnsPref":"首选DNS服务器",
+            "dnsAlt":"备用DNS服务器",
+            "dhcpServer":"DHCP 服务器",
+            "adapterState":"网络适配器状态",
+            "adapterStateEnabled":"Enabled",
+            "adapterStateDisabled":"Disabled",
+			"adapterStateUnplugged":"Unplugged",
+            "ipauto":"自动获取 IP 地址",
+            "ipmanual":"手动设置 IP 地址",
+            "dnsauto":"自动获取 DNS 地址",
+            "dnsmanual":"手动设置 DNS 地址",
+            "dnsreg":"注册地址"
+         }
+      },
+      "updates":{
+         "title":"检查更新",
+         "thisVersion":"当前版本",
+         "latestVersion":"最新版本",
+         "newMessage":"有新版本可用",
+         "latestMessage":"您在使用最新版本"
+      },
+      "about":{
+         "title":"关于",
+         "version":"版本",
+         "date":"日期",
+         "dev":"开发者",
+         "lic":"License",
+         "desc":"The portable ip changer utility that allows a user to quickly and easily change the most common network settings for any connection.",
+         "icons":"Program icons are from"
+      },
+      "changelog":{
+         "changelog":"更新日志"
+      },
+      "blacklist":{
+         "title":"网络适配器黑名单",
+         "heading":"选择要隐藏的网络适配器"
+      },
+      "settings":{
+         "title":"设置",
+         "lang":"语言",
+         "opt1":"开启时最小化",
+         "opt2":"最小化到状态栏",
+         "opt3":"保存到配置",
+         "opt4":"自动检查更新"
+      },
+      "message":{
+         "ready":"已完成",
+         "timedout":"操作超时！命令已中止。",
+         "couldNotSave":"无法保存到所选位置！",
+         "updatingList":"正在更新网络适配器列表...",
+         "selectAdapter":"重新选择网络适配器并重试",
+         "enterIP":"请输入IP地址",
+         "enterSubnet":"请输入子网掩码",
+         "settingIP":"正在设置静态IP地址...",
+         "settingDnsDhcp":"正在设置DNS DHCP...",
+         "settingDnsPref":"正在设置首选DNS服务器...",
+         "settingDnsAlt":"正在设置备用DNS服务器...",
+         "errorOccurred":"发生错误",
+         "profileNameExists":"配置文件名称已存在!",
+         "noProfileSel":"未选择配置文件!",
+         "profilesNotFound":"找不到 Profiles.ini 文件-将创建一个新文件",
+         "errorReadingProf":" profiles.ini读取出错",
+         "adapterNotFound":"找不到网络适配器",
+         "error":"错误",
+         "warning":"警告",
+         "newItem":"新建条目",
+         "applying":"正在应用配置文件",
+         "errorRetrieving":"检索网络适配器时出现问题.",
+         "commandTimeout":"命令超时",
+         "updateCheckError":"检索更新时遇到错误.",
+         "checkConnect":"检查您的互联网连接.",
+         "errorCode":"错误代码",
+         "newVersion":"有新版本可用",
+         "currentVersion":"您在使用最新版本.",
+         "yourVersion":"您的版本是",
+         "latestVersion":"最新版本为",
+         "loadedFile":"已加载文件",
+         "doneImporting":"配置文件导入完成",
+         "fileSaved":"文件已保存"
+      },
+      "dialog":{
+         "selectFile":"选择文件",
+         "ini":"INI 文件"
+      }
+   }
+}
