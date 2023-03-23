@@ -1521,6 +1521,7 @@ Func GetChangeLogData()
 	$sChangeLog[0] = $oLangStrings.changelog.changelog & " - " & $winVersion
 	$sChangeLog[1] = @CRLF & _
 			"BUG FIXES:" & @CRLF & _
+			"     #178   Error running from shortcut." & @CRLF & _
 			"     #186   Wrong adapter selected." & @CRLF & _
 			"                Miscellaneous DPI scaling bugs." & @CRLF & _
 			"NEW FEATURES:" & @CRLF & _
