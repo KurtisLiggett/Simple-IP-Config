@@ -29,7 +29,7 @@
             "exit":"&Afsluiten"
          },
          "view":{
-            "view":"&View",
+            "view":"&Weergave",
             "refresh":"&Verversen",
             "refreshKey":"Ctrl+r",
             "tray":"Naar &taakbalk minimaliseren",
@@ -42,7 +42,7 @@
             }
          },
          "tools":{
-            "tools":"&Gereedshappen",
+            "tools":"&Gereedschappen",
             "netConn":"Open netwerkverbindingen",
             "pull":"&Haal adapterinformatie op",
             "pullKey":"Ctrl+p",
@@ -135,23 +135,23 @@
          "date":"Datum",
          "dev":"Ontwikkelaar",
          "lic":"Licentie",
-         "desc":"The portable ip changer utility that allows a user to quickly and easily change the most common network settings for any connection.",
+         "desc":"Het draagbare ip-wissel hulpprogramma waarmee een gebruiker snel en gemakkelijk de meest voorkomende netwerkinstellingen voor elke verbinding kan wijzigen.",
          "icons":"Programma iconen zijn van"
       },
       "changelog":{
          "changelog":"Change Log"
       },
       "blacklist":{
-         "title":"Adapter Blacklist",
-         "heading":"Selecter Adapters om te verbergen"
+         "title":"Zwartelijst adapters",
+         "heading":"Selecteer Adapters om te verbergen"
       },
       "settings":{
          "title":"Instellingen",
          "lang":"Taal",
          "opt1":"Opstarten in systeemvak",
-         "opt2":"Dicht bij het systeemvak",
-         "opt3":"Sla adapter op naar profiel",
-         "opt4":"Automatisch checken op updates"
+         "opt2":"Sluiten naar het systeemvak",
+         "opt3":"Sla adapter op in profiel",
+         "opt4":"Automatisch controleren op updates"
       },
       "message":{
          "ready":"Klaar",
@@ -175,8 +175,8 @@
          "warning":"Waarschuwing",
          "newItem":"Nieuw Item",
          "applying":"Profiel wordt toegepast",
-         "errorRetrieving":"There was a problem retrieving the adapters.",
-         "commandTimeout":"Commando timeout",
+         "errorRetrieving":"Er was een probleem met het ophalen van de adpaterlijst.",
+         "commandTimeout":"Commando timed-out",
          "updateCheckError":"Er is een fout opgetreden met het binnenhalen van de update.",
          "checkConnect":"Controleer de internetverbindig.",
          "errorCode":"Fout code",
