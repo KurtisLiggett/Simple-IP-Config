@@ -851,6 +851,10 @@ EndFunc   ;==>WM_SIZE
 ; Description..: Process WM_GETMINMAXINFO messages
 ;------------------------------------------------------------------------------
 Func WM_GETMINMAXINFO($hWnd, $iMsg, $wParam, $lParam)
+	If $hWnd <> $hgui Then
+		Return $GUI_RUNDEFMSG
+	EndIf
+
 	$tagMaxinfo = DllStructCreate("int;int;int;int;int;int;int;int;int;int", $lParam)
 	DllStructSetData($tagMaxinfo, 7, $guiMinWidth) ; min X
 	DllStructSetData($tagMaxinfo, 8, $guiMinHeight) ; min Y
