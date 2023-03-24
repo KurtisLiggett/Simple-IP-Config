@@ -57,6 +57,7 @@
 #include <Color.au3>
 #include <GUIEdit.au3>
 #include <GuiComboBox.au3>
+#include <GuiRichEdit.au3>
 #include <Array.au3>
 #include <Date.au3>
 #include <Inet.au3>

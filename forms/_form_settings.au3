@@ -137,5 +137,6 @@ Func _saveOptions()
 
 		_refresh(1)
 		ControlListView($hgui, "", $list_profiles, "Select", 0)
+		GUICtrlSetData($domainName, _DomainComputerBelongs())
 	EndIf
 EndFunc   ;==>_saveOptions
