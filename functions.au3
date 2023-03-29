@@ -1627,6 +1627,7 @@ Func _setTheme($bLightTheme = True)
 	Local $cTheme_InfoBoxText
 	Local $searchIcon, $copyIcon, $pasteIcon
 	Local $ipBack
+	Local $cTheme_MemoLabelBackground
 
 	If $bLightTheme Then
 		$cTheme_Back = 0xCCCCCC
@@ -1644,6 +1645,7 @@ Func _setTheme($bLightTheme = True)
 		$cTheme_MenuLine = 0x888888
 		$cTheme_MenuText = 0x000000
 		$ipBack = 0xFFFFFF
+		$cTheme_MemoLabelBackground = 0xEEEEEE
 	Else
 		$cTheme_Back = 0x111111
 		$cTheme_Name = 0xB7B7B7
@@ -1660,6 +1662,7 @@ Func _setTheme($bLightTheme = True)
 		$cTheme_MenuLine = 0x555555
 		$cTheme_MenuText = 0xE5E5E5
 		$ipBack = 0xAAAAAA
+		$cTheme_MemoLabelBackground = 0x282828
 	EndIf
 
 	GUICtrlSetBkColor($menuLineSep, $cTheme_MenuLine)
@@ -1702,11 +1705,15 @@ Func _setTheme($bLightTheme = True)
 ;~ 	GUICtrlSetBkColor($lDescription, $cTheme_InfoBox)
 	GUICtrlSetColor($lMac, $cTheme_InfoBoxText)
 ;~ 	GUICtrlSetBkColor($lMac, $cTheme_InfoBox)
+
 	GUICtrlSetBkColor($memo, $cTheme_ProfileList)
 	GUICtrlSetColor($memo, $cTheme_ProfileText)
+	GUICtrlSetColor($memoLabel, $cTheme_ProfileText)
+	GUICtrlSetBkColor($memoBackground, $cTheme_ProfileList)
+	GUICtrlSetBkColor($memoLabelBackground, $cTheme_MemoLabelBackground)
 
-	GUICtrlSetBkColor($currentInfoBox, $cTheme_InfoBox)
-	GUICtrlSetBkColor($setInfoBox, $cTheme_InfoBox)
+	GUICtrlSetBkColor($currentInfoBox[0], $cTheme_InfoBox)
+	GUICtrlSetBkColor($setInfoBox[0], $cTheme_InfoBox)
 	GUICtrlSetBkColor($label_CurrentAdapterState, $cTheme_InfoBox)
 
 	GuiFlatButton_SetColorsEx($buttonRefresh, $aColorsEx)

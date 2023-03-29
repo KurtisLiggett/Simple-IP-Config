@@ -381,6 +381,13 @@ EndFunc   ;==>_onLvDown
 ; Events.......: Enter key on listview item
 ;------------------------------------------------------------------------------
 Func _onLvEnter()
+	If _ctrlHasFocus($memo) Then
+		GUISetAccelerators(0)
+		Send("{ENTER}")
+		GUISetAccelerators($aAccelKeys)
+		Return
+	EndIf
+
 	If Not $lv_editing Then
 		_apply_GUI()
 	Else
@@ -433,19 +440,34 @@ EndFunc   ;==>_onDarkMode
 ; Events.......: View menu -> Appearance
 ;------------------------------------------------------------------------------
 Func _onMemo()
-	Local $newW
+	Local $newHeight
 	Local $aPos = WinGetPos($hgui)
+	Local $aCtrlPos = ControlGetPos($hgui, "", $currentInfoBox[0])
+	Local $newBoxX
+
 	If ($options.ShowMemo = "true" Or $options.ShowMemo = "1") Then
 		GUICtrlSetState($memoitem, $GUI_UNCHECKED)
 		$options.ShowMemo = "false"
-		$newW = $aPos[2] - $memoWidth
+		$newHeight = $guiheight
+;~ 		$newBoxX = $aCtrlPos[0] + $memoWidth
+		For $i=0 To UBound($memoCtrls)-1
+			GUICtrlSetState($memoCtrls[$i], $GUI_HIDE)
+		Next
 	Else
 		GUICtrlSetState($memoitem, $GUI_CHECKED)
 		$options.ShowMemo = "true"
-		$newW = $aPos[2] + $memoWidth
+		$newHeight = $aPos[3] + $memoHeight
+;~ 		$newBoxX = $aCtrlPos[0] - $memoWidth
+		Local $ctrlPos
+		For $i=0 To UBound($memoCtrls)-1
+			$ctrlPos = ControlGetPos($hgui, "", $memoCtrls[$i])
+			GUICtrlSetPos($memoCtrls[$i], $ctrlPos[0], $ctrlPos[1], $ctrlPos[2], $memoHeight - 4)
+			GUICtrlSetState($memoCtrls[$i], $GUI_SHOW)
+		Next
 	EndIf
 
-	WinMove($hgui, "", Default, Default, $newW, Default)
+	WinMove($hgui, "", Default, Default, Default, $newHeight)
+;~ 	GUICtrlSetPos($currentInfoBox[0], $newBoxX)
 
 	IniWrite($sProfileName, "options", "ShowMemo", $options.ShowMemo)
 EndFunc   ;==>_onMemo

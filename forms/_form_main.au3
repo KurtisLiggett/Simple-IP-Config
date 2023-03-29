@@ -26,10 +26,9 @@
 Func _form_main()
 	; =================================================
 	#Region main-gui
-	Local $iMemoSpacer = 10
 	Local $showMemo = 0
 	If ($options.ShowMemo = "true" Or $options.ShowMemo = "1") Then
-		$guiWidth = $guiWidth + $memoWidth + $iMemoSpacer + 2
+		$guiHeight = $guiHeight + $memoHeight + 4
 		$showMemo = 1
 	EndIf
 
@@ -77,6 +76,10 @@ Func _form_main()
 
 	$guiMaxWidth = _WinAPI_GetSystemMetrics($SM_CXMAXTRACK)
 	$guiMaxHeight = _WinAPI_GetSystemMetrics($SM_CYMAXTRACK)
+
+	Local $tagRECT = _WinAPI_GetWindowRect($hgui)
+	$guiMinWidth = DllStructGetData($tagRECT, "Right") - DllStructGetData($tagRECT, "Left")
+	$guiMinHeight = DllStructGetData($tagRECT, "Bottom") - DllStructGetData($tagRECT, "Top")
 
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 	_GDIPlus_Startup()
@@ -259,7 +262,7 @@ Func _form_main()
 	Local $y_offset = 0
 	Local $y = $tbarHeight * $dscale + $guiSpacer + $y_offset + 2
 	Local $xLeft = $guiSpacer
-	Local $wLeft = $guiWidth * $dscale - $infoWidth * $dscale - 6 * $dscale - $showMemo * $memoWidth * $dscale
+	Local $wLeft = $guiWidth * $dscale - $infoWidth * $dscale - 6 * $dscale
 	Local $xRight = $xLeft + $wLeft + 2 * $dscale
 ;~ 	Local $wRight = $guiWidth * $dscale - $wLeft - 2 * $guiSpacer - 3 * $dscale - 2 * $dscale
 	Local $wRight = $infoWidth
@@ -476,7 +479,7 @@ Func _form_main()
 	#Region set-ip-properties
 	$x = $xRight
 	$xIndent = 5 * $dscale
-	$y = $tbarHeight * $dscale + $h + $guiSpacer + $y_offset + 10 * $dscale
+	$y = $tbarHeight * $dscale + $h + $guiSpacer + $y_offset + 2 * $dscale
 	$w = $wRight
 	$h = $guiHeight * $dscale - $menuHeight - $statusbarHeight * $dscale - $guiSpacer - $footerHeight * $dscale + 2 * $dscale - $y
 	$textHeight = 9 * $dscale
@@ -666,16 +669,38 @@ Func _form_main()
 	$setInfoBox = _makeBox($x, $y, $w, $h)
 	#EndRegion set-ip-properties
 
-
 	#Region MEMO
-	Local $memoX = $guiWidth * $dscale - $showMemo * $memoWidth * $dscale - 2 * $dscale
-	Local $memoY = $tbarHeight * $dscale + $iMemoSpacer * $dscale
-	Local $memoH = $guiHeight * $dscale - $menuHeight - $statusbarHeight * $dscale - $footerHeight * $dscale - $memoY
-	$memo = GUICtrlCreateEdit("", $memoX + 1, $memoY + 1, $memoWidth * $dscale - 2, $memoH - 2, Bitor($ES_WANTRETURN, $WS_VSCROLL, $ES_AUTOVSCROLL), 0)
+	Local $memoX = $x
+	Local $memoY = $y + $h + 2 * $dscale
+	Local $memoW = $w
+	$memo = GUICtrlCreateEdit("", $memoX + 3, $memoY + 25, $memoW - 4, $memoHeight * $dscale - 26, Bitor($ES_WANTRETURN, $WS_VSCROLL, $ES_AUTOVSCROLL), 0)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH)
-	$memoBackground = GUICtrlCreateLabel("", $memoX, $memoY, $memoWidth * $dscale, $memoH)
-	GUICtrlSetBkColor($memoBackground, 0x666666)
+	$memoLabel = GUICtrlCreateLabel($oLangStrings.interface.props.memo, $memoX + 5 * $dscale, $memoY + 3 * $dscale, 100 * $dscale)
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
+	$memoLabelBackground = GUICtrlCreateLabel("", $memoX + 1, $memoY + 1, $memoW - 2, 19 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
+	$label_sep1 = GUICtrlCreateLabel("", $memoX+1, $memoY + 5 * $dscale + 15 * $dscale, $w - 2, 1)
+	GUICtrlSetBkColor(-1, 0x666666)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
+	$memoBackground = GUICtrlCreateLabel("", $memoX+1, $memoY+1, $memoW-2, $memoHeight * $dscale - 2 )
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH)
+	Local $memoBorder = GUICtrlCreateLabel("", $memoX, $memoY, $memoW, $memoHeight * $dscale )
+	GUICtrlSetBkColor(-1, 0x666666)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH)
+
+	$memoCtrls[0] = $memo
+	$memoCtrls[1] = $memoLabel
+	$memoCtrls[2] = $memoLabelBackground
+	$memoCtrls[3] = $label_sep1
+	$memoCtrls[4] = $memoBackground
+	$memoCtrls[5] = $memoBorder
+
+	If Not $showMemo Then
+		For $i=0 To UBound($memoCtrls)-1
+			GUICtrlSetState($memoCtrls[$i], $GUI_HIDE)
+		Next
+	EndIf
 
 	#EndRegion MEMO
 
@@ -732,10 +757,6 @@ Func _form_main()
 		EndIf
 	EndIf
 
-	Local $tagRECT = _WinAPI_GetWindowRect($hgui)
-	$guiMinWidth = DllStructGetData($tagRECT, "Right") - DllStructGetData($tagRECT, "Left")
-	$guiMinHeight = DllStructGetData($tagRECT, "Bottom") - DllStructGetData($tagRECT, "Top")
-
 	$sStartupMode = $options.StartupMode
 	If $sStartupMode <> "1" And $sStartupMode <> "true" Then
 		GUISetState(@SW_SHOWNORMAL, $hgui)
@@ -773,7 +794,10 @@ Func _makeBox($x, $y, $w, $h, $bkcolor = 0xFFFFFF)
 	GUICtrlSetBkColor(-1, 0x666666)
 ;~ 	GUICtrlSetState(-1, $GUI_DISABLE)
 
-	Return $bg
+	Local $arr[2]
+	$arr[0] = $bg
+	$arr[1] = $border
+	Return $arr
 EndFunc   ;==>_makeBox
 
 #Region -- Helper Functions --
