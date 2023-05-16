@@ -36,9 +36,9 @@
             "trayKey":"Ctrl+t",
             "hide":"隐藏网络适配器",
             "appearance":{
-                        "appearance":"Appearance",
-                        "light":"Light",
-                        "dark":"Dark"
+                        "appearance":"外观",
+                        "light":"浅色",
+                        "dark":"深色"
             }
          },
          "tools":{
@@ -112,9 +112,9 @@
             "dnsAlt":"备用DNS服务器",
             "dhcpServer":"DHCP 服务器",
             "adapterState":"网络适配器状态",
-            "adapterStateEnabled":"Enabled",
-            "adapterStateDisabled":"Disabled",
-            "adapterStateUnplugged":"Unplugged",
+            "adapterStateEnabled":"已启用",
+            "adapterStateDisabled":"已禁用",
+            "adapterStateUnplugged":"线缆未连接",
             "ipauto":"自动获取 IP 地址",
             "ipmanual":"手动设置 IP 地址",
             "dnsauto":"自动获取 DNS 地址",
