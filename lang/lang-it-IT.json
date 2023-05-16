@@ -39,7 +39,7 @@
                         "appearance":"Tema",
                         "light":"Chiaro",
                         "dark":"Scuro"
-            },
+            }
          },
          "tools":{
             "tools":"&Strumenti",

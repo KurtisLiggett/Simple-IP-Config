@@ -39,7 +39,7 @@
                         "appearance":"Appearance",
                         "light":"Light",
                         "dark":"Dark"
-            },
+            }
          },
          "tools":{
             "tools":"&Gereedschappen",

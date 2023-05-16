@@ -117,7 +117,6 @@ Func _langStrings()
 	_AutoItObject_AddProperty($oMenuView, "appearance")
 	_AutoItObject_AddProperty($oMenuView, "light")
 	_AutoItObject_AddProperty($oMenuView, "dark")
-	_AutoItObject_AddProperty($oMenuView, "memo")
 
 	_AutoItObject_AddProperty($oMenuTools, "tools")
 	_AutoItObject_AddProperty($oMenuTools, "netConn")
@@ -309,7 +308,6 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.menu.view.appearance = Json_Get($jsonData, ".strings.menu.view.appearance.appearance")
 	$oLangStrings.menu.view.light = Json_Get($jsonData, ".strings.menu.view.appearance.light")
 	$oLangStrings.menu.view.dark = Json_Get($jsonData, ".strings.menu.view.appearance.dark")
-	$oLangStrings.menu.view.memo = Json_Get($jsonData, ".strings.menu.view.memo")
 
 	$oLangStrings.menu.tools.tools = Json_Get($jsonData, ".strings.menu.tools.tools")
 	$oLangStrings.menu.tools.netConn = Json_Get($jsonData, ".strings.menu.tools.netConn")
@@ -501,8 +499,7 @@ Func _getEnglish()
 			'            	"appearance":"Appearance",' & _
 			'            	"light":"Light",' & _
 			'            	"dark":"Dark"' & _
-			'            },' & _
-			'            "memo":"Show memo"' & _
+			'            }' & _
 			'         },' & _
 			'         "tools":{' & _
 			'            "tools":"&Tools",' & _
