@@ -29,10 +29,11 @@ Func _Options()
 	_AutoItObject_AddProperty($oObject, "AdapterBlacklist")
 	_AutoItObject_AddProperty($oObject, "PositionX")
 	_AutoItObject_AddProperty($oObject, "PositionY")
+	_AutoItObject_AddProperty($oObject, "PositionW")
+	_AutoItObject_AddProperty($oObject, "PositionH")
 	_AutoItObject_AddProperty($oObject, "AutoUpdate")
 	_AutoItObject_AddProperty($oObject, "LastUpdateCheck")
-	_AutoItObject_AddProperty($oObject, "ShowMemo")
-	_AutoItObject_AddProperty($oObject, "count", $ELSCOPE_PRIVATE, 13)
+	_AutoItObject_AddProperty($oObject, "count", $ELSCOPE_PRIVATE, 14)
 
 	;object methods
 	_AutoItObject_AddMethod($oObject, "getSection", "_Options_getSection")
@@ -53,9 +54,10 @@ Func _Options_getSectionStr($oSelf)
 	$sSection &= "AdapterBlacklist=" & $oSelf.AdapterBlacklist & @CRLF
 	$sSection &= "PositionX=" & $oSelf.PositionX & @CRLF
 	$sSection &= "PositionY=" & $oSelf.PositionY & @CRLF
+	$sSection &= "PositionW=" & $oSelf.PositionW & @CRLF
+	$sSection &= "PositionH=" & $oSelf.PositionH & @CRLF
 	$sSection &= "AutoUpdate=" & $oSelf.AutoUpdate & @CRLF
 	$sSection &= "LastUpdateCheck=" & $oSelf.LastUpdateCheck & @CRLF
-	$sSection &= "ShowMemo=" & $oSelf.ShowMemo & @CRLF
 	Return $sSection
 EndFunc   ;==>_Options_getSectionStr
 
@@ -86,7 +88,9 @@ Func _Options_getSection($oSelf)
 	$aObject[10][1] = $oSelf.AutoUpdate
 	$aObject[11][0] = "LastUpdateCheck"
 	$aObject[11][1] = $oSelf.LastUpdateCheck
-	$aObject[12][0] = "ShowMemo"
-	$aObject[12][1] = $oSelf.ShowMemo
+	$aObject[12][0] = "PositionW"
+	$aObject[12][1] = $oSelf.PositionW
+	$aObject[13][0] = "PositionH"
+	$aObject[13][1] = $oSelf.PositionH
 	Return $aObject
 EndFunc   ;==>_Options_getSection

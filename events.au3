@@ -61,6 +61,15 @@ Func _Exit()
 		$currentWinPos = WinGetPos($hgui)
 		$options.PositionX = $currentWinPos[0]
 		$options.PositionY = $currentWinPos[1]
+
+		$currentWinPos = WinGetClientSize($hgui)
+		Local $captionH = _WinAPI_GetSystemMetrics($SM_CYCAPTION)
+		Local $borderW = _WinAPI_GetSystemMetrics($SM_CXBORDER)
+		Local $borderH = _WinAPI_GetSystemMetrics($SM_CYBORDER)
+
+		$options.PositionW = $currentWinPos[0]
+		$options.PositionH = $currentWinPos[1] + $captionH - 2 * $borderH - 1
+
 		IniWriteSection($sProfileName, "options", $options.getSection, 0)
 	EndIf
 
@@ -433,45 +442,6 @@ Func _onDarkMode()
 	$options.Theme = "Dark"
 	IniWrite($sProfileName, "options", "Theme", "Dark")
 EndFunc   ;==>_onDarkMode
-
-;------------------------------------------------------------------------------
-; Title........: _onMemo
-; Description..: Show/Hide the memo field
-; Events.......: View menu -> Appearance
-;------------------------------------------------------------------------------
-Func _onMemo()
-	Local $newHeight
-	Local $aPos = WinGetPos($hgui)
-	Local $aCtrlPos = ControlGetPos($hgui, "", $currentInfoBox[0])
-	Local $newBoxX
-
-	If ($options.ShowMemo = "true" Or $options.ShowMemo = "1") Then
-		GUICtrlSetState($memoitem, $GUI_UNCHECKED)
-		$options.ShowMemo = "false"
-		$newHeight = $guiheight
-;~ 		$newBoxX = $aCtrlPos[0] + $memoWidth
-		For $i=0 To UBound($memoCtrls)-1
-			GUICtrlSetState($memoCtrls[$i], $GUI_HIDE)
-		Next
-	Else
-		GUICtrlSetState($memoitem, $GUI_CHECKED)
-		$options.ShowMemo = "true"
-		$newHeight = $aPos[3] + $memoHeight
-;~ 		$newBoxX = $aCtrlPos[0] - $memoWidth
-		Local $ctrlPos
-		For $i=0 To UBound($memoCtrls)-1
-			$ctrlPos = ControlGetPos($hgui, "", $memoCtrls[$i])
-			GUICtrlSetPos($memoCtrls[$i], $ctrlPos[0], $ctrlPos[1], $ctrlPos[2], $memoHeight - 4)
-			GUICtrlSetState($memoCtrls[$i], $GUI_SHOW)
-		Next
-	EndIf
-
-	WinMove($hgui, "", Default, Default, Default, $newHeight)
-;~ 	GUICtrlSetPos($currentInfoBox[0], $newBoxX)
-
-	IniWrite($sProfileName, "options", "ShowMemo", $options.ShowMemo)
-EndFunc   ;==>_onMemo
-
 
 ;------------------------------------------------------------------------------
 ; Title........: _onPull

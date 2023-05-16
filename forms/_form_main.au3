@@ -26,17 +26,32 @@
 Func _form_main()
 	; =================================================
 	#Region main-gui
-	Local $showMemo = 0
-	If ($options.ShowMemo = "true" Or $options.ShowMemo = "1") Then
-		$guiHeight = $guiHeight + $memoHeight + 4
-		$showMemo = 1
-	EndIf
+
+	;set GUI min size
+	Local $tagRECT = DllStructCreate("int;int;int;int;")
+	DllStructSetData($tagRECT, 3, $guiWidth)
+	DllStructSetData($tagRECT, 4, $guiheight)
+	_WinAPI_AdjustWindowRectEx($tagRECT, BitOR($GUI_SS_DEFAULT_GUI, $WS_CLIPCHILDREN, $WS_SIZEBOX, $WS_MAXIMIZEBOX), $WS_EX_COMPOSITED)
+	$guiMinWidth = DllStructGetData($tagRECT, 3) - DllStructGetData($tagRECT, 1)
+	$guiMinHeight = DllStructGetData($tagRECT, 4) - DllStructGetData($tagRECT, 2)
 
 	; GUI FORMATTING
 	Local $ixCoordMin = _WinAPI_GetSystemMetrics(76)
 	Local $iyCoordMin = _WinAPI_GetSystemMetrics(77)
 	Local $iFullDesktopWidth = _WinAPI_GetSystemMetrics(78)
 	Local $iFullDesktopHeight = _WinAPI_GetSystemMetrics(79)
+	Local $sPositionW = $options.PositionW
+	If $sPositionW <> "" Then
+		If $sPositionW > $guiWidth Then
+			$guiWidth = $sPositionW
+		EndIf
+	EndIf
+	Local $sPositionH = $options.PositionW
+	If $sPositionH <> "" Then
+		If $sPositionH > $guiheight Then
+			$guiheight = $sPositionH
+		EndIf
+	EndIf
 	Local $sPositionX = $options.PositionX
 	If $sPositionX <> "" Then
 		$xpos = $sPositionX
@@ -77,9 +92,6 @@ Func _form_main()
 	$guiMaxWidth = _WinAPI_GetSystemMetrics($SM_CXMAXTRACK)
 	$guiMaxHeight = _WinAPI_GetSystemMetrics($SM_CYMAXTRACK)
 
-	Local $tagRECT = _WinAPI_GetWindowRect($hgui)
-	$guiMinWidth = DllStructGetData($tagRECT, "Right") - DllStructGetData($tagRECT, "Left")
-	$guiMinHeight = DllStructGetData($tagRECT, "Bottom") - DllStructGetData($tagRECT, "Top")
 
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 	_GDIPlus_Startup()
@@ -129,12 +141,6 @@ Func _form_main()
 	GUICtrlSetOnEvent(-1, "_onRefresh")
 	$send2trayitem = GUICtrlCreateMenuItem($oLangStrings.menu.view.tray & @TAB & $oLangStrings.menu.view.trayKey, $viewmenu)
 	GUICtrlSetOnEvent(-1, "_onTray")
-	$memoitem = GUICtrlCreateMenuItem($oLangStrings.menu.view.memo, $viewmenu)
-	GUICtrlSetOnEvent(-1, "_onMemo")
-	;Set memo checkmark
-	If ($options.ShowMemo = "true" Or $options.ShowMemo = "1") Then
-		GUICtrlSetState($memoitem, $GUI_CHECKED)
-	EndIf
 	$appearancemenu = GUICtrlCreateMenu($oLangStrings.menu.view.appearance, $viewmenu)
 	$lightmodeitem = GUICtrlCreateMenuItem($oLangStrings.menu.view.light, $appearancemenu)
 	GUICtrlSetOnEvent(-1, "_onLightMode")
@@ -481,7 +487,7 @@ Func _form_main()
 	$xIndent = 5 * $dscale
 	$y = $tbarHeight * $dscale + $h + $guiSpacer + $y_offset + 2 * $dscale
 	$w = $wRight
-	$h = $guiHeight * $dscale - $menuHeight - $statusbarHeight * $dscale - $guiSpacer - $footerHeight * $dscale + 2 * $dscale - $y
+	$h = 320 * $dscale
 	$textHeight = 9 * $dscale
 
 	$yText_offset = $y + 6 * $dscale
@@ -673,7 +679,9 @@ Func _form_main()
 	Local $memoX = $x
 	Local $memoY = $y + $h + 2 * $dscale
 	Local $memoW = $w
-	$memo = GUICtrlCreateEdit("", $memoX + 3, $memoY + 25, $memoW - 4, $memoHeight * $dscale - 26, Bitor($ES_WANTRETURN, $WS_VSCROLL, $ES_AUTOVSCROLL), 0)
+	$h = $guiHeight * $dscale - $menuHeight - $statusbarHeight * $dscale - $guiSpacer - $footerHeight * $dscale + 2 * $dscale - $memoY
+
+	$memo = GUICtrlCreateEdit("", $memoX + 3, $memoY + 25, $memoW - 4, $h * $dscale - 26, Bitor($ES_WANTRETURN, $WS_VSCROLL, $ES_AUTOVSCROLL), 0)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH)
 	$memoLabel = GUICtrlCreateLabel($oLangStrings.interface.props.memo, $memoX + 5 * $dscale, $memoY + 3 * $dscale, 100 * $dscale)
 	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
@@ -683,9 +691,9 @@ Func _form_main()
 	$label_sep1 = GUICtrlCreateLabel("", $memoX+1, $memoY + 5 * $dscale + 15 * $dscale, $w - 2, 1)
 	GUICtrlSetBkColor(-1, 0x666666)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
-	$memoBackground = GUICtrlCreateLabel("", $memoX+1, $memoY+1, $memoW-2, $memoHeight * $dscale - 2 )
+	$memoBackground = GUICtrlCreateLabel("", $memoX+1, $memoY+1, $memoW-2, $h * $dscale - 2 )
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH)
-	Local $memoBorder = GUICtrlCreateLabel("", $memoX, $memoY, $memoW, $memoHeight * $dscale )
+	Local $memoBorder = GUICtrlCreateLabel("", $memoX, $memoY, $memoW, $h * $dscale )
 	GUICtrlSetBkColor(-1, 0x666666)
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH)
 
@@ -695,12 +703,6 @@ Func _form_main()
 	$memoCtrls[3] = $label_sep1
 	$memoCtrls[4] = $memoBackground
 	$memoCtrls[5] = $memoBorder
-
-	If Not $showMemo Then
-		For $i=0 To UBound($memoCtrls)-1
-			GUICtrlSetState($memoCtrls[$i], $GUI_HIDE)
-		Next
-	EndIf
 
 	#EndRegion MEMO
 

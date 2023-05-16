@@ -1042,6 +1042,7 @@ Func _save()
 	$oProfile.IpDnsAlt = _ctrlGetIP($ip_DnsAlt)
 	$oProfile.RegisterDns = _StateToStr($ck_dnsReg)
 	$oProfile.AdapterName = $adapName
+	$oProfile.Memo = iniNameEncode(GUICtrlRead($memo))
 
 	$iniName = iniNameEncode($profileName)
 	$ret = IniWriteSection($sProfileName, $iniName, $oProfile.getSection(), 0)
@@ -1103,11 +1104,15 @@ Func _setProperties($init = 0, $profileName = "")
 		$dnsPref = $oProfile.IpDnsPref
 		$dnsAlt = $oProfile.IpDnsAlt
 		$dnsreg = $oProfile.RegisterDns
+
 		GUICtrlSetState($radio_DnsMan, $GUI_CHECKED)
 		GUICtrlSetState($radio_DnsAuto, _StrToState($dnsAuto))
 		_ctrlSetIP($ip_DnsPri, $dnsPref)
 		_ctrlSetIP($ip_DnsAlt, $dnsAlt)
 		GUICtrlSetState($ck_dnsReg, _StrToState($dnsreg))
+
+		$memoStr = iniNameDecode($oProfile.Memo)
+		GUICtrlSetData($memo, $memoStr)
 
 		$sSaveAdapter = $options.SaveAdapterToProfile
 		$profileAdapter = $oProfile.AdapterName
@@ -1216,12 +1221,14 @@ Func _loadProfiles()
 						$options.PositionX = $thisSection[$j][1]
 					Case "PositionY"
 						$options.PositionY = $thisSection[$j][1]
+					Case "PositionW"
+						$options.PositionW = $thisSection[$j][1]
+					Case "PositionH"
+						$options.PositionH = $thisSection[$j][1]
 					Case "AutoUpdate"
 						$options.AutoUpdate = $thisSection[$j][1]
 					Case "LastUpdateCheck"
 						$options.LastUpdateCheck = $thisSection[$j][1]
-					Case "ShowMemo"
-						$options.ShowMemo = $thisSection[$j][1]
 				EndSwitch
 			Else
 				Switch $thisSection[$j][0]
@@ -1244,6 +1251,8 @@ Func _loadProfiles()
 					Case "AdapterName"
 						$adapName = iniNameEncode($thisSection[$j][1])
 						$oNewProfile.AdapterName = $adapName
+					Case "Memo"
+						$oNewProfile.Memo = $thisSection[$j][1]
 				EndSwitch
 			EndIf
 		Next
@@ -1297,6 +1306,8 @@ Func _ImportProfiles($pname)
 					Case "AdapterName"
 						$adapName = iniNameEncode($thisSection[$j][1])
 						$oNewProfile.AdapterName = $adapName
+					Case "Memo"
+						$oNewProfile.Memo = $thisSection[$j][1]
 				EndSwitch
 			EndIf
 		Next
@@ -1511,12 +1522,14 @@ EndFunc   ;==>_MoveToSubnet
 Func iniNameDecode($sName)
 	$thisName = StringReplace($sName, "{lb}", "[")
 	$thisName = StringReplace($thisName, "{rb}", "]")
+	$thisName = StringReplace($thisName, "{crlf}", @CRLF)
 	Return $thisName
 EndFunc   ;==>iniNameDecode
 
 Func iniNameEncode($sName)
 	$iniName = StringReplace($sName, "[", "{lb}")
 	$iniName = StringReplace($iniName, "]", "{rb}")
+	$iniName = StringReplace($iniName, @CRLF, "{crlf}")
 	Return $iniName
 EndFunc   ;==>iniNameEncode
 

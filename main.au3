@@ -110,10 +110,10 @@ _setProfilesIniLocation()
 ;GUI stuff
 Global $winName = "Simple IP Config"
 Global $winVersion = "2.9.8-b1"
-Global $winDate = "3/19/2023"
+Global $winDate = "5/15/2023"
 Global $hgui
 Global $guiWidth = 600
-Global $guiHeight = 610
+Global $guiHeight = 675
 Global $footerHeight = 16
 Global $tbarHeight = 0
 Global $dscale = 1
@@ -143,7 +143,7 @@ Global $wgraphic, $showWarning, $statusPopupEdit
 
 ;Menu Items
 Global $filemenu, $applyitem, $renameitem, $newitem, $saveitem, $deleteitem, $clearitem, $createLinkItem, $profilesOpenItem, $profilesImportItem, $profilesExportItem, $exititem, $netConnItem
-Global $viewmenu, $refreshitem, $send2trayitem, $blacklistitem, $appearancemenu, $lightmodeitem, $darkmodeitem, $memoitem
+Global $viewmenu, $refreshitem, $send2trayitem, $blacklistitem, $appearancemenu, $lightmodeitem, $darkmodeitem
 Global $toolsmenu, $pullitem, $disableitem, $releaseitem, $renewitem, $cycleitem, $settingsitem
 Global $helpmenu, $helpitem, $changelogitem, $checkUpdatesItem, $debugmenuitem, $infoitem
 
@@ -159,7 +159,7 @@ Global $mdblTimerInit = 0, $mdblTimerDiff = 1000, $mdblClick = 0, $mDblClickTime
 Global $dragging = False, $dragitem = 0, $contextSelect = 0
 Global $prevWinPos, $winPosTimer, $writePos
 Global $OpenFileFlag, $ImportFileFlag, $ExportFileFlag
-Global $buttonCopyOffset, $buttonPasteOffset, $buttonRefreshOffset, $buttonApplyOffset, $IpAddressOffset, $memoHeight = 100
+Global $buttonCopyOffset, $buttonPasteOffset, $buttonRefreshOffset, $buttonApplyOffset, $IpAddressOffset
 
 ; CONTROLS
 Global $combo_adapters, $combo_dummy, $selected_adapter, $lDescription, $lMac
