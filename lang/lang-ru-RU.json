@@ -40,7 +40,6 @@
                         "light":"Light",
                         "dark":"Dark"
             },
-            "memo":"Show Memo"
          },
          "tools":{
             "tools":"&Инструменты",

@@ -40,7 +40,6 @@
                         "light":"Light",
                         "dark":"Dark"
             },
-            "memo":"Show Memo"
          },
          "tools":{
             "tools":"&Tools",
@@ -115,7 +114,7 @@
             "adapterState":"Adapter State",
             "adapterStateEnabled":"Enabled",
             "adapterStateDisabled":"Disabled",
-			"adapterStateUnplugged":"Unplugged",
+            "adapterStateUnplugged":"Unplugged",
             "ipauto":"Automatically Set IP Address",
             "ipmanual":"Manually Set IP Address",
             "dnsauto":"Automatically Set DNS Address",
