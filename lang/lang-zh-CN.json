@@ -119,7 +119,8 @@
             "ipmanual":"手动设置 IP 地址",
             "dnsauto":"自动获取 DNS 地址",
             "dnsmanual":"手动设置 DNS 地址",
-            "dnsreg":"注册地址"
+            "dnsreg":"注册地址",
+            "memo":"Memo"
          }
       },
       "updates":{

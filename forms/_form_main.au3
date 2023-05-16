@@ -26,11 +26,32 @@
 Func _form_main()
 	; =================================================
 	#Region main-gui
+
+	;set GUI min size
+	Local $tagRECT = DllStructCreate("int;int;int;int;")
+	DllStructSetData($tagRECT, 3, $guiWidth)
+	DllStructSetData($tagRECT, 4, $guiheight)
+	_WinAPI_AdjustWindowRectEx($tagRECT, BitOR($GUI_SS_DEFAULT_GUI, $WS_CLIPCHILDREN, $WS_SIZEBOX, $WS_MAXIMIZEBOX), $WS_EX_COMPOSITED)
+	$guiMinWidth = DllStructGetData($tagRECT, 3) - DllStructGetData($tagRECT, 1)
+	$guiMinHeight = DllStructGetData($tagRECT, 4) - DllStructGetData($tagRECT, 2)
+
 	; GUI FORMATTING
 	Local $ixCoordMin = _WinAPI_GetSystemMetrics(76)
 	Local $iyCoordMin = _WinAPI_GetSystemMetrics(77)
 	Local $iFullDesktopWidth = _WinAPI_GetSystemMetrics(78)
 	Local $iFullDesktopHeight = _WinAPI_GetSystemMetrics(79)
+	Local $sPositionW = $options.PositionW
+	If $sPositionW <> "" Then
+		If $sPositionW > $guiWidth Then
+			$guiWidth = $sPositionW
+		EndIf
+	EndIf
+	Local $sPositionH = $options.PositionW
+	If $sPositionH <> "" Then
+		If $sPositionH > $guiheight Then
+			$guiheight = $sPositionH
+		EndIf
+	EndIf
 	Local $sPositionX = $options.PositionX
 	If $sPositionX <> "" Then
 		$xpos = $sPositionX
@@ -67,6 +88,10 @@ Func _form_main()
 	GUIRegisterMsg($WM_COMMAND, 'WM_COMMAND')
 	GUIRegisterMsg($WM_NOTIFY, 'WM_NOTIFY')
 	GUIRegisterMsg($WM_GETMINMAXINFO, "WM_GETMINMAXINFO")
+
+	$guiMaxWidth = _WinAPI_GetSystemMetrics($SM_CXMAXTRACK)
+	$guiMaxHeight = _WinAPI_GetSystemMetrics($SM_CYMAXTRACK)
+
 
 	GUISetFont($MyGlobalFontSize, -1, -1, $MyGlobalFontName)
 	_GDIPlus_Startup()
@@ -183,52 +208,6 @@ Func _form_main()
 
 
 	; =================================================
-	#Region toolbar
-;~ 	Local $aColorsEx = _
-;~ 			[0x666666, 0xFCFCFC, 0x666666, _ ; normal 	: Background, Text, Border
-;~ 			0x666666, 0xFCFCFC, 0x666666, _     ; focus 	: Background, Text, Border
-;~ 			0x888888, 0xFCFCFC, 0x999999, _     ; hover 	: Background, Text, Border
-;~ 			0x555555, 0xFCFCFC, 0x444444]     ; selected 	: Background, Text, Border
-
-;~ 	;create horizontal toolbar and add buttons
-;~ 	$oToolbar = _GuiFlatToolbarCreate(-1, 4, 4, 52 * $dscale, $tbarHeight * $dscale - 8, $aColorsEx)
-;~ 	_GuiFlatToolbar_SetBkColor($oToolbar, 0x666666)
-;~ 	;add new buttons and associate an icon
-;~ 	$tbButtonApply = _GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.apply, _getMemoryAsIcon(GetIconData($pngAccept)))
-;~ 	GUICtrlSetTip(-1, $oLangStrings.toolbar.apply_tip)
-;~ 	GUICtrlSetOnEvent(-1, "_apply_GUI")
-;~ 	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.refresh, _getMemoryAsIcon(GetIconData($pngRefresh)))
-;~ 	GUICtrlSetTip(-1, $oLangStrings.toolbar.refresh_tip)
-;~ 	GUICtrlSetOnEvent(-1, "_onRefresh")
-;~ 	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.new, _getMemoryAsIcon(GetIconData($pngAdd)))
-;~ 	GUICtrlSetTip(-1, $oLangStrings.toolbar.new_tip)
-;~ 	GUICtrlSetOnEvent(-1, "_onNewItem")
-;~ 	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.save, _getMemoryAsIcon(GetIconData($pngSave)))
-;~ 	GUICtrlSetTip(-1, $oLangStrings.toolbar.save_tip)
-;~ 	GUICtrlSetOnEvent(-1, "_onSave")
-;~ 	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.delete, _getMemoryAsIcon(GetIconData($pngDelete)))
-;~ 	GUICtrlSetTip(-1, $oLangStrings.toolbar.delete_tip)
-;~ 	GUICtrlSetOnEvent(-1, "_onDelete")
-;~ 	_GuiFlatToolbar_AddButton($oToolbar, $oLangStrings.toolbar.clear, _getMemoryAsIcon(GetIconData($pngEdit)))
-;~ 	GUICtrlSetTip(-1, $oLangStrings.toolbar.clear_tip)
-;~ 	GUICtrlSetOnEvent(-1, "_onClear")
-
-;~ 	_GuiFlatToolbar_SetAutoWidth($oToolbar)
-
-;~ 	;create vertical toolbar and add buttons
-;~ 	$oToolbar2 = _GuiFlatToolbarCreate(BitOR($GFTB_VERTICAL, $GFTB_RIGHT), 4, 4, 22 * $dscale, 22 * $dscale, $aColorsEx)
-;~ 	_GuiFlatToolbar_SetBkColor($oToolbar2, 0x666666)
-;~ 	;add new buttons and associate an icon
-;~ 	_GuiFlatToolbar_AddButton($oToolbar2, "", _getMemoryAsIcon(GetIconData($pngSettings)))
-;~ 	GUICtrlSetTip(-1, $oLangStrings.toolbar.settings_tip)
-;~ 	GUICtrlSetOnEvent(-1, "_onSettings")
-;~ 	_GuiFlatToolbar_AddButton($oToolbar2, "", _getMemoryAsIcon(GetIconData($pngTray)))
-;~ 	GUICtrlSetTip(-1, $oLangStrings.toolbar.tray_tip)
-;~ 	GUICtrlSetOnEvent(-1, "_onTray")
-	#EndRegion toolbar
-
-
-	; =================================================
 	#Region statusbar
 	$y = $guiHeight * $dscale - $statusbarHeight * $dscale - $menuHeight
 	$x = 0
@@ -289,9 +268,10 @@ Func _form_main()
 	Local $y_offset = 0
 	Local $y = $tbarHeight * $dscale + $guiSpacer + $y_offset + 2
 	Local $xLeft = $guiSpacer
-	Local $wLeft = 200 * $dscale
+	Local $wLeft = $guiWidth * $dscale - $infoWidth * $dscale - 6 * $dscale
 	Local $xRight = $xLeft + $wLeft + 2 * $dscale
-	Local $wRight = $guiWidth * $dscale - $wLeft - 2 * $guiSpacer - 3 * $dscale - 2 * $dscale
+;~ 	Local $wRight = $guiWidth * $dscale - $wLeft - 2 * $guiSpacer - 3 * $dscale - 2 * $dscale
+	Local $wRight = $infoWidth
 	Local $hLeft = $tbarHeight * $dscale + $guiSpacer + $y_offset
 
 
@@ -505,9 +485,9 @@ Func _form_main()
 	#Region set-ip-properties
 	$x = $xRight
 	$xIndent = 5 * $dscale
-	$y = $tbarHeight * $dscale + $h + $guiSpacer + $y_offset + 10 * $dscale
+	$y = $tbarHeight * $dscale + $h + $guiSpacer + $y_offset + 2 * $dscale
 	$w = $wRight
-	$h = $guiHeight * $dscale - $menuHeight - $statusbarHeight * $dscale - $guiSpacer - $footerHeight * $dscale + 2 * $dscale - $y
+	$h = 320 * $dscale
 	$textHeight = 9 * $dscale
 
 	$yText_offset = $y + 6 * $dscale
@@ -695,6 +675,36 @@ Func _form_main()
 	$setInfoBox = _makeBox($x, $y, $w, $h)
 	#EndRegion set-ip-properties
 
+	#Region MEMO
+	Local $memoX = $x
+	Local $memoY = $y + $h + 2 * $dscale
+	Local $memoW = $w
+	$h = $guiHeight * $dscale - $menuHeight - $statusbarHeight * $dscale - $guiSpacer - $footerHeight * $dscale + 2 * $dscale - $memoY
+
+	$memo = GUICtrlCreateEdit("", $memoX + 3, $memoY + 25, $memoW - 4, $h * $dscale - 26, Bitor($ES_WANTRETURN, $WS_VSCROLL, $ES_AUTOVSCROLL), 0)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH)
+	$memoLabel = GUICtrlCreateLabel($oLangStrings.interface.props.memo, $memoX + 5 * $dscale, $memoY + 3 * $dscale, 100 * $dscale)
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
+	$memoLabelBackground = GUICtrlCreateLabel("", $memoX + 1, $memoY + 1, $memoW - 2, 19 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
+	$label_sep1 = GUICtrlCreateLabel("", $memoX+1, $memoY + 5 * $dscale + 15 * $dscale, $w - 2, 1)
+	GUICtrlSetBkColor(-1, 0x666666)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
+	$memoBackground = GUICtrlCreateLabel("", $memoX+1, $memoY+1, $memoW-2, $h * $dscale - 2 )
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH)
+	Local $memoBorder = GUICtrlCreateLabel("", $memoX, $memoY, $memoW, $h * $dscale )
+	GUICtrlSetBkColor(-1, 0x666666)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH)
+
+	$memoCtrls[0] = $memo
+	$memoCtrls[1] = $memoLabel
+	$memoCtrls[2] = $memoLabelBackground
+	$memoCtrls[3] = $label_sep1
+	$memoCtrls[4] = $memoBackground
+	$memoCtrls[5] = $memoBorder
+
+	#EndRegion MEMO
 
 	;Set the theme
 	If $options.Theme = "Dark" Then
@@ -706,7 +716,6 @@ Func _form_main()
 		GUICtrlSetState($lightmodeitem, $GUI_CHECKED)
 		GUICtrlSetState($darkmodeitem, $GUI_UNCHECKED)
 	EndIf
-
 
 	; =================================================
 	#Region accelerators
@@ -742,7 +751,6 @@ Func _form_main()
 	GUISetAccelerators($aAccelKeys)
 	#EndRegion accelerators
 
-
 	If IsObj($profiles) Then
 		If $profiles.count > 0 Then
 			Local $profileNames = $profiles.getNames()
@@ -753,18 +761,12 @@ Func _form_main()
 
 	$sStartupMode = $options.StartupMode
 	If $sStartupMode <> "1" And $sStartupMode <> "true" Then
-		GUISetState(@SW_SHOW, $hgui)
+		GUISetState(@SW_SHOWNORMAL, $hgui)
+;~ 		Local $aPos = WinGetPos($hgui)
 	Else
 		TrayItemSetText($RestoreItem, $oLangStrings.traymenu.restore)
 	EndIf
 	$prevWinPos = WinGetPos($hgui)
-
-	Local $tagRECT = _WinAPI_GetWindowRect($hgui)
-	$guiMinWidth = DllStructGetData($tagRECT, "Right") - DllStructGetData($tagRECT, "Left")
-	$guiMinHeight = DllStructGetData($tagRECT, "Bottom") - DllStructGetData($tagRECT, "Top")
-
-	$guiMaxWidth = _WinAPI_GetSystemMetrics($SM_CXMAXTRACK)
-	$guiMaxHeight = _WinAPI_GetSystemMetrics($SM_CYMAXTRACK)
 
 	GUIRegisterMsg($WM_SIZE, "WM_SIZE")
 EndFunc   ;==>_form_main
@@ -794,7 +796,10 @@ Func _makeBox($x, $y, $w, $h, $bkcolor = 0xFFFFFF)
 	GUICtrlSetBkColor(-1, 0x666666)
 ;~ 	GUICtrlSetState(-1, $GUI_DISABLE)
 
-	Return $bg
+	Local $arr[2]
+	$arr[0] = $bg
+	$arr[1] = $border
+	Return $arr
 EndFunc   ;==>_makeBox
 
 #Region -- Helper Functions --

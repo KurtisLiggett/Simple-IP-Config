@@ -61,6 +61,15 @@ Func _Exit()
 		$currentWinPos = WinGetPos($hgui)
 		$options.PositionX = $currentWinPos[0]
 		$options.PositionY = $currentWinPos[1]
+
+		$currentWinPos = WinGetClientSize($hgui)
+		Local $captionH = _WinAPI_GetSystemMetrics($SM_CYCAPTION)
+		Local $borderW = _WinAPI_GetSystemMetrics($SM_CXBORDER)
+		Local $borderH = _WinAPI_GetSystemMetrics($SM_CYBORDER)
+
+		$options.PositionW = $currentWinPos[0]
+		$options.PositionH = $currentWinPos[1] + $captionH - 2 * $borderH - 1
+
 		IniWriteSection($sProfileName, "options", $options.getSection, 0)
 	EndIf
 
@@ -381,6 +390,13 @@ EndFunc   ;==>_onLvDown
 ; Events.......: Enter key on listview item
 ;------------------------------------------------------------------------------
 Func _onLvEnter()
+	If _ctrlHasFocus($memo) Then
+		GUISetAccelerators(0)
+		Send("{ENTER}")
+		GUISetAccelerators($aAccelKeys)
+		Return
+	EndIf
+
 	If Not $lv_editing Then
 		_apply_GUI()
 	Else
@@ -426,7 +442,6 @@ Func _onDarkMode()
 	$options.Theme = "Dark"
 	IniWrite($sProfileName, "options", "Theme", "Dark")
 EndFunc   ;==>_onDarkMode
-
 
 ;------------------------------------------------------------------------------
 ; Title........: _onPull
@@ -820,7 +835,6 @@ Func WM_SIZE($hWnd, $iMsg, $wParam, $lParam)
 
 	Local $clientWidth = BitAND($lParam, 0xFFFF)
 	Local $clientHeight = BitShift($lParam, 16)
-	ConsoleWrite("width " & $clientWidth & @CRLF)
 
 	WinMove($ip_Ip, "", $clientWidth - $IpAddressOffset, Default)
 	WinMove($ip_Subnet, "", $clientWidth - $IpAddressOffset, Default)

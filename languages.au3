@@ -195,6 +195,7 @@ Func _langStrings()
 	_AutoItObject_AddProperty($oInterfaceProps, "dnsauto")
 	_AutoItObject_AddProperty($oInterfaceProps, "dnsmanual")
 	_AutoItObject_AddProperty($oInterfaceProps, "dnsreg")
+	_AutoItObject_AddProperty($oInterfaceProps, "memo")
 
 	_AutoItObject_AddProperty($oUpdates, "title")
 	_AutoItObject_AddProperty($oUpdates, "thisVersion")
@@ -369,6 +370,7 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.interface.props.adapterStateEnabled = Json_Get($jsonData, ".strings.interface.props.adapterStateEnabled")
 	$oLangStrings.interface.props.adapterStateDisabled = Json_Get($jsonData, ".strings.interface.props.adapterStateDisabled")
 	$oLangStrings.interface.props.adapterStateUnplugged = Json_Get($jsonData, ".strings.interface.props.adapterStateUnplugged")
+	$oLangStrings.interface.props.memo = Json_Get($jsonData, ".strings.interface.props.memo")
 
 	$oLangStrings.interface.props.ipauto = Json_Get($jsonData, ".strings.interface.props.ipauto")
 	$oLangStrings.interface.props.ipmanual = Json_Get($jsonData, ".strings.interface.props.ipmanual")
@@ -576,7 +578,8 @@ Func _getEnglish()
 			'            "ipmanual":"Manually Set IP Address",' & _
 			'            "dnsauto":"Automatically Set DNS Address",' & _
 			'            "dnsmanual":"Manually Set DNS Address",' & _
-			'            "dnsreg":"Register Addresses"' & _
+			'            "dnsreg":"Register Addresses",' & _
+			'            "memo":"Memo"' & _
 			'         }' & _
 			'      },' & _
 			'      "updates":{' & _

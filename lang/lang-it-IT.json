@@ -119,7 +119,8 @@
             "ipmanual":"Imposta manualmente indirizzo IP",
             "dnsauto":"Imposta automaticamente indirizzo IP server DNS",
             "dnsmanual":"Imposta manualmente indirizzo IP server DNS",
-            "dnsreg":"Registra indirizzi"
+            "dnsreg":"Registra indirizzi",
+            "memo":"Memo"
          }
       },
       "updates":{
