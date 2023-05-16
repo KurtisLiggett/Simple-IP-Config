@@ -119,7 +119,8 @@
             "ipmanual":"IP-Adresse manuell festlegen",
             "dnsauto":"DNS-Serveradresse automatisch beziehen",
             "dnsmanual":"DNS-Serveradresse manuell festlegen",
-            "dnsreg":"Adressen registrieren"
+            "dnsreg":"Adressen registrieren",
+            "memo":"Memo"
          }
       },
       "updates":{

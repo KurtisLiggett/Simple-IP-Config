@@ -114,12 +114,13 @@
             "adapterState":"网络适配器状态",
             "adapterStateEnabled":"Enabled",
             "adapterStateDisabled":"Disabled",
-			"adapterStateUnplugged":"Unplugged",
+            "adapterStateUnplugged":"Unplugged",
             "ipauto":"自动获取 IP 地址",
             "ipmanual":"手动设置 IP 地址",
             "dnsauto":"自动获取 DNS 地址",
             "dnsmanual":"手动设置 DNS 地址",
-            "dnsreg":"注册地址"
+            "dnsreg":"注册地址",
+            "memo":"Memo"
          }
       },
       "updates":{

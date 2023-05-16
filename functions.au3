@@ -1042,6 +1042,7 @@ Func _save()
 	$oProfile.IpDnsAlt = _ctrlGetIP($ip_DnsAlt)
 	$oProfile.RegisterDns = _StateToStr($ck_dnsReg)
 	$oProfile.AdapterName = $adapName
+	$oProfile.Memo = iniNameEncode(GUICtrlRead($memo))
 
 	$iniName = iniNameEncode($profileName)
 	$ret = IniWriteSection($sProfileName, $iniName, $oProfile.getSection(), 0)
@@ -1087,7 +1088,6 @@ Func _setProperties($init = 0, $profileName = "")
 		$profileName = StringReplace(GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
 	EndIf
 
-
 	If $profiles.exists($profileName) Then
 		Local $oProfile = $profiles.get($profileName)
 		$ipAuto = $oProfile.IpAuto
@@ -1104,11 +1104,15 @@ Func _setProperties($init = 0, $profileName = "")
 		$dnsPref = $oProfile.IpDnsPref
 		$dnsAlt = $oProfile.IpDnsAlt
 		$dnsreg = $oProfile.RegisterDns
+
 		GUICtrlSetState($radio_DnsMan, $GUI_CHECKED)
 		GUICtrlSetState($radio_DnsAuto, _StrToState($dnsAuto))
 		_ctrlSetIP($ip_DnsPri, $dnsPref)
 		_ctrlSetIP($ip_DnsAlt, $dnsAlt)
 		GUICtrlSetState($ck_dnsReg, _StrToState($dnsreg))
+
+		$memoStr = iniNameDecode($oProfile.Memo)
+		GUICtrlSetData($memo, $memoStr)
 
 		$sSaveAdapter = $options.SaveAdapterToProfile
 		$profileAdapter = $oProfile.AdapterName
@@ -1217,12 +1221,14 @@ Func _loadProfiles()
 						$options.PositionX = $thisSection[$j][1]
 					Case "PositionY"
 						$options.PositionY = $thisSection[$j][1]
+					Case "PositionW"
+						$options.PositionW = $thisSection[$j][1]
+					Case "PositionH"
+						$options.PositionH = $thisSection[$j][1]
 					Case "AutoUpdate"
 						$options.AutoUpdate = $thisSection[$j][1]
 					Case "LastUpdateCheck"
 						$options.LastUpdateCheck = $thisSection[$j][1]
-					Case "Theme"
-						$options.Theme = $thisSection[$j][1]
 				EndSwitch
 			Else
 				Switch $thisSection[$j][0]
@@ -1245,6 +1251,8 @@ Func _loadProfiles()
 					Case "AdapterName"
 						$adapName = iniNameEncode($thisSection[$j][1])
 						$oNewProfile.AdapterName = $adapName
+					Case "Memo"
+						$oNewProfile.Memo = $thisSection[$j][1]
 				EndSwitch
 			EndIf
 		Next
@@ -1298,6 +1306,8 @@ Func _ImportProfiles($pname)
 					Case "AdapterName"
 						$adapName = iniNameEncode($thisSection[$j][1])
 						$oNewProfile.AdapterName = $adapName
+					Case "Memo"
+						$oNewProfile.Memo = $thisSection[$j][1]
 				EndSwitch
 			EndIf
 		Next
@@ -1512,12 +1522,14 @@ EndFunc   ;==>_MoveToSubnet
 Func iniNameDecode($sName)
 	$thisName = StringReplace($sName, "{lb}", "[")
 	$thisName = StringReplace($thisName, "{rb}", "]")
+	$thisName = StringReplace($thisName, "{crlf}", @CRLF)
 	Return $thisName
 EndFunc   ;==>iniNameDecode
 
 Func iniNameEncode($sName)
 	$iniName = StringReplace($sName, "[", "{lb}")
 	$iniName = StringReplace($iniName, "]", "{rb}")
+	$iniName = StringReplace($iniName, @CRLF, "{crlf}")
 	Return $iniName
 EndFunc   ;==>iniNameEncode
 
@@ -1612,7 +1624,10 @@ EndFunc   ;==>_regex_stringLiteralDecode
 ; Parameters......: $bLightTheme: use light theme, otherwise dark
 ;------------------------------------------------------------------------------
 Func _setTheme($bLightTheme = True)
-	_SendMessage($hgui, $WM_SETREDRAW, False)
+	Local $iState = WinGetState($hgui)
+	If BitAND($iState, $WIN_STATE_VISIBLE) Then
+		_SendMessage($hgui, $WM_SETREDRAW, False)
+	EndIf
 
 	Local $cTheme_Back
 	Local $cTheme_Name
@@ -1625,6 +1640,7 @@ Func _setTheme($bLightTheme = True)
 	Local $cTheme_InfoBoxText
 	Local $searchIcon, $copyIcon, $pasteIcon
 	Local $ipBack
+	Local $cTheme_MemoLabelBackground
 
 	If $bLightTheme Then
 		$cTheme_Back = 0xCCCCCC
@@ -1642,6 +1658,7 @@ Func _setTheme($bLightTheme = True)
 		$cTheme_MenuLine = 0x888888
 		$cTheme_MenuText = 0x000000
 		$ipBack = 0xFFFFFF
+		$cTheme_MemoLabelBackground = 0xEEEEEE
 	Else
 		$cTheme_Back = 0x111111
 		$cTheme_Name = 0xB7B7B7
@@ -1658,6 +1675,7 @@ Func _setTheme($bLightTheme = True)
 		$cTheme_MenuLine = 0x555555
 		$cTheme_MenuText = 0xE5E5E5
 		$ipBack = 0xAAAAAA
+		$cTheme_MemoLabelBackground = 0x282828
 	EndIf
 
 	GUICtrlSetBkColor($menuLineSep, $cTheme_MenuLine)
@@ -1701,8 +1719,14 @@ Func _setTheme($bLightTheme = True)
 	GUICtrlSetColor($lMac, $cTheme_InfoBoxText)
 ;~ 	GUICtrlSetBkColor($lMac, $cTheme_InfoBox)
 
-	GUICtrlSetBkColor($currentInfoBox, $cTheme_InfoBox)
-	GUICtrlSetBkColor($setInfoBox, $cTheme_InfoBox)
+	GUICtrlSetBkColor($memo, $cTheme_ProfileList)
+	GUICtrlSetColor($memo, $cTheme_ProfileText)
+	GUICtrlSetColor($memoLabel, $cTheme_ProfileText)
+	GUICtrlSetBkColor($memoBackground, $cTheme_ProfileList)
+	GUICtrlSetBkColor($memoLabelBackground, $cTheme_MemoLabelBackground)
+
+	GUICtrlSetBkColor($currentInfoBox[0], $cTheme_InfoBox)
+	GUICtrlSetBkColor($setInfoBox[0], $cTheme_InfoBox)
 	GUICtrlSetBkColor($label_CurrentAdapterState, $cTheme_InfoBox)
 
 	GuiFlatButton_SetColorsEx($buttonRefresh, $aColorsEx)
@@ -1784,7 +1808,9 @@ Func _setTheme($bLightTheme = True)
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteDnsPri), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pasteIcon))))
 	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($buttonPasteDnsAlt), $BM_SETIMAGE, $IMAGE_ICON, _getMemoryAsIcon(GetIconData($pasteIcon))))
 
-	_SendMessage($hgui, $WM_SETREDRAW, True)
-	_WinAPI_RedrawWindow($hgui)
+	If BitAND($iState, $WIN_STATE_VISIBLE) Then
+		_SendMessage($hgui, $WM_SETREDRAW, True)
+		_WinAPI_RedrawWindow($hgui)
+	EndIf
 EndFunc   ;==>_setTheme
 
