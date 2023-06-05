@@ -46,7 +46,7 @@ Func _form_main()
 			$guiWidth = $sPositionW
 		EndIf
 	EndIf
-	Local $sPositionH = $options.PositionW
+	Local $sPositionH = $options.PositionH
 	If $sPositionH <> "" Then
 		If $sPositionH > $guiheight Then
 			$guiheight = $sPositionH
@@ -254,12 +254,12 @@ Func _form_main()
 		$computerName = GUICtrlCreateLabel($oLangStrings.interface.computername & ": " & @ComputerName, $x + 3, $y + 3 * $dscale, $w / 2, $h)
 	EndIf
 	_setFont($computerName, 8, -1, 0x000000)
-	GUICtrlSetResizing($computerName, $GUI_DOCKBOTTOM + $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKHEIGHT)
+	GUICtrlSetResizing($computerName, $GUI_DOCKBOTTOM + $GUI_DOCKLEFT + $GUI_DOCKHEIGHT)
 
 	If @LogonDomain <> "" Then
 		$domainName = GUICtrlCreateLabel("", $w / 2, $y + 3 * $dscale, $w / 2 - 3, $h, $SS_RIGHT)
 		_setFont($domainName, 8, -1, 0x000000)
-		GUICtrlSetResizing($domainName, $GUI_DOCKBOTTOM + $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKHEIGHT)
+		GUICtrlSetResizing($domainName, $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKHEIGHT)
 	EndIf
 	#EndRegion footer
 
@@ -761,8 +761,13 @@ Func _form_main()
 
 	$sStartupMode = $options.StartupMode
 	If $sStartupMode <> "1" And $sStartupMode <> "true" Then
-		GUISetState(@SW_SHOWNORMAL, $hgui)
-;~ 		Local $aPos = WinGetPos($hgui)
+		If $options.PositionW = -1 And $options.PositionH = -1 Then
+			GUISetState(@SW_MAXIMIZE, $hgui)
+			_initSize()
+			GUISetState(@SW_SHOWMAXIMIZED, $hgui)
+		Else
+			GUISetState(@SW_SHOWNORMAL, $hgui)
+		EndIf
 	Else
 		TrayItemSetText($RestoreItem, $oLangStrings.traymenu.restore)
 	EndIf

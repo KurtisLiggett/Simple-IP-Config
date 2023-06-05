@@ -57,7 +57,14 @@ Func _Exit()
 	_GDIPlus_Shutdown()
 
 	; save window position in ini file
-	If Not BitAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
+	If BitAND(WinGetState($hgui), $WIN_STATE_MAXIMIZED) Then
+		ConsoleWrite("maximized" & @CRLF)
+		$options.PositionW = -1
+		$options.PositionH = -1
+
+		IniWriteSection($sProfileName, "options", $options.getSection, 0)
+	ElseIf Not BitAND(WinGetState($hgui), $WIN_STATE_MINIMIZED) Then
+		ConsoleWrite("not minimized" & @CRLF)
 		$currentWinPos = WinGetPos($hgui)
 		$options.PositionX = $currentWinPos[0]
 		$options.PositionY = $currentWinPos[1]
@@ -859,6 +866,35 @@ Func WM_SIZE($hWnd, $iMsg, $wParam, $lParam)
 
 	_GUICtrlListView_SetColumnWidth($list_profiles, 0, $clientWidth - $guiRightWidth - 24 * $dscale)  ; sets column width
 EndFunc   ;==>WM_SIZE
+
+Func _initSize()
+	Local $aClientSize = WinGetClientSize($hgui)
+	Local $clientWidth = $aClientSize[0]
+	Local $clientHeight = $aClientSize[1]
+
+	WinMove($ip_Ip, "", $clientWidth - $IpAddressOffset, Default)
+	WinMove($ip_Subnet, "", $clientWidth - $IpAddressOffset, Default)
+	WinMove($ip_Gateway, "", $clientWidth - $IpAddressOffset, Default)
+	WinMove($ip_DnsPri, "", $clientWidth - $IpAddressOffset, Default)
+	WinMove($ip_DnsAlt, "", $clientWidth - $IpAddressOffset, Default)
+
+	GuiFlatButton_SetPos($buttonCopyIp, $clientWidth - $buttonCopyOffset)
+	GuiFlatButton_SetPos($buttonCopySubnet, $clientWidth - $buttonCopyOffset)
+	GuiFlatButton_SetPos($buttonCopyGateway, $clientWidth - $buttonCopyOffset)
+	GuiFlatButton_SetPos($buttonCopyDnsPri, $clientWidth - $buttonCopyOffset)
+	GuiFlatButton_SetPos($buttonCopyDnsAlt, $clientWidth - $buttonCopyOffset)
+
+	GuiFlatButton_SetPos($buttonPasteIp, $clientWidth - $buttonPasteOffset)
+	GuiFlatButton_SetPos($buttonPasteSubnet, $clientWidth - $buttonPasteOffset)
+	GuiFlatButton_SetPos($buttonPasteGateway, $clientWidth - $buttonPasteOffset)
+	GuiFlatButton_SetPos($buttonPasteDnsPri, $clientWidth - $buttonPasteOffset)
+	GuiFlatButton_SetPos($buttonPasteDnsAlt, $clientWidth - $buttonPasteOffset)
+
+	GuiFlatButton_SetPos($buttonRefresh, $clientWidth - $buttonRefreshOffset)
+	GuiFlatButton_SetPos($tbButtonApply, $clientWidth - $buttonApplyOffset)
+
+	_GUICtrlListView_SetColumnWidth($list_profiles, 0, $clientWidth - $guiRightWidth - 24 * $dscale)  ; sets column width
+EndFunc
 
 ;------------------------------------------------------------------------
 ; Title........: WM_GETMINMAXINFO
