@@ -36,9 +36,9 @@
             "trayKey":"Ctrl+t",
             "hide":"Adapters verbergen",
             "appearance":{
-                        "appearance":"Appearance",
-                        "light":"Light",
-                        "dark":"Dark"
+                        "appearance":"Weergave",
+                        "light":"Licht",
+                        "dark":"Donker"
             }
          },
          "tools":{
@@ -156,7 +156,7 @@
       },
       "message":{
          "ready":"Klaar",
-         "timedout":"Actie timed out!  Commando afgebroken.",
+         "timedout":"Actie duurt te lang! Commando afgebroken.",
          "couldNotSave":"Kan niet opslaan op opgegeven locatie!",
          "updatingList":"Bijwerken Adapter lijst...",
          "selectAdapter":"Selecteer een adapter en probeer opnieuw",
@@ -167,7 +167,7 @@
          "settingDnsPref":"Voorkeur DNS server toepassen...",
          "settingDnsAlt":"Alternatieve DNS server toepassen...",
          "errorOccurred":"Er is een fout opgetreden",
-         "profileNameExists":"De profielnaam bestaat al!",
+         "profileNameExists":"Deze profielnaam bestaat al!",
          "noProfileSel":"Er is geen profiel geselecteerd!",
          "profilesNotFound":"Profiles.ini bestand niet gevonden - Een nieuw bestand wordt aangemaakt",
          "errorReadingProf":"Kan profiles.ini niet lezen",
@@ -177,7 +177,7 @@
          "newItem":"Nieuw Item",
          "applying":"Profiel wordt toegepast",
          "errorRetrieving":"Er was een probleem met het ophalen van de adpaterlijst.",
-         "commandTimeout":"Commando timed-out",
+         "commandTimeout":"Commando time-out",
          "updateCheckError":"Er is een fout opgetreden met het binnenhalen van de update.",
          "checkConnect":"Controleer de internetverbindig.",
          "errorCode":"Fout code",
