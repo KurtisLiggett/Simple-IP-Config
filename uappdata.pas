@@ -52,6 +52,7 @@ var
   FIn: TextFile;
   s: string;
   val: TJSONData;
+  val2: TJSONData;
   sData: string;
   J: TJSONData;
   r: TJSONData;
@@ -60,6 +61,7 @@ var
   NewProfile: TProfile;
   ThisProfile: TProfile;
   FileNotFOund: boolean;
+  i2: integer;
 
 procedure TAppData.Init();
 begin
@@ -228,21 +230,44 @@ begin
 
               val := r.Items[i].FindPath('IpAddress');
               if (val = nil) then
-                ThisProfile.IpAddress := ''
+              begin
+                ThisProfile.IpAddress := '';
+                ThisProfile.IpSubnet := '';
+              end
               else
-                ThisProfile.IpAddress := val.AsString;
+                for i2 := 0 to val.Count - 1 do
+                begin
+                  val2 := val.Items[i2].FindPath('Address');
+                  if (val2 = nil) then
+                    ThisProfile.IpAddress := ''
+                  else
+                    ThisProfile.IpAddress := val2.AsString;
 
-              val := r.Items[i].FindPath('IpSubnet');
-              if (val = nil) then
-                ThisProfile.IpSubnet := ''
-              else
-                ThisProfile.IpSubnet := val.AsString;
+                  val2 := val.Items[i2].FindPath('Subnet');
+                  if (val2 = nil) then
+                    ThisProfile.IpSubnet := ''
+                  else
+                    ThisProfile.IpSubnet := val2.AsString;
+                end;
 
-              val := r.Items[i].FindPath('IpGateway');
+              val := r.Items[i].FindPath('Gateway');
               if (val = nil) then
                 ThisProfile.IpGateway := ''
               else
-                ThisProfile.IpGateway := val.AsString;
+                for i2 := 0 to val.Count - 1 do
+                begin
+                  val2 := val.Items[i2].FindPath('Address');
+                  if (val2 = nil) then
+                    ThisProfile.IpGateway := ''
+                  else
+                    ThisProfile.IpGateway := val2.AsString;
+                end;
+
+              //val := r.Items[i].FindPath('IpGateway');
+              //if (val = nil) then
+              //  ThisProfile.IpGateway := ''
+              //else
+              //  ThisProfile.IpGateway := val.AsString;
 
               val := r.Items[i].FindPath('DnsAuto');
               if (val = nil) then
@@ -303,6 +328,8 @@ var
   JsonObj: TJSONObject;
   JsonProfile: TJSONObject;
   JsonArr: TJSONArray;
+  JsonAddrArr: TJSONArray;
+  JsonAddrObj: TJSONObject;
   ProfileItem: TProfile;
 begin
   {create new JSON object for output}
@@ -337,9 +364,22 @@ begin
     JsonProfile.Add('Name', ProfileItem.Name);
     JsonProfile.Add('AdapterName', ProfileItem.AdapterName);
     JsonProfile.Add('IpAuto', ProfileItem.IpAuto);
-    JsonProfile.Add('IpAddress', ProfileItem.IpAddress);
-    JsonProfile.Add('IpSubnet', ProfileItem.IpSubnet);
-    JsonProfile.Add('IpGateway', ProfileItem.IpGateway);
+    JsonAddrArr := TJSONArray.Create;
+    //fill the array with IP's
+    JsonAddrObj := TJSONObject.Create;
+    JsonAddrObj.Add('Address', ProfileItem.IpAddress);
+    JsonAddrObj.Add('Subnet', ProfileItem.IpSubnet);
+    JsonAddrArr.Add(JsonAddrObj);
+    //---
+    JsonProfile.Add('IpAddress', JsonAddrArr);
+    JsonAddrArr := TJSONArray.Create;
+    //fill the array with Gateway's
+    JsonAddrObj := TJSONObject.Create;
+    JsonAddrObj.Add('Address', ProfileItem.IpGateway);
+    JsonAddrObj.Add('Metric', 0);
+    JsonAddrArr.Add(JsonAddrObj);
+    //---
+    JsonProfile.Add('Gateway', JsonAddrArr);
     JsonProfile.Add('DnsAuto', ProfileItem.DnsAuto);
     JsonProfile.Add('IpDnsPref', ProfileItem.DnsPref);
     JsonProfile.Add('IpDnsAlt', ProfileItem.DnsAlt);
