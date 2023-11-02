@@ -2,4 +2,7 @@
 profiles.ini
 main_stripped.au3
 Simple IP Config*.exe
+SimpleIPConfig*.exe
 *.zip
+backup/
+lib/
