@@ -127,8 +127,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure Label_ProfilesBackgroundClick(Sender: TObject);
     procedure List_ProfilesEdited(Sender: TObject; Item: TListItem; var AValue: string);
-    procedure List_ProfilesSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
+    procedure List_ProfilesSelectItem(Sender: TObject; Item: TListItem; Selected: boolean);
     procedure MaskEdit1Change(Sender: TObject);
     procedure MenuFile_ClearClick(Sender: TObject);
     procedure MenuFile_DeleteClick(Sender: TObject);
@@ -220,8 +219,7 @@ begin
 
 end;
 
-procedure TFormMain.List_ProfilesSelectItem(Sender: TObject; Item: TListItem;
-  Selected: Boolean);
+procedure TFormMain.List_ProfilesSelectItem(Sender: TObject; Item: TListItem; Selected: boolean);
 var
   s: string;
 begin
@@ -232,7 +230,7 @@ begin
       s := List_Profiles.Items[List_Profiles.ItemIndex].Caption;
       if s <> '' then
         SetProfile(s);
-        RefreshAdapterInfo();
+      RefreshAdapterInfo();
     end;
   end;
 end;
@@ -319,6 +317,10 @@ end;
 procedure TFormMain.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   debugln('closing time');
+  if AppData.Settings.CloseToTray then
+  begin
+    CloseAction := caHide;
+  end;
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);

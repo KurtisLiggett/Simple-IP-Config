@@ -10,7 +10,7 @@
   },
   "Settings" : {
     "Language" : "en",
-    "MinToTray" : true,
+    "MinToTray" : false,
     "StartupMode" : false,
     "StartupAdapter" : "",
     "AutoUpdate" : true

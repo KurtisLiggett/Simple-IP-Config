@@ -9,8 +9,8 @@ Status
 - [x] Changelog dialog
 - [x] Settings GUI and functionality
 - [x] Hide adapters GUI and functionality
+- [x] Close to tray
 - [ ] Filter profiles
-- [ ] Close to tray
 - [ ] Apply functionality
 - [ ] Check for updates
 - [ ] Open/import/export

@@ -8,3 +8,4 @@ backup/
 lib/
 *.lrj
 *.dbg
+*.lps

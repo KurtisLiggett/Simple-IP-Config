@@ -6,6 +6,7 @@ msgid "OK"
 msgstr ""
 
 #: tformabout.caption
+msgctxt "tformabout.caption"
 msgid "About Simple IP Config"
 msgstr ""
 
@@ -31,6 +32,286 @@ msgstr ""
 
 #: tformabout.label_versiontitle.caption
 msgid "Version:"
+msgstr ""
+
+#: tformmain.button_apply.caption
+msgid "Apply"
+msgstr ""
+
+#: tformmain.check_registerdns.caption
+msgid "Register Addresses"
+msgstr ""
+
+#: tformmain.label_adapterdescription.caption
+msgid "Adapter Description"
+msgstr ""
+
+#: tformmain.label_adapterstateinfotitle.caption
+msgid "Adapter State:"
+msgstr ""
+
+#: tformmain.label_computername.caption
+msgid "Computer name:"
+msgstr ""
+
+#: tformmain.label_dhcpinfo.text
+msgctxt "tformmain.label_dhcpinfo.text"
+msgid "000.000.000.000"
+msgstr ""
+
+#: tformmain.label_dhcpinfotitle.caption
+msgid "DHCP Server:"
+msgstr ""
+
+#: tformmain.label_dnsalt.caption
+msgctxt "tformmain.label_dnsalt.caption"
+msgid "Alternate DNS Server:"
+msgstr ""
+
+#: tformmain.label_dnsaltinfo.text
+msgctxt "tformmain.label_dnsaltinfo.text"
+msgid "000.000.000.000"
+msgstr ""
+
+#: tformmain.label_dnsaltinfotitle.caption
+msgctxt "tformmain.label_dnsaltinfotitle.caption"
+msgid "Alternate DNS Server:"
+msgstr ""
+
+#: tformmain.label_dnspref.caption
+msgctxt "tformmain.label_dnspref.caption"
+msgid "Preferred DNS Server:"
+msgstr ""
+
+#: tformmain.label_dnsprefinfo.text
+msgctxt "tformmain.label_dnsprefinfo.text"
+msgid "000.000.000.000"
+msgstr ""
+
+#: tformmain.label_dnsprefinfotitle.caption
+msgctxt "tformmain.label_dnsprefinfotitle.caption"
+msgid "Preferred DNS Server:"
+msgstr ""
+
+#: tformmain.label_domain.caption
+msgid "Domain:"
+msgstr ""
+
+#: tformmain.label_ipaddress.caption
+msgctxt "tformmain.label_ipaddress.caption"
+msgid "IP Address:"
+msgstr ""
+
+#: tformmain.label_ipaddressinfo.text
+msgctxt "tformmain.label_ipaddressinfo.text"
+msgid "000.000.000.000"
+msgstr ""
+
+#: tformmain.label_ipaddressinfotitle.caption
+msgctxt "tformmain.label_ipaddressinfotitle.caption"
+msgid "IP Address:"
+msgstr ""
+
+#: tformmain.label_ipgateway.caption
+msgctxt "tformmain.label_ipgateway.caption"
+msgid "Gateway:"
+msgstr ""
+
+#: tformmain.label_ipgatewayinfo.text
+msgctxt "tformmain.label_ipgatewayinfo.text"
+msgid "000.000.000.000"
+msgstr ""
+
+#: tformmain.label_ipgatewayinfotitle.caption
+msgctxt "tformmain.label_ipgatewayinfotitle.caption"
+msgid "Gateway:"
+msgstr ""
+
+#: tformmain.label_ipsubnet.caption
+msgctxt "tformmain.label_ipsubnet.caption"
+msgid "Subnet Mask:"
+msgstr ""
+
+#: tformmain.label_ipsubnetinfo.text
+msgctxt "tformmain.label_ipsubnetinfo.text"
+msgid "000.000.000.000"
+msgstr ""
+
+#: tformmain.label_ipsubnetinfotitle.caption
+msgctxt "tformmain.label_ipsubnetinfotitle.caption"
+msgid "Subnet Mask:"
+msgstr ""
+
+#: tformmain.label_mactitle.caption
+msgid "MAC Address:"
+msgstr ""
+
+#: tformmain.maskedit1.text
+msgid "   .   .   .   "
+msgstr ""
+
+#: tformmain.menufile.caption
+msgid "File"
+msgstr ""
+
+#: tformmain.menufile_apply.caption
+msgid "Apply profile"
+msgstr ""
+
+#: tformmain.menufile_clear.caption
+msgid "Clear entries"
+msgstr ""
+
+#: tformmain.menufile_createshortcut.caption
+msgid "Create shortcut to profile"
+msgstr ""
+
+#: tformmain.menufile_delete.caption
+msgid "Delete"
+msgstr ""
+
+#: tformmain.menufile_exit.caption
+msgctxt "tformmain.menufile_exit.caption"
+msgid "Exit"
+msgstr ""
+
+#: tformmain.menufile_export.caption
+msgid "Export profiles"
+msgstr ""
+
+#: tformmain.menufile_import.caption
+msgid "Import profiles"
+msgstr ""
+
+#: tformmain.menufile_new.caption
+msgid "New"
+msgstr ""
+
+#: tformmain.menufile_open.caption
+msgid "Open File"
+msgstr ""
+
+#: tformmain.menufile_rename.caption
+msgid "Rename"
+msgstr ""
+
+#: tformmain.menufile_save.caption
+msgid "Save"
+msgstr ""
+
+#: tformmain.menuhelp.caption
+msgid "Help"
+msgstr ""
+
+#: tformmain.menuhelp_about.caption
+msgctxt "tformmain.menuhelp_about.caption"
+msgid "About Simple IP Config"
+msgstr ""
+
+#: tformmain.menuhelp_changelog.caption
+msgid "Show Change Log"
+msgstr ""
+
+#: tformmain.menuhelp_checkforupdates.caption
+msgid "Check for Updates..."
+msgstr ""
+
+#: tformmain.menuhelp_onlinedoc.caption
+msgid "Go to GitHub Repo"
+msgstr ""
+
+#: tformmain.menutools.caption
+msgid "Tools"
+msgstr ""
+
+#: tformmain.menutools_gotoprofiles.caption
+msgid "Go to profiles.ini folder"
+msgstr ""
+
+#: tformmain.menutools_opennetworkconnections.caption
+msgid "Open Network Connections"
+msgstr ""
+
+#: tformmain.menutools_pull.caption
+msgid "Pull from adapter"
+msgstr ""
+
+#: tformmain.menutools_release.caption
+msgid "Release DHCP"
+msgstr ""
+
+#: tformmain.menutools_releaserenew.caption
+msgid "Release/renew cycle"
+msgstr ""
+
+#: tformmain.menutools_renew.caption
+msgid "Renew DHCP"
+msgstr ""
+
+#: tformmain.menutools_settings.caption
+msgid "Settings"
+msgstr ""
+
+#: tformmain.menutray_about.caption
+msgid "About"
+msgstr ""
+
+#: tformmain.menutray_exit.caption
+msgctxt "tformmain.menutray_exit.caption"
+msgid "Exit"
+msgstr ""
+
+#: tformmain.menutray_hide.caption
+msgctxt "tformmain.menutray_hide.caption"
+msgid "Hide"
+msgstr ""
+
+#: tformmain.menuview.caption
+msgid "View"
+msgstr ""
+
+#: tformmain.menuview_hideadapters.caption
+msgid "Hide adapters"
+msgstr ""
+
+#: tformmain.menuview_refresh.caption
+msgid "Refresh"
+msgstr ""
+
+#: tformmain.menuview_sendtotray.caption
+msgid "Send to tray"
+msgstr ""
+
+#: tformmain.radio_dnsauto.caption
+msgid "Automatically Set DNS Address"
+msgstr ""
+
+#: tformmain.radio_dnsmanual.caption
+msgid "Manually Set DNS Address"
+msgstr ""
+
+#: tformmain.radio_ipauto.caption
+msgid "Automatically Set IP Address"
+msgstr ""
+
+#: tformmain.radio_ipmanual.caption
+msgid "Manually Set IP Address"
+msgstr ""
+
+#: tformmain.toolbutton_delete.caption
+msgid "ToolButton_Delete"
+msgstr ""
+
+#: tformmain.toolbutton_new.caption
+msgid "ToolButton_New"
+msgstr ""
+
+#: tformmain.toolbutton_save.caption
+msgid "ToolButton_Save"
+msgstr ""
+
+#: tformmain.toolbutton_sep.caption
+msgid "ToolButton_Sep"
 msgstr ""
 
 #: umain.rstraymenu_hide
