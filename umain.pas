@@ -9,7 +9,7 @@ uses
   DefaultTranslator, LCLTranslator, lclintf, ComCtrls, Buttons, ExtCtrls,
   MaskEdit, Calendar, StrUtils, uAppData, uAbout, uChangelog,
   LazLogger, ShellApi, uFunctions, uSettings, uTypes, LCLType,
-  uHideAdapters;
+  uHideAdapters, RegExpr;
 
 type
 
@@ -300,7 +300,33 @@ begin
 end;
 
 procedure TFormMain.Edit_FilterChange(Sender: TObject);
+var
+  ProfileItem: TProfile;
+  Item: TListItem;
+  RegexObj: TRegExpr;
+  InputStr: string;
 begin
+  InputStr := Edit_Filter.Text;
+  RegexObj := TRegExpr.Create;
+  InputStr := StringReplace(InputStr, '\', '\\', [rfReplaceAll, rfIgnoreCase]);
+  InputStr := StringReplace(InputStr, '.', '\.', [rfReplaceAll, rfIgnoreCase]);
+  RegexObj.ModifierStr := 'i';
+  RegexObj.Expression := '^' + StringReplace(InputStr, '*', '.*', [rfReplaceAll, rfIgnoreCase]);
+
+  FormMain.List_Profiles.Items.Clear();
+  if InputStr <> '' then
+  begin
+    for ProfileItem in AppData.Profiles.Items do
+    begin
+      if RegexObj.Exec(ProfileItem.Name) then
+      begin
+        Item := FormMain.List_Profiles.Items.Add;
+        Item.Caption := ProfileItem.Name;
+      end;
+    end;
+
+  end;
+  RegexObj.Free;
 
 end;
 

@@ -36,6 +36,7 @@ begin
   AppData.Init();
 
   {rebuild profiles list}
+  FormMain.Edit_Filter.Text := '*';
   //record the currently selected item
   LvItemIndex := FormMain.List_Profiles.ItemIndex;
   LvItemText := '';

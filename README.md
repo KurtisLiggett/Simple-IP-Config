@@ -10,7 +10,7 @@ Status
 - [x] Settings GUI and functionality
 - [x] Hide adapters GUI and functionality
 - [x] Close to tray
-- [ ] Filter profiles
+- [x] Filter profiles
 - [ ] Apply functionality
 - [ ] Check for updates
 - [ ] Open/import/export

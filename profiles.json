@@ -30,7 +30,7 @@
       "Memo" : ""
     },
     {
-      "Name" : "Profile 3",
+      "Name" : "Profile 3/test",
       "AdapterName" : "Ethernet 2",
       "IpAuto" : false,
       "IpAddress" : "192.168.  1.  3",
@@ -43,7 +43,7 @@
       "Memo" : ""
     },
     {
-      "Name" : "Profile 4",
+      "Name" : "test 1",
       "AdapterName" : "ethernet",
       "IpAuto" : false,
       "IpAddress" : "192.168.1.2",
@@ -69,11 +69,50 @@
       "Memo" : ""
     },
     {
-      "Name" : "Profile 6",
+      "Name" : "temp2",
       "AdapterName" : "Ethernet2",
       "IpAuto" : false,
       "IpAddress" : "192.168.1.2",
       "IpSubnet" : "",
+      "IpGateway" : "",
+      "DnsAuto" : false,
+      "IpDnsPref" : "",
+      "IpDnsAlt" : "",
+      "RegisterDns" : false,
+      "Memo" : ""
+    },
+    {
+      "Name" : "grp1\\item1",
+      "AdapterName" : "Ethernet 2",
+      "IpAuto" : false,
+      "IpAddress" : "192.168.1.2",
+      "IpSubnet" : "255.255.252.0",
+      "IpGateway" : "",
+      "DnsAuto" : false,
+      "IpDnsPref" : "",
+      "IpDnsAlt" : "",
+      "RegisterDns" : false,
+      "Memo" : ""
+    },
+    {
+      "Name" : "test.item",
+      "AdapterName" : "Ethernet 2",
+      "IpAuto" : false,
+      "IpAddress" : "192.168.1.2",
+      "IpSubnet" : "255.255.252.0",
+      "IpGateway" : "",
+      "DnsAuto" : false,
+      "IpDnsPref" : "",
+      "IpDnsAlt" : "",
+      "RegisterDns" : false,
+      "Memo" : ""
+    },
+    {
+      "Name" : "test2item",
+      "AdapterName" : "Ethernet 2",
+      "IpAuto" : false,
+      "IpAddress" : "192.168.1.2",
+      "IpSubnet" : "255.255.252.0",
       "IpGateway" : "",
       "DnsAuto" : false,
       "IpDnsPref" : "",
