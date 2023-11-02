@@ -1,0 +1,85 @@
+{
+  "App" : {
+    "Version" : "v5.0.0",
+    "LastUpdateCheck" : "",
+    "PositionX" : -1,
+    "PositionY" : -1,
+    "PositionH" : -1,
+    "PositionW" : -1,
+    "AdapterBlacklist" : ""
+  },
+  "Settings" : {
+    "Language" : "en",
+    "MinToTray" : true,
+    "StartupMode" : false,
+    "StartupAdapter" : "",
+    "AutoUpdate" : true
+  },
+  "Profiles" : [
+    {
+      "Name" : "Profile 2 - this is a really long profile name requiring a window resize, probably",
+      "AdapterName" : "Ethernet 2",
+      "IpAuto" : false,
+      "IpAddress" : "192.168.1.2",
+      "IpSubnet" : "255.255.252.0",
+      "IpGateway" : "",
+      "DnsAuto" : false,
+      "IpDnsPref" : "",
+      "IpDnsAlt" : "",
+      "RegisterDns" : false,
+      "Memo" : ""
+    },
+    {
+      "Name" : "Profile 3",
+      "AdapterName" : "Ethernet 2",
+      "IpAuto" : false,
+      "IpAddress" : "192.168.  1.  3",
+      "IpSubnet" : "255.255.255.0",
+      "IpGateway" : "192.168.1.1",
+      "DnsAuto" : false,
+      "IpDnsPref" : "1.1.1.1",
+      "IpDnsAlt" : "2.2.2.2",
+      "RegisterDns" : true,
+      "Memo" : ""
+    },
+    {
+      "Name" : "Profile 4",
+      "AdapterName" : "ethernet",
+      "IpAuto" : false,
+      "IpAddress" : "192.168.1.2",
+      "IpSubnet" : "",
+      "IpGateway" : "",
+      "DnsAuto" : false,
+      "IpDnsPref" : "",
+      "IpDnsAlt" : "",
+      "RegisterDns" : false,
+      "Memo" : ""
+    },
+    {
+      "Name" : "Profile 5",
+      "AdapterName" : "",
+      "IpAuto" : false,
+      "IpAddress" : "192.168.1.2",
+      "IpSubnet" : "",
+      "IpGateway" : "",
+      "DnsAuto" : false,
+      "IpDnsPref" : "",
+      "IpDnsAlt" : "",
+      "RegisterDns" : false,
+      "Memo" : ""
+    },
+    {
+      "Name" : "Profile 6",
+      "AdapterName" : "Ethernet2",
+      "IpAuto" : false,
+      "IpAddress" : "192.168.1.2",
+      "IpSubnet" : "",
+      "IpGateway" : "",
+      "DnsAuto" : false,
+      "IpDnsPref" : "",
+      "IpDnsAlt" : "",
+      "RegisterDns" : false,
+      "Memo" : ""
+    }
+  ]
+}

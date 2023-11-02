@@ -1,0 +1,116 @@
+object FormHideAdapters: TFormHideAdapters
+  Left = 340
+  Height = 522
+  Top = 168
+  Width = 370
+  BorderIcons = []
+  BorderStyle = bsSingle
+  Caption = 'Hide Adapters'
+  ClientHeight = 522
+  ClientWidth = 370
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poOwnerFormCenter
+  LCLVersion = '2.2.6.0'
+  object Label_Background: TLabel
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 487
+    Top = 0
+    Width = 370
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Bottom = 35
+    Color = clWhite
+    ParentColor = False
+    Transparent = False
+  end
+  object Label_BackgroundLine: TLabel
+    AnchorSideTop.Control = Label_Background
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 1
+    Top = 487
+    Width = 370
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Top = 1
+    BorderSpacing.Bottom = 34
+    Color = 5066061
+    ParentColor = False
+    Transparent = False
+  end
+  object Button_Save: TButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 312
+    Height = 22
+    Top = 492
+    Width = 50
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Right = 8
+    BorderSpacing.Bottom = 8
+    Caption = 'Save'
+    OnClick = Button_SaveClick
+    TabOrder = 0
+  end
+  object Button_Cancel: TButton
+    AnchorSideRight.Control = Button_Save
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 252
+    Height = 22
+    Top = 492
+    Width = 50
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 8
+    Caption = 'Cancel'
+    OnClick = Button_CancelClick
+    TabOrder = 1
+  end
+  object ListView_Adapters: TListView
+    AnchorSideLeft.Control = Label_Background
+    AnchorSideTop.Control = Label_Background
+    AnchorSideRight.Control = Label_Background
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Label_Background
+    AnchorSideBottom.Side = asrBottom
+    Left = 10
+    Height = 447
+    Top = 35
+    Width = 350
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 5
+    BorderStyle = bsNone
+    Checkboxes = True
+    Columns = <    
+      item
+        AutoSize = True
+        Width = 0
+      end>
+    ShowColumnHeaders = False
+    TabOrder = 2
+    ViewStyle = vsReport
+  end
+  object Label_Title: TLabel
+    Left = 10
+    Height = 21
+    Top = 5
+    Width = 161
+    Caption = 'Select Adapters to Hide'
+    Font.Height = 22
+    ParentColor = False
+    ParentFont = False
+  end
+end

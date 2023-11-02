@@ -1,0 +1,45 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: tformabout.button_ok.caption
+msgid "OK"
+msgstr ""
+
+#: tformabout.caption
+msgid "About Simple IP Config"
+msgstr ""
+
+#: tformabout.label_datetitle.caption
+msgid "Date:"
+msgstr ""
+
+#: tformabout.label_description.caption
+msgid "The portable ip changer utility that allows a user to quickly and easily change the most common network settings for any connection."
+msgstr ""
+
+#: tformabout.label_developer.caption
+msgid "Kurtis Liggett"
+msgstr ""
+
+#: tformabout.label_developertitle.caption
+msgid "Developer:"
+msgstr ""
+
+#: tformabout.label_licensetitle.caption
+msgid "License:"
+msgstr ""
+
+#: tformabout.label_versiontitle.caption
+msgid "Version:"
+msgstr ""
+
+#: umain.rstraymenu_hide
+msgctxt "umain.rstraymenu_hide"
+msgid "Hide"
+msgstr ""
+
+#: umain.rstraymenu_show
+msgctxt "umain.rstraymenu_show"
+msgid "Show"
+msgstr ""
+

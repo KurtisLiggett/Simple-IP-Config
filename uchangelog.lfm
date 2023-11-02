@@ -1,0 +1,84 @@
+object FormChangelog: TFormChangelog
+  Left = 533
+  Height = 410
+  Top = 254
+  Width = 400
+  BorderIcons = []
+  BorderStyle = bsSingle
+  Caption = 'Change Log'
+  ClientHeight = 410
+  ClientWidth = 400
+  OnCreate = FormCreate
+  Position = poOwnerFormCenter
+  LCLVersion = '2.2.6.0'
+  object Label_Background: TLabel
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 375
+    Top = 0
+    Width = 400
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Bottom = 35
+    Color = clWhite
+    ParentColor = False
+    Transparent = False
+  end
+  object Label_BackgroundLine: TLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 1
+    Top = 375
+    Width = 400
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Top = 1
+    BorderSpacing.Bottom = 34
+    Color = 5066061
+    ParentColor = False
+    Transparent = False
+  end
+  object Button_OK: TButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 342
+    Height = 22
+    Top = 380
+    Width = 50
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Right = 8
+    BorderSpacing.Bottom = 8
+    Caption = 'OK'
+    OnClick = Button_OKClick
+    TabOrder = 0
+  end
+  object RichMemo1: TRichMemo
+    AnchorSideLeft.Control = Label_Background
+    AnchorSideTop.Control = Label_Background
+    AnchorSideRight.Control = Label_Background
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Label_Background
+    AnchorSideBottom.Side = asrBottom
+    Left = 10
+    Height = 372
+    Top = 0
+    Width = 380
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 10
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 3
+    BorderStyle = bsNone
+    HideSelection = False
+    ReadOnly = True
+    ScrollBars = ssAutoVertical
+    TabOrder = 1
+    ZoomFactor = 1
+  end
+end

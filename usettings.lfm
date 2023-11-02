@@ -1,0 +1,132 @@
+object FormSettings: TFormSettings
+  Left = 293
+  Height = 166
+  Top = 332
+  Width = 275
+  BorderIcons = []
+  BorderStyle = bsSingle
+  Caption = 'Settings'
+  ClientHeight = 166
+  ClientWidth = 275
+  OnClose = FormClose
+  OnShow = FormShow
+  Position = poOwnerFormCenter
+  LCLVersion = '2.2.6.0'
+  object Label_Background: TLabel
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 131
+    Top = 0
+    Width = 275
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Bottom = 35
+    Color = clWhite
+    ParentColor = False
+    Transparent = False
+  end
+  object Label_BackgroundLine: TLabel
+    AnchorSideTop.Control = Label_Background
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 1
+    Top = 131
+    Width = 275
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Top = 1
+    BorderSpacing.Bottom = 34
+    Color = 5066061
+    ParentColor = False
+    Transparent = False
+  end
+  object Button_Save: TButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 217
+    Height = 22
+    Top = 136
+    Width = 50
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Right = 8
+    BorderSpacing.Bottom = 8
+    Caption = 'Save'
+    OnClick = Button_SaveClick
+    TabOrder = 0
+  end
+  object Label_Language: TLabel
+    Left = 6
+    Height = 15
+    Top = 7
+    Width = 55
+    Alignment = taRightJustify
+    Caption = 'Language:'
+    ParentColor = False
+  end
+  object Button_Cancel: TButton
+    AnchorSideRight.Control = Button_Save
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 157
+    Height = 22
+    Top = 136
+    Width = 50
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 8
+    Caption = 'Cancel'
+    OnClick = Button_CancelClick
+    TabOrder = 1
+  end
+  object Combo_Language: TComboBox
+    Left = 68
+    Height = 23
+    Top = 3
+    Width = 193
+    ItemHeight = 15
+    Items.Strings = (
+      'English  (en)'
+      'Deutsch  (de)'
+      'Español  (es)'
+      'Français  (fr)'
+      'Italiano  (it)'
+      'Nederlands  (nl)'
+      'Română  (ro)'
+      'Русский  (ru)'
+      'Chinese  (zh)'
+    )
+    TabOrder = 2
+    Text = 'English (en)'
+  end
+  object Check_StartInTray: TCheckBox
+    Left = 8
+    Height = 19
+    Top = 42
+    Width = 125
+    Caption = 'Open in system tray'
+    TabOrder = 3
+  end
+  object Check_CloseToTray: TCheckBox
+    Left = 8
+    Height = 19
+    Top = 65
+    Width = 146
+    Caption = 'Close to the system tray'
+    TabOrder = 4
+  end
+  object Check_CheckForUpdates: TCheckBox
+    Left = 8
+    Height = 19
+    Top = 88
+    Width = 191
+    Caption = 'Automatically check for updates'
+    TabOrder = 5
+  end
+end
