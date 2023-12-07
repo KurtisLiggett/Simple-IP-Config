@@ -20,31 +20,38 @@
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
-      <ExcludedIdentifiers Count="24">
+      <ExcludedIdentifiers Count="31">
         <Item1 Value="tformmain.caption"/>
         <Item2 Value="tformmain.toolbar1.caption"/>
-        <Item3 Value="tformmain.toolbutton1.caption"/>
-        <Item4 Value="tformmain.toolbutton2.caption"/>
-        <Item5 Value="tformmain.toolbutton4.caption"/>
-        <Item6 Value="tformmain.toolbutton5.caption"/>
-        <Item7 Value="tformmain.edit_ipaddress.text"/>
-        <Item8 Value="tformmain.edit_ipsubnet.text"/>
-        <Item9 Value="tformmain.edit_ipgateway.text"/>
-        <Item10 Value="tformmain.edit_dnspref.text"/>
-        <Item11 Value="tformmain.edit_dnsalt.text"/>
-        <Item12 Value="tformmain.edit_filter.text"/>
-        <Item13 Value="tformmain.label_mac.caption"/>
-        <Item14 Value="tformmain.label_IpAddressInfo.caption"/>
-        <Item15 Value="tformmain.label_IpSubnetInfo.caption"/>
-        <Item16 Value="tformmain.label_IpGatewayInfo.caption"/>
-        <Item17 Value="tformmain.label_DnsPrefInfo.caption"/>
-        <Item18 Value="tformmain.label_DnsAltInfo.caption"/>
-        <Item19 Value="tformmain.label_DhcpInfo.caption"/>
-        <Item20 Value="tformmain.label_AdapterStateInfo.caption"/>
-        <Item21 Value="tformabout.label_title.caption"/>
-        <Item22 Value="tformabout.label_date.caption"/>
-        <Item23 Value="tformabout.label_version.caption"/>
-        <Item24 Value="tformabout.label_license.caption"/>
+        <Item3 Value="tformmain.edit_ipaddress.text"/>
+        <Item4 Value="tformmain.edit_ipsubnet.text"/>
+        <Item5 Value="tformmain.edit_ipgateway.text"/>
+        <Item6 Value="tformmain.edit_dnspref.text"/>
+        <Item7 Value="tformmain.edit_dnsalt.text"/>
+        <Item8 Value="tformmain.edit_filter.text"/>
+        <Item9 Value="tformmain.label_mac.caption"/>
+        <Item10 Value="tformmain.label_IpAddressInfo.caption"/>
+        <Item11 Value="tformmain.label_IpSubnetInfo.caption"/>
+        <Item12 Value="tformmain.label_IpGatewayInfo.caption"/>
+        <Item13 Value="tformmain.label_DnsPrefInfo.caption"/>
+        <Item14 Value="tformmain.label_DnsAltInfo.caption"/>
+        <Item15 Value="tformmain.label_DhcpInfo.caption"/>
+        <Item16 Value="tformmain.label_AdapterStateInfo.caption"/>
+        <Item17 Value="tformabout.label_title.caption"/>
+        <Item18 Value="tformabout.label_date.caption"/>
+        <Item19 Value="tformabout.label_version.caption"/>
+        <Item20 Value="tformabout.label_license.caption"/>
+        <Item21 Value="tformcheckforupdates.label_latestversion.caption"/>
+        <Item22 Value="tformcheckforupdates.label_thisversion.caption"/>
+        <Item23 Value="tformcheckforupdates.label_title.caption"/>
+        <Item24 Value="tformmain.label_dhcpinfo.text"/>
+        <Item25 Value="tformmain.label_dnsaltinfo.text"/>
+        <Item26 Value="tformmain.label_dnsprefinfo.text"/>
+        <Item27 Value="tformmain.label_ipaddressinfo.text"/>
+        <Item28 Value="tformmain.label_ipgatewayinfo.text"/>
+        <Item29 Value="tformmain.label_ipsubnetinfo.text"/>
+        <Item30 Value="tformabout.label_developer.caption"/>
+        <Item31 Value="tformmain.maskedit1.text"/>
       </ExcludedIdentifiers>
     </i18n>
     <VersionInfo>
@@ -63,8 +70,8 @@
             <Filename Value="SimpleIpConfig"/>
           </Target>
           <SearchPaths>
-            <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="Simple IP Config"/>
+            <IncludeFiles Value="$(ProjOutDir);include\synapse"/>
+            <OtherUnitFiles Value="Simple IP Config;include;include\synapse"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <Parsing>
@@ -99,8 +106,8 @@
             <Filename Value="SimpleIpConfig"/>
           </Target>
           <SearchPaths>
-            <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="Simple IP Config"/>
+            <IncludeFiles Value="$(ProjOutDir);include\synapse"/>
+            <OtherUnitFiles Value="Simple IP Config;include;include\synapse"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -187,6 +194,7 @@
         <ComponentName Value="FormChangelog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uChangelog"/>
       </Unit>
       <Unit>
         <Filename Value="uhideadapters.pas"/>
@@ -202,6 +210,15 @@
         <ComponentName Value="FormSettings"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uSettings"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ucheckforupdates.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormCheckForUpdates"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uCheckForUpdates"/>
       </Unit>
     </Units>
   </ProjectOptions>
@@ -212,8 +229,8 @@
       <Filename Value="SimpleIpConfig"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="Simple IP Config"/>
+      <IncludeFiles Value="$(ProjOutDir);include\synapse"/>
+      <OtherUnitFiles Value="Simple IP Config;include;include\synapse"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
@@ -246,6 +263,9 @@
       </Item>
       <Item>
         <Name Value="Exception"/>
+      </Item>
+      <Item>
+        <Name Value="EHTTPClient"/>
       </Item>
     </Exceptions>
   </Debugging>

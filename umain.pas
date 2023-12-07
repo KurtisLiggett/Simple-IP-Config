@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Menus,
   DefaultTranslator, LCLTranslator, lclintf, ComCtrls, Buttons, ExtCtrls,
   MaskEdit, Calendar, StrUtils, uAppData, uAbout, uChangelog,
-  LazLogger, ShellApi, uFunctions, uSettings, uTypes, LCLType,
+  LazLogger, ShellApi, uFunctions, uSettings, uCheckForUpdates, uTypes, LCLType,
   uHideAdapters, RegExpr;
 
 type
@@ -96,6 +96,7 @@ type
     MenuHelp: TMenuItem;
     Panel_RadioIpAuto: TPanel;
     Panel_RadioDnsAuto: TPanel;
+    UpdateCheckTimer: TTimer;
     SysTrayMenu: TPopupMenu;
     Radio_IpAuto: TRadioButton;
     Radio_DnsAuto: TRadioButton;
@@ -122,6 +123,7 @@ type
     procedure Button_ApplyClick(Sender: TObject);
     procedure Combo_AdaptersChange(Sender: TObject);
     procedure Edit_FilterChange(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -137,6 +139,7 @@ type
     procedure MenuFile_SaveClick(Sender: TObject);
     procedure MenuHelp_AboutClick(Sender: TObject);
     procedure MenuHelp_ChangeLogClick(Sender: TObject);
+    procedure MenuHelp_CheckForUpdatesClick(Sender: TObject);
     procedure MenuHelp_OnlineDocClick(Sender: TObject);
     procedure MenuTools_OpenNetworkConnectionsClick(Sender: TObject);
     procedure Button_RefreshClick(Sender: TObject);
@@ -153,7 +156,9 @@ type
     procedure ToolButton_DeleteClick(Sender: TObject);
     procedure ToolButton_NewClick(Sender: TObject);
     procedure ToolButton_SaveClick(Sender: TObject);
+    procedure UpdateCheckTimerTimer(Sender: TObject);
   private
+    FormActivated: boolean;
 
   public
 
@@ -169,6 +174,9 @@ resourcestring
 implementation
 
 {$R *.lfm}
+
+resourcestring
+  AboutStr = 'About';
 
 { TFormMain }
 
@@ -299,6 +307,11 @@ begin
   FormChangelog.ShowModal;
 end;
 
+procedure TFormMain.MenuHelp_CheckForUpdatesClick(Sender: TObject);
+begin
+  CheckForUpdates(True);
+end;
+
 procedure TFormMain.Edit_FilterChange(Sender: TObject);
 var
   ProfileItem: TProfile;
@@ -330,6 +343,17 @@ begin
 
 end;
 
+procedure TFormMain.FormActivate(Sender: TObject);
+begin
+  if not FormActivated then
+  begin
+    FormActivated := True;
+    //start timer to check for updates, allow window to load first
+    UpdateCheckTimer.Enabled := True;
+  end;
+
+end;
+
 procedure TFormMain.Combo_AdaptersChange(Sender: TObject);
 begin
   RefreshAdapterInfo();
@@ -358,22 +382,16 @@ procedure TFormMain.FormShow(Sender: TObject);
 var
   s: string;
 begin
-  //FormMain.Label_AdapterDescription.Caption := '';
-  //FormMain.Label_Mac.Caption := '';
-  //FormMain.Label_IpAddressInfo.Caption := '';
-  //FormMain.Label_IpSubnetInfo.Caption := '';
-  //FormMain.Label_IpGatewayInfo.Caption := '';
-  //FormMain.Label_DnsPrefInfo.Caption := '';
-  //FormMain.Label_DnsAltInfo.Caption := '';
-  //FormMain.Label_DhcpInfo.Caption := '';
-  //FormMain.Label_AdapterStateInfo.Caption := '';
-
   if (AppData.PositionX <> -1) and (AppData.PositionY <> -1) then
   begin
     FormMain.Left := AppData.PositionX;
     FormMain.Top := AppData.PositionY;
   end;
   SystrayIcon.Show;
+
+  // set language strings
+  MenuHelp_About.Caption := AboutStr + ' Simple IP Config';
+
 end;
 
 procedure TFormMain.MenuHelp_OnlineDocClick(Sender: TObject);
@@ -479,6 +497,15 @@ end;
 procedure TFormMain.ToolButton_SaveClick(Sender: TObject);
 begin
   SaveProfile();
+end;
+
+procedure TFormMain.UpdateCheckTimerTimer(Sender: TObject);
+begin
+  UpdateCheckTimer.Enabled := False;
+
+  // check for updates
+  if AppData.Settings.CheckForUpdates then
+    CheckForUpdates();
 end;
 
 procedure TFormMain.ToolButton_DeleteClick(Sender: TObject);

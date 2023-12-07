@@ -11,6 +11,7 @@ object FormMain: TFormMain
   Constraints.MinHeight = 650
   Constraints.MinWidth = 603
   Menu = MainMenu1
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
@@ -53,14 +54,14 @@ object FormMain: TFormMain
     object ToolButton_New: TToolButton
       Left = 1
       Top = 0
-      Caption = 'ToolButton_New'
+      Caption = 'New Profile'
       ImageIndex = 1
       OnClick = ToolButton_NewClick
     end
     object ToolButton_Save: TToolButton
       Left = 24
       Top = 0
-      Caption = 'ToolButton_Save'
+      Caption = 'Save Profile'
       ImageIndex = 2
       OnClick = ToolButton_SaveClick
     end
@@ -68,13 +69,12 @@ object FormMain: TFormMain
       Left = 47
       Height = 22
       Top = 0
-      Caption = 'ToolButton_Sep'
       Style = tbsDivider
     end
     object ToolButton_Delete: TToolButton
       Left = 52
       Top = 0
-      Caption = 'ToolButton_Delete'
+      Caption = 'Delete Profile'
       ImageIndex = 0
       OnClick = ToolButton_DeleteClick
     end
@@ -429,7 +429,7 @@ object FormMain: TFormMain
     Top = 0
     Width = 222
     Anchors = [akTop, akLeft, akRight]
-    Brush.Color = 14671839
+    Brush.Color = clGray
     Pen.Color = 3487029
   end
   object Panel_RadioDnsAuto: TPanel
@@ -912,6 +912,7 @@ object FormMain: TFormMain
       end
       object MenuHelp_CheckForUpdates: TMenuItem
         Caption = 'Check for Updates...'
+        OnClick = MenuHelp_CheckForUpdatesClick
       end
       object MenuHelp_About: TMenuItem
         Caption = 'About Simple IP Config'
@@ -2227,6 +2228,13 @@ object FormMain: TFormMain
     Interval = 2500
     OnTimer = StatusTimerTimer
     Left = 445
+    Top = 555
+  end
+  object UpdateCheckTimer: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = UpdateCheckTimerTimer
+    Left = 415
     Top = 555
   end
 end

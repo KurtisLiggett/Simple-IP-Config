@@ -29,6 +29,7 @@ type
     Label_BackgroundLine: TLabel;
     procedure Button_OKClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
 
   public
@@ -42,6 +43,9 @@ implementation
 
 {$R *.lfm}
 
+resourcestring
+  AboutStr = 'About';
+
 { TFormAbout }
 
 procedure TFormAbout.Button_OKClick(Sender: TObject);
@@ -51,8 +55,14 @@ end;
 
 procedure TFormAbout.FormCreate(Sender: TObject);
 begin
+  Caption := AboutStr + ' Simple IP Config';
   Label_Version.Caption := AppData.Version;
   Label_Date.Caption := AppData.Date;
+end;
+
+procedure TFormAbout.FormShow(Sender: TObject);
+begin
+
 end;
 
 end.

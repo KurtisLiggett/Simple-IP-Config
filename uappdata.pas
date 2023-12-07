@@ -66,8 +66,8 @@ var
 procedure TAppData.Init();
 begin
   {set initial values}
-  AppData.Version := '3.0.0 pre';
-  AppData.Date := '7/24/2023';
+  AppData.Version := '2.0.0';
+  AppData.Date := '11/6/2023';
   AppData.UpdateDate := '';
   AppData.UpdateVersion := '';
   AppData.AdapterBlacklist := '';

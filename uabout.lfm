@@ -9,6 +9,7 @@ object FormAbout: TFormAbout
   ClientHeight = 251
   ClientWidth = 275
   OnCreate = FormCreate
+  OnShow = FormShow
   Position = poOwnerFormCenter
   LCLVersion = '2.2.6.0'
   object Label_Background: TLabel

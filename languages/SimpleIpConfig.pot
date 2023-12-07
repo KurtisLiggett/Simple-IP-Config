@@ -2,6 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: tformabout.button_ok.caption
+msgctxt "tformabout.button_ok.caption"
 msgid "OK"
 msgstr ""
 
@@ -11,27 +12,54 @@ msgid "About Simple IP Config"
 msgstr ""
 
 #: tformabout.label_datetitle.caption
+msgctxt "tformabout.label_datetitle.caption"
 msgid "Date:"
 msgstr ""
 
 #: tformabout.label_description.caption
+msgctxt "tformabout.label_description.caption"
 msgid "The portable ip changer utility that allows a user to quickly and easily change the most common network settings for any connection."
 msgstr ""
 
-#: tformabout.label_developer.caption
-msgid "Kurtis Liggett"
-msgstr ""
-
 #: tformabout.label_developertitle.caption
+msgctxt "tformabout.label_developertitle.caption"
 msgid "Developer:"
 msgstr ""
 
 #: tformabout.label_licensetitle.caption
+msgctxt "tformabout.label_licensetitle.caption"
 msgid "License:"
 msgstr ""
 
 #: tformabout.label_versiontitle.caption
+msgctxt "tformabout.label_versiontitle.caption"
 msgid "Version:"
+msgstr ""
+
+#: tformcheckforupdates.button_ok.caption
+msgctxt "tformcheckforupdates.button_ok.caption"
+msgid "OK"
+msgstr ""
+
+#: tformcheckforupdates.caption
+msgid "Check for Updates"
+msgstr ""
+
+#: tformcheckforupdates.label_downloadlink.caption
+msgid "Download Now"
+msgstr ""
+
+#: tformcheckforupdates.label_info.caption
+msgctxt "tformcheckforupdates.label_info.caption"
+msgid "A newer version is available."
+msgstr ""
+
+#: tformcheckforupdates.label_latestversiontitle.caption
+msgid "Latest Version:"
+msgstr ""
+
+#: tformcheckforupdates.label_thisversiontitle.caption
+msgid "This Version:"
 msgstr ""
 
 #: tformmain.button_apply.caption
@@ -54,11 +82,6 @@ msgstr ""
 msgid "Computer name:"
 msgstr ""
 
-#: tformmain.label_dhcpinfo.text
-msgctxt "tformmain.label_dhcpinfo.text"
-msgid "000.000.000.000"
-msgstr ""
-
 #: tformmain.label_dhcpinfotitle.caption
 msgid "DHCP Server:"
 msgstr ""
@@ -66,11 +89,6 @@ msgstr ""
 #: tformmain.label_dnsalt.caption
 msgctxt "tformmain.label_dnsalt.caption"
 msgid "Alternate DNS Server:"
-msgstr ""
-
-#: tformmain.label_dnsaltinfo.text
-msgctxt "tformmain.label_dnsaltinfo.text"
-msgid "000.000.000.000"
 msgstr ""
 
 #: tformmain.label_dnsaltinfotitle.caption
@@ -81,11 +99,6 @@ msgstr ""
 #: tformmain.label_dnspref.caption
 msgctxt "tformmain.label_dnspref.caption"
 msgid "Preferred DNS Server:"
-msgstr ""
-
-#: tformmain.label_dnsprefinfo.text
-msgctxt "tformmain.label_dnsprefinfo.text"
-msgid "000.000.000.000"
 msgstr ""
 
 #: tformmain.label_dnsprefinfotitle.caption
@@ -102,11 +115,6 @@ msgctxt "tformmain.label_ipaddress.caption"
 msgid "IP Address:"
 msgstr ""
 
-#: tformmain.label_ipaddressinfo.text
-msgctxt "tformmain.label_ipaddressinfo.text"
-msgid "000.000.000.000"
-msgstr ""
-
 #: tformmain.label_ipaddressinfotitle.caption
 msgctxt "tformmain.label_ipaddressinfotitle.caption"
 msgid "IP Address:"
@@ -115,11 +123,6 @@ msgstr ""
 #: tformmain.label_ipgateway.caption
 msgctxt "tformmain.label_ipgateway.caption"
 msgid "Gateway:"
-msgstr ""
-
-#: tformmain.label_ipgatewayinfo.text
-msgctxt "tformmain.label_ipgatewayinfo.text"
-msgid "000.000.000.000"
 msgstr ""
 
 #: tformmain.label_ipgatewayinfotitle.caption
@@ -132,11 +135,6 @@ msgctxt "tformmain.label_ipsubnet.caption"
 msgid "Subnet Mask:"
 msgstr ""
 
-#: tformmain.label_ipsubnetinfo.text
-msgctxt "tformmain.label_ipsubnetinfo.text"
-msgid "000.000.000.000"
-msgstr ""
-
 #: tformmain.label_ipsubnetinfotitle.caption
 msgctxt "tformmain.label_ipsubnetinfotitle.caption"
 msgid "Subnet Mask:"
@@ -144,10 +142,6 @@ msgstr ""
 
 #: tformmain.label_mactitle.caption
 msgid "MAC Address:"
-msgstr ""
-
-#: tformmain.maskedit1.text
-msgid "   .   .   .   "
 msgstr ""
 
 #: tformmain.menufile.caption
@@ -253,6 +247,7 @@ msgid "Settings"
 msgstr ""
 
 #: tformmain.menutray_about.caption
+msgctxt "tformmain.menutray_about.caption"
 msgid "About"
 msgstr ""
 
@@ -299,19 +294,33 @@ msgid "Manually Set IP Address"
 msgstr ""
 
 #: tformmain.toolbutton_delete.caption
-msgid "ToolButton_Delete"
+msgid "Delete Profile"
 msgstr ""
 
 #: tformmain.toolbutton_new.caption
-msgid "ToolButton_New"
+msgid "New Profile"
 msgstr ""
 
 #: tformmain.toolbutton_save.caption
-msgid "ToolButton_Save"
+msgid "Save Profile"
 msgstr ""
 
-#: tformmain.toolbutton_sep.caption
-msgid "ToolButton_Sep"
+#: uabout.aboutstr
+msgctxt "uabout.aboutstr"
+msgid "About"
+msgstr ""
+
+#: ucheckforupdates.versionavailable
+msgid "A newer version is available:"
+msgstr ""
+
+#: ucheckforupdates.versioniscurrent
+msgid "You have the latest version."
+msgstr ""
+
+#: umain.aboutstr
+msgctxt "umain.aboutstr"
+msgid "About"
 msgstr ""
 
 #: umain.rstraymenu_hide
