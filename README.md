@@ -11,8 +11,8 @@ Status
 - [x] Hide adapters GUI and functionality
 - [x] Close to tray
 - [x] Filter profiles
+- [x] Check for updates
 - [ ] Apply functionality
-- [ ] Check for updates
 - [ ] Open/import/export
 - [ ] Dark mode
 - [ ] Update language strings
