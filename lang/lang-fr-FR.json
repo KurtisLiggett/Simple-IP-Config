@@ -154,6 +154,16 @@
          "opt3":"Enregistrer l'adaptateur dans le profil",
          "opt4":"Vérifier automatiquement les mises à jour"
       },
+      "multiIP":{
+         "title":"Paramètres Multi-IP",
+         "noIPFound":"Aucune adresse IP trouvée",
+         "exit_":"Escir",
+         "delete":"Supprimer",
+         "addIP":"Ajouter...",
+         "editIP":"Modifier...",
+         "MultiIPprofile":"Profil Multi-IP",,
+         "UseMultiIPprofile":"Utiliser le profil Multi-IP"
+      },
       "message":{
          "ready":"Prêt",
          "timedout":"Action expirée!  Commande abandonnée.",

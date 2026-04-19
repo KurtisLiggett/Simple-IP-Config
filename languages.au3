@@ -60,6 +60,7 @@ Func _langStrings()
 	Local $oBlacklist = _AutoItObject_Create()
 	Local $oMessage = _AutoItObject_Create()
 	Local $oDialog = _AutoItObject_Create()
+	Local $oMultiIP = _AutoItObject_Create()
 
 	;main object
 	_AutoItObject_AddProperty($oMain, "menu", $ELSCOPE_PUBLIC, $oMenu)
@@ -78,6 +79,7 @@ Func _langStrings()
 	_AutoItObject_AddProperty($oMain, "buttonOK")
 	_AutoItObject_AddProperty($oMain, "buttonCancel")
 	_AutoItObject_AddProperty($oMain, "buttonSave")
+	_AutoItObject_AddProperty($oMain, "multiIP", $ELSCOPE_PUBLIC, $oMultiIP)
 
 	;menu
 	_AutoItObject_AddProperty($oMenu, "file", $ELSCOPE_PUBLIC, $oMenuFile)
@@ -222,6 +224,16 @@ Func _langStrings()
 	_AutoItObject_AddProperty($oSettings, "opt2")
 	_AutoItObject_AddProperty($oSettings, "opt3")
 	_AutoItObject_AddProperty($oSettings, "opt4")
+
+	_AutoItObject_AddProperty($oMultiIP, "title")
+	_AutoItObject_AddProperty($oMultiIP, "noIPFound")
+	_AutoItObject_AddProperty($oMultiIP, "exit_")
+	_AutoItObject_AddProperty($oMultiIP, "delete")
+	_AutoItObject_AddProperty($oMultiIP, "addIP")
+	_AutoItObject_AddProperty($oMultiIP, "editIP")
+	_AutoItObject_AddProperty($oMultiIP, "MultiIPprofile")
+	_AutoItObject_AddProperty($oMultiIP, "UseMultiIPprofile")
+
 
 	_AutoItObject_AddProperty($oMessage, "ready")
 	_AutoItObject_AddProperty($oMessage, "timedout")
@@ -413,6 +425,15 @@ Func _setLangStrings($langCode = "en-US", $manualUpdate = False)
 	$oLangStrings.settings.opt2 = Json_Get($jsonData, ".strings.settings.opt2")
 	$oLangStrings.settings.opt3 = Json_Get($jsonData, ".strings.settings.opt3")
 	$oLangStrings.settings.opt4 = Json_Get($jsonData, ".strings.settings.opt4")
+
+	$oLangStrings.multiIP.title = Json_Get($jsonData, ".strings.multiIP.title")
+	$oLangStrings.multiIP.noIPFound = Json_Get($jsonData, ".strings.multiIP.noIPFound")
+	$oLangStrings.multiIP.exit_ = Json_Get($jsonData, ".strings.multiIP.exit_")
+	$oLangStrings.multiIP.delete = Json_Get($jsonData, ".strings.multiIP.delete")
+	$oLangStrings.multiIP.addIP = Json_Get($jsonData, ".strings.multiIP.addIP")
+	$oLangStrings.multiIP.editIP = Json_Get($jsonData, ".strings.multiIP.editIP")
+	$oLangStrings.multiIP.MultiIPprofile = Json_Get($jsonData, ".strings.multiIP.MultiIPprofile")
+	$oLangStrings.multiIP.UseMultiIPprofile = Json_Get($jsonData, ".strings.multiIP.UseMultiIPprofile")
 
 	$oLangStrings.buttonOK = Json_Get($jsonData, ".strings.buttonOK")
 	$oLangStrings.buttonCancel = Json_Get($jsonData, ".strings.buttonCancel")
@@ -612,6 +633,16 @@ Func _getEnglish()
 			'         "opt2":"Close to the system tray",' & _
 			'         "opt3":"Save adapter to profile",' & _
 			'         "opt4":"Automatically check for updates"' & _
+			'      },' & _
+			'      "multiIP":{' & _
+			'         "title":"Settings",' & _
+			'         "noIPFound":"No IP addresses found"' & _
+			'         "exit_":"Exit"' & _
+			'         "delete":"Delete"' & _
+			'         "addIP":"Add..."' & _
+			'         "editIP":"Edit..."' & _
+			'         "MultiIPprofile":"Multi-IP Profile"' & _
+			'         "UseMultiIPprofile":"Use Multi-IP Profile"' & _
 			'      },' & _
 			'      "message":{' & _
 			'         "ready":"Ready",' & _

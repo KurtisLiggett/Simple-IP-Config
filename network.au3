@@ -270,10 +270,10 @@ Func _AdapterMod($oLanConnection, $bEnable = 1)
 			$strEnableVerb = "En&able"
 			$strDisableVerb = "Disa&ble"
 
-			; Français (France)
+			; Franï¿½ais (France)
 		Case StringInStr("040c,080c,0c0c,100c,140c,180c", @OSLang)
 			$strEnableVerb = "&Activer"
-			$strDisableVerb = "&Désactiver"
+			$strDisableVerb = "&Dï¿½sactiver"
 	EndSelect
 
 	; Create virtual folder for Network Connections
@@ -425,3 +425,133 @@ Func _GetAdapters()
 
 	Return $myadapters
 EndFunc   ;==>_GetAdapters
+
+; =============================================================================
+; CORRECTED FUNCTION: Gets ALL IPs using the exact name from the combo box
+; =============================================================================
+Func _GetAllIPv4ForSelectedAdapter()
+	$selected_adapter_name = GUICtrlRead($combo_adapters)
+    Local $aResult[1][2]
+    $aResult[0][0] = 0
+    
+    If $selected_adapter_name = "" Then Return SetError(1, 0, $aResult)
+    
+    Local $wbemFlagReturnImmediately = 0x10
+    Local $wbemFlagForwardOnly = 0x20
+    
+    Local $oWMIService = ObjGet("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
+    If Not IsObj($oWMIService) Then Return SetError(1, 0, $aResult)
+    
+    ; STEP 1: Find the adapter with EXACT name (NetConnectionID)
+    ; NetConnectionID is the name you see in the combo box (e.g., "Wi-Fi", "Ethernet")
+    Local $sQueryAdapter = "SELECT * FROM Win32_NetworkAdapter WHERE " & _
+                           "NetConnectionID = '" & StringReplace($selected_adapter_name, "'", "''") & "'"
+    
+    ConsoleWrite("Query Adapter: " & $sQueryAdapter & @CRLF)
+    
+    Local $colAdapters = $oWMIService.ExecQuery($sQueryAdapter, "WQL", _
+                         $wbemFlagReturnImmediately + $wbemFlagForwardOnly)
+    
+    Global $iInterfaceIndex = -1
+    Local $sAdapterDescription = ""
+    
+    ; Find the InterfaceIndex of the adapter
+    For $oAdapter In $colAdapters
+        $iInterfaceIndex = $oAdapter.InterfaceIndex
+        $sAdapterDescription = $oAdapter.Description
+        ConsoleWrite("Found: Index=" & $iInterfaceIndex & " Desc=" & $sAdapterDescription & @CRLF)
+        ExitLoop
+    Next
+    
+    If $iInterfaceIndex = -1 Then
+        ConsoleWrite("ERROR: Adapter '" & $selected_adapter_name & "' not found!" & @CRLF)
+        Return SetError(1, 0, $aResult)
+    EndIf
+
+    
+    ; STEP 2: Use InterfaceIndex to get the IP configuration
+    Local $sQueryConfig = "SELECT * FROM Win32_NetworkAdapterConfiguration WHERE " & _
+                          "InterfaceIndex = " & $iInterfaceIndex & " AND IPEnabled = True"
+    
+    ConsoleWrite("Query Config: " & $sQueryConfig & @CRLF)
+    
+    Local $colConfigs = $oWMIService.ExecQuery($sQueryConfig, "WQL", _
+                         $wbemFlagReturnImmediately + $wbemFlagForwardOnly)
+    
+    For $oConfig In $colConfigs
+		; DHCP STATUS
+		$g_DHCPEnabled = $oConfig.DHCPEnabled
+        ; Get ALL IPs (it's an array!)
+        Local $aIPs = $oConfig.IPAddress
+        Local $aSubnets = $oConfig.IPSubnet
+        
+        If IsArray($aIPs) And UBound($aIPs) > 0 Then
+			$nIP=UBound($aIPs)-1
+            ConsoleWrite("Total IPs found: " & $nIP & @CRLF)
+            
+            ; Filter only IPv4 addresses
+            Local $aIPv4[1]
+            Local $aIPv4Subnet[1]
+            Local $iIPv4Count = 0
+            
+            For $i = 0 To UBound($aIPs) - 1
+                ; Exclude IPv6 (contains ":")
+                If StringInStr($aIPs[$i], ":") = 0 And $aIPs[$i] <> "" Then
+                    $iIPv4Count += 1
+                    ReDim $aIPv4[$iIPv4Count + 1]
+                    ReDim $aIPv4Subnet[$iIPv4Count + 1]
+                    $aIPv4[$iIPv4Count] = $aIPs[$i]
+                    
+                    ; Corresponding subnet mask
+                    If IsArray($aSubnets) And $i < UBound($aSubnets) Then
+                        $aIPv4Subnet[$iIPv4Count] = $aSubnets[$i]
+                    Else
+                        $aIPv4Subnet[$iIPv4Count] = ""
+                    EndIf
+                EndIf
+            Next
+            
+            If $iIPv4Count > 0 Then
+                ReDim $aResult[$iIPv4Count + 1][2]
+                $aResult[0][0] = $iIPv4Count
+                
+                For $i = 1 To $iIPv4Count
+                    $aResult[$i][0] = $aIPv4[$i]
+                    $aResult[$i][1] = $aIPv4Subnet[$i]
+                    ConsoleWrite("IPv4 " & $i & ": " & $aResult[$i][0] & " / " & $aResult[$i][1] & @CRLF)
+                Next
+            EndIf
+        EndIf
+    Next
+    
+    If $aResult[0][0] = 0 Then Return SetError(1, 0, $aResult)
+    
+    Return $aResult
+EndFunc
+; =============================================================================
+; FUNCTION: _RefreshMultiIPList()
+; Aggiorna la ListView con i dati aggiornati da $listIP
+; =============================================================================
+Func _RefreshMultiIPList()
+    ; Cancella tutti gli elementi uno per uno (dal basso verso l'alto)
+	ConsoleWrite("Refreshing Multi-IP ListView..." & @CRLF)
+	
+	_GUICtrlListView_DeleteAllItems($lbox_MultiIP)
+    
+    ; Verifica che sia vuota
+    ConsoleWrite("Items remaining: " & _GUICtrlListView_GetItemCount($lbox_MultiIP) & @CRLF)
+    
+    ; Get fresh IP data
+    $listIP = _GetAllIPv4ForSelectedAdapter()
+    
+    ; Repopulate
+    If IsArray($listIP) And $listIP[0][0] > 0 Then
+        For $i = 1 To $listIP[0][0]
+            GUICtrlCreateListViewItem($listIP[$i][0] & "|" & $listIP[$i][1], $lbox_MultiIP)
+        Next
+        _GUICtrlListView_SetItemSelected($lbox_MultiIP, 0)
+    Else
+        GUICtrlCreateListViewItem($oLangStrings.multiIP.noIPFound, $lbox_MultiIP)
+    EndIf
+EndFunc
+

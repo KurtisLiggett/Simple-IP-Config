@@ -154,6 +154,16 @@
          "opt3":"Adapter in Profil speichern",
          "opt4":"Automatisch auf Aktualisierungen prüfen"
       },
+      "multiIP":{
+            "title":"Multi-IP-Einstellungen",
+            "noIPFound":"Keine IP-Adressen gefunden",
+            "exit_":"Ausfahrt",
+            "delete":"Löschen",
+            "addIP":"hinzufügen...",
+            "editIP":"Bearbeiten...",
+            "MultiIPprofile":"Multi-IP Profil",
+            "UseMultiIPprofile":"Multi-IP-Profil verwenden"
+         },
       "message":{
          "ready":"Bereit",
          "timedout":"Zeitüberschreitung!  Befehl abgebrochen.",

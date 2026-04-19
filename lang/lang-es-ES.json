@@ -154,6 +154,16 @@
          "opt3":"Guardar adaptador en perfil",
          "opt4":"Buscar actualizaciones automáticamente"
       },
+      "multiIP":{
+         "title":"Configuración multi-IP",
+         "noIPFound":"No se encontraron direcciones IP",
+         "exit_":"Salir",
+         "delete":"Eliminar",
+         "addIP":"Agregar...",
+         "editIP":"Editar...",
+         "MultiIPprofile":"Perfil Multi-IP",
+         "UseMultiIPprofile":"Usar perfil Multi-IP"
+      },
       "message":{
          "ready":"Listo",
          "timedout":"¡Se agotó el tiempo de acción! Comando abortado.",

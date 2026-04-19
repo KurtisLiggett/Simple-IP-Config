@@ -155,6 +155,17 @@
          "opt3":"Salvează adaptorul în profil",
          "opt4":"Verificare automată actualizări"
       },
+      "multiIP":{
+         "title":"Setări Multi-IP",
+         "noIPFound":"Nu s-au găsit adrese IP",
+         "exit_":"Ieșire",
+         "delete":"Șterge",
+         "addIP":"Adaugă IP",
+         "editIP":"Editează IP",
+         "MultiIPprofile":"Profil Multi-IP",
+         "UseMultiIPprofile":"Folosește Profil Multi-IP"
+      },
+
       "message":{
          "ready":"Pregătit",
          "timedout":"Acțiunea a expirat!  Comandă anulată.",

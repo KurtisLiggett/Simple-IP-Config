@@ -492,8 +492,35 @@ Func _form_main()
 
 	$yText_offset = $y + 6 * $dscale
 	$textSpacer = 9 * $dscale
+	;multi-ip button
+	
+	$yMultiIPButton = $tbarHeight * $dscale + $guiSpacer + $y_offset + 9 * $dscale + 28 * $dscale
+	$xMultiIPButton = $x + 306 * $dscale
+	$wMultiIPButton = 80*$dscale
+	$hMultiIPButton = 30*$dscale
+
+	$yMultiIP_profileButton = $yText_offset - 1 * $dscale
+	$xMultiIP_profileButton = $x + 296 * $dscale
+	$wMultiIP_profileButton = 90*$dscale
+	$hMultiIP_profileButton = 30*$dscale
+	$y_ck_multiip_profile = $yText_offset + 30 * $dscale
+	$x_ck_multiip_profile = $x + 280 * $dscale
 
 	GUIStartGroup()
+
+	;checkbox for multi ip profile
+	$ck_MultiIP_profile = GUICtrlCreateCheckbox("", $x_ck_multiip_profile, $y_ck_multiip_profile, 15 * $dscale, 15 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)  ; Sfondo trasparente
+	GUICtrlSetResizing(-1, $GUI_ONTOP)
+	GUICtrlSetOnEvent(-1, "_onCheckboxMultiIP_profile2")
+	$ck_MultiIP_profileLabel = GUICtrlCreateLabel($oLangStrings.multiIP.UseMultiIPprofile, $x_ck_multiip_profile + 15 * $dscale, $y_ck_multiip_profile, 125 * $dscale, 15 * $dscale)
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)  ; Sfondo trasparente
+	GUICtrlSetResizing(-1, $GUI_ONTOP)
+	GUICtrlSetFont(-1, 8.5)
+	GUICtrlSetOnEvent(-1, "_onCheckboxMultiIP_profile")
+
 	$radio_IpAuto = GUICtrlCreateRadio("", $x + 8 * $dscale, $yText_offset, 15 * $dscale, 20 * $dscale)
 	GUICtrlSetOnEvent(-1, "_onRadioIpAuto")
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
@@ -507,6 +534,20 @@ Func _form_main()
 	GUICtrlSetOnEvent(-1, "_onRadioIpMan")
 	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
 	GUICtrlSetState(-1, $GUI_CHECKED)
+	;$buttonMultiIP = GuiFlatButton_Create("Multi IP", $xMultiIPButton, $yMultiIPButton, $wMultiIPButton, $hMultiIPButton)
+	$buttonMultiIP = GUICtrlCreateButton("Multi IP", $xMultiIPButton, $yMultiIPButton, $wMultiIPButton, $hMultiIPButton)
+	GUICtrlSetOnEvent(-1, "_onMultiIP")
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)  ; Sfondo trasparente
+	GUICtrlSetState(-1, $GUI_ONTOP)
+	Global $buttonMultiIP_profile = GUICtrlCreateButton($oLangStrings.multiIP.MultiIPprofile, $xMultiIP_profileButton, $yMultiIP_profileButton, $wMultiIP_profileButton, $hMultiIP_profileButton)
+	GUICtrlSetOnEvent(-1, "_onMultiIP_profile")
+	GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKSIZE)
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)  ; Sfondo trasparente
+	GUICtrlSetState(-1, $GUI_ONTOP)
+	GUICtrlSetState(-1, $GUI_DISABLE)
+	
+	
 
 	$yText_offset = $y
 	$textSpacer = 17 * $dscale

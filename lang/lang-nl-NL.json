@@ -154,6 +154,18 @@
          "opt3":"Sla adapter op in profiel",
          "opt4":"Automatisch controleren op updates"
       },
+      "multiIP":{
+         "title":"Multi-IP Profiel",
+         "noIPFound":"Geen IP adressen gevonden",
+         "exit_":"Afsluiten",
+         "delete":"Verwijderen",
+         "addIP":"Toevoegen...",
+         "editIP":"Bewerken...",
+         "MultiIPprofile":"Multi-IP Profiel",
+         "UseMultiIPprofile":"Gebruik Multi-IP Profiel"
+         
+      },
+
       "message":{
          "ready":"Klaar",
          "timedout":"Actie timed out!  Commando afgebroken.",

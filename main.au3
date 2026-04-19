@@ -1,5 +1,6 @@
 #AutoIt3Wrapper_Run_Au3Stripper=y
 #Au3Stripper_Parameters=/MO
+#AutoIt3Wrapper_Change2CUI=y
 
 #Region license
 ; -----------------------------------------------------------------------------
@@ -61,6 +62,8 @@
 #include <Date.au3>
 #include <Inet.au3>
 #include <File.au3>
+#include <GUIConstantsEx.au3>
+#include <GuiButton.au3>
 
 #include "libraries\GetInstalledPath.au3"
 #include "libraries\AutoItObject.au3"
@@ -176,12 +179,13 @@ Global $button_New, $button_Save, $button_Delete, $menuLineBottom, $menuLineRigh
 
 Global $headingSelect, $headingProfiles, $headingIP, $headingCurrent
 Global $label_CurrIp, $label_CurrSubnet, $label_CurrGateway, $label_CurrDnsPri, $label_CurrDnsAlt, $label_CurrDhcp, $label_CurrAdapterState
-Global $radio_IpAutoLabel, $radio_IpManLabel, $radio_DnsAutoLabel, $radio_DnsmanLabel, $ck_dnsRegLabel
+Global $radio_IpAutoLabel, $radio_IpManLabel, $radio_DnsAutoLabel, $radio_DnsmanLabel, $ck_dnsRegLabel, $ck_MultiIP_profile, $ck_MultiIP_profileLabel
 Global $label_DnsPri, $label_DnsAlt, $ck_dnsReg, $label_ip, $label_subnet, $label_gateway
 Global $buttonCopyIp, $buttonPasteIp, $buttonCopySubnet, $buttonPasteSubnet, $buttonCopyGateway, $buttonPasteGateway
 Global $buttonRefresh, $buttonCopyDnsPri, $buttonPasteDnsPri, $buttonCopyDnsAlt, $buttonPasteDnsAlt
 Global $searchgraphic, $filter_background, $filter_border, $lvBackground, $statusbar_background, $profilebuttons_background
 Global $currentInfoBox, $setInfoBox
+Global $g_iEditIndexProfile,$g_DHCPEnabled 
 
 ; TOOLBAR
 Global $oToolbar, $oToolbar2, $tbButtonApply
@@ -213,6 +217,12 @@ Global $oLangStrings
 #include "forms\_form_update.au3"
 #include "forms\_form_restart.au3"
 #include "forms\_form_error.au3"
+#include "forms\_form_multi_ip.au3"
+#include "forms\_form_add_ip.au3"
+#include "forms\_form_edit_ip.au3"
+#include "forms\_form_multi_ip_profile.au3"
+#include "forms\_form_add_ip_profile.au3"
+#include "forms\_form_edit_ip_profile.au3"
 #include "cli.au3"
 
 #Region PROGRAM CONTROL
@@ -276,6 +286,7 @@ Func _main()
 	;get list of adapters and current IP info
 	_loadAdapters()
 	_print("load adapters")
+	
 
 	;watch for new program instances
 	GUIRegisterMsg($iMsg, '_NewInstance')

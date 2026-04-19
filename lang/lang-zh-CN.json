@@ -154,6 +154,17 @@
          "opt3":"保存到配置",
          "opt4":"自动检查更新"
       },
+         "multiIP":{
+             "title":"Multi-IP 设置",
+             "noIPFound":"未找到IP地址",,
+             "exit_":"退出",
+             "delete":"删除",
+             "addIP":"添加...",
+             "editIP":"编辑...",
+             "MultiIPprofile":"Multi-IP 配置文件",
+             "UseMultiIPprofile":"使用 Multi-IP 配置文件"
+         },
+
       "message":{
          "ready":"已完成",
          "timedout":"操作超时！命令已中止。",

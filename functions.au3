@@ -22,6 +22,7 @@
 ;==============================================================================
 Global $oMyError = ObjEvent("AutoIt.Error", "MyErrFunc")
 Global $suppressComError = 0
+Global $gExtraIPSubnetList = ""
 
 Func MyErrFunc($oError)
 	If Not $suppressComError Then
@@ -536,22 +537,28 @@ EndFunc   ;==>_iniMove
 ;------------------------------------------------------------------------------
 Func _radios()
 	If GUICtrlRead($radio_IpAuto) = $GUI_CHECKED Then
-		GUICtrlSetState($radio_DnsAuto, $GUI_ENABLE)
+		;GUICtrlSetState($radio_DnsAuto, $GUI_ENABLE)
 		WinSetState($ip_Ip, "", @SW_DISABLE)
 		WinSetState($ip_Subnet, "", @SW_DISABLE)
 		WinSetState($ip_Gateway, "", @SW_DISABLE)
 		GUICtrlSetState($label_ip, $GUI_DISABLE)
 		GUICtrlSetState($label_subnet, $GUI_DISABLE)
 		GUICtrlSetState($label_gateway, $GUI_DISABLE)
+		GUICtrlSetState($buttonMultiIP_profile, $GUI_DISABLE)
+		GUICtrlSetState($ck_MultiIP_profile, $GUI_DISABLE)
+		GUICtrlSetState($ck_MultiIP_profile,$GUI_UNCHECKED)
+		GUICtrlSetState($ck_MultiIP_profileLabel, $GUI_DISABLE)
 	Else
 		GUICtrlSetState($radio_DnsMan, $GUI_CHECKED)
-		GUICtrlSetState($radio_DnsAuto, $GUI_DISABLE)
+		;GUICtrlSetState($radio_DnsAuto, $GUI_DISABLE)
 		WinSetState($ip_Ip, "", @SW_ENABLE)
 		WinSetState($ip_Subnet, "", @SW_ENABLE)
 		WinSetState($ip_Gateway, "", @SW_ENABLE)
 		GUICtrlSetState($label_ip, $GUI_ENABLE)
 		GUICtrlSetState($label_subnet, $GUI_ENABLE)
 		GUICtrlSetState($label_gateway, $GUI_ENABLE)
+		GUICtrlSetState($ck_MultiIP_profile, $GUI_ENABLE)
+		GUICtrlSetState($ck_MultiIP_profileLabel, $GUI_ENABLE)
 	EndIf
 
 	If GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED Then
@@ -560,224 +567,497 @@ Func _radios()
 		GUICtrlSetState($label_dnsPri, $GUI_DISABLE)
 		GUICtrlSetState($label_dnsAlt, $GUI_DISABLE)
 		GUICtrlSetState($ck_dnsReg, $GUI_DISABLE)
+		GUICtrlSetState($ck_dnsRegLabel, $GUI_DISABLE)
 	Else
 		WinSetState($ip_DnsPri, "", @SW_ENABLE)
 		WinSetState($ip_DnsAlt, "", @SW_ENABLE)
 		GUICtrlSetState($label_dnsPri, $GUI_ENABLE)
 		GUICtrlSetState($label_dnsAlt, $GUI_ENABLE)
 		GUICtrlSetState($ck_dnsReg, $GUI_ENABLE)
+		GUICtrlSetState($ck_dnsRegLabel, $GUI_ENABLE)
 	EndIf
 EndFunc   ;==>_radios
 
+; =============================================================================
+; FUNCTION: _apply_GUI()
+; Reads values from GUI controls and applies network configuration
+; =============================================================================
 Func _apply_GUI()
-	$dhcp = (GUICtrlRead($radio_IpAuto) = $GUI_CHECKED) ? "true" : "false"
-	$ip = _ctrlGetIP($ip_Ip)
-	$subnet = _ctrlGetIP($ip_Subnet)
-	$gateway = _ctrlGetIP($ip_Gateway)
-	$dnsDhcp = (GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED) ? "true" : "false"
-	$dnsp = _ctrlGetIP($ip_DnsPri)
-	$dnsa = _ctrlGetIP($ip_DnsAlt)
-	$dnsreg = (BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED) ? "true" : "false"
-	$adapter = GUICtrlRead($combo_adapters)
+    ConsoleWrite("========================================" & @CRLF)
+    ConsoleWrite(">>> _apply_GUI() STARTED" & @CRLF)
+    ConsoleWrite("========================================" & @CRLF)
 
-	_apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $adapter, RunCallback)
+    ; Read IP configuration mode from radio buttons
+    $dhcp = (GUICtrlRead($radio_IpAuto) = $GUI_CHECKED) ? "true" : "false"
+    ConsoleWrite("DHCP mode (IP): " & $dhcp & @CRLF)
+    
+    ; Read IP address, subnet mask and gateway from input controls
+    $ip = _ctrlGetIP($ip_Ip)
+    $subnet = _ctrlGetIP($ip_Subnet)
+    $gateway = _ctrlGetIP($ip_Gateway)
+    ConsoleWrite("Primary IP: " & $ip & @CRLF)
+    ConsoleWrite("Subnet mask: " & $subnet & @CRLF)
+    ConsoleWrite("Gateway: " & $gateway & @CRLF)
+    
+    ; Read DNS configuration mode from radio buttons
+    $dnsDhcp = (GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED) ? "true" : "false"
+    ConsoleWrite("DHCP mode (DNS): " & $dnsDhcp & @CRLF)
+    
+    ; Read DNS servers from input controls
+    $dnsp = _ctrlGetIP($ip_DnsPri)
+    $dnsa = _ctrlGetIP($ip_DnsAlt)
+    ConsoleWrite("Primary DNS: " & $dnsp & @CRLF)
+    ConsoleWrite("Secondary DNS: " & $dnsa & @CRLF)
+    
+    ; Read DNS registration checkbox state
+    $dnsreg = (BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED) ? "true" : "false"
+    ConsoleWrite("DNS registration: " & $dnsreg & @CRLF)
+    
+    ; Read selected adapter from combo box
+    $adapter = GUICtrlRead($combo_adapters)
+    ConsoleWrite("Selected adapter: " & $adapter & @CRLF)
+    
+    ConsoleWrite(">>> Calling _apply() function" & @CRLF)
+	; Check if Multi IP Profile is enabled
+    Local $bUseMultiIP = (GUICtrlRead($ck_MultiIP_profile) = $GUI_CHECKED)
+
+	; list of additional IP/subnet pairs for multi-IP profile 
+	Local $listIPSubnets = $listIP_profile
+    
+    ; Call the main apply function
+    _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $bUseMultiIP, $listIPSubnets, $adapter, RunCallback)
+    
+    ConsoleWrite(">>> _apply_GUI() COMPLETED" & @CRLF)
+    ConsoleWrite("========================================" & @CRLF & @CRLF)
 EndFunc   ;==>_apply_GUI
 
 
-;------------------------------------------------------------------------------
-; Title...........: _apply
-; Description.....: Apply the selected profile to the selected adapter
+; =============================================================================
+; FUNCTION: _apply()
+; Apply the selected profile to the selected adapter using netsh commands
+; 
+; Parameters:
+;   $dhcp     - "true" for DHCP, "false" for static IP
+;   $ip       - IP address (for static mode)
+;   $subnet   - Subnet mask (for static mode)
+;   $gateway  - Default gateway (optional)
+;   $dnsDhcp  - "true" for DHCP DNS, "false" for static DNS
+;   $dnsp     - Primary DNS server
+;   $dnsa     - Secondary DNS server
+;   $dnsreg   - "true" to register DNS, "false" otherwise
+;   $bUseMultiIP - "true" to use multi-IP profile, "false" otherwise
+;	$listIPSubnets - List of additional IP/subnet pairs for multi-IP profile (format: "IP1|Subnet1;IP2|Subnet2;...")
+;   $adapter  - Name of the network adapter
+;   $Callback - Function to call after completion
 ;
-; Parameters......:
-; Return value....: 0  -success
-;                   1  -no adapter is selected
-;------------------------------------------------------------------------------
+; Return value: 0 on success, 1 on error
+; =============================================================================
 ; MUST BE TESTED VERY CAREFULLY
-Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $adapter, $Callback)
-	If $adapter = "" Then
-		_setStatus($oLangStrings.message.selectAdapter, 1)
-		Return 1
-	EndIf
+Func _apply($dhcp, $ip, $subnet, $gateway, $dnsDhcp, $dnsp, $dnsa, $dnsreg, $bUseMultiIP, $listIPSubnets, $adapter, $Callback)
+    
+    ; Check if an adapter is selected
+    If $adapter = "" Then
+        ConsoleWrite("ERROR: No adapter selected!" & @CRLF)
+        _setStatus($oLangStrings.message.selectAdapter, 1)
 
-	$cmd1 = 'netsh interface ip set address '
-	$cmd2 = '"' & $adapter & '"'
-	$cmd3 = ""
-	$message = ""
-	If ($dhcp = "true") Then
-		$cmd3 = " dhcp"
-		$message = "Setting DHCP..."
-	Else
-		If $ip = "" Then
-			_setStatus($oLangStrings.message.enterIP, 1)
-			Return 1
-		ElseIf $subnet = "" Then
-			_setStatus($oLangStrings.message.enterSubnet, 1)
-			Return 1
-		Else
-			If $gateway = "" Then
-				$cmd3 = " static " & $ip & " " & $subnet & " none"
-			Else
-				$cmd3 = " static " & $ip & " " & $subnet & " " & $gateway & " 1"
-			EndIf
-			$message = $oLangStrings.message.settingIP
-		EndIf
-	EndIf
-	;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
-	;(cmd, callback, description)
-	asyncRun($cmd1 & $cmd2 & $cmd3, $Callback, $message)
+        Return 1
+    EndIf
+    
+    ConsoleWrite("========================================" & @CRLF)
+    ConsoleWrite(">>> _apply() STARTED" & @CRLF)
+    ConsoleWrite("Adapter: " & $adapter & @CRLF)
+    ConsoleWrite("========================================" & @CRLF)
 
-	$cmd1 = ''
-	$cmd1_1 = 'netsh interface ip set dns '
-	$cmd1_2 = 'netsh interface ip add dns '
-	$cmd1_3 = 'netsh interface ip delete dns '
-	$cmd2 = '"' & $adapter & '"'
-	$cmd3 = ""
-	$cmdend = ""
-	$message = ""
-	$cmdReg = ""
-	If ($dnsDhcp = "true") Then
-		$cmd1 = $cmd1_1
-		$cmd3 = " dhcp"
-		$message = $oLangStrings.message.settingDnsDhcp
-		;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
-		;(cmd, callback, description)
-		asyncRun($cmd1 & $cmd2 & $cmd3, $Callback, $message)
+    ; ============================================================
+    ; SECTION 1: Configure IP ADDRESS
+    ; ============================================================
+    ConsoleWrite("--- SECTION 1: Configuring IP Address ---" & @CRLF)
+    
+    ; Build the netsh command for IP configuration
+    $cmd1 = 'netsh interface ip set address '
+    $cmd2 = '"' & $adapter & '"'
+    $cmd3 = ""
+    $message = ""
+
+    If ($dhcp = "true") Then
+        ; DHCP mode: obtain IP automatically
+        $cmd3 = " dhcp"
+        $message = "Setting DHCP..."
+        ConsoleWrite("Command: IP = DHCP" & @CRLF)
+    Else
+        ; Static IP mode: validate and set static IP
+        If $ip = "" Then
+            ConsoleWrite("ERROR: IP address is empty!" & @CRLF)
+            _setStatus($oLangStrings.message.enterIP, 1)
+            Return 1
+        ElseIf $subnet = "" Then
+            ConsoleWrite("ERROR: Subnet mask is empty!" & @CRLF)
+            _setStatus($oLangStrings.message.enterSubnet, 1)
+            Return 1
+        Else
+            If $gateway = "" Then
+                $cmd3 = " static " & $ip & " " & $subnet & " none"
+                ConsoleWrite("Command: IP = " & $ip & " / " & $subnet & " (no gateway)" & @CRLF)
+            Else
+                $cmd3 = " static " & $ip & " " & $subnet & " " & $gateway & " 1"
+                ConsoleWrite("Command: IP = " & $ip & " / " & $subnet & " / gateway = " & $gateway & @CRLF)
+            EndIf
+            $message = $oLangStrings.message.settingIP
+        EndIf
+    EndIf
+    
+    ConsoleWrite("Executing netsh command for IP: " & $cmd1 & $cmd2 & $cmd3 & @CRLF)
+    
+    ; Execute the netsh command asynchronously
+    asyncRun($cmd1 & $cmd2 & $cmd3, $Callback, $message)
+    ConsoleWrite("IP command sent asynchronously" & @CRLF)
+    ConsoleWrite("--- IP Configuration Complete ---" & @CRLF)
+
+    ; ============================================================
+    ; SECTION 2: Configure DNS
+    ; ============================================================
+    ConsoleWrite("--- SECTION 2: Configuring DNS ---" & @CRLF)
+    
+    ; Initialize variables for DNS configuration
+    $cmd1 = ''
+    $cmd1_1 = 'netsh interface ip set dns '
+    $cmd1_2 = 'netsh interface ip add dns '
+    $cmd1_3 = 'netsh interface ip delete dns '
+    $cmd2 = '"' & $adapter & '"'
+    $cmd3 = ""
+    $cmdend = ""
+    $message = ""
+    $cmdReg = ""
+    
+    If ($dnsDhcp = "true") Then
+        ; DNS DHCP mode: obtain DNS automatically
+        $cmd1 = $cmd1_1
+        $cmd3 = " dhcp"
+        $message = $oLangStrings.message.settingDnsDhcp
+        ConsoleWrite("DNS mode: DHCP" & @CRLF)
+        ConsoleWrite("Executing netsh command: " & $cmd1 & $cmd2 & $cmd3 & @CRLF)
+        
+        ; Execute DNS command asynchronously
+        asyncRun($cmd1 & $cmd2 & $cmd3, $Callback, $message)
+        ConsoleWrite("DNS DHCP command sent asynchronously" & @CRLF)
+    Else
+        ; Static DNS mode: set static DNS servers
+        ConsoleWrite("DNS mode: Static" & @CRLF)
+        
+        ; Set DNS registration mode
+        If $dnsreg = "true" Then
+            $cmdReg = "both"
+            ConsoleWrite("DNS registration: enabled (both)" & @CRLF)
+        Else
+            $cmdReg = "none"
+            ConsoleWrite("DNS registration: disabled (none)" & @CRLF)
+        EndIf
+        
+        ; Case 1: Primary DNS is provided
+        If $dnsp <> "" Then
+            ConsoleWrite("Setting primary DNS: " & $dnsp & @CRLF)
+            $cmd1 = $cmd1_1
+            $cmd3 = " static " & $dnsp
+            $message = $oLangStrings.message.settingDnsPref
+            $cmdend = (_OSVersion() >= 6) ? " " & $cmdReg & " no" : "$cmdReg"
+            ConsoleWrite("Executing netsh command: " & $cmd1 & $cmd2 & $cmd3 & $cmdend & @CRLF)
+            
+            ; Execute primary DNS command
+            asyncRun($cmd1 & $cmd2 & $cmd3 & $cmdend, $Callback, $message)
+            ConsoleWrite("Primary DNS command sent asynchronously" & @CRLF)
+            
+            ; Case 1b: Secondary DNS is also provided
+            If $dnsa <> "" Then
+                ConsoleWrite("Setting secondary DNS: " & $dnsa & @CRLF)
+                $cmd1 = $cmd1_2
+                $cmd3 = " " & $dnsa
+                $message = $oLangStrings.message.settingDnsAlt
+                $cmdend = (_OSVersion() >= 6) ? " 2 no" : ""
+                ConsoleWrite("Executing netsh command: " & $cmd1 & $cmd2 & $cmd3 & $cmdend & @CRLF)
+                
+                ; Execute secondary DNS command
+                asyncRun($cmd1 & $cmd2 & $cmd3 & $cmdend, $Callback, $message)
+                ConsoleWrite("Secondary DNS command sent asynchronously" & @CRLF)
+            EndIf
+            
+        ; Case 2: Only secondary DNS is provided (use as primary)
+        ElseIf $dnsa <> "" Then
+            ConsoleWrite("WARNING: Only secondary DNS provided, using as primary: " & $dnsa & @CRLF)
+            $cmd1 = $cmd1_1
+            $cmd3 = " static " & $dnsa
+            $message = $oLangStrings.message.settingDnsPref
+            $cmdend = (_OSVersion() >= 6) ? " " & $cmdReg & " no" : "$cmdReg"
+            ConsoleWrite("Executing netsh command: " & $cmd1 & $cmd2 & $cmd3 & $cmdend & @CRLF)
+            
+            ; Execute DNS command
+            asyncRun($cmd1 & $cmd2 & $cmd3 & $cmdend, $Callback, $message)
+            ConsoleWrite("DNS command sent asynchronously" & @CRLF)
+            
+        ; Case 3: No DNS servers provided - delete all existing DNS entries
+        Else
+            ConsoleWrite("WARNING: No DNS servers provided, deleting all DNS entries" & @CRLF)
+            $cmd1 = $cmd1_3
+            $cmd3 = " all"
+            $message = "Deleting DNS servers..."
+            ConsoleWrite("Executing netsh command: " & $cmd1 & $cmd2 & $cmd3 & @CRLF)
+            
+            ; Execute delete DNS command
+            asyncRun($cmd1 & $cmd2 & $cmd3, $Callback, $message)
+            ConsoleWrite("Delete DNS command sent asynchronously" & @CRLF)
+        EndIf
+    EndIf
+    
+    ConsoleWrite("--- DNS Configuration Complete ---" & @CRLF)
+    ConsoleWrite(">>> _apply() COMPLETED" & @CRLF)
+    ConsoleWrite("========================================" & @CRLF & @CRLF)
+	IF $bUseMultiIP Then
+		ConsoleWrite("Using Multi-IP Profile" & @CRLF)
+		_AddSecondaryIPsFromProfile($adapter, $listIPSubnets, $ip)
 	Else
-		If $dnsreg = "true" Then
-			$cmdReg = "both"
-		Else
-			$cmdReg = "none"
-		EndIf
-		If $dnsp <> "" Then
-			$cmd1 = $cmd1_1
-			$cmd3 = " static " & $dnsp
-			$message = $oLangStrings.message.settingDnsPref
-			$cmdend = (_OSVersion() >= 6) ? " " & $cmdReg & " no" : "$cmdReg"
-			;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
-			;(cmd, callback, description)
-			asyncRun($cmd1 & $cmd2 & $cmd3 & $cmdend, $Callback, $message)
-			If $dnsa <> "" Then
-				$cmd1 = $cmd1_2
-				$cmd3 = " " & $dnsa
-				$message = $oLangStrings.message.settingDnsAlt
-				$cmdend = (_OSVersion() >= 6) ? " 2 no" : ""
-				;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
-				;(cmd, callback, description)
-				asyncRun($cmd1 & $cmd2 & $cmd3 & $cmdend, $Callback, $message)
-			EndIf
-		ElseIf $dnsa <> "" Then
-			$cmd1 = $cmd1_1
-			$cmd3 = " static " & $dnsp
-			$message = $oLangStrings.message.settingDnsPref
-			$cmdend = (_OSVersion() >= 6) ? " " & $cmdReg & " no" : "$cmdReg"
-			;_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
-			;(cmd, callback, description)
-			asyncRun($cmd1 & $cmd2 & $cmd3 & $cmdend, $Callback, $message)
-		Else
-			$cmd1 = $cmd1_3
-			$cmd3 = " all"
-			$message = "Deleting DNS servers..."
-			;_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
-			;(cmd, callback, description)
-			asyncRun($cmd1 & $cmd2 & $cmd3, $Callback, $message)
-		EndIf
+		ConsoleWrite("Not using Multi-IP Profile" & @CRLF)
 	EndIf
 
 EndFunc   ;==>_apply
 
-;Func _OLDapply()
-;	$selected_adapter = GUICtrlRead($combo_adapters)
-;	If $selected_adapter = "" Then
-;		_setStatus($oLangStrings.message.selectAdapter, 1)
-;		Return 1
-;	Endif
-;
-;	$ip = ""
-;	$subnet = ""
-;	$gateway = ""
-;
-;	$dhcp = (GUICtrlRead($radio_IpAuto) = $GUI_CHECKED)?1:0
-;	$cmd1 = 'netsh interface ip set address '
-;	$cmd2 = '"' & $selected_adapter & '"'
-;	$cmd3 = ""
-;	$message = ""
-;	if $dhcp Then
-;		$cmd3 = " dhcp"
-;		$message = "Setting DHCP..."
-;	Else
-;		$ip = _ctrlGetIP( $ip_Ip )
-;		$subnet = _ctrlGetIP( $ip_Subnet )
-;		$gateway = _ctrlGetIP( $ip_Gateway )
-;		If $ip = "" Then
-;			_setStatus("Please enter an IP address", 1)
-;			Return 1
-;		ElseIf $subnet = "" Then
-;			_setStatus("Please enter a subnet mask", 1)
-;			Return 1
-;		Else
-;			If $gateway = "" Then
-;				$cmd3 = " static " & $ip & " " & $subnet & " none"
-;			Else
-;				$cmd3 = " static " & $ip & " " & $subnet & " " & $gateway & " 1"
-;			EndIf
-;			$message = $oLangStrings.message.settingIP
-;		EndIf
-;	EndIf
-;	_asyncNewCmd($cmd1&$cmd2&$cmd3, $message)
-;
-;	$dnsp = ""
-;	$dnsa = ""
-;
-;	$dnsDhcp = (GUICtrlRead($radio_DnsAuto) = $GUI_CHECKED)?1:0
-;	$cmd1 = ''
-;	$cmd1_1 = 'netsh interface ip set dns '
-;	$cmd1_2 = 'netsh interface ip add dns '
-;	$cmd1_3 = 'netsh interface ip delete dns '
-;	$cmd2 = '"' & $selected_adapter & '"'
-;	$cmd3 = ""
-;	$cmdend = ""
-;	$message = ""
-;	$cmdReg = ""
-;	if $dnsDhcp Then
-;		$cmd1 = $cmd1_1
-;		$cmd3 = " dhcp"
-;		$message = "Setting DNS DHCP..."
-;		_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
-;	Else
-;		$dnsp = _ctrlGetIP( $ip_DnsPri )
-;		$dnsa = _ctrlGetIP( $ip_DnsAlt )
-;		If BitAND(GUICtrlRead($ck_dnsReg), $GUI_CHECKED) = $GUI_CHECKED Then
-;			$cmdReg = "both"
-;		Else
-;			$cmdReg = "none"
-;		EndIf
-;		If $dnsp <> "" Then
-;			$cmd1 = $cmd1_1
-;			$cmd3 = " static " & $dnsp
-;			$message = "Setting preferred DNS server..."
-;			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
-;			_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
-;			If $dnsa <> "" Then
-;				$cmd1 = $cmd1_2
-;				$cmd3 = " " & $dnsa
-;				$message = "Setting alternate DNS server..."
-;				$cmdend = (_OSVersion() >= 6)?" 2 no":""
-;				_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
-;			EndIf
-;		ElseIf $dnsa <> "" Then
-;			$cmd1 = $cmd1_1
-;			$cmd3 = " static " & $dnsp
-;			$message = "Setting preferred DNS server..."
-;			$cmdend = (_OSVersion() >= 6)?" " & $cmdReg & " no":"$cmdReg"
-;			_asyncNewCmd($cmd1&$cmd2&$cmd3&$cmdend, $message, 1)
-;		Else
-;			$cmd1 = $cmd1_3
-;			$cmd3 = " all"
-;			$message = "Deleting DNS servers..."
-;			_asyncNewCmd($cmd1&$cmd2&$cmd3, $message, 1)
-;		EndIf
-;	EndIf
-;EndFunc
+; =============================================================================
+; FUNCTION: _AddSecondaryIPsFromProfile()
+; Adds all IPs from the profile list to the current adapter
+; =============================================================================
+Func _AddSecondaryIPsFromProfile($sAdapterName, $aIPList, $sPrimaryIP = "")
+    ; Disable window during operation
+    GUISetState(@SW_DISABLE, $hgui)
+    GUISetCursor(15, 1, $hgui)
+    ConsoleWrite(">>> _AddSecondaryIPsFromProfile() - Adapter: " & $sAdapterName & @CRLF)
+    
+    ; Validate inputs
+    If $sAdapterName = "" Then
+        ConsoleWrite("ERROR: No adapter specified" & @CRLF)
+		;Re-enable window before returning
+		GUISetState(@SW_ENABLE, $hgui)
+    	GUISetCursor(2, 1, $hgui)
+        Return -1
+    EndIf
+    
+    If Not IsArray($aIPList) Then
+        ConsoleWrite("ERROR: IP list is not a valid array" & @CRLF)
+		;Re-enable window before returning
+		GUISetState(@SW_ENABLE, $hgui)
+    	GUISetCursor(2, 1, $hgui)
+        Return -1
+    EndIf
+    
+    If $aIPList[0][0] = 0 Then
+        ConsoleWrite("INFO: Profile list is empty" & @CRLF)
+		;Re-enable window before returning
+		GUISetState(@SW_ENABLE, $hgui)
+    	GUISetCursor(2, 1, $hgui)
+        Return 0
+    EndIf
+    
+    ConsoleWrite("Found " & $aIPList[0][0] & " IP(s) to add" & @CRLF)
+    
+    Local $iSuccessCount = 0
+    
+    For $i = 1 To $aIPList[0][0]
+        
+        Local $sIP = $aIPList[$i][0]
+        Local $sSubnet = $aIPList[$i][1]
+        
+        ; Validate IP
+        If $sIP = "" Or $sIP = "0.0.0.0" Then
+            ConsoleWrite("SKIP: Invalid IP at index " & $i & @CRLF)
+            ContinueLoop
+        EndIf
+        
+        ; Set default subnet if needed
+        If $sSubnet = "" Or $sSubnet = "0.0.0.0" Then
+            $sSubnet = "255.255.255.0"
+        EndIf
+        
+        ; Skip if same as primary IP
+        If $sPrimaryIP <> "" And $sIP = $sPrimaryIP Then
+            ConsoleWrite("SKIP: IP same as primary: " & $sIP & @CRLF)
+            ContinueLoop
+        EndIf
+        
+        ; Add secondary IP
+        Local $sAddCmd = 'netsh interface ip add address "' & $sAdapterName & '" addr=' & $sIP & ' mask=' & $sSubnet
+        ConsoleWrite("Adding: " & $sIP & " / " & $sSubnet & @CRLF)
+        ConsoleWrite("Executing: " & $sAddCmd & @CRLF)
+		Sleep(500) ; slight delay to avoid command conflicts
+		GUISetState(@SW_DISABLE, $hgui)
+    	GUISetCursor(15, 1, $hgui)
+        Local $iResult = RunWait(@ComSpec & " /c " & $sAddCmd, "", @SW_HIDE)
+		GUISetState(@SW_DISABLE, $hgui)
+    	GUISetCursor(15, 1, $hgui)
+        
+        If $iResult = 0 Then
+            ConsoleWrite("SUCCESS: " & $sIP & @CRLF)
+            $iSuccessCount += 1
+        Else
+            ConsoleWrite("FAILED: " & $sIP & " (Error: " & $iResult & ")" & @CRLF)
+        EndIf
+        
+        Sleep(300)
+    Next
+    
+    ConsoleWrite("Completed: " & $iSuccessCount & " of " & $aIPList[0][0] & " IPs added" & @CRLF)
+	;Re-enable window before returning
+	GUISetState(@SW_ENABLE, $hgui)
+    GUISetCursor(2, 1, $hgui)
+    Return $iSuccessCount
+    
+EndFunc   ;==>_AddSecondaryIPsFromProfile
+
+; =============================================================================
+; FUNCTION: _DeleteSelectedIP()
+; DESCRIPTION: Deletes the selected IP using the adapter name from combo box
+; PARAMETERS: $sIPToDelete - The IP address to delete
+; RETURN: True on success, False on failure
+; =============================================================================
+Func _DeleteSelectedIP($sIPToDelete)
+    ; Get adapter name from combo box
+    Local $sAdapterName = GUICtrlRead($combo_adapters)
+    
+    If $sAdapterName = "" Then
+        ConsoleWrite("ERROR: No adapter selected" & @CRLF)
+        Return False
+    EndIf
+    
+    If $sIPToDelete = "" Then
+        ConsoleWrite("ERROR: No IP address specified to delete" & @CRLF)
+        Return False
+    EndIf
+    
+    ConsoleWrite("=== Deleting IP: " & $sIPToDelete & " from adapter: " & $sAdapterName & " ===" & @CRLF)
+    
+    ; Build netsh command using the adapter name directly
+    ; Syntax: netsh interface ip delete address "Adapter Name" addr=IP
+    Local $sCommand = 'netsh interface ip delete address "' & $sAdapterName & '" addr=' & $sIPToDelete
+    
+    ConsoleWrite("Executing: " & $sCommand & @CRLF)
+    
+    ; Execute the command
+    Local $iResult = RunWait(@ComSpec & " /c " & $sCommand, "", @SW_HIDE)
+    
+    ; Check result
+    If $iResult = 0 Then
+        ConsoleWrite("SUCCESS: IP " & $sIPToDelete & " deleted from " & $sAdapterName & @CRLF)
+        Return True
+    Else
+        ConsoleWrite("ERROR: Failed to delete IP. Exit code: " & $iResult & @CRLF)
+        
+        ; Common error messages
+        Switch $iResult
+            Case 1
+                ConsoleWrite("  Cause: Invalid command syntax" & @CRLF)
+            Case 5
+                ConsoleWrite("  Cause: Access denied - Run script as administrator!" & @CRLF)
+            Case 259
+                ConsoleWrite("  Cause: IP address not found on this adapter" & @CRLF)
+        EndSwitch
+        Return False
+    EndIf
+EndFunc
+
+; =============================================================================
+; FUNCTION: _AddIPToAdapter()
+; DESCRIPTION: Adds a new IP address to the specified adapter using netsh
+; PARAMETERS: $sAdapterName - Name of the adapter (e.g., "Wi-Fi")
+;             $sIP - IP address to add (e.g., "192.168.1.200")
+;             $sSubnet - Subnet mask (e.g., "255.255.255.0")
+; RETURN: True on success, False on failure
+; =============================================================================
+Func _AddIPToAdapter($sAdapterName, $sIP, $sSubnet)
+    If $sAdapterName = "" Or $sIP = "" Or $sSubnet = "" Then
+        ConsoleWrite("ERROR: Missing parameters" & @CRLF)
+        Return False
+    EndIf
+    
+    ConsoleWrite("=== Adding IP: " & $sIP & "/" & $sSubnet & " to adapter: " & $sAdapterName & " ===" & @CRLF)
+    
+    ; Build netsh command
+    Local $sCommand = 'netsh interface ip add address "' & $sAdapterName & '" addr=' & $sIP & ' mask=' & $sSubnet
+    
+    ConsoleWrite("Executing: " & $sCommand & @CRLF)
+    
+    ; Execute the command
+    Local $iResult = RunWait(@ComSpec & " /c " & $sCommand, "", @SW_HIDE)
+    
+    If $iResult = 0 Then
+        ConsoleWrite("SUCCESS: IP added" & @CRLF)
+        Return True
+    Else
+        ConsoleWrite("ERROR: Failed to add IP. Exit code: " & $iResult & @CRLF)		
+		MsgBox($MB_ICONWARNING, $oLangStrings.message.warning & "!", "ERROR: Failed to add IP.")
+        ; Common error codes
+        Switch $iResult
+            Case 1
+                ConsoleWrite("  Cause: Invalid syntax or IP already exists" & @CRLF)
+            Case 5
+                ConsoleWrite("  Cause: Access denied - Run as administrator!" & @CRLF)
+        EndSwitch
+        Return False
+    EndIf
+EndFunc
+
+; =============================================================================
+; FUNCTION: _onEditIPConfirm()
+; Saves the edited IP address
+; =============================================================================
+Func _onEditIPConfirm()
+    ; Read new IP and Subnet
+    Local $sNewIP = _GUICtrlIpAddress_Get($g_editIP_Ip)
+    Local $sNewSubnet = _GUICtrlIpAddress_Get($g_editIP_Subnet)
+    
+    ConsoleWrite("=== Edit IP Confirm ===" & @CRLF)
+    ConsoleWrite("Old IP: " & $g_sOldIP & @CRLF)
+    ConsoleWrite("New IP: " & $sNewIP & @CRLF)
+    ConsoleWrite("New Subnet: " & $sNewSubnet & @CRLF)
+    
+    ; Validation
+    If $sNewIP = "0.0.0.0" Or $sNewIP = "" Then
+        ConsoleWrite("ERROR: Invalid IP address" & @CRLF)
+        Return
+    EndIf
+    
+    If $sNewSubnet = "0.0.0.0" Or $sNewSubnet = "" Then
+        $sNewSubnet = "255.255.255.0"
+    EndIf
+    
+    ; Get adapter name
+    Local $sAdapterName = GUICtrlRead($combo_adapters)
+    If $sAdapterName = "" Then
+        ConsoleWrite("ERROR: No adapter selected" & @CRLF)
+        Return
+    EndIf
+    
+    ; Disable window during operation
+    GUISetState(@SW_DISABLE, $g_editIPWindow)
+    GUISetCursor(15, 1, $g_editIPWindow)
+    
+    ; Delete old IP
+    ConsoleWrite("Deleting old IP: " & $g_sOldIP & @CRLF)
+    _DeleteSelectedIP($g_sOldIP)
+    
+    Sleep(1000)
+    
+    ; Add new IP
+    ConsoleWrite("Adding new IP: " & $sNewIP & @CRLF)
+    _AddIPToAdapter($sAdapterName, $sNewIP, $sNewSubnet)
+    
+    Sleep(1000)
+    
+    ; Re-enable window
+    GUISetState(@SW_ENABLE, $g_editIPWindow)
+    GUISetCursor(2, 1, $g_editIPWindow)
+    
+    ; Close edit window and refresh
+    _onExitEditIP()
+    _RefreshMultiIPList()
+    
+    ConsoleWrite("=== Edit IP Complete ===" & @CRLF)
+EndFunc
 
 ;------------------------------------------------------------------------------
 ; Title...........: _OSVersion
@@ -983,6 +1263,8 @@ Func _new()
 		$lv_startEditing = 1
 		Return
 	EndIf
+	
+	ConsoleWrite("Creating new profile: " & $profileName & @CRLF)
 
 	Local $oNewProfile = $profiles.create($profileName)
 	Local $adapName = iniNameEncode(GUICtrlRead($combo_adapters))
@@ -995,6 +1277,8 @@ Func _new()
 	$oNewProfile.IpDnsPref = _ctrlGetIP($ip_DnsPri)
 	$oNewProfile.IpDnsAlt = _ctrlGetIP($ip_DnsAlt)
 	$oNewProfile.RegisterDns = _StateToStr($ck_dnsReg)
+	$oNewProfile.MultiIP = _StateToStr($ck_MultiIP_profile)
+	$oNewProfile.MultiIPList = _ArrayToString($listIP_profile,"/",-1,-1,";")
 	$oNewProfile.AdapterName = $adapName
 
 	$iniName = iniNameEncode($profileName)
@@ -1029,7 +1313,6 @@ Func _save()
 	EndIf
 
 	$profileName = StringReplace(GUICtrlRead(GUICtrlRead($list_profiles)), "|", "")
-
 	Local $oProfile = $profiles.get($profileName)
 	Local $adapName = iniNameEncode(GUICtrlRead($combo_adapters))
 
@@ -1041,6 +1324,8 @@ Func _save()
 	$oProfile.IpDnsPref = _ctrlGetIP($ip_DnsPri)
 	$oProfile.IpDnsAlt = _ctrlGetIP($ip_DnsAlt)
 	$oProfile.RegisterDns = _StateToStr($ck_dnsReg)
+	$oProfile.MultiIP = _StateToStr($ck_MultiIP_profile)
+	$oProfile.MultiIPList = _ArrayToString($listIP_profile,"/",-1,-1,";") 
 	$oProfile.AdapterName = $adapName
 	$oProfile.Memo = iniNameEncode(GUICtrlRead($memo))
 
@@ -1049,6 +1334,7 @@ Func _save()
 	If $ret = 0 Then
 		_setStatus($oLangStrings.message.errorOccurred, 1)
 	EndIf
+	
 EndFunc   ;==>_save
 
 ;------------------------------------------------------------------------------
@@ -1094,22 +1380,43 @@ Func _setProperties($init = 0, $profileName = "")
 		$ipAddress = $oProfile.IpAddress
 		$ipSubnet = $oProfile.IpSubnet
 		$ipGateway = $oProfile.IpGateway
-		GUICtrlSetState($radio_IpMan, $GUI_CHECKED)
-		GUICtrlSetState($radio_IpAuto, _StrToState($ipAuto))
+		$dnsAuto = $oProfile.DnsAuto
+		if $ipAuto="True" Then
+			GUICtrlSetState($radio_IpMan, $GUI_UNCHECKED)
+			GUICtrlSetState($radio_IpAuto, $GUI_CHECKED)
+			if $dnsAuto="True" Then
+				GUICtrlSetState($radio_DnsMan, $GUI_UNCHECKED)
+				GUICtrlSetState($radio_DnsAuto, $GUI_CHECKED)
+			Else
+				GUICtrlSetState($radio_DnsMan, $GUI_CHECKED)
+				GUICtrlSetState($radio_DnsAuto, $GUI_UNCHECKED)
+			EndIf
+		Else
+			GUICtrlSetState($radio_IpMan, $GUI_CHECKED)
+			GUICtrlSetState($radio_IpAuto, $GUI_UNCHECKED)
+			GUICtrlSetState($radio_DnsMan, $GUI_CHECKED)
+			GUICtrlSetState($radio_DnsAuto, $GUI_UNCHECKED)
+		EndIf
 		_ctrlSetIP($ip_Ip, $ipAddress)
 		_ctrlSetIP($ip_Subnet, $ipSubnet)
 		_ctrlSetIP($ip_Gateway, $ipGateway)
 
-		$dnsAuto = $oProfile.DnsAuto
 		$dnsPref = $oProfile.IpDnsPref
 		$dnsAlt = $oProfile.IpDnsAlt
 		$dnsreg = $oProfile.RegisterDns
 
-		GUICtrlSetState($radio_DnsMan, $GUI_CHECKED)
-		GUICtrlSetState($radio_DnsAuto, _StrToState($dnsAuto))
 		_ctrlSetIP($ip_DnsPri, $dnsPref)
 		_ctrlSetIP($ip_DnsAlt, $dnsAlt)
 		GUICtrlSetState($ck_dnsReg, _StrToState($dnsreg))
+		
+		GUICtrlSetState($ck_MultiIP_profile, _StrToState($oProfile.MultiIP))
+
+		If $oProfile.MultiIP = "false" Then
+			GUICtrlSetState($buttonMultiIP_profile, $GUI_DISABLE)
+		Else
+			$listIP_profile = _ArrayFromString($oProfile.MultiIPList, "/", ";")
+			GUICtrlSetState($buttonMultiIP_profile, $GUI_ENABLE)
+		EndIf
 
 		$memoStr = iniNameDecode($oProfile.Memo)
 		GUICtrlSetData($memo, $memoStr)
@@ -1248,6 +1555,12 @@ Func _loadProfiles()
 						$oNewProfile.IpDnsAlt = $thisSection[$j][1]
 					Case "RegisterDns"
 						$oNewProfile.RegisterDns = $thisSection[$j][1]
+					Case "RegisterDns"
+						$oNewProfile.RegisterDns = $thisSection[$j][1]
+					Case "MultiIP"
+						$oNewProfile.MultiIP = $thisSection[$j][1]
+					Case "MultiIPList"
+						$oNewProfile.MultiIPList = $thisSection[$j][1]
 					Case "AdapterName"
 						$adapName = iniNameEncode($thisSection[$j][1])
 						$oNewProfile.AdapterName = $adapName
@@ -1303,6 +1616,10 @@ Func _ImportProfiles($pname)
 						$oNewProfile.IpDnsAlt = $thisSection[$j][1]
 					Case "RegisterDns"
 						$oNewProfile.RegisterDns = $thisSection[$j][1]
+					Case "MultiIP"
+						$oNewProfile.MultiIP = $thisSection[$j][1]
+					Case "MultiIPList"
+						$oNewProfile.MultiIPList = $thisSection[$j][1]
 					Case "AdapterName"
 						$adapName = iniNameEncode($thisSection[$j][1])
 						$oNewProfile.AdapterName = $adapName

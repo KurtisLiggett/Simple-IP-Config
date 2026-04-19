@@ -55,8 +55,10 @@ Func _Profiles_createProfile($oSelf, $sName)
 	_AutoItObject_AddProperty($oObject, "IpDnsPref")
 	_AutoItObject_AddProperty($oObject, "IpDnsAlt")
 	_AutoItObject_AddProperty($oObject, "RegisterDns")
+	_AutoItObject_AddProperty($oObject, "MultiIP")
+	_AutoItObject_AddProperty($oObject, "MultiIPList")
 	_AutoItObject_AddProperty($oObject, "Memo")
-	_AutoItObject_AddProperty($oObject, "count", $ELSCOPE_PUBLIC, 11)
+	_AutoItObject_AddProperty($oObject, "count", $ELSCOPE_PUBLIC, 13)
 	_AutoItObject_AddMethod($oObject, "getSection", "_Profile_getSection")
 	_AutoItObject_AddMethod($oObject, "getSectionStr", "_Profile_getSectionStr")
 
@@ -231,6 +233,8 @@ Func _Profile_getSectionStr($oSelf)
 	$sSection &= "IpDnsPref=" & $oSelf.IpDnsPref & @CRLF
 	$sSection &= "IpDnsAlt=" & $oSelf.IpDnsAlt & @CRLF
 	$sSection &= "RegisterDns=" & $oSelf.RegisterDns & @CRLF
+	$sSection &= "MultiIP=" & $oSelf.MultiIP & @CRLF
+	$sSection &= "MultiIPList=" & $oSelf.MultiIPList & @CRLF
 	$sSection &= "AdapterName=" & $oSelf.AdapterName & @CRLF
 	$sSection &= "Memo=" & $oSelf.Memo & @CRLF
 
@@ -258,7 +262,11 @@ Func _Profile_getSection($oSelf)
 	$aObject[7][1] = $oSelf.IpDnsAlt
 	$aObject[8][0] = "RegisterDns"
 	$aObject[8][1] = $oSelf.RegisterDns
-	$aObject[9][0] = "Memo"
-	$aObject[9][1] = $oSelf.Memo
+	$aObject[9][0] = "MultiIP"
+	$aObject[9][1] = $oSelf.MultiIP
+	$aObject[10][0] = "MultiIPList"
+	$aObject[10][1] = $oSelf.MultiIPList
+	$aObject[11][0] = "Memo"
+	$aObject[11][1] = $oSelf.Memo
 	Return $aObject
 EndFunc   ;==>_Profile_getSection

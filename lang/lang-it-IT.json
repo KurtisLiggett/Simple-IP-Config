@@ -154,6 +154,16 @@
          "opt3":"Salva scheda di rete nel profilo",
          "opt4":"Controlla automaticamente aggiornamenti"
       },
+       "multiIP":{
+         "title":"Impostazioni Multi-IP",
+         "noIPFound":"Nessun indirizzo IP trovato",
+         "exit_":"Esci",
+         "delete":"Elimina",
+         "addIP":"Aggiungi...",
+         "editIP":"Modifica...",
+         "MultiIPprofile":"Profilo Multi-IP",
+         "UseMultiIPprofile":"Usa profilo Multi-IP"
+      },
       "message":{
          "ready":"Pronto",
          "timedout":"Azione scaduta! Comando interrotto.",

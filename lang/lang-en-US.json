@@ -154,6 +154,16 @@
          "opt3":"Save adapter to profile",
          "opt4":"Automatically check for updates"
       },
+         "multiIP":{
+            "title":"Multi-IP Settings",
+            "noIPFound":"No IP addresses found",
+            "exit_":"Exit",
+            "delete":"Delete",
+            "addIP":"Add...",
+            "editIP":"Edit...",
+            "MultiIPprofile":"Multi-IP Profile",
+            "UseMultiIPprofile":"Use Multi-IP Profile"
+         },
       "message":{
          "ready":"Ready",
          "timedout":"Action timed out!  Command Aborted.",

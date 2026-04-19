@@ -100,6 +100,51 @@ Func _onExitChild()
 	EndIf
 EndFunc   ;==>_onExitChild
 
+Func _onExitAddIP()
+	 If $hMultiIPWindow <> 0 Then
+        GUISetState(@SW_ENABLE, $hMultiIPWindow)
+        WinActivate($hMultiIPWindow)
+    EndIf
+    
+    ; Chiudi la finestra Add IP
+    GUIDelete(@GUI_WinHandle)
+    
+    ; Resetta le variabili
+    $g_addIPWindow = 0
+    $g_ip_Ip = 0
+    $g_ip_Subnet = 0
+EndFunc   ;==>_onExitAddIP
+
+Func _onExitAddIP_profile()
+	 If $hMultiIP_ProfileWindow <> 0 Then
+        GUISetState(@SW_ENABLE, $hMultiIP_ProfileWindow)
+        WinActivate($hMultiIP_ProfileWindow)
+    EndIf
+    
+    ; Chiudi la finestra Add IP profile
+    GUIDelete(@GUI_WinHandle)
+    
+    
+EndFunc   ;==>_onExitAddIP
+
+; =============================================================================
+; FUNCTION: _onExitEditIP()
+; Closes the Edit IP window and re-enables Multi IP window
+; =============================================================================
+Func _onExitEditIP()
+    ; Re-enable Multi IP window
+    If $hMultiIPWindow <> 0 Then
+        GUISetState(@SW_ENABLE, $hMultiIPWindow)
+        WinActivate($hMultiIPWindow)
+    EndIf
+    
+    ; Close edit window
+    If $g_editIPWindow <> 0 Then
+        GUIDelete($g_editIPWindow)
+        $g_editIPWindow = 0
+    EndIf
+EndFunc
+
 ;------------------------------------------------------------------------------
 ; Title........: _OnTrayClick
 ; Description..: Restore or hide program to system tray
@@ -167,8 +212,8 @@ EndFunc   ;==>_onRadioIpAuto
 Func _onRadioIpMan()
 	GUICtrlSetState($radio_IpAuto, $GUI_UNCHECKED)
 	GUICtrlSetState($radio_IpMan, $GUI_CHECKED)
-	GUICtrlSetState($radio_DnsMan, $GUI_UNCHECKED)
-	GUICtrlSetState($radio_DnsAuto, $GUI_CHECKED)
+	GUICtrlSetState($radio_DnsMan, $GUI_CHECKED)
+	GUICtrlSetState($radio_DnsAuto, $GUI_UNCHECKED)
 	_radios()
 EndFunc   ;==>_onRadioIpMan
 
@@ -178,9 +223,16 @@ EndFunc   ;==>_onRadioIpMan
 ; Events.......: radio button or text clicked
 ;------------------------------------------------------------------------------
 Func _onRadioDnsAuto()
-	GUICtrlSetState($radio_DnsMan, $GUI_UNCHECKED)
-	GUICtrlSetState($radio_DnsAuto, $GUI_CHECKED)
-	_radios()
+	if GUICtrlRead($radio_IpMan) = $GUI_CHECKED Then
+		GUICtrlSetState($radio_DnsMan, $GUI_CHECKED)
+		GUICtrlSetState($radio_DnsAuto, $GUI_UNCHECKED)
+	EndIf
+	if GUICtrlRead($radio_IpAuto) = $GUI_CHECKED Then
+		GUICtrlSetState($radio_DnsMan, $GUI_UNCHECKED)
+		GUICtrlSetState($radio_DnsAuto, $GUI_CHECKED)
+		_radios()
+	EndIf
+	
 EndFunc   ;==>_onRadioDnsAuto
 
 ;------------------------------------------------------------------------------
@@ -205,9 +257,35 @@ Func _onCheckboxRegDns()
 	Else
 		GUICtrlSetState($ck_dnsReg, $GUI_CHECKED)
 	EndIf
-EndFunc   ;==>_onCheckboxRegDns
+EndFunc   ;==>_onCheckboxRegDns _onCheckboxMultiIP_profile
 
+;------------------------------------------------------------------------------
+; Title........: _onCheckboxMultiIP_profile
+; Description..: Set checkbox state
+; Events.......: click checkbox text
+;------------------------------------------------------------------------------
+Func _onCheckboxMultiIP_profile()
+	If GUICtrlRead($ck_MultiIP_profile) = $GUI_CHECKED Then
+		GUICtrlSetState($ck_MultiIP_profile, $GUI_UNCHECKED)
+		GUICtrlSetState($buttonMultiIP_profile, $GUI_DISABLE)
+	Else
+		GUICtrlSetState($ck_MultiIP_profile, $GUI_CHECKED)
+		GUICtrlSetState($buttonMultiIP_profile, $GUI_ENABLE)
+	EndIf
+EndFunc   ;==>_onCheckboxMultiIP_profile
 
+;------------------------------------------------------------------------------
+; Title........: _onCheckboxMultiIP_profile
+; Description..: Set checkbox state
+; Events.......: click checkbox text
+;------------------------------------------------------------------------------
+Func _onCheckboxMultiIP_profile2()
+	If GUICtrlRead($ck_MultiIP_profile) = $GUI_CHECKED Then
+		GUICtrlSetState($buttonMultiIP_profile, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($buttonMultiIP_profile, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>_onCheckboxMultiIP_profile
 
 ;------------------------------------------------------------------------------
 ; Title........: _onSelect
@@ -215,6 +293,7 @@ EndFunc   ;==>_onCheckboxRegDns
 ; Events.......: Click on profile list item
 ;------------------------------------------------------------------------------
 Func _onSelect()
+	ConsoleWrite("enter list view profile" & @CRLF)
 	_setProperties()
 EndFunc   ;==>_onSelect
 
@@ -503,6 +582,361 @@ EndFunc   ;==>_onCycle
 Func _onSettings()
 	_formm_settings()
 EndFunc   ;==>_onSettings
+
+;------------------------------------------------------------------------------
+; Title........: _onMultiIp
+; Description..: Create the multi-IP settings child window
+; Events.......: Tools menu "Multi-IP Settings" item
+;------------------------------------------------------------------------------
+Func _onMultiIp()
+	Global $listIP=_GetAllIPv4ForSelectedAdapter()
+	_print("get IP info")
+	_form_multi_ip()
+EndFunc   ;==>_onMultiIp
+
+;------------------------------------------------------------------------------
+; Title........: _onMultiIp_profile
+; Description..: Create the multi-IP settings child window
+; Events.......: Tools menu "Multi-IP Settings" item
+;------------------------------------------------------------------------------
+Func _onMultiIP_profile()
+	_print("set multi IP table for profile")
+	_form_multi_ip_profile()
+EndFunc   ;==>_onMultiIp_profile
+
+;------------------------------------------------------------------------------
+Func _onAddIP()
+	GUISetState(@SW_DISABLE, $hMultiIPWindow)
+	_form_add_ip()	
+EndFunc
+
+;------------------------------------------------------------------------------
+Func _onAddIP_profile()
+	GUISetState(@SW_DISABLE, $hMultiIP_ProfileWindow)
+	_form_add_ip_profile()	
+EndFunc
+
+;------------------------------------------------------------------------------
+Func _onEditIP_profile()
+	GUISetState(@SW_DISABLE, $hMultiIP_ProfileWindow)
+	Local $iSelected = _GUICtrlListView_GetSelectedIndices($lbox_MultiIP_profile)
+    $g_iEditIndexProfile = $iSelected
+	 If $iSelected = "" Then
+		ConsoleWrite("No IP profile selected for editing" & @CRLF)
+		Return
+	EndIf
+	$g_ip_profile_editIp = $listIP_profile[$iSelected+1][0]
+	$g_ip_profile_editSubnet = $listIP_profile[$iSelected+1][1]
+	_form_edit_ip_profile()	
+EndFunc
+
+;------------------------------------------------------------------------------
+Func _onEditIP()
+	Local $iSelected = _GUICtrlListView_GetSelectedIndices($lbox_MultiIP)
+	 If $iSelected = "" Then
+        ConsoleWrite("No IP selected for editing" & @CRLF)
+        Return
+    EndIf
+	; Get current IP and Subnet from selected row
+    Local $sCurrentIP = _GUICtrlListView_GetItemText($lbox_MultiIP, Number($iSelected), 0)
+    Local $sCurrentSubnet = _GUICtrlListView_GetItemText($lbox_MultiIP, Number($iSelected), 1)
+
+	ConsoleWrite("=== Edit IP ===" & @CRLF)
+    ConsoleWrite("Current IP: " & $sCurrentIP & @CRLF)
+    ConsoleWrite("Current Subnet: " & $sCurrentSubnet & @CRLF)
+
+	; Save selected index for later use
+    Global $g_iEditIndex = $iSelected
+    Global $g_sOldIP = $sCurrentIP
+
+	GUISetState(@SW_DISABLE, $hMultiIPWindow)
+	_form_edit_ip($sCurrentIP, $sCurrentSubnet)	
+EndFunc
+
+
+
+Func _onDeleteIP()
+    ; Get the index of the selected item
+    Local $iSelected = _GUICtrlListView_GetSelectedIndices($lbox_MultiIP)
+    
+    If $iSelected = "" Then
+        MsgBox(48, $oLangStrings.message.warning, "Please select an IP address to delete")
+        Return
+    EndIf
+    
+    Local $sIPToDelete = _GUICtrlListView_GetItemText($lbox_MultiIP, Number($iSelected), 0)
+    ConsoleWrite("IP to delete: " & $sIPToDelete & @CRLF)
+    
+    ; === DISABILITA LA FINESTRA (diventa grigia e non cliccabile) ===
+    GUISetState(@SW_DISABLE, $hMultiIPWindow)
+    
+    ; Opzionale: cambia il cursore del mouse per indicare "occupato"
+    GUISetCursor(15, 1, $hMultiIPWindow)  ; 15 = cursore "attesa" (a clessidra)
+    
+    ; Esegui l'eliminazione
+    _DeleteSelectedIP($sIPToDelete)
+    
+    ; Attendi che l'operazione completi
+    Sleep(1500)  ; 1.5 secondi di attesa per assicurarsi che l'IP sia stato eliminato
+    
+    ; Refresh the ListView with updated data
+    _RefreshMultiIPList()
+    
+    ; === RIABILITA LA FINESTRA ===
+    GUISetState(@SW_ENABLE, $hMultiIPWindow)
+    
+    ; Ripristina il cursore normale
+    GUISetCursor(2, 1, $hMultiIPWindow)  ; 2 = cursore standard
+    
+    ; Riporta la finestra in primo piano
+    WinActivate($hMultiIPWindow)
+EndFunc
+
+; =============================================================================
+; FUNCTION: _onAddIPConfirm()
+; Confirms and adds the new IP address to the selected adapter
+; =============================================================================
+Func _onAddIPConfirm()
+    ; Read IP and Subnet from controls
+    Local $sIP = _GUICtrlIpAddress_Get($g_ip_Ip)
+    Local $sSubnet = _GUICtrlIpAddress_Get($g_ip_Subnet)
+    
+    ConsoleWrite("=== Add IP Confirmation ===" & @CRLF)
+    ConsoleWrite("IP to add: " & $sIP & @CRLF)
+    ConsoleWrite("Subnet mask: " & $sSubnet & @CRLF)
+    
+    ; Validation
+    If $sIP = "0.0.0.0" Or $sIP = "" Then
+        ConsoleWrite("ERROR: Invalid IP address" & @CRLF)
+        Return
+    EndIf
+    
+    If $sSubnet = "0.0.0.0" Or $sSubnet = "" Then
+        ConsoleWrite("WARNING: Invalid subnet mask, using default 255.255.255.0" & @CRLF)
+        $sSubnet = "255.255.255.0"
+    EndIf
+    
+    ; Get selected adapter from main combo box
+    Local $sAdapterName = GUICtrlRead($combo_adapters)
+    If $sAdapterName = "" Then
+        ConsoleWrite("ERROR: No adapter selected" & @CRLF)
+        Return
+    EndIf
+    
+    ConsoleWrite("Target adapter: " & $sAdapterName & @CRLF)
+    
+    ; Disable window during operation
+    GUISetState(@SW_DISABLE, $g_addIPWindow)
+    GUISetCursor(15, 1, $g_addIPWindow)
+    ConsoleWrite("Add IP window disabled" & @CRLF)
+    
+    ; Add the IP address
+    Local $bResult = _AddIPToAdapter($sAdapterName, $sIP, $sSubnet)
+    
+    Sleep(1000)
+    
+    ; Re-enable window
+    GUISetState(@SW_ENABLE, $g_addIPWindow)
+    GUISetCursor(2, 1, $g_addIPWindow)
+    ConsoleWrite("Add IP window re-enabled" & @CRLF)
+    
+    If $bResult Then
+        ConsoleWrite("SUCCESS: IP added successfully" & @CRLF)
+        _onExitAddIP()
+        _RefreshMultiIPList()
+        ConsoleWrite("Multi IP list refreshed" & @CRLF)
+    Else
+        ConsoleWrite("ERROR: Failed to add IP" & @CRLF)
+    EndIf
+    
+    ConsoleWrite("=== Add IP Confirmation Complete ===" & @CRLF & @CRLF)
+EndFunc
+
+; =============================================================================
+; FUNCTION: _onAddIPConfirm_profile()
+; Adds IP/subnet to global $listIP_profile table if not already present
+; and if different from current primary IP ($ip_Ip)
+; =============================================================================
+Func _onAddIPConfirm_profile()
+    ; Read IP and Subnet from controls
+    Local $sNewIP = _GUICtrlIpAddress_Get($g_ip_profile_Ip)
+    Local $sNewSubnet = _GUICtrlIpAddress_Get($g_ip_profile_Subnet)
+    
+    ConsoleWrite("=== Add IP Profile ===" & @CRLF)
+    ConsoleWrite("IP to add: " & $sNewIP & @CRLF)
+    ConsoleWrite("Subnet: " & $sNewSubnet & @CRLF)
+    
+    ; Validation - check if IP is valid
+    If $sNewIP = "0.0.0.0" Or $sNewIP = "" Then
+        ConsoleWrite("ERROR: Invalid IP address" & @CRLF)
+        Return
+    EndIf
+    
+    ; Set default subnet if invalid
+    If $sNewSubnet = "0.0.0.0" Or $sNewSubnet = "" Then
+        ConsoleWrite("WARNING: Invalid subnet, using 255.255.255.0" & @CRLF)
+        $sNewSubnet = "255.255.255.0"
+    EndIf
+    
+    
+    ; Initialize global table if not already initialized
+    If Not IsArray($listIP_profile) Then
+        Global $listIP_profile[1][2]
+        $listIP_profile[0][0] = 0
+        ConsoleWrite("Initialized global $listIP_profile array" & @CRLF)
+    EndIf
+    
+    ; Check if IP already exists in the table
+    For $i = 1 To $listIP_profile[0][0]
+        If $listIP_profile[$i][0] = $sNewIP Then
+            ConsoleWrite("ERROR: IP " & $sNewIP & " already exists in profile table" & @CRLF)
+            Return
+        EndIf
+    Next
+    
+    ; Add the new IP to the global table
+    Local $iCurrentCount = $listIP_profile[0][0]
+    $iCurrentCount += 1
+    ReDim $listIP_profile[$iCurrentCount + 1][2]
+    $listIP_profile[$iCurrentCount][0] = $sNewIP
+    $listIP_profile[$iCurrentCount][1] = $sNewSubnet
+    $listIP_profile[0][0] = $iCurrentCount
+    
+    ConsoleWrite("SUCCESS: IP added to profile table. Total IPs: " & $iCurrentCount & @CRLF)
+    ; REFRESH THE LISTVIEW
+    _RefreshMultiIPProfileList()
+    ; Close the window
+    _onExitAddIP_profile()
+    
+    ConsoleWrite("=== Add IP Profile Complete ===" & @CRLF & @CRLF)
+EndFunc
+
+; =============================================================================
+	; FUNCTION: _onEditIPConfirm_profile()
+	; Adds IP/subnet to global $listIP_profile table if not already present
+; and if different from current primary IP ($ip_Ip)
+; =============================================================================
+Func _onEditIPConfirm_profile()
+    ; Read IP and Subnet from controls
+    Local $sNewIP = _GUICtrlIpAddress_Get($g_ip_profile_editIp)
+    Local $sNewSubnet = _GUICtrlIpAddress_Get($g_ip_profile_editSubnet)
+    
+    ConsoleWrite("=== Edit IP Profile ===" & @CRLF)
+    ConsoleWrite("IP to edit: " & $sNewIP & @CRLF)
+    ConsoleWrite("Subnet: " & $sNewSubnet & @CRLF)
+	ConsoleWrite("Editing index: " & Number($g_iEditIndexProfile) & @CRLF)
+    
+    ; Validation - check if IP is valid
+    If $sNewIP = "0.0.0.0" Or $sNewIP = "" Then
+        ConsoleWrite("ERROR: Invalid IP address" & @CRLF)
+        Return
+    EndIf
+    
+    ; Set default subnet if invalid
+    If $sNewSubnet = "0.0.0.0" Or $sNewSubnet = "" Then
+        ConsoleWrite("WARNING: Invalid subnet, using 255.255.255.0" & @CRLF)
+        $sNewSubnet = "255.255.255.0"
+    EndIf
+    
+    
+    ; Check if IP already exists in the table
+    For $i = 1 To $listIP_profile[0][0]
+        If $listIP_profile[$i][0] = $sNewIP AND NOT($g_iEditIndexProfile + 1 = $i) Then
+            ConsoleWrite("ERROR: IP " & $sNewIP & " already exists in profile table" & @CRLF)
+            Return
+        EndIf
+    Next
+    
+    $listIP_profile[$g_iEditIndexProfile+1][0] = $sNewIP
+	$listIP_profile[$g_iEditIndexProfile+1][1] = $sNewSubnet
+    
+    ConsoleWrite("SUCCESS: IP edited." & @CRLF)
+    ; REFRESH THE LISTVIEW
+    _RefreshMultiIPProfileList()
+    ; Close the window
+    _onExitAddIP_profile()
+    
+    ConsoleWrite("=== Edit IP Profile Complete ===" & @CRLF & @CRLF)
+EndFunc
+
+; =============================================================================
+; FUNCTION: _RefreshMultiIPProfileList()
+; Refreshes the ListView with data from global $listIP_profile
+; =============================================================================
+Func _RefreshMultiIPProfileList()
+    ; Clear existing items
+    _GUICtrlListView_DeleteAllItems($lbox_MultiIP_profile)
+    
+    ; Check if profile table exists and has data
+    If Not IsArray($listIP_profile) Or $listIP_profile[0][0] = 0 Then
+        GUICtrlCreateListViewItem("No IPs in profile|", $lbox_MultiIP_profile)
+        Return
+    EndIf
+    
+    ; Populate ListView with all IPs from profile table
+    For $i = 1 To $listIP_profile[0][0]
+        GUICtrlCreateListViewItem($listIP_profile[$i][0] & "|" & $listIP_profile[$i][1], $lbox_MultiIP_profile)
+    Next
+    
+    ; Select first item if available
+    If $listIP_profile[0][0] > 0 Then
+        _GUICtrlListView_SetItemSelected($lbox_MultiIP_profile, 0)
+    EndIf
+    
+    ConsoleWrite("Refreshed Multi IP Profile ListView. Total IPs: " & $listIP_profile[0][0] & @CRLF)
+EndFunc
+
+; =============================================================================
+; FUNCTION: _onDeleteIP_profile()
+; Deletes the selected IP from the ListView and from global $listIP_profile table
+; =============================================================================
+Func _onDeleteIP_profile()
+    ; Get the selected item index from ListView
+    Local $iSelected = _GUICtrlListView_GetSelectedIndices($lbox_MultiIP_profile)
+    
+    ; Check if an item is selected
+    If $iSelected = "" Then
+        ConsoleWrite("ERROR: No IP selected to delete" & @CRLF)
+        Return
+    EndIf
+    
+    ; Get the IP address from the selected row (first column)
+    Local $sIPToDelete = _GUICtrlListView_GetItemText($lbox_MultiIP_profile, Number($iSelected), 0)
+    
+    ConsoleWrite("=== Delete IP from Profile ===" & @CRLF)
+    ConsoleWrite("IP to delete: " & $sIPToDelete & @CRLF)
+    
+    ; Check if profile table exists and has data
+    If Not IsArray($listIP_profile) Or $listIP_profile[0][0] = 0 Then
+        ConsoleWrite("ERROR: Profile table is empty" & @CRLF)
+        Return
+    EndIf
+    
+    ; Find and remove the IP from the global array
+    Local $iNewCount = 0
+    Local $aNewList[1][2]
+    $aNewList[0][0] = 0
+    
+    For $i = 1 To $listIP_profile[0][0]
+        If $listIP_profile[$i][0] <> $sIPToDelete Then
+            $iNewCount += 1
+            ReDim $aNewList[$iNewCount + 1][2]
+            $aNewList[$iNewCount][0] = $listIP_profile[$i][0]
+            $aNewList[$iNewCount][1] = $listIP_profile[$i][1]
+            $aNewList[0][0] = $iNewCount
+        EndIf
+    Next
+    
+    ; Update the global table
+    $listIP_profile = $aNewList
+    
+    ConsoleWrite("SUCCESS: IP removed from profile table. Remaining IPs: " & $listIP_profile[0][0] & @CRLF)
+    
+    ; Refresh the ListView
+    _RefreshMultiIPProfileList()
+    
+    ConsoleWrite("=== Delete IP Complete ===" & @CRLF & @CRLF)
+EndFunc
 
 ;------------------------------------------------------------------------------
 ; Title........: _onHelp
