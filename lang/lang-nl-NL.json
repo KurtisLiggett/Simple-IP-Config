@@ -36,9 +36,9 @@
             "trayKey":"Ctrl+t",
             "hide":"Adapters verbergen",
             "appearance":{
-                        "appearance":"Appearance",
-                        "light":"Light",
-                        "dark":"Dark"
+                        "appearance":"Thema",
+                        "light":"Licht",
+                        "dark":"Donker"
             }
          },
          "tools":{
@@ -56,7 +56,7 @@
          },
          "help":{
             "help":"&Help",
-            "docs":"&Online Documentatie",
+            "docs":"&Documentatie",
             "docsKey":"F1",
             "changelog":"Toon &Change Log",
             "update":"Check voor &Updates...",
@@ -136,7 +136,7 @@
          "date":"Datum",
          "dev":"Ontwikkelaar",
          "lic":"Licentie",
-         "desc":"Het draagbare ip-wissel hulpprogramma waarmee een gebruiker snel en gemakkelijk de meest voorkomende netwerkinstellingen voor elke verbinding kan wijzigen.",
+         "desc":"Het draagbare ip-wissel hulpprogramma waarmee een gebruiker snel en gemakkelijk de netwerkinstellingen voor elke verbinding kan wijzigen.",
          "icons":"Programma iconen zijn van"
       },
       "changelog":{
@@ -176,7 +176,7 @@
          "warning":"Waarschuwing",
          "newItem":"Nieuw Item",
          "applying":"Profiel wordt toegepast",
-         "errorRetrieving":"Er was een probleem met het ophalen van de adpaterlijst.",
+         "errorRetrieving":"Er was een probleem met het ophalen van de adapterlijst.",
          "commandTimeout":"Commando timed-out",
          "updateCheckError":"Er is een fout opgetreden met het binnenhalen van de update.",
          "checkConnect":"Controleer de internetverbindig.",
